@@ -236,7 +236,7 @@ void parse_operand(char *string, operand *operand) {
     }
     // check for hex string that ends with 'h'
     if(string[strlen(string)-1] == 'h') operand->immediate = immediate(string);
-    else error("Invalid register");
+    else error(message[ERROR_INVALIDREGISTER]);
 }
 
 void parse(char *line){

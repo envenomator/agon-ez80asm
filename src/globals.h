@@ -33,6 +33,7 @@ extern operand operand2;
 
 // Errors
 enum {
+    ERROR_INVALIDREGISTER,
     ERROR_OPENINGBRACKET,
     ERROR_CLOSINGBRACKET
 };

@@ -19,9 +19,10 @@ operand operand1;
 operand operand2;
 
 /*
- * Error message
+ * Messages
  */
 char *message[] = {
+    "Invalid register in operand",
     "Missing opening bracket in operand",
     "Missing closing bracket in operand"
 };
