@@ -12,7 +12,6 @@
 // parses the given string to the operand, or throws errors along the way
 // will destruct parts of the original string during the process
 void parse_operand(char *string, operand *operand) {
-    char errormsg[] = "Invalid operand";
     char *ptr = string;
 
     // sensible defaults
@@ -35,25 +34,19 @@ void parse_operand(char *string, operand *operand) {
                 case 0:
                     operand->type = OP_R;
                     operand->reg = R_A;
-                    break;
+                    return;
                 case 'f':
                     switch(*ptr++) {
                         case 0:
                         case '\'':
                             operand->type = OP_RR;
                             operand->reg = RR_AF;
-                            break;
+                            return;
                         default:
-                            // check for hex string that ends with 'h'
-                            if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-3);
-                            else error(errormsg);
                             break;
                     }
                     break;
                 default:
-                    // check for hex string that ends with 'h'
-                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
-                    else error(errormsg);
                     break;
             }
             break;
@@ -62,22 +55,15 @@ void parse_operand(char *string, operand *operand) {
                 case 0:
                     operand->type = OP_R;
                     operand->reg = R_B;
-                    break;
+                    return;
                 case 'c':
                     if(*ptr == 0) {
                         operand->type = OP_RR;
                         operand->reg = RR_BC;
-                    }
-                    else {
-                        // check for hex string that ends with 'h'
-                        if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-3);
-                        else error(errormsg);
+                        return;
                     }
                     break;
                 default:
-                    // check for hex string that ends with 'h'
-                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
-                    else error(errormsg);
                     break;
             }
             break;
@@ -86,11 +72,8 @@ void parse_operand(char *string, operand *operand) {
                 case 0:
                     operand->type = OP_R;
                     operand->reg = R_C;
-                    break;
+                    return;
                 default:
-                    // check for hex string that ends with 'h'
-                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
-                    else error(errormsg);
                     break;
             }
             break;
@@ -99,23 +82,18 @@ void parse_operand(char *string, operand *operand) {
                 case 0:
                     operand->type = OP_R;
                     operand->reg = R_D;
-                    break;
+                    return;
                 case 'e':
                     switch(*ptr++) {
                         case 0:
                             operand->type = OP_RR;
                             operand->reg = RR_DE;
-                            break;
+                            return;
                         default:
-                            // check for hex string that ends with 'h'
-                            if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-3);
-                            else error(errormsg);
+                            break;
                     }
                     break;
                 default:
-                    // check for hex string that ends with 'h'
-                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
-                    else error(errormsg);
                     break;
             }
             break;
@@ -124,11 +102,8 @@ void parse_operand(char *string, operand *operand) {
                 case 0:
                     operand->type = OP_R;
                     operand->reg = R_E;
-                    break;
+                    return;
                 default:
-                    // check for hex string that ends with 'h'
-                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
-                    else error(errormsg);
                     break;
             }
             break;
@@ -137,16 +112,15 @@ void parse_operand(char *string, operand *operand) {
                 case 0:
                     operand->type = OP_R;
                     operand->reg = R_H;
-                    break;
+                    return;
                 case 'l':
                     if(*ptr == 0) {
                         operand->type = OP_RR;
                         operand->reg = RR_HL;
+                        return;
                     }
-                    else error(errormsg);
                     break;
                 default:
-                    error(errormsg);
                     break;
             }
             break;
@@ -155,27 +129,29 @@ void parse_operand(char *string, operand *operand) {
                 case 0:
                     operand->type = OP_I;
                     operand->reg = R_I;
-                    break;
+                    return;
                 case 'x':
                     switch(*ptr++) {
                         case 0:
                             operand->type = OP_IX;
                             operand->reg = RR_IX;
-                            break;
+                            return;
                         case 'h':
                             operand->type = OP_IXH;
                             operand->reg = RR_IXH;
-                            break;
+                            return;
                         case 'l':
                             operand->type = OP_IXL;
                             operand->reg = RR_IXL;
-                            break;
+                            return;
                         case '+':
-                            if(isdigit(*ptr)) operand->displacement = (uint8_t) immediate(ptr);
-                            else error(errormsg);
+                            if(isdigit(*ptr)) {
+                                operand->displacement = (uint8_t) immediate(ptr);
+                                return;
+                            }
                             break;
                         default:
-                            error(errormsg);
+                            break;
                     }
                     break;
                 case 'y':
@@ -183,26 +159,26 @@ void parse_operand(char *string, operand *operand) {
                         case 0:
                             operand->type = OP_IY;
                             operand->reg = RR_IY;
-                            break;
+                            return;
                         case 'h':
                             operand->type = OP_IYH;
                             operand->reg = RR_IYH;
-                            break;
+                            return;
                         case 'l':
                             operand->type = OP_IYL;
                             operand->reg = RR_IYL;
-                            break;
+                            return;
                         case '+':
-                            if(isdigit(*ptr)) operand->displacement = (uint8_t) immediate(ptr);
-                            else error(errormsg);
+                            if(isdigit(*ptr)) {
+                                operand->displacement = (uint8_t) immediate(ptr);
+                                return;
+                            }
                             break;
                         default:
-                            error(errormsg);
                             break;
                     }
                     break;
                 default:
-                    error(errormsg);
                     break;
             }
             break;
@@ -211,9 +187,8 @@ void parse_operand(char *string, operand *operand) {
                 case 0:
                     operand->type = OP_R;
                     operand->reg = R_L;
-                    break;
+                    return;
                 default:
-                    error(errormsg);
                     break;
             }
             break;
@@ -221,21 +196,21 @@ void parse_operand(char *string, operand *operand) {
             if((*ptr == 'b') && ptr[1] == 0) {
                 operand->type = OP_MB;
                 operand->reg = RR_MB;
+                return;
             }
-            else error(errormsg);
             break;
         case 'r':
             if(*ptr == 0) {
                 operand->type = OP_R;
                 operand->reg = R_R;
+                return;
             }
-            else error(errormsg);
         case 's':
             if((*ptr == 'p') && ptr[1] == 0) {
                 operand->type = OP_RR;
                 operand->reg = RR_SP;
+                return;
             }
-            else error(errormsg);
             break;
         case '0':
         case '1':
@@ -250,11 +225,13 @@ void parse_operand(char *string, operand *operand) {
         case '$':
         case 'f':
             operand->immediate = immediate(ptr-1);
-            break;
+            return;
         default:
-            error(errormsg);
             break;
     }
+    // check for hex string that ends with 'h'
+    if(string[strlen(string)-1] == 'h') operand->immediate = immediate(string);
+    else error("Invalid register");
 }
 
 void parse(char *line){
@@ -367,6 +344,11 @@ uint32_t immediate(char *arg)
     uint8_t len = strlen(arg);
     bool err;
 
+    // if the string starts with '('
+    if(arg[0] == '(') {
+        arg++;
+        len--;
+    }    
     // if the string ends with ')'
     if(arg[len-1] == ')') {
         arg[len-1] = 0;
@@ -408,14 +390,14 @@ uint32_t immediate(char *arg)
     while(*chk) {
         if(base == 2) err = !((*chk == '0') || (*chk == '1'));
         if(base == 10) err = !isdigit(*chk);
-        if(base == 16) err = !isxdigit(*chk); 
+        if(base == 16) err = !isxdigit(*chk);
+        if(err) {
+            error("Invalid number format");
+            return 0;
+        } 
         chk++;
     }
-    if(!err) return strtol(ptr, 0, base);
-    else {
-        error("Invalid number format");
-        return 0;
-    }
+    return strtol(ptr, 0, base);
 }
 
 // return ADL prefix code, or 0 if none present
