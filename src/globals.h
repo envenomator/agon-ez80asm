@@ -18,6 +18,8 @@ typedef struct {
 } tokenline;
 
 // Global variables
+extern bool debug_enabled;
+extern bool listing_enabled;
 extern FILE *infile;
 extern FILE *outfile;
 extern unsigned int linenumber;

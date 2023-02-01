@@ -4,6 +4,8 @@
 /*
  * Global variables
  */
+bool debug_enabled;
+bool listing_enabled;
 FILE *infile;
 FILE *outfile;
 unsigned int linenumber;

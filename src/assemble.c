@@ -10,6 +10,7 @@
 #include "label.h"
 
 // parses the given string to the operand, or throws errors along the way
+// will destruct parts of the original string during the process
 void parse_operand(char *string, operand *operand) {
     char errormsg[] = "Invalid operand";
     char *ptr = string;
@@ -19,7 +20,10 @@ void parse_operand(char *string, operand *operand) {
     // direct or indirect
     if(*ptr == '(') {
         operand->indirect = true;
-        ptr++;
+        // find closing bracket or error out
+        while((*ptr) && (*ptr != ')')) ptr++;
+        *ptr = 0; // terminate on closing bracket, or overwrite the existing 0
+        ptr = &string[1];
     }
     else operand->indirect = false;
 
@@ -41,14 +45,14 @@ void parse_operand(char *string, operand *operand) {
                             break;
                         default:
                             // check for hex string that ends with 'h'
-                            if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
+                            if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-3);
                             else error(errormsg);
                             break;
                     }
                     break;
                 default:
                     // check for hex string that ends with 'h'
-                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-1);
+                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
                     else error(errormsg);
                     break;
             }
@@ -60,12 +64,19 @@ void parse_operand(char *string, operand *operand) {
                     operand->reg = R_B;
                     break;
                 case 'c':
-                    operand->type = OP_RR;
-                    operand->reg = RR_BC;
+                    if(*ptr == 0) {
+                        operand->type = OP_RR;
+                        operand->reg = RR_BC;
+                    }
+                    else {
+                        // check for hex string that ends with 'h'
+                        if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-3);
+                        else error(errormsg);
+                    }
                     break;
                 default:
                     // check for hex string that ends with 'h'
-                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-1);
+                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
                     else error(errormsg);
                     break;
             }
@@ -78,7 +89,7 @@ void parse_operand(char *string, operand *operand) {
                     break;
                 default:
                     // check for hex string that ends with 'h'
-                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-1);
+                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
                     else error(errormsg);
                     break;
             }
@@ -89,19 +100,21 @@ void parse_operand(char *string, operand *operand) {
                     operand->type = OP_R;
                     operand->reg = R_D;
                     break;
-                switch(*ptr++) {
-                    case 'e':
-                        operand->type = OP_RR;
-                        operand->reg = RR_DE;
-                        break;
-                    default:
-                        // check for hex string that ends with 'h'
-                        if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
-                        else error(errormsg);
-                }
+                case 'e':
+                    switch(*ptr++) {
+                        case 0:
+                            operand->type = OP_RR;
+                            operand->reg = RR_DE;
+                            break;
+                        default:
+                            // check for hex string that ends with 'h'
+                            if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-3);
+                            else error(errormsg);
+                    }
+                    break;
                 default:
                     // check for hex string that ends with 'h'
-                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-1);
+                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
                     else error(errormsg);
                     break;
             }
@@ -114,7 +127,7 @@ void parse_operand(char *string, operand *operand) {
                     break;
                 default:
                     // check for hex string that ends with 'h'
-                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-1);
+                    if(ptr[strlen(ptr)-1] == 'h') operand->immediate = immediate(ptr-2);
                     else error(errormsg);
                     break;
             }
@@ -143,55 +156,53 @@ void parse_operand(char *string, operand *operand) {
                     operand->type = OP_I;
                     operand->reg = R_I;
                     break;
-                default:
+                case 'x':
                     switch(*ptr++) {
-                        case 'x':
-                            switch(*ptr++) {
-                                case 0:
-                                    operand->type = OP_IX;
-                                    operand->reg = RR_IX;
-                                    break;
-                                case 'h':
-                                    operand->type = OP_IXH;
-                                    operand->reg = RR_IXH;
-                                    break;
-                                case 'l':
-                                    operand->type = OP_IXL;
-                                    operand->reg = RR_IXL;
-                                    break;
-                                case '+':
-                                    if(isdigit(*ptr)) operand->displacement = (uint8_t) immediate(ptr);
-                                    else error(errormsg);
-                                    break;
-                                default:
-                                    error(errormsg);
-                            }
+                        case 0:
+                            operand->type = OP_IX;
+                            operand->reg = RR_IX;
                             break;
-                        case 'y':
-                            switch(*ptr++) {
-                                case 0:
-                                    operand->type = OP_IY;
-                                    operand->reg = RR_IY;
-                                    break;
-                                case 'h':
-                                    operand->type = OP_IYH;
-                                    operand->reg = RR_IYH;
-                                    break;
-                                case 'l':
-                                    operand->type = OP_IYL;
-                                    operand->reg = RR_IYL;
-                                    break;
-                                case '+':
-                                    if(isdigit(*ptr)) operand->displacement = (uint8_t) immediate(ptr);
-                                    else error(errormsg);
-                                    break;
-                                default:
-                                    error(errormsg);
-                            }
+                        case 'h':
+                            operand->type = OP_IXH;
+                            operand->reg = RR_IXH;
+                            break;
+                        case 'l':
+                            operand->type = OP_IXL;
+                            operand->reg = RR_IXL;
+                            break;
+                        case '+':
+                            if(isdigit(*ptr)) operand->displacement = (uint8_t) immediate(ptr);
+                            else error(errormsg);
                             break;
                         default:
                             error(errormsg);
                     }
+                    break;
+                case 'y':
+                    switch(*ptr++) {
+                        case 0:
+                            operand->type = OP_IY;
+                            operand->reg = RR_IY;
+                            break;
+                        case 'h':
+                            operand->type = OP_IYH;
+                            operand->reg = RR_IYH;
+                            break;
+                        case 'l':
+                            operand->type = OP_IYL;
+                            operand->reg = RR_IYL;
+                            break;
+                        case '+':
+                            if(isdigit(*ptr)) operand->displacement = (uint8_t) immediate(ptr);
+                            else error(errormsg);
+                            break;
+                        default:
+                            error(errormsg);
+                            break;
+                    }
+                    break;
+                default:
+                    error(errormsg);
                     break;
             }
             break;
@@ -237,6 +248,7 @@ void parse_operand(char *string, operand *operand) {
         case '8':
         case '9':
         case '$':
+        case 'f':
             operand->immediate = immediate(ptr-1);
             break;
         default:
@@ -258,7 +270,7 @@ void parse(char *line){
     currentline.size = 0;
 
     s = line;
-    if((isspace(*s) == 0) && (*s != ';')) {
+    if((isspace(*s) == 0) && (*s != ';')) { // first char is not a space and not a ';'
         // label found at column 0
         c = currentline.label;
         while(*s){
@@ -266,6 +278,7 @@ void parse(char *line){
             *c++ = *s++;
         }
         *c = 0; // terminate label
+        s++;    // advance scanner beyond ':'
         if(*s == 0) {
             error("Invalid label definition");
             return;
@@ -292,7 +305,7 @@ void parse(char *line){
             while(isspace(*s) != 0) s++; // skip over whitespace
         }
         if(*s != ';') {
-            // potential first argument found
+            // potential first operand found
             c = currentline.operand1;
             while(*s && (*s != ',') && (*s != ';')){
                 *c++ = tolower(*s++);
@@ -302,7 +315,7 @@ void parse(char *line){
             parse_operand(currentline.operand1, &operand1);
             while(isspace(*s) != 0) s++; // skip over whitespace
             if(*s == ','){
-                // potential second argument found
+                // potential second operand found
                 s++;
                 c = currentline.operand2;
                 while(isspace(*s) != 0) s++; // skip over whitespace
@@ -345,39 +358,64 @@ void definelabel(uint8_t size){
 
 // return immediate 32-bit value
 // when 8bit values are expected, cast appropriately by caller
+// HEX: starts with $,0x, or ends with h
+// BIN: starts with %,0%,0b, or ends with b
 uint32_t immediate(char *arg)
 {
     uint8_t base = 0;
-    char *ptr;
+    char *ptr,*chk;
     uint8_t len = strlen(arg);
+    bool err;
 
     // if the string ends with ')'
     if(arg[len-1] == ')') {
         arg[len-1] = 0;
         len--;
     }
-
-    if(arg[0] == '$') {
+    // select correct base
+    if(arg[len-1] == 'h') {
+        arg[len-1] = 0; // only keep xdigit characters
+        len--;
         base = 16;
-        ptr = arg+1;
+        if(arg[0] == '$') ptr = arg+1; // allow for typos like $ffh
+        else ptr = arg;
     }
-    if(!base && (arg[1] == 'x')) {
-        base = 16;
-        ptr = arg+2;
-    }
-    if(!base && (arg[len-1] == 'h')) {
-        base = 16;
+    if((base == 0) && (arg[len-1]) == 'b') {
+        arg[len-1] = 0; // only keep binary characters
+        len--;
+        base = 2;
         ptr = arg;
     }
-    if(!base && (arg[len-1] == 'b')) {
-        base = 2;
-        ptr = arg+2;
+    if((base == 0) && (arg[0] == '$')) {
+        base = 16;
+        ptr = &arg[1];
     }
-    if(!base) {
+    if((base == 0) && (strncmp("0x", arg, 2) == 0)) {
+        base = 16;
+        ptr = &arg[2];
+    }
+    if((base == 0) && ((strncmp("0b", arg, 2) == 0) || (strncmp("0\%", arg, 2)) == 0)) {
+        base = 2;
+        ptr = &arg[2];
+    }
+    if(base == 0) {
         base = 10;
         ptr = arg;
     }
-    return strtol(ptr, 0, base);
+    // verify character according to base
+    chk = ptr;
+    err = false;
+    while(*chk) {
+        if(base == 2) err = !((*chk == '0') || (*chk == '1'));
+        if(base == 10) err = !isdigit(*chk);
+        if(base == 16) err = !isxdigit(*chk); 
+        chk++;
+    }
+    if(!err) return strtol(ptr, 0, base);
+    else {
+        error("Invalid number format");
+        return 0;
+    }
 }
 
 // return ADL prefix code, or 0 if none present
@@ -505,8 +543,10 @@ void adl_action() {
     if(strcmp(currentline.operand1, "0") == 0) adlmode = false;
     if(strcmp(currentline.operand1, "1") == 0) adlmode = true;
     if(pass == 1) {
-        if(adlmode) printf("ADLmode: 1\n");
-        else printf("ADLmode: 0\n");
+        if(debug_enabled) {
+            if(adlmode) printf("ADLmode: 1\n");
+            else printf("ADLmode: 0\n");
+        }
     }
 }
 
@@ -578,6 +618,51 @@ bool process(void){
     return true;
 }
 
+void print_linelisting(void) {
+    /*
+    printf("Line %04d - ", linenumber);
+    if(currentline.label[0]) printf("%s:",currentline.label);
+    if(currentline.mnemonic[0]) printf("\t%s",currentline.mnemonic);
+    if(currentline.suffix_present) printf(".%s",currentline.suffix);
+    if(currentline.operand1[0]) printf("\t%s",currentline.operand1);
+    if(currentline.operand2[0]) printf(", %s",currentline.operand2);
+    if(currentline.comment[0]) printf("\t; %s",currentline.comment);
+    printf("\n");
+    */
+    printf("Line       %04d\n", linenumber);
+    printf("Operand1:\n");
+    printf("Type:        %02x\n", operand1.type);
+    printf("Register:    %02x\n", operand1.reg);
+    printf("Indirect:    %02x\n", operand1.indirect);
+    printf("d:           %02x\n", operand1.displacement);
+    printf("Immediate: %04x\n", operand1.immediate);
+    printf("Operand2:\n");
+    printf("Type:        %02x\n", operand2.type);
+    printf("Register:    %02x\n", operand2.reg);
+    printf("Indirect:    %02x\n", operand2.indirect);
+    printf("d:           %02x\n", operand2.displacement);
+    printf("Immediate: %04x\n", operand2.immediate);
+
+    printf("\n");
+}
+
+
+void parsed_listing(void) {
+    printf("Line       %04d - ", linenumber);
+    printf("Operand1:\n");
+    printf("Type:        %02x\n", operand1.type);
+    printf("Register:    %02x\n", operand1.reg);
+    printf("Indirect:    %02x\n", operand1.indirect);
+    printf("d:           %02x\n", operand1.displacement);
+    printf("Immediate: %04x\n", operand1.immediate);
+    printf("Operand2:\n");
+    printf("Type:        %02x\n", operand2.type);
+    printf("Register:    %02x\n", operand2.reg);
+    printf("Indirect:    %02x\n", operand2.indirect);
+    printf("d:           %02x\n", operand2.displacement);
+    printf("Immediate: %04x\n", operand2.immediate);
+
+}
 bool assemble(FILE *infile, FILE *outfile){
     char line[LINEMAX];
 
@@ -592,13 +677,12 @@ bool assemble(FILE *infile, FILE *outfile){
     while (fgets(line, sizeof(line), infile)){
         parse(line);
 
-        // debug
-        //printf("arg1:%s:arg2:%s\n",currentline.operand1,currentline.operand2);
-        // end debug
+        if(listing_enabled) print_linelisting();
+
         process();
         linenumber++;
     }
-    print_label_table();
+    if(debug_enabled) print_label_table();
     printf("%d lines\n", linenumber);
     printf("%d labels\n", label_table_count());
     //print_bufferspace();

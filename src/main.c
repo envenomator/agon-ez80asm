@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
 {
     char outfilename[FILENAMEMAXLENGTH];
 
-    if(argc != 2){
-        printf("Usage: asm <file.s>\n");
+    if(argc < 2){
+        printf("Usage: asm <file.s> [-d]\n");
         exit(1);
     }
     infile = fopen(argv[1],"r");
@@ -35,6 +35,11 @@ int main(int argc, char *argv[])
         fclose(infile);
         exit(1);
     }
+
+    debug_enabled = false;
+    listing_enabled = false;
+    if((argc == 3) && (strcmp(argv[2], "-d") == 0)) debug_enabled = true;
+    if((argc == 3) && (strcmp(argv[2], "-l") == 0)) listing_enabled = true;
 
     // Init tables
     init_instruction_table();
