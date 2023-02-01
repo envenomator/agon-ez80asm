@@ -13,6 +13,7 @@
 // will destruct parts of the original string during the process
 void parse_operand(char *string, operand *operand) {
     char *ptr = string;
+    uint8_t len = strlen(string);
 
     // sensible defaults
     operand->displacement = 0;
@@ -20,11 +21,15 @@ void parse_operand(char *string, operand *operand) {
     if(*ptr == '(') {
         operand->indirect = true;
         // find closing bracket or error out
-        while((*ptr) && (*ptr != ')')) ptr++;
-        *ptr = 0; // terminate on closing bracket, or overwrite the existing 0
+        if(string[len-1] == ')') string[len-1] = 0; // terminate on closing bracket
+        else error(message[ERROR_CLOSINGBRACKET]);
         ptr = &string[1];
     }
-    else operand->indirect = false;
+    else {
+        operand->indirect = false;
+        // should not find a closing bracket
+        if(string[len-1] == ')') error(message[ERROR_OPENINGBRACKET]);
+    }
 
     switch(*ptr++) {
         case 0: // empty operand
@@ -344,6 +349,7 @@ uint32_t immediate(char *arg)
     uint8_t len = strlen(arg);
     bool err;
 
+    /*
     // if the string starts with '('
     if(arg[0] == '(') {
         arg++;
@@ -354,6 +360,8 @@ uint32_t immediate(char *arg)
         arg[len-1] = 0;
         len--;
     }
+    */
+
     // select correct base
     if(arg[len-1] == 'h') {
         arg[len-1] = 0; // only keep xdigit characters

@@ -31,4 +31,11 @@ extern tokenline currentline;
 extern operand operand1;
 extern operand operand2;
 
+// Errors
+enum {
+    ERROR_OPENINGBRACKET,
+    ERROR_CLOSINGBRACKET
+};
+
+extern char *message[];
 #endif // GLOBALS_H

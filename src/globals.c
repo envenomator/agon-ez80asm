@@ -17,3 +17,11 @@ bool adlmode;
 tokenline currentline;
 operand operand1;
 operand operand2;
+
+/*
+ * Error message
+ */
+char *message[] = {
+    "Missing opening bracket in operand",
+    "Missing closing bracket in operand"
+};
