@@ -7,7 +7,6 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-extern bool err_str2num;
 uint32_t str2num(char *string);
 
 #endif // STR2NUM_H

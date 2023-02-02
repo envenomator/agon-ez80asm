@@ -11,8 +11,6 @@ enum {
     ERROR
 };
 
-bool err_str2num;
-
 // transform a binary string to a uint32_t number
 // string must end with 0 and contain only valid characters (0..1)
 uint32_t str2bin(char *string) {
@@ -21,7 +19,7 @@ uint32_t str2bin(char *string) {
 
     while(*string) {
         if((*string == '0') || (*string == '1')) {x = *string - '0';}
-        else err_str2num = true;
+        else error(message[ERROR_INVALIDNUMBER]);
         result = (result << 1) | x;
         string++;
     }
@@ -41,7 +39,7 @@ uint32_t str2hex(char *string) {
         else {
             c = c & 0xDF ; // toupper();
             if((c >= 'A') && (c <= 'F')) { x = c - 'A' + 10; }
-            else err_str2num = true;
+        else error(message[ERROR_INVALIDNUMBER]);
         }
         result = (result << 4) | x;
         string++;
@@ -57,7 +55,7 @@ uint32_t str2dec(char *string) {
 
     while(*string) {
         if((*string >= '0') && (*string <= '9')) { x = *string - '0'; }
-        else err_str2num = true;
+        else error(message[ERROR_INVALIDNUMBER]);
         result = ((result << 1) + (result << 3)) + x;
         string++;
     }
@@ -74,8 +72,6 @@ uint32_t str2num(char *string) {
     char *start = string;
     uint32_t result = 0;
     uint8_t state = BASESELECT;
-    
-    err_str2num = false;
 
     while(1) {
         switch(state) {
@@ -145,7 +141,6 @@ uint32_t str2num(char *string) {
                 }
                 break;
             case(ERROR):
-                err_str2num = true;
                 error(message[ERROR_INVALIDNUMBER]);
                 state = DONE;
                 break;

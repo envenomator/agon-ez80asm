@@ -24,5 +24,6 @@ operand operand2;
 char *message[] = {
     "Invalid register in operand",
     "Missing opening bracket in operand",
-    "Missing closing bracket in operand"
+    "Missing closing bracket in operand",
+    "Invalid number format"
 };
