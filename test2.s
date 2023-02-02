@@ -1,1 +1,1 @@
-	push ix
+adc.shit 15 ; comment

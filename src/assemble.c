@@ -240,7 +240,180 @@ void parse_operand(char *string, operand *operand) {
     else error(message[ERROR_INVALIDREGISTER]);
 }
 
-void parse(char *line){
+enum {
+    STATE_LINESTART,
+    STATE_MNEMONIC,
+    STATE_SUFFIX,
+    STATE_OPERAND1,
+    STATE_OPERAND2,
+    STATE_COMMENT,
+    STATE_DONE,
+    STATE_MISSINGOPERAND
+};
+
+void parse(char *line) {
+    uint8_t state;
+    char *ptr;
+    char *token;
+    char *tstart;
+
+    currentline.label[0] = 0;
+    currentline.mnemonic[0] = 0;
+    currentline.suffix_present = false;
+    currentline.suffix[0] = 0;
+    currentline.operand1[0] = 0;
+    currentline.operand2[0] = 0;
+    currentline.comment[0] = 0;
+    currentline.size = 0;
+
+    state = STATE_LINESTART;
+
+    while(1) {
+        switch(state) {
+            case STATE_LINESTART:
+                ptr = line;
+                while(isspace(*ptr) != 0) ptr++; // skip over whitespace
+                tstart = ptr;
+                if(isalnum(*ptr)) {
+                    state = STATE_MNEMONIC;
+                    token = currentline.mnemonic;
+                    break;
+                }
+                if(*ptr == ';') {
+                    token = currentline.comment;
+                    state = STATE_COMMENT;
+                    ptr++;
+                    break;
+                }
+                state = STATE_DONE; // empty line
+                break;
+            case STATE_MNEMONIC:
+                switch(*ptr) {
+                    case 0:
+                        *token = 0;
+                        return;
+                    case ';':
+                        *token = 0;
+                        token = currentline.comment;
+                        state = STATE_COMMENT;
+                        ptr++;
+                        break;
+                    case ':':
+                        // token proves to be a label after all
+                        *token = 0; // close string
+                        *ptr = 0;
+                        strcpy(currentline.label, tstart);
+                        currentline.mnemonic[0] = 0; // empty mnemonic again
+                        ptr++;
+                        while(isspace(*ptr) != 0) ptr++; // skip over whitespace
+                        token = currentline.mnemonic;
+                        // no change in state - MNEMONIC expected
+                        break;
+                    case '.':
+                        *token = 0; // terminate token string
+                        state = STATE_SUFFIX;
+                        ptr++;
+                        while(isspace(*ptr) != 0) ptr++; // skip over whitespace
+                        token = currentline.suffix;
+                        break;
+                    case ',':
+                        state = STATE_MISSINGOPERAND;
+                        break;
+                    default:
+                        if(isspace(*ptr) == 0) *token++ = *ptr++;
+                        else {
+                            // close out token
+                            *token = 0;
+                            ptr++;
+                            while(isspace(*ptr) != 0) ptr++; // skip over whitespace
+                            token = currentline.operand1;
+                            state = STATE_OPERAND1;
+                        }
+                }
+                break;
+            case STATE_SUFFIX:
+                if(*ptr == ',') {
+                    state = STATE_MISSINGOPERAND;
+                    break;
+                }
+                if(isspace(*ptr) == 0) {
+                    *token++ = *ptr++;
+                }
+                else {
+                    // close out token
+                    *token = 0;
+                    ptr++;
+                    while(isspace(*ptr) != 0) ptr++; // skip over whitespace
+                    token = currentline.operand1;
+                    state = STATE_OPERAND1;
+                }
+                break;
+            case STATE_OPERAND1:
+                switch(*ptr) {
+                    case 0:
+                        *token = 0;
+                        return;
+                    case '.':
+                    case ':':
+                        state = ERROR_INVALIDOPERAND;
+                        break;
+                    case ',':
+                        *token = 0;
+                        ptr++;
+                        while(isspace(*ptr) != 0) ptr++; // skip over whitespace
+                        token = currentline.operand2;
+                        state = STATE_OPERAND2;
+                        break;
+                    case ';':
+                        *token = 0;
+                        ptr++;
+                        token = currentline.comment;
+                        state = STATE_COMMENT;
+                        break;
+                    default:
+                        *token++ = *ptr++;
+                        while(isspace(*ptr) != 0) ptr++; // skip over whitespace
+                }
+                break;
+            case STATE_OPERAND2:
+                switch(*ptr) {
+                    case 0:
+                        *token = 0;
+                        return;
+                    case '.':
+                    case ':':
+                    case ',':
+                        state = ERROR_INVALIDOPERAND;
+                        break;
+                    case ';':
+                        *token = 0;
+                        ptr++;
+                        token = currentline.comment;
+                        state = STATE_COMMENT;
+                        break;
+                    default:
+                        *token++ = *ptr++;
+                        while(isspace(*ptr) != 0) ptr++; // skip over whitespace
+                }
+                break;
+            case STATE_COMMENT:
+                if((*ptr != 0) && (*ptr != '\r') && (*ptr != '\n')) *token++ = *ptr++;
+                else {
+                    *token = 0;
+                    state = STATE_DONE;
+                }
+                break;
+            case STATE_DONE:
+                return;
+            case STATE_MISSINGOPERAND:
+                error(message[ERROR_MISSINGOPERAND]);
+                state = STATE_DONE;
+                break;
+        }
+    }
+}
+
+void parse_old(char *line){
     char *s,*c;
 
     currentline.label[0] = 0;
@@ -253,6 +426,10 @@ void parse(char *line){
     currentline.size = 0;
 
     s = line;
+
+    while(isspace(*s) != 0) s++; // skip over whitespace
+    if(*s == 0) return;          // skip empty line
+    /*
     if((isspace(*s) == 0) && (*s != ';')) { // first char is not a space and not a ';'
         // label found at column 0
         c = currentline.label;
@@ -263,18 +440,22 @@ void parse(char *line){
         *c = 0; // terminate label
         s++;    // advance scanner beyond ':'
         if(*s == 0) {
-            error("Invalid label definition");
+            error(message[ERROR_INVALIDLABEL]);
             return;
         }
-    }    
+    } 
+    */   
     while(isspace(*s) != 0) s++; // skip over whitespace
     if(isalpha(*s)){
         // potential mnemonic found
         c = currentline.mnemonic;
-        while(*s && (isspace(*s) == 0) && (*s != '.') && (*s != ';')) {
+        while(*s && (isspace(*s) == 0) && (*s != '.') && (*s != ';') && (*s != ':')) {
             *c++ = tolower(*s++);
         }
         *c = 0; // terminate mnemonic string
+        if(*s == ':') {
+            // label found, not a mnemonic
+        }
         while(isspace(*s) != 0) s++; // skip over whitespace
         if(*s == '.') {
             // extension found
@@ -540,6 +721,10 @@ bool process(void){
 }
 
 void print_linelisting(void) {
+
+    printf("Line %04d - \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"", linenumber, currentline.label, currentline.mnemonic, currentline.suffix, currentline.operand1, currentline.operand2, currentline.comment);
+    printf("\n");
+
     /*
     printf("Line %04d - ", linenumber);
     if(currentline.label[0]) printf("%s:",currentline.label);
@@ -550,6 +735,9 @@ void print_linelisting(void) {
     if(currentline.comment[0]) printf("\t; %s",currentline.comment);
     printf("\n");
     */
+
+
+    /*
     printf("Line       %04d\n", linenumber);
     printf("Operand1:\n");
     printf("Type:        %02x\n", operand1.type);
@@ -563,8 +751,7 @@ void print_linelisting(void) {
     printf("Indirect:    %02x\n", operand2.indirect);
     printf("d:           %02x\n", operand2.displacement);
     printf("Immediate: %04x\n", operand2.immediate);
-
-    printf("\n");
+    */
 }
 
 

@@ -25,5 +25,9 @@ char *message[] = {
     "Invalid register in operand",
     "Missing opening bracket in operand",
     "Missing closing bracket in operand",
-    "Invalid number format"
+    "Invalid number format",
+    "Invalid label definition",
+    "Missing operand",
+    "Invalid mnemonic",
+    "Invalid operand"
 };

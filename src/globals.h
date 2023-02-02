@@ -10,7 +10,7 @@ typedef struct {
     char label[32];
     char mnemonic[16];
     bool suffix_present;
-    char suffix[4];
+    char suffix[16];
     char operand1[32];
     char operand2[32];
     char comment[128];
@@ -36,7 +36,11 @@ enum {
     ERROR_INVALIDREGISTER,
     ERROR_OPENINGBRACKET,
     ERROR_CLOSINGBRACKET,
-    ERROR_INVALIDNUMBER
+    ERROR_INVALIDNUMBER,
+    ERROR_INVALIDLABEL,
+    ERROR_MISSINGOPERAND,
+    ERROR_INVALIDMNEMONIC,
+    ERROR_INVALIDOPERAND
 };
 
 extern char *message[];
