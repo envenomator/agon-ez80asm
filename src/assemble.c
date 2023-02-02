@@ -8,6 +8,7 @@
 #include "globals.h"
 #include "utils.h"
 #include "label.h"
+#include "str2num.h"
 
 // parses the given string to the operand, or throws errors along the way
 // will destruct parts of the original string during the process
@@ -151,7 +152,7 @@ void parse_operand(char *string, operand *operand) {
                             return;
                         case '+':
                             if(isdigit(*ptr)) {
-                                operand->displacement = (uint8_t) immediate(ptr);
+                                operand->displacement = (uint8_t) str2num(ptr);
                                 return;
                             }
                             break;
@@ -175,7 +176,7 @@ void parse_operand(char *string, operand *operand) {
                             return;
                         case '+':
                             if(isdigit(*ptr)) {
-                                operand->displacement = (uint8_t) immediate(ptr);
+                                operand->displacement = (uint8_t) str2num(ptr);
                                 return;
                             }
                             break;
@@ -229,13 +230,13 @@ void parse_operand(char *string, operand *operand) {
         case '9':
         case '$':
         case 'f':
-            operand->immediate = immediate(ptr-1);
+            operand->immediate = str2num(ptr-1);
             return;
         default:
             break;
     }
     // check for hex string that ends with 'h'
-    if(string[strlen(string)-1] == 'h') operand->immediate = immediate(string);
+    if(string[strlen(string)-1] == 'h') operand->immediate = str2num(string);
     else error(message[ERROR_INVALIDREGISTER]);
 }
 
@@ -338,76 +339,6 @@ void definelabel(uint8_t size){
     address += size;
 }
 
-// return immediate 32-bit value
-// when 8bit values are expected, cast appropriately by caller
-// HEX: starts with $,0x, or ends with h
-// BIN: starts with %,0%,0b, or ends with b
-uint32_t immediate(char *arg)
-{
-    uint8_t base = 0;
-    char *ptr,*chk;
-    uint8_t len = strlen(arg);
-    bool err;
-
-    /*
-    // if the string starts with '('
-    if(arg[0] == '(') {
-        arg++;
-        len--;
-    }    
-    // if the string ends with ')'
-    if(arg[len-1] == ')') {
-        arg[len-1] = 0;
-        len--;
-    }
-    */
-
-    // select correct base
-    if(arg[len-1] == 'h') {
-        arg[len-1] = 0; // only keep xdigit characters
-        len--;
-        base = 16;
-        if(arg[0] == '$') ptr = arg+1; // allow for typos like $ffh
-        else ptr = arg;
-    }
-    if((base == 0) && (arg[len-1]) == 'b') {
-        arg[len-1] = 0; // only keep binary characters
-        len--;
-        base = 2;
-        ptr = arg;
-    }
-    if((base == 0) && (arg[0] == '$')) {
-        base = 16;
-        ptr = &arg[1];
-    }
-    if((base == 0) && (strncmp("0x", arg, 2) == 0)) {
-        base = 16;
-        ptr = &arg[2];
-    }
-    if((base == 0) && ((strncmp("0b", arg, 2) == 0) || (strncmp("0\%", arg, 2)) == 0)) {
-        base = 2;
-        ptr = &arg[2];
-    }
-    if(base == 0) {
-        base = 10;
-        ptr = arg;
-    }
-    // verify character according to base
-    chk = ptr;
-    err = false;
-    while(*chk) {
-        if(base == 2) err = !((*chk == '0') || (*chk == '1'));
-        if(base == 10) err = !isdigit(*chk);
-        if(base == 16) err = !isxdigit(*chk);
-        if(err) {
-            error("Invalid number format");
-            return 0;
-        } 
-        chk++;
-    }
-    return strtol(ptr, 0, base);
-}
-
 // return ADL prefix code, or 0 if none present
 uint8_t getADLsuffix(adltype allowed) {
     uint8_t code=0;
@@ -492,7 +423,7 @@ uint8_t getADLsuffix(adltype allowed) {
 void emit_ld_from_immediate(uint8_t prefix, uint8_t opcode, char *valstring) {
     uint8_t suffix;
     uint8_t immsize;
-    uint32_t tmp32 = immediate(valstring);
+    uint32_t tmp32 = str2num(valstring);
 
     suffix = getADLsuffix(ANY); // only takes care of illegal suffixes
     if(adlmode) {

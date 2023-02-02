@@ -1,4 +1,6 @@
 #include "str2num.h"
+#include "globals.h"
+#include "utils.h"
 
 enum {
     BASESELECT,
@@ -144,6 +146,7 @@ uint32_t str2num(char *string) {
                 break;
             case(ERROR):
                 err_str2num = true;
+                error(message[ERROR_INVALIDNUMBER]);
                 state = DONE;
                 break;
         }

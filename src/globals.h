@@ -35,7 +35,8 @@ extern operand operand2;
 enum {
     ERROR_INVALIDREGISTER,
     ERROR_OPENINGBRACKET,
-    ERROR_CLOSINGBRACKET
+    ERROR_CLOSINGBRACKET,
+    ERROR_INVALIDNUMBER
 };
 
 extern char *message[];
