@@ -1,1 +1,0 @@
-adc.shit 15 ; comment

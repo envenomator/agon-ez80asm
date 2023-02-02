@@ -8,28 +8,31 @@
 #define MAX_MNEMONIC_SIZE 6
 
 typedef enum {
-    OP_R,
-    OP_RR,
-    OP_HL,
-    OP_SP,
-    OP_RR_I,
-    OP_HL_I,
-    OP_IX,
-    OP_IY,
-    OP_IXPLUSD_I, // (ix/y+d)
-    OP_IYPLUSD_I, // (ix/y+d)
+    OP_EMPTY,
+    OP_CC,
+    OP_CC_ACCENT,
+    OP_D,
+    OP_IR,
+    OP_IXY,
+    OP_INDIRECT_IXY,
+    OP_INDIRECT_IXYd,
     OP_MMN,
-    OP_MMN_I,
-    OP_SP_I,
-    OP_A,
-    OP_I,
-    OP_IXH, // ir
-    OP_IXL, // ir
-    OP_IYH, // ir
-    OP_IYL, // ir
-    OP_MB,
+    OP_INDIRECT_MMN,
+    OP_MN,
+    OP_INDIRECT_MN,
     OP_N,
-    OP_REFRESH
+    OP_A,
+    OP_R,
+    OP_HL,
+    OP_INDIRECT_HL,
+    OP_RR,
+    OP_INDIRECT_RR,
+    OP_RXY,
+    OP_S,
+    OP_SP,
+    OP_INDIRECT_SP,
+    OP_SS,
+    OP_OTHER
 } operandtype;
 
 typedef enum {
@@ -55,7 +58,6 @@ typedef struct {
     uint8_t prefix1;
     uint8_t prefix2;
     uint8_t opcode;
-    uint8_t immediate;
     adltype adl;
 } operandlist;
 
@@ -82,6 +84,8 @@ typedef struct {
 
 #define R_I 10
 #define R_R 11
+
+#define R_INVALID 255
 
 #define IRTABLE_MAX 4
 #define RPTABLE_MAX 4

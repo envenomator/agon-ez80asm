@@ -71,21 +71,21 @@ instruction * instruction_table[INSTRUCTION_TABLE_SIZE];
 unsigned int collisions;
 
 operandlist operands_adc[] = {
-    {OP_A, OP_HL_I,         0x00, 0x00, 0x8E, 0, SL_ONLY},
-    {OP_A, OP_IXH,          0x00, 0xDD, 0x8C, 0, NONE},
-    {OP_A, OP_IXL,          0x00, 0xDD, 0x8D, 0, NONE},
-    {OP_A, OP_IYH,          0x00, 0xFD, 0x8C, 0, NONE},
-    {OP_A, OP_IYL,          0x00, 0xFD, 0x8D, 0, NONE},
-    {OP_A, OP_IXPLUSD_I,    0x00, 0xDD, 0x8E, 0, SL_ONLY},
-    {OP_A, OP_IYPLUSD_I,    0x00, 0xFD, 0x8E, 0, SL_ONLY},
-    {OP_A, OP_N,            0x00, 0x00, 0xCE, 1, NONE},
-    {OP_A, OP_R,            0x00, 0x00, 0x88, 0, NONE},
-    {OP_HL, OP_RR,          0x00, 0xED, 0x4A, 0, SL_ONLY},
-    {OP_HL, OP_SP,          0x00, 0xED, 0x7A, 0, SL_ONLY}
+    {OP_A, OP_INDIRECT_HL,  0x00, 0x00, 0x8E, SL_ONLY},
+    {OP_A, OP_IXY,          0x00, 0xDD, 0x8C, NONE},
+    {OP_A, OP_IXY,          0x00, 0xDD, 0x8D, NONE},
+    {OP_A, OP_IXY,          0x00, 0xFD, 0x8C, NONE},
+    {OP_A, OP_IXY,          0x00, 0xFD, 0x8D, NONE},
+    {OP_A, OP_INDIRECT_IXYd,0x00, 0xDD, 0x8E, SL_ONLY},
+    {OP_A, OP_INDIRECT_IXYd,0x00, 0xFD, 0x8E, SL_ONLY},
+    {OP_A, OP_N,            0x00, 0x00, 0xCE, NONE},
+    {OP_A, OP_R,            0x00, 0x00, 0x88, NONE},
+    {OP_HL, OP_RR,          0x00, 0xED, 0x4A, SL_ONLY},
+    {OP_HL, OP_SP,          0x00, 0xED, 0x7A, SL_ONLY}
 };
 
 operandlist operands_add[] = {
-    {OP_A, OP_HL_I,         0x00, 0x00, 0x86, 0, SL_ONLY}
+    {OP_A, OP_INDIRECT_HL,  0x00, 0x00, 0x86, SL_ONLY}
 };
 
 instruction instructions[] = {

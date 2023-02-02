@@ -16,8 +16,11 @@ void parse_operand(char *string, operand *operand) {
     char *ptr = string;
     uint8_t len = strlen(string);
 
-    // sensible defaults
+    // defaults
+    operand->type = OP_EMPTY;
+    operand->reg = 0;
     operand->displacement = 0;
+    operand->immediate = 0;
     // direct or indirect
     if(*ptr == '(') {
         operand->indirect = true;
@@ -47,6 +50,7 @@ void parse_operand(char *string, operand *operand) {
                         case '\'':
                             operand->type = OP_RR;
                             operand->reg = RR_AF;
+                            if(operand->indirect) error(message[ERROR_INVALIDREGISTER]);
                             return;
                         default:
                             break;
@@ -64,7 +68,8 @@ void parse_operand(char *string, operand *operand) {
                     return;
                 case 'c':
                     if(*ptr == 0) {
-                        operand->type = OP_RR;
+                        if(operand->indirect) operand->type = OP_INDIRECT_RR;
+                        else operand->type = OP_RR;
                         operand->reg = RR_BC;
                         return;
                     }
@@ -92,7 +97,8 @@ void parse_operand(char *string, operand *operand) {
                 case 'e':
                     switch(*ptr++) {
                         case 0:
-                            operand->type = OP_RR;
+                            if(operand->indirect) operand->type = OP_INDIRECT_RR;
+                            else operand->type = OP_RR;
                             operand->reg = RR_DE;
                             return;
                         default:
@@ -121,7 +127,8 @@ void parse_operand(char *string, operand *operand) {
                     return;
                 case 'l':
                     if(*ptr == 0) {
-                        operand->type = OP_RR;
+                        if(operand->indirect) operand->type = OP_INDIRECT_HL;
+                        else operand->type = OP_RR;
                         operand->reg = RR_HL;
                         return;
                     }
@@ -133,21 +140,22 @@ void parse_operand(char *string, operand *operand) {
         case 'i':
             switch(*ptr++) {
                 case 0:
-                    operand->type = OP_I;
+                    operand->type = OP_OTHER;
                     operand->reg = R_I;
                     return;
                 case 'x':
                     switch(*ptr++) {
                         case 0:
-                            operand->type = OP_IX;
+                            if(operand->indirect) operand->type = OP_INDIRECT_IXY;
+                            else operand->type = OP_IXY;
                             operand->reg = RR_IX;
                             return;
                         case 'h':
-                            operand->type = OP_IXH;
+                            operand->type = OP_IXY;
                             operand->reg = RR_IXH;
                             return;
                         case 'l':
-                            operand->type = OP_IXL;
+                            operand->type = OP_IXY;
                             operand->reg = RR_IXL;
                             return;
                         case '+':
@@ -163,15 +171,16 @@ void parse_operand(char *string, operand *operand) {
                 case 'y':
                     switch(*ptr++) {
                         case 0:
-                            operand->type = OP_IY;
+                            if(operand->indirect) operand->type = OP_INDIRECT_IXY;
+                            else operand->type = OP_IXY;
                             operand->reg = RR_IY;
                             return;
                         case 'h':
-                            operand->type = OP_IYH;
+                            operand->type = OP_IXY;
                             operand->reg = RR_IYH;
                             return;
                         case 'l':
-                            operand->type = OP_IYL;
+                            operand->type = OP_IXY;
                             operand->reg = RR_IYL;
                             return;
                         case '+':
@@ -200,20 +209,21 @@ void parse_operand(char *string, operand *operand) {
             break;
         case 'm':
             if((*ptr == 'b') && ptr[1] == 0) {
-                operand->type = OP_MB;
+                operand->type = OP_OTHER;
                 operand->reg = RR_MB;
                 return;
             }
             break;
         case 'r':
             if(*ptr == 0) {
-                operand->type = OP_R;
+                operand->type = OP_OTHER;
                 operand->reg = R_R;
                 return;
             }
         case 's':
             if((*ptr == 'p') && ptr[1] == 0) {
-                operand->type = OP_RR;
+                if(operand->indirect) operand->type = OP_INDIRECT_SP;
+                else operand->type = OP_RR;
                 operand->reg = RR_SP;
                 return;
             }
@@ -235,9 +245,11 @@ void parse_operand(char *string, operand *operand) {
         default:
             break;
     }
-    // check for hex string that ends with 'h'
-    if(string[strlen(string)-1] == 'h') operand->immediate = str2num(string);
-    else error(message[ERROR_INVALIDREGISTER]);
+    if(*string) { // not on empty lines
+        // check for hex string that ends with 'h'
+        if(string[strlen(string)-1] == 'h') operand->immediate = str2num(string);
+        else error(message[ERROR_INVALIDREGISTER]);
+    }
 }
 
 enum {
@@ -291,7 +303,8 @@ void parse(char *line) {
                 switch(*ptr) {
                     case 0:
                         *token = 0;
-                        return;
+                        state = STATE_DONE;
+                        break;
                     case ';':
                         *token = 0;
                         token = currentline.comment;
@@ -352,7 +365,8 @@ void parse(char *line) {
                 switch(*ptr) {
                     case 0:
                         *token = 0;
-                        return;
+                        state = STATE_DONE;
+                        break;
                     case '.':
                     case ':':
                         state = ERROR_INVALIDOPERAND;
@@ -379,7 +393,8 @@ void parse(char *line) {
                 switch(*ptr) {
                     case 0:
                         *token = 0;
-                        return;
+                        state = STATE_DONE;
+                        break;
                     case '.':
                     case ':':
                     case ',':
@@ -404,6 +419,8 @@ void parse(char *line) {
                 }
                 break;
             case STATE_DONE:
+                parse_operand(currentline.operand1, &operand1);
+                parse_operand(currentline.operand2, &operand2);
                 return;
             case STATE_MISSINGOPERAND:
                 error(message[ERROR_MISSINGOPERAND]);
@@ -411,103 +428,6 @@ void parse(char *line) {
                 break;
         }
     }
-}
-
-void parse_old(char *line){
-    char *s,*c;
-
-    currentline.label[0] = 0;
-    currentline.mnemonic[0] = 0;
-    currentline.suffix_present = false;
-    currentline.suffix[0] = 0;
-    currentline.operand1[0] = 0;
-    currentline.operand2[0] = 0;
-    currentline.comment[0] = 0;
-    currentline.size = 0;
-
-    s = line;
-
-    while(isspace(*s) != 0) s++; // skip over whitespace
-    if(*s == 0) return;          // skip empty line
-    /*
-    if((isspace(*s) == 0) && (*s != ';')) { // first char is not a space and not a ';'
-        // label found at column 0
-        c = currentline.label;
-        while(*s){
-            if(*s == ':') break;
-            *c++ = *s++;
-        }
-        *c = 0; // terminate label
-        s++;    // advance scanner beyond ':'
-        if(*s == 0) {
-            error(message[ERROR_INVALIDLABEL]);
-            return;
-        }
-    } 
-    */   
-    while(isspace(*s) != 0) s++; // skip over whitespace
-    if(isalpha(*s)){
-        // potential mnemonic found
-        c = currentline.mnemonic;
-        while(*s && (isspace(*s) == 0) && (*s != '.') && (*s != ';') && (*s != ':')) {
-            *c++ = tolower(*s++);
-        }
-        *c = 0; // terminate mnemonic string
-        if(*s == ':') {
-            // label found, not a mnemonic
-        }
-        while(isspace(*s) != 0) s++; // skip over whitespace
-        if(*s == '.') {
-            // extension found
-            s++;
-            c = currentline.suffix;
-            while(*s && (isspace(*s) == 0)) {
-                *c++ = tolower(*s++);
-            }
-            currentline.suffix_present = true;
-            *c = 0; // terminate extension string
-            while(isspace(*s) != 0) s++; // skip over whitespace
-        }
-        if(*s != ';') {
-            // potential first operand found
-            c = currentline.operand1;
-            while(*s && (*s != ',') && (*s != ';')){
-                *c++ = tolower(*s++);
-                while(isspace(*s) != 0) s++; // skip whitespace in argument
-            }
-            *c = 0; // terminate argument string
-            parse_operand(currentline.operand1, &operand1);
-            while(isspace(*s) != 0) s++; // skip over whitespace
-            if(*s == ','){
-                // potential second operand found
-                s++;
-                c = currentline.operand2;
-                while(isspace(*s) != 0) s++; // skip over whitespace
-                while(*s && (*s != ';')){
-                    *c++ = tolower(*s++);
-                    while(isspace(*s) != 0) s++; // skip whitespace in argument
-                }
-                *c = 0; // terminate second argument
-                parse_operand(currentline.operand2, &operand2);
-                if(currentline.operand2[0] == 0){
-                    error("Missing 2nd argument");
-                    return;
-                }
-            }
-            while(isspace(*s) != 0) s++; // skip over whitespace
-        }
-    }
-    if(*s == ';'){
-        // comment found
-        c = currentline.comment;
-        s++;
-        while(isspace(*s) != 0) s++; // skip over whitespace
-        while(*s && (*s != '\n') && (*s != '\r')){
-            *c++ = *s++;
-        }
-        *c = 0; // terminate string
-    }
-    return;
 }
 
 void definelabel(uint8_t size){
@@ -705,18 +625,19 @@ bool process(void){
         return true; // valid line, but empty
     }
 
-    i = instruction_table_lookup(currentline.mnemonic);
-    if(i == NULL) {
-        error("Illegal opcode");
-        return false;
+    if(currentline.mnemonic[0]) {
+        i = instruction_table_lookup(currentline.mnemonic);
+        if(i == NULL) {
+            error(message[ERROR_INVALIDMNEMONIC]);
+            return false;
+        }
+        if(i->type == ASSEMBLER)
+        {
+            adl_action();
+        }
+        // NEW PROCESS FUNCTION GOES HERE
+        //i->function();
     }
-
-    if(i->type == ASSEMBLER)
-    {
-        adl_action();
-    }
-    // NEW PROCESS FUNCTION GOES HERE
-    //i->function();
     return true;
 }
 
@@ -725,18 +646,7 @@ void print_linelisting(void) {
     printf("Line %04d - \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"", linenumber, currentline.label, currentline.mnemonic, currentline.suffix, currentline.operand1, currentline.operand2, currentline.comment);
     printf("\n");
 
-    /*
-    printf("Line %04d - ", linenumber);
-    if(currentline.label[0]) printf("%s:",currentline.label);
-    if(currentline.mnemonic[0]) printf("\t%s",currentline.mnemonic);
-    if(currentline.suffix_present) printf(".%s",currentline.suffix);
-    if(currentline.operand1[0]) printf("\t%s",currentline.operand1);
-    if(currentline.operand2[0]) printf(", %s",currentline.operand2);
-    if(currentline.comment[0]) printf("\t; %s",currentline.comment);
-    printf("\n");
-    */
-
-
+    printf("Line %04d - %10s %4s - %d %d %d %d %d - %d %d %d %d %d\n",linenumber, currentline.mnemonic, currentline.suffix, operand1.type, operand1.reg, operand1.indirect, operand1.displacement, operand1.immediate, operand2.type, operand2.reg, operand2.indirect, operand2.displacement, operand2.immediate);
     /*
     printf("Line       %04d\n", linenumber);
     printf("Operand1:\n");
@@ -778,25 +688,23 @@ bool assemble(FILE *infile, FILE *outfile){
     global_errors = 0;
 
     // Assemble in two passes
+    // Pass 1
     printf("Pass 1...\n");
     pass = 1;
     linenumber = 1;
     address = START_ADDRESS;
     while (fgets(line, sizeof(line), infile)){
         parse(line);
-
-        if(listing_enabled) print_linelisting();
-
         process();
+        if(listing_enabled) print_linelisting();
         linenumber++;
     }
     if(debug_enabled) print_label_table();
     printf("%d lines\n", linenumber);
     printf("%d labels\n", label_table_count());
-    //print_bufferspace();
-
     if(global_errors) return false;
 
+    // Pass 2
     printf("Pass 2...\n");
     rewind(infile);
     pass = 2;
