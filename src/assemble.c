@@ -41,7 +41,7 @@ void parse_operand(char *string, operand *operand) {
         case 'a':
             switch(*ptr++) {
                 case 0:
-                    operand->type = OP_R;
+                    operand->type = OP_A;
                     operand->reg = R_A;
                     return;
                 case 'f':
@@ -128,7 +128,7 @@ void parse_operand(char *string, operand *operand) {
                 case 'l':
                     if(*ptr == 0) {
                         if(operand->indirect) operand->type = OP_INDIRECT_HL;
-                        else operand->type = OP_RR;
+                        else operand->type = OP_HL;
                         operand->reg = RR_HL;
                         return;
                     }
@@ -151,11 +151,11 @@ void parse_operand(char *string, operand *operand) {
                             operand->reg = RR_IX;
                             return;
                         case 'h':
-                            operand->type = OP_IXY;
+                            operand->type = OP_IR;
                             operand->reg = RR_IXH;
                             return;
                         case 'l':
-                            operand->type = OP_IXY;
+                            operand->type = OP_IR;
                             operand->reg = RR_IXL;
                             return;
                         case '+':
@@ -176,11 +176,11 @@ void parse_operand(char *string, operand *operand) {
                             operand->reg = RR_IY;
                             return;
                         case 'h':
-                            operand->type = OP_IXY;
+                            operand->type = OP_IR;
                             operand->reg = RR_IYH;
                             return;
                         case 'l':
-                            operand->type = OP_IXY;
+                            operand->type = OP_IR;
                             operand->reg = RR_IYL;
                             return;
                         case '+':
@@ -223,7 +223,7 @@ void parse_operand(char *string, operand *operand) {
         case 's':
             if((*ptr == 'p') && ptr[1] == 0) {
                 if(operand->indirect) operand->type = OP_INDIRECT_SP;
-                else operand->type = OP_RR;
+                else operand->type = OP_SP;
                 operand->reg = RR_SP;
                 return;
             }
@@ -521,6 +521,7 @@ uint8_t getADLsuffix(adltype allowed) {
     return code;
 }
 
+/*
 void emit_ld_from_immediate(uint8_t prefix, uint8_t opcode, char *valstring) {
     uint8_t suffix;
     uint8_t immsize;
@@ -560,18 +561,20 @@ void emit_ld_from_immediate(uint8_t prefix, uint8_t opcode, char *valstring) {
     }
     else error("Illegal ADL suffix");
 }
+*/
 
 void adl_action() {
     if(strcmp(currentline.operand1, "0") == 0) adlmode = false;
     if(strcmp(currentline.operand1, "1") == 0) adlmode = true;
     if(pass == 1) {
         if(debug_enabled) {
-            if(adlmode) printf("ADLmode: 1\n");
-            else printf("ADLmode: 0\n");
+            if(adlmode) printf("DEBUG - Line %d - ADLmode: 1\n", linenumber);
+            else printf("DEBUG - Line %d - ADLmode: 0\n", linenumber);
         }
     }
 }
 
+/*
 void emit_instruction(uint8_t immsize, uint8_t suffix, uint8_t prefix, uint8_t opcode) {
     uint8_t size;
 
@@ -583,6 +586,29 @@ void emit_instruction(uint8_t immsize, uint8_t suffix, uint8_t prefix, uint8_t o
         if(suffix) printf("0x%02x-",suffix);
         if(prefix) printf("0x%02x-",prefix);
         printf("0x%02x-",opcode);
+    }
+}
+*/
+
+void emit_instruction(operandlist *list) {
+    uint8_t size = 1; // the actual opcode
+
+    size += list->prefix1?1:0 + list->prefix2?1:0;
+    if((list->operandA == OP_INDIRECT_IXYd) || (list->operandB == OP_INDIRECT_IXYd)) size++; // Displacement byte
+    if(list->operandB == OP_N) size++; // n byte
+
+    if((list->operandA == OP_MMN) || (list->operandB == OP_MMN) || (list->operandA == OP_INDIRECT_MMN) || (list->operandB == OP_INDIRECT_MMN)) {
+        // add 2 or 3 bytes, according to adl mode and suffix
+    }
+
+    if(pass == 1) {
+        if(debug_enabled) printf("DEBUG - Line %d - instruction size %d\n", linenumber, size);
+        definelabel(size);
+    }
+    if(pass == 2) {
+    //    if(suffix) printf("0x%02x-",suffix);
+    //    if(prefix) printf("0x%02x-",prefix);
+    //    printf("0x%02x-",opcode);
     }
 }
 
@@ -615,30 +641,47 @@ void extcheck(bool passed)
 }
 
 
-bool process(void){
-    instruction *i;
+void process(void){
+    instruction *current_instruction;
+    operandlist *list;
+    uint8_t listitem;
 
     // return on empty lines
-    if(strlen(currentline.mnemonic) == 0) {
+    if((currentline.mnemonic[0]) == 0) {
         // check if there is a single label on a line in during pass 1
         if(pass == 1) definelabel(0);
-        return true; // valid line, but empty
+        return; // valid line, but empty
     }
 
-    if(currentline.mnemonic[0]) {
-        i = instruction_table_lookup(currentline.mnemonic);
-        if(i == NULL) {
-            error(message[ERROR_INVALIDMNEMONIC]);
-            return false;
-        }
-        if(i->type == ASSEMBLER)
-        {
-            adl_action();
-        }
-        // NEW PROCESS FUNCTION GOES HERE
-        //i->function();
+    current_instruction = instruction_table_lookup(currentline.mnemonic);
+    if(current_instruction == NULL) {
+        error(message[ERROR_INVALIDMNEMONIC]);
+        return;
     }
-    return true;
+    if(current_instruction->type == EZ80) {
+        // process this mnemonic by applying the instruction list as a filter to the operand-set
+        list = current_instruction->list;
+        if(debug_enabled && pass == 1) {
+            printf("DEBUG - Line %d - Mmemonic %s with filter list:\n", linenumber, currentline.mnemonic);
+            printf("DEBUG - Line %d - operandA: %02x operandB: %02x\n", linenumber, operand1.type, operand2.type);
+        }
+        for(listitem = 0; listitem < current_instruction->listnumber; listitem++) {
+            if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->prefix1, list->prefix2, list->opcode, list->adl);
+            if((operand1.type == list->operandA) && (operand2.type == list->operandB)) {
+                if((debug_enabled) && pass == 1) printf("DEBUG - Line %d - match found on ^last^ filter list tuple\n", linenumber);
+                emit_instruction(list);
+                break;
+            }
+            list++;
+        }
+        return;
+    }
+    if(current_instruction->type == ASSEMBLER)
+    {
+        adl_action();
+        return;
+    }
+    return;
 }
 
 void print_linelisting(void) {

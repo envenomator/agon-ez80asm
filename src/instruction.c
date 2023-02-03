@@ -72,26 +72,23 @@ unsigned int collisions;
 
 operandlist operands_adc[] = {
     {OP_A, OP_INDIRECT_HL,  0x00, 0x00, 0x8E, SL_ONLY},
-    {OP_A, OP_IXY,          0x00, 0xDD, 0x8C, NONE},
-    {OP_A, OP_IXY,          0x00, 0xDD, 0x8D, NONE},
+    {OP_A, OP_IR,           0x00, 0xDD, 0x8C, NONE},
     {OP_A, OP_IXY,          0x00, 0xFD, 0x8C, NONE},
-    {OP_A, OP_IXY,          0x00, 0xFD, 0x8D, NONE},
     {OP_A, OP_INDIRECT_IXYd,0x00, 0xDD, 0x8E, SL_ONLY},
-    {OP_A, OP_INDIRECT_IXYd,0x00, 0xFD, 0x8E, SL_ONLY},
     {OP_A, OP_N,            0x00, 0x00, 0xCE, NONE},
     {OP_A, OP_R,            0x00, 0x00, 0x88, NONE},
     {OP_HL, OP_RR,          0x00, 0xED, 0x4A, SL_ONLY},
-    {OP_HL, OP_SP,          0x00, 0xED, 0x7A, SL_ONLY}
+    {OP_HL, OP_SP,          0x00, 0xED, 0x7A, SL_ONLY},
 };
 
 operandlist operands_add[] = {
-    {OP_A, OP_INDIRECT_HL,  0x00, 0x00, 0x86, SL_ONLY}
+    {OP_A, OP_INDIRECT_HL,  0x00, 0x00, 0x86, SL_ONLY},
 };
 
 instruction instructions[] = {
-    {"adc", EZ80, operands_adc},
-    {"add", EZ80, operands_add},
-    {"adl", ASSEMBLER, NULL}
+    {"adc", EZ80, sizeof(operands_adc)/sizeof(operandlist), operands_adc},
+    {"add", EZ80, sizeof(operands_add)/sizeof(operandlist), operands_add},
+    {"adl", ASSEMBLER, 0, NULL}
 };
 
 /*

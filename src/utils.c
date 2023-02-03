@@ -56,3 +56,10 @@ void error(char* msg)
         global_errors++;
     }
 }
+
+void debugmsg(char *msg)
+{
+    if(pass == 1) {
+        printf("DEBUG - Line %d - %s\n", linenumber, msg);
+    }
+}

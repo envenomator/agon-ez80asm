@@ -59,10 +59,10 @@ uint16_t label_table_count() {
 
 void print_label_table(){
     int i;
-    printf("index\tname\taddress\n");
+    printf("DEBUG - index\tname\taddress\n");
     for(i = 0; i < LABEL_TABLE_SIZE; i++){
         if(label_table[i] != NULL) {
-            printf("%i\t%s\t%u\n",i,label_table[i]->name,label_table[i]->address);
+            printf("DEBUG - %i\t%s\t%u\n",i,label_table[i]->name,label_table[i]->address);
         }
     }
 }

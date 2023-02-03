@@ -18,8 +18,6 @@ typedef enum {
     OP_INDIRECT_IXYd,
     OP_MMN,
     OP_INDIRECT_MMN,
-    OP_MN,
-    OP_INDIRECT_MN,
     OP_N,
     OP_A,
     OP_R,
@@ -53,8 +51,8 @@ typedef struct {
 } operand;
 
 typedef struct {
-    uint8_t operandA;
-    uint8_t operandB;
+    operandtype operandA;
+    operandtype operandB;
     uint8_t prefix1;
     uint8_t prefix2;
     uint8_t opcode;
@@ -69,7 +67,8 @@ enum {
 typedef struct {
     char        name[MAX_MNEMONIC_SIZE];
     uint8_t     type;
-    operandlist *o;
+    uint8_t     listnumber;
+    operandlist *list;
 } instruction;
 
 #define R_B 0
