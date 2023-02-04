@@ -221,7 +221,9 @@ operandlist operands_adc[] = {
 };
 
 operandlist operands_add[] = {
-    {OPTYPE_A, OPTYPE_INDIRECT_HL,  false, false, 0x00, 0x00, 0x86, SL_ONLY},
+    {OPTYPE_A, OPTYPE_INDIRECT_HL,  TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x00, 0x86, SL_ONLY}, // tested
+    {OPTYPE_A, OPTYPE_IR,           TRANSFORM_NONE, TRANSFORM_IXY,  0x00, 0xDD, 0x84, NONE}, // tested
+    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,TRANSFORM_NONE, TRANSFORM_IXY,  0x00, 0xDD, 0x86, SL_ONLY}, // tested
 };
 
 operandlist operands_test[] = {
