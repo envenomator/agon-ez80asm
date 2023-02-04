@@ -19,6 +19,8 @@ void parse_operand(char *string, operand *operand) {
     // defaults
     operand->reg = R_NONE;
     operand->reg_index = 0;
+    operand->cc = false;
+    operand->cc_index = 0;
     operand->displacement = 0;
     operand->immediate = 0;
     operand->immediate_provided = false;
@@ -83,6 +85,8 @@ void parse_operand(char *string, operand *operand) {
                 case 0:
                     operand->reg = R_C;
                     operand->reg_index = R_INDEX_C;
+                    operand->cc = true;
+                    operand->cc_index = CC_INDEX_C;
                     return;
                 default:
                     break;
@@ -207,6 +211,43 @@ void parse_operand(char *string, operand *operand) {
                 operand->reg_index = R_INDEX_MB;
                 return;
             }
+            if((*ptr == 0)) {
+                operand->cc = true;
+                operand->cc_index = CC_INDEX_M;
+                return;
+            }
+            break;
+        case 'n':
+            switch(*ptr++) {
+                case 'c':   // NC
+                    operand->cc = true;
+                    operand->cc_index = CC_INDEX_NC;
+                    return;
+                case 'z':   // NZ
+                    operand->cc = true;
+                    operand->cc_index = CC_INDEX_NZ;
+                    return;
+                default:
+                    break;
+            }
+            break;
+        case 'p':
+            switch(*ptr++) {
+                case '0':
+                    operand->cc = true;
+                    operand->cc_index = CC_INDEX_P;
+                    return;
+                case 'e':
+                    operand->cc = true;
+                    operand->cc_index = CC_INDEX_PE;
+                    return;
+                case 'o':
+                    operand->cc = true;
+                    operand->cc_index = CC_INDEX_PO;
+                    return;
+                default:
+                    break;
+            }
             break;
         case 'r':
             if(*ptr == 0) {
@@ -214,10 +255,18 @@ void parse_operand(char *string, operand *operand) {
                 operand->reg_index = R_INDEX_R;
                 return;
             }
+            break;
         case 's':
             if((*ptr == 'p') && ptr[1] == 0) {
                 operand->reg = R_SP;
                 operand->reg_index = R_INDEX_SP;
+                return;
+            }
+            break;
+        case 'z':
+            if(*ptr == 0) {
+                operand->cc = true;
+                operand->cc_index = CC_INDEX_Z;
                 return;
             }
             break;
@@ -259,6 +308,15 @@ enum {
     STATE_DONE,
     STATE_MISSINGOPERAND
 };
+
+// converts everything to lower case, except comments
+void convertLower(char *line) {
+    char *ptr = line;
+    while((*ptr) && (*ptr != ';')) {
+        *ptr = tolower(*ptr);
+        ptr++;
+    }
+}
 
 void parse(char *line) {
     uint8_t state;
@@ -760,6 +818,7 @@ bool assemble(FILE *infile, FILE *outfile){
     linenumber = 1;
     address = START_ADDRESS;
     while (fgets(line, sizeof(line), infile)){
+        convertLower(line);
         parse(line);
         process();
         if(listing_enabled) print_linelisting();
@@ -777,6 +836,7 @@ bool assemble(FILE *infile, FILE *outfile){
     linenumber = 1;
     address = START_ADDRESS;
     while (fgets(line, sizeof(line), infile)){
+        convertLower(line);
         parse(line);
         process();
         linenumber++;

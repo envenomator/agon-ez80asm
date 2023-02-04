@@ -28,6 +28,7 @@ typedef enum { // permitted operand type
     OPTYPE_REG_R,
     OPTYPE_MB,
     OPTYPE_I,
+    OPTYPE_BIT
 } operandtype;
 
 typedef enum {
@@ -74,10 +75,21 @@ typedef enum {
 #define R_INDEX_MB  0
 #define R_INDEX_R   0
 
+#define CC_INDEX_NZ 0
+#define CC_INDEX_Z  1
+#define CC_INDEX_NC 2
+#define CC_INDEX_C  3
+#define CC_INDEX_PO 4
+#define CC_INDEX_PE 5
+#define CC_INDEX_P  6
+#define CC_INDEX_M  7
+
 typedef struct {
     cpuregister reg;
     uint8_t     reg_index;
     bool        indirect;
+    bool        cc;
+    uint8_t     cc_index;
     uint8_t     displacement;
     bool        immediate_provided;
     uint32_t    immediate;
@@ -104,7 +116,8 @@ typedef enum {
     TRANSFORM_Z,
     TRANSFORM_P,
     TRANSFORM_Q,
-    TRANSFORM_IXY
+    TRANSFORM_IXY,
+    TRANSFORM_CC
 }opcodetransformtype;
 
 typedef struct {
