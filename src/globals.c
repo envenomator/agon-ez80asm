@@ -29,5 +29,6 @@ char *message[] = {
     "Invalid label definition",
     "Missing operand",
     "Invalid mnemonic",
-    "Invalid operand"
+    "Invalid operand",
+    "Operand(s) not matching mnemonic"
 };

@@ -10,70 +10,115 @@
 #include "utils.h"
 #include "globals.h"
 
-char* rtable[] = {
-    "b",
-    "c",
-    "d",
-    "e",
-    "h",
-    "l",
-    "m",
-    "a",
-    NULL
-};
-
-char* irtable[] = {
-    "ixh",
-    "ixl",
-    "iyh",
-    "iyl",
-    NULL
-};
-
-char *rptable[] = {
-    "bc",
-    "de",
-    "hl",
-    "sp",
-    NULL
-};
-
-char *rp2table[] = {
-    "bc",
-    "de",
-    "hl",
-    "af",
-    NULL
-};
-
-char *cctable[] = {
-    "nz",
-    "z",
-    "nc",
-    "c",
-    "po",
-    "pe",
-    "p",
-    "m",
-    NULL
-};
-
-uint8_t table_find(char **table, char *search){
-    uint8_t i;
-
-    for(i = 0; *table != NULL; i++, table++) {
-        if(strcmp(*table, search) == 0) break;
-    }
-    return i; // caller decides if this is valid or not, according to a specific TABLE_MAX
+bool none_match(operand *op) {
+    return ((op->reg == R_NONE) && (op->immediate_provided == false));
 }
 
-instruction * instruction_table[INSTRUCTION_TABLE_SIZE];
-unsigned int collisions;
+bool cc_match(operand *op) {
+    return false; // not implemented yet
+}
+
+bool ir_match(operand *op) {
+    return ((op->reg >= R_IXH) && (op->reg <= R_IYL));
+}
+
+bool ixy_match(operand *op) {
+    return ((op->reg == R_IX) || (op->reg == R_IY));
+}
+
+bool indirect_ixyd_match(operand *op) {
+    return (((op->reg == R_IX) || (op->reg == R_IY)) && op->indirect);
+}
+
+bool mmn_match(operand *op) {
+    return (!(op->indirect) && (op->immediate_provided));
+}
+
+bool indirect_mmn_match(operand *op) {
+    return ((op->indirect) && (op->immediate_provided));
+}
+
+bool n_match(operand *op) {
+    return (!(op->indirect) && (op->immediate_provided));
+}
+
+bool a_match(operand *op) {
+    return(op->reg == R_A);
+}
+
+bool hl_match(operand *op) {
+    return((op->reg == R_HL) && !(op->indirect));
+}
+
+bool indirect_hl_match(operand *op) {
+    return((op->reg == R_HL) && (op->indirect));
+}
+
+bool rr_match(operand *op) {
+    return((op->reg >= R_BC) && (op->reg <= R_HL) && !(op->indirect));
+}
+
+bool indirect_rr_match(operand *op) {
+    return((op->reg >= R_BC) && (op->reg <= R_HL) && (op->indirect));
+}
+
+bool rxy_match(operand *op) {
+    return(!(op->indirect) && ((op->reg == R_BC) || (op->reg == R_DE) || (op->reg == R_IX) || (op->reg == R_IY)));
+}
+
+bool sp_match(operand *op) {
+    return(!(op->indirect) && (op->reg == R_SP));
+}
+
+bool indirect_sp_match(operand *op) {
+    return((op->indirect) && (op->reg == R_SP));
+}
+
+bool r_match(operand *op) {
+    return((op->reg >= R_A) && (op->reg <= R_L));
+}
+
+bool reg_r_match(operand *op) {
+    return(op->reg == R_R);
+}
+
+bool mb_match(operand *op) {
+    return(op->reg == R_MB);
+}
+
+bool i_match(operand *op) {
+    return(op->reg == R_I);
+}
+
+instruction * instruction_table[INSTRUCTION_TABLE_SIZE]; // hashtable of possible instructions, indexed by mnemonic name
+operandtype_match operandtype_matchlist[] = {            // table with fast access to functions that perform matching to an specific operandtype
+    {OP_NONE, none_match},
+    {OP_CC, cc_match},
+    {OP_IR, ir_match},
+    {OP_IXY, ixy_match},
+    {OP_INDIRECT_IXYd, indirect_ixyd_match},
+    {OP_MMN, mmn_match},
+    {OP_INDIRECT_MMN, indirect_mmn_match},
+    {OP_N, n_match},
+    {OP_A, a_match},
+    {OP_HL, hl_match},
+    {OP_INDIRECT_HL, indirect_hl_match},
+    {OP_RR, rr_match},
+    {OP_INDIRECT_RR, indirect_rr_match},
+    {OP_RXY, rxy_match},
+    {OP_SP, sp_match},
+    {OP_INDIRECT_SP, indirect_sp_match},
+    {OP_R, r_match},
+    {OP_REG_R, reg_r_match},
+    {OP_MB, mb_match},
+    {OP_I, i_match}
+};
+
+unsigned int collisions;    // internal use
 
 operandlist operands_adc[] = {
     {OP_A, OP_INDIRECT_HL,  0x00, 0x00, 0x8E, SL_ONLY},
     {OP_A, OP_IR,           0x00, 0xDD, 0x8C, NONE},
-    {OP_A, OP_IXY,          0x00, 0xFD, 0x8C, NONE},
     {OP_A, OP_INDIRECT_IXYd,0x00, 0xDD, 0x8E, SL_ONLY},
     {OP_A, OP_N,            0x00, 0x00, 0xCE, NONE},
     {OP_A, OP_R,            0x00, 0x00, 0x88, NONE},
@@ -85,7 +130,12 @@ operandlist operands_add[] = {
     {OP_A, OP_INDIRECT_HL,  0x00, 0x00, 0x86, SL_ONLY},
 };
 
+operandlist operands_test[] = {
+    {OP_NONE, OP_NONE, 0x00,0x00,0x80, NONE},
+};
+
 instruction instructions[] = {
+    {"test",EZ80, sizeof(operands_test)/sizeof(operandlist),operands_test},
     {"adc", EZ80, sizeof(operands_adc)/sizeof(operandlist), operands_adc},
     {"add", EZ80, sizeof(operands_add)/sizeof(operandlist), operands_add},
     {"adl", ASSEMBLER, 0, NULL}

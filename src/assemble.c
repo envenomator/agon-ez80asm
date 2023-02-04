@@ -17,10 +17,10 @@ void parse_operand(char *string, operand *operand) {
     uint8_t len = strlen(string);
 
     // defaults
-    operand->type = OP_EMPTY;
-    operand->reg = 0;
+    operand->reg = R_NONE;
     operand->displacement = 0;
     operand->immediate = 0;
+    operand->immediate_provided = false;
     // direct or indirect
     if(*ptr == '(') {
         operand->indirect = true;
@@ -41,15 +41,13 @@ void parse_operand(char *string, operand *operand) {
         case 'a':
             switch(*ptr++) {
                 case 0:
-                    operand->type = OP_A;
                     operand->reg = R_A;
                     return;
                 case 'f':
                     switch(*ptr++) {
                         case 0:
                         case '\'':
-                            operand->type = OP_RR;
-                            operand->reg = RR_AF;
+                            operand->reg = R_AF;
                             if(operand->indirect) error(message[ERROR_INVALIDREGISTER]);
                             return;
                         default:
@@ -63,14 +61,11 @@ void parse_operand(char *string, operand *operand) {
         case 'b':
             switch(*ptr++) {
                 case 0:
-                    operand->type = OP_R;
                     operand->reg = R_B;
                     return;
                 case 'c':
                     if(*ptr == 0) {
-                        if(operand->indirect) operand->type = OP_INDIRECT_RR;
-                        else operand->type = OP_RR;
-                        operand->reg = RR_BC;
+                        operand->reg = R_BC;
                         return;
                     }
                     break;
@@ -81,7 +76,6 @@ void parse_operand(char *string, operand *operand) {
         case 'c':
             switch(*ptr++) {
                 case 0:
-                    operand->type = OP_R;
                     operand->reg = R_C;
                     return;
                 default:
@@ -91,15 +85,12 @@ void parse_operand(char *string, operand *operand) {
         case 'd':
             switch(*ptr++) {
                 case 0:
-                    operand->type = OP_R;
                     operand->reg = R_D;
                     return;
                 case 'e':
                     switch(*ptr++) {
                         case 0:
-                            if(operand->indirect) operand->type = OP_INDIRECT_RR;
-                            else operand->type = OP_RR;
-                            operand->reg = RR_DE;
+                            operand->reg = R_DE;
                             return;
                         default:
                             break;
@@ -112,7 +103,6 @@ void parse_operand(char *string, operand *operand) {
         case 'e':
             switch(*ptr++) {
                 case 0:
-                    operand->type = OP_R;
                     operand->reg = R_E;
                     return;
                 default:
@@ -122,14 +112,11 @@ void parse_operand(char *string, operand *operand) {
         case 'h':
             switch(*ptr++) {
                 case 0:
-                    operand->type = OP_R;
                     operand->reg = R_H;
                     return;
                 case 'l':
                     if(*ptr == 0) {
-                        if(operand->indirect) operand->type = OP_INDIRECT_HL;
-                        else operand->type = OP_HL;
-                        operand->reg = RR_HL;
+                        operand->reg = R_HL;
                         return;
                     }
                     break;
@@ -140,26 +127,23 @@ void parse_operand(char *string, operand *operand) {
         case 'i':
             switch(*ptr++) {
                 case 0:
-                    operand->type = OP_OTHER;
                     operand->reg = R_I;
                     return;
                 case 'x':
                     switch(*ptr++) {
                         case 0:
-                            if(operand->indirect) operand->type = OP_INDIRECT_IXY;
-                            else operand->type = OP_IXY;
-                            operand->reg = RR_IX;
+                            if(operand->indirect) error(message[ERROR_INVALIDREGISTER]);
+                            operand->reg = R_IX;
                             return;
                         case 'h':
-                            operand->type = OP_IR;
-                            operand->reg = RR_IXH;
+                            operand->reg = R_IXH;
                             return;
                         case 'l':
-                            operand->type = OP_IR;
-                            operand->reg = RR_IXL;
+                            operand->reg = R_IXL;
                             return;
                         case '+':
                             if(isdigit(*ptr)) {
+                                operand->reg = R_IX;
                                 operand->displacement = (uint8_t) str2num(ptr);
                                 return;
                             }
@@ -171,20 +155,18 @@ void parse_operand(char *string, operand *operand) {
                 case 'y':
                     switch(*ptr++) {
                         case 0:
-                            if(operand->indirect) operand->type = OP_INDIRECT_IXY;
-                            else operand->type = OP_IXY;
-                            operand->reg = RR_IY;
+                            if(operand->indirect) error(message[ERROR_INVALIDREGISTER]);
+                            operand->reg = R_IY;
                             return;
                         case 'h':
-                            operand->type = OP_IR;
-                            operand->reg = RR_IYH;
+                            operand->reg = R_IYH;
                             return;
                         case 'l':
-                            operand->type = OP_IR;
-                            operand->reg = RR_IYL;
+                            operand->reg = R_IYL;
                             return;
                         case '+':
                             if(isdigit(*ptr)) {
+                                operand->reg = R_IY;
                                 operand->displacement = (uint8_t) str2num(ptr);
                                 return;
                             }
@@ -200,7 +182,6 @@ void parse_operand(char *string, operand *operand) {
         case 'l':
             switch(*ptr++) {
                 case 0:
-                    operand->type = OP_R;
                     operand->reg = R_L;
                     return;
                 default:
@@ -209,22 +190,18 @@ void parse_operand(char *string, operand *operand) {
             break;
         case 'm':
             if((*ptr == 'b') && ptr[1] == 0) {
-                operand->type = OP_OTHER;
-                operand->reg = RR_MB;
+                operand->reg = R_MB;
                 return;
             }
             break;
         case 'r':
             if(*ptr == 0) {
-                operand->type = OP_OTHER;
                 operand->reg = R_R;
                 return;
             }
         case 's':
             if((*ptr == 'p') && ptr[1] == 0) {
-                if(operand->indirect) operand->type = OP_INDIRECT_SP;
-                else operand->type = OP_SP;
-                operand->reg = RR_SP;
+                operand->reg = R_SP;
                 return;
             }
             break;
@@ -241,13 +218,17 @@ void parse_operand(char *string, operand *operand) {
         case '$':
         case 'f':
             operand->immediate = str2num(ptr-1);
+            operand->immediate_provided = true;
             return;
         default:
             break;
     }
     if(*string) { // not on empty lines
         // check for hex string that ends with 'h'
-        if(string[strlen(string)-1] == 'h') operand->immediate = str2num(string);
+        if(string[strlen(string)-1] == 'h') {
+            operand->immediate = str2num(string);
+            operand->immediate_provided = true;
+        }
         else error(message[ERROR_INVALIDREGISTER]);
     }
 }
@@ -645,6 +626,7 @@ void process(void){
     instruction *current_instruction;
     operandlist *list;
     uint8_t listitem;
+    bool match;
 
     // return on empty lines
     if((currentline.mnemonic[0]) == 0) {
@@ -662,18 +644,24 @@ void process(void){
         // process this mnemonic by applying the instruction list as a filter to the operand-set
         list = current_instruction->list;
         if(debug_enabled && pass == 1) {
-            printf("DEBUG - Line %d - Mmemonic %s with filter list:\n", linenumber, currentline.mnemonic);
-            printf("DEBUG - Line %d - operandA: %02x operandB: %02x\n", linenumber, operand1.type, operand2.type);
+            printf("DEBUG - Line %d - Mmemonic \'%s\'\n", linenumber, currentline.mnemonic);
+            printf("DEBUG - Line %d - regA %02x regB %02x\n", linenumber, operand1.reg, operand2.reg);
+            printf("DEBUG - Line %d - indirectA %02x\n", linenumber, operand1.indirect);
+            printf("DEBUG - Line %d - indirectB %02x\n", linenumber, operand2.indirect);
         }
+        match = false;
         for(listitem = 0; listitem < current_instruction->listnumber; listitem++) {
             if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->prefix1, list->prefix2, list->opcode, list->adl);
-            if((operand1.type == list->operandA) && (operand2.type == list->operandB)) {
+            if(operandtype_matchlist[list->operandA].match(&operand1) && operandtype_matchlist[list->operandB].match(&operand2)) {
+                match = true;
                 if((debug_enabled) && pass == 1) printf("DEBUG - Line %d - match found on ^last^ filter list tuple\n", linenumber);
+                printf("Line %d - match found\n",linenumber);
                 emit_instruction(list);
                 break;
             }
             list++;
         }
+        if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
         return;
     }
     if(current_instruction->type == ASSEMBLER)
@@ -689,17 +677,15 @@ void print_linelisting(void) {
     printf("Line %04d - \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"", linenumber, currentline.label, currentline.mnemonic, currentline.suffix, currentline.operand1, currentline.operand2, currentline.comment);
     printf("\n");
 
-    printf("Line %04d - %10s %4s - %d %d %d %d %d - %d %d %d %d %d\n",linenumber, currentline.mnemonic, currentline.suffix, operand1.type, operand1.reg, operand1.indirect, operand1.displacement, operand1.immediate, operand2.type, operand2.reg, operand2.indirect, operand2.displacement, operand2.immediate);
+    printf("Line %04d - %10s %4s - %d %d %d %d - %d %d %d %d\n",linenumber, currentline.mnemonic, currentline.suffix, operand1.reg, operand1.indirect, operand1.displacement, operand1.immediate, operand2.reg, operand2.indirect, operand2.displacement, operand2.immediate);
     /*
     printf("Line       %04d\n", linenumber);
     printf("Operand1:\n");
-    printf("Type:        %02x\n", operand1.type);
     printf("Register:    %02x\n", operand1.reg);
     printf("Indirect:    %02x\n", operand1.indirect);
     printf("d:           %02x\n", operand1.displacement);
     printf("Immediate: %04x\n", operand1.immediate);
     printf("Operand2:\n");
-    printf("Type:        %02x\n", operand2.type);
     printf("Register:    %02x\n", operand2.reg);
     printf("Indirect:    %02x\n", operand2.indirect);
     printf("d:           %02x\n", operand2.displacement);
@@ -711,13 +697,11 @@ void print_linelisting(void) {
 void parsed_listing(void) {
     printf("Line       %04d - ", linenumber);
     printf("Operand1:\n");
-    printf("Type:        %02x\n", operand1.type);
     printf("Register:    %02x\n", operand1.reg);
     printf("Indirect:    %02x\n", operand1.indirect);
     printf("d:           %02x\n", operand1.displacement);
     printf("Immediate: %04x\n", operand1.immediate);
     printf("Operand2:\n");
-    printf("Type:        %02x\n", operand2.type);
     printf("Register:    %02x\n", operand2.reg);
     printf("Indirect:    %02x\n", operand2.indirect);
     printf("d:           %02x\n", operand2.displacement);
