@@ -33,16 +33,34 @@
 ;call p, 0xffff
 ;call m, 0xffff
 ;call nc, 0xaabbcc
-adl 0
-call z, $aabbcc
-adl 1
-call z, $aabbcc
-adl 0
-call.is z, $aabbcc
-adl 1
-call.is z, $aabbcc
-adl 0
-call.il z, $aabbcc
-adl 1
-call.il z, $aabbcc
-add a,5
+;adl 0
+;call z, $aabbcc
+;adl 1
+;call z, $aabbcc
+;adl 0
+;call.is z, $aabbcc
+;adl 1
+;call.is z, $aabbcc
+;adl 0
+;call.il z, $aabbcc
+;adl 1
+;call.il z, $aabbcc
+;add a,5
+;adl 0
+;call $aabbcc
+;adl 1
+;call $aabbcc
+;adl 0
+;call.is $aabbcc
+;adl 1
+;call.is $aabbcc
+;adl 0
+;call.il $aabbcc
+;adl 1
+;call.il $aabbcc
+labela:
+    adc a,(hl)
+    add a,5
+labelb:
+    add a,10
+    call labelb

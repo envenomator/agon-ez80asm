@@ -260,7 +260,7 @@ operandlist operands_bit[] = {
 };
 operandlist operands_call[] = {
     {OPTYPE_CC, OPTYPE_MMN,         TRANSFORM_Y, TRANSFORM_NONE,   0x00, 0x00, 0xC4, ANY},  // tested
-
+    {OPTYPE_MMN, OPTYPE_NONE,       TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x00, 0xCD, ANY}, // tested
 };
 
 operandlist operands_test[] = {
