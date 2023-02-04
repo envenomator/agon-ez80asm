@@ -262,7 +262,19 @@ operandlist operands_call[] = {
     {OPTYPE_CC, OPTYPE_MMN,         TRANSFORM_Y, TRANSFORM_NONE,   0x00, 0x00, 0xC4, ANY},  // tested
     {OPTYPE_MMN, OPTYPE_NONE,       TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x00, 0xCD, ANY}, // tested
 };
-
+operandlist operands_ccf[]= {
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x00, 0x3F, NONE},
+};
+operandlist operands_cp[]= {
+    {OPTYPE_A, OPTYPE_INDIRECT_HL,  TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x00, 0xBE, SL_ONLY},
+    {OPTYPE_A, OPTYPE_IR,           TRANSFORM_NONE, TRANSFORM_IXY, 0xDD, 0x00, 0xBC, NONE},
+    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,TRANSFORM_NONE, TRANSFORM_IXY, 0xDD, 0x00, 0xBE, SL_ONLY},
+    {OPTYPE_A, OPTYPE_N,            TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x00, 0xFE, NONE},
+    {OPTYPE_A, OPTYPE_R,            TRANSFORM_NONE, TRANSFORM_Z,0x00, 0x00, 0xB8, NONE},
+};
+operandlist operands_xxx[]= {
+    {},
+};
 operandlist operands_test[] = {
     {OPTYPE_R, OPTYPE_R,            TRANSFORM_Y, TRANSFORM_Z, 0x00, 0x00, 0x80, NONE},
 };
@@ -276,6 +288,8 @@ instruction instructions[] = {
     {"and", EZ80, sizeof(operands_and)/sizeof(operandlist), operands_and},
     {"bit", EZ80, sizeof(operands_bit)/sizeof(operandlist), operands_bit},
     {"call",EZ80, sizeof(operands_call)/sizeof(operandlist), operands_call},
+    {"ccf",EZ80, sizeof(operands_ccf)/sizeof(operandlist), operands_ccf},
+    {"cp",EZ80, sizeof(operands_cp)/sizeof(operandlist), operands_cp},
     {"ld",  EZ80, sizeof(operands_ld)/sizeof(operandlist), operands_ld},
     {"adl", ASSEMBLER, 0, NULL}
 };

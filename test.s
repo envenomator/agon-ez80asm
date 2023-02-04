@@ -58,9 +58,10 @@
 ;call.il $aabbcc
 ;adl 1
 ;call.il $aabbcc
-labela:
-    adc a,(hl)
-    add a,5
-labelb:
-    add a,10
-    call labelb
+;labela:
+;    adc a,(hl)
+;    add a,5
+;labelb:
+;    add a,10
+;    call labelb
+ccf
