@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "instruction.h"
+#include "label.h"
 
 #define LINEMAX    256
 #define START_ADDRESS 10

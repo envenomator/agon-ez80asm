@@ -19,8 +19,30 @@
 ;add.s a,(iy+5)
 ;adl 0
 ;add.l a,(iy+5)
+;adl 1
+;bit.s 0, (HL)
+;bit 1, (HL)
+;bit 6, (HL)
+;bit 7, (HL)
+;call nz, 0xffff
+;call z, 0xffff
+;call nc, 0xffff
+;call c, 0xffff
+;call po, 0xffff
+;call pe, 0xffff
+;call p, 0xffff
+;call m, 0xffff
+;call nc, 0xaabbcc
+adl 0
+call z, $aabbcc
 adl 1
-bit.s 0, (HL)
-bit 1, (HL)
-bit 6, (HL)
-bit 7, (HL)
+call z, $aabbcc
+adl 0
+call.is z, $aabbcc
+adl 1
+call.is z, $aabbcc
+adl 0
+call.il z, $aabbcc
+adl 1
+call.il z, $aabbcc
+add a,5

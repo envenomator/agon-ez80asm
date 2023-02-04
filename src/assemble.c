@@ -15,6 +15,7 @@
 void parse_operand(char *string, operand *operand) {
     char *ptr = string;
     uint8_t len = strlen(string);
+    label *lbl;
 
     // defaults
     operand->reg = R_NONE;
@@ -233,7 +234,7 @@ void parse_operand(char *string, operand *operand) {
             break;
         case 'p':
             switch(*ptr++) {
-                case '0':
+                case 0:
                     operand->cc = true;
                     operand->cc_index = CC_INDEX_P;
                     return;
@@ -293,8 +294,15 @@ void parse_operand(char *string, operand *operand) {
         if(string[strlen(string)-1] == 'h') {
             operand->immediate = str2num(string);
             operand->immediate_provided = true;
+            return;
         }
-        else error(message[ERROR_INVALIDREGISTER]);
+        lbl = label_table_lookup(string);
+        if(lbl) {
+            operand->immediate = lbl->address;
+            operand->immediate_provided = true;
+            return;
+        }
+        error(message[ERROR_INVALIDREGISTER]);
     }
 }
 
@@ -646,6 +654,29 @@ void emit_instruction(uint8_t immsize, uint8_t suffix, uint8_t prefix, uint8_t o
 }
 */
 
+void emit_immediate(operand *op, uint8_t suffix) {
+    uint8_t num;
+    switch(suffix) {
+        case 0x40:
+        case 0x49:
+            num = 2;
+            break;
+        case 0x52:
+        case 0x5B:
+            num = 3;
+            break;
+        case 0:
+            if(adlmode) num = 3;
+            else num = 2;
+            break;
+        default:
+            error(message[ERROR_INVALIDMNEMONIC]);
+            return;
+    }
+    printf(":0x%02x", op->immediate & 0xFF);
+    printf(":0x%02x", (op->immediate >> 8) & 0xFF);
+    if(num == 3) printf(":0x%02x", (op->immediate >> 16) & 0xFF);
+}
 void emit_instruction(operandlist *list) {
     uint8_t size = 1; // There is always 1 opcode to output
     uint8_t suffix = getADLsuffix(list->adl);
@@ -657,11 +688,13 @@ void emit_instruction(operandlist *list) {
     if(list->transformA != TRANSFORM_NONE) operandtype_matchlist[list->operandA].transform(list->transformA, &operand1);
     if(list->transformB != TRANSFORM_NONE) operandtype_matchlist[list->operandB].transform(list->transformB, &operand2);
 
+    // calculate size
     size += output.prefix1?1:0 + output.prefix2?1:0 + suffix?1:0;
     if((list->operandA == OPTYPE_INDIRECT_IXYd) || (list->operandB == OPTYPE_INDIRECT_IXYd)) size++; // Displacement byte
     if((list->operandA == OPTYPE_N) || (list->operandB == OPTYPE_N)) size++; // n == 1byte
     if((list->operandA == OPTYPE_MMN) || (list->operandB == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) {
         // add 2 or 3 bytes, according to adl mode and suffix
+        size += adlmode?3:2;
     }
 
     if(pass == 1) {
@@ -683,6 +716,9 @@ void emit_instruction(operandlist *list) {
         if(list->operandA == OPTYPE_INDIRECT_IXYd) printf(":0x%02x", operand1.displacement & 0xFF);
         if(list->operandB == OPTYPE_INDIRECT_IXYd) printf(":0x%02x", operand2.displacement & 0xFF);
 
+        //output remaining immediate bytes
+        if(list->operandA == OPTYPE_MMN) emit_immediate(&operand1, suffix);
+        if(list->operandB == OPTYPE_MMN) emit_immediate(&operand2, suffix);
         printf("\n");
     //    if(suffix) printf("0x%02x-",suffix);
     //    if(prefix) printf("0x%02x-",prefix);

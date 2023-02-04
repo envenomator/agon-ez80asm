@@ -14,7 +14,7 @@ bool none_match(operand *op) {
     return ((op->reg == R_NONE) && (op->immediate_provided == false));
 }
 bool cc_match(operand *op) {
-    return false; // not implemented yet
+    return op->cc;
 }
 bool ir_match(operand *op) {
     return ((op->reg >= R_IXH) && (op->reg <= R_IYL));
@@ -77,6 +77,9 @@ void none_transform(opcodetransformtype type, operand *op) {
     return;
 }
 void cc_transform(opcodetransformtype type, operand *op) {
+    if(type == TRANSFORM_Y) {
+        output.opcode |= (op->cc_index << 3);
+    }
     return;
 }
 void ir_transform(opcodetransformtype type, operand *op) {
@@ -255,8 +258,8 @@ operandlist operands_bit[] = {
     {OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,TRANSFORM_Y, TRANSFORM_IXY,   0xDD, 0xCB, 0x46, SL_ONLY}, // zeker testen!
     {OPTYPE_BIT, OPTYPE_R,            TRANSFORM_Y, TRANSFORM_Z,     0x00, 0xCB, 0x40, NONE},
 };
-operandlist operand_call[] = {
-    {OPTYPE_CC, OPTYPE_MMN,         TRANSFORM_CC, TRANSFORM_NONE,   0x00, 0x00, 0xC4, SISLIL},
+operandlist operands_call[] = {
+    {OPTYPE_CC, OPTYPE_MMN,         TRANSFORM_Y, TRANSFORM_NONE,   0x00, 0x00, 0xC4, ANY},  // tested
 
 };
 
@@ -272,6 +275,7 @@ instruction instructions[] = {
     {"add", EZ80, sizeof(operands_add)/sizeof(operandlist), operands_add},
     {"and", EZ80, sizeof(operands_and)/sizeof(operandlist), operands_and},
     {"bit", EZ80, sizeof(operands_bit)/sizeof(operandlist), operands_bit},
+    {"call",EZ80, sizeof(operands_call)/sizeof(operandlist), operands_call},
     {"ld",  EZ80, sizeof(operands_ld)/sizeof(operandlist), operands_ld},
     {"adl", ASSEMBLER, 0, NULL}
 };

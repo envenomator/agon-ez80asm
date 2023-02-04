@@ -116,8 +116,7 @@ typedef enum {
     TRANSFORM_Z,
     TRANSFORM_P,
     TRANSFORM_Q,
-    TRANSFORM_IXY,
-    TRANSFORM_CC
+    TRANSFORM_IXY
 }opcodetransformtype;
 
 typedef struct {
