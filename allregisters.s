@@ -12,6 +12,7 @@
 	test sp
 	test ix
 	test iy
+	test af
 	test ixh
 	test ixl
 	test iyh

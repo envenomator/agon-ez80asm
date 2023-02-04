@@ -23,7 +23,7 @@ bool ir_match(operand *op) {
 }
 
 bool ixy_match(operand *op) {
-    return ((op->reg == R_IX) || (op->reg == R_IY));
+    return (((op->reg == R_IX) || (op->reg == R_IY)) && !(op->indirect));
 }
 
 bool indirect_ixyd_match(operand *op) {
@@ -131,7 +131,7 @@ operandlist operands_add[] = {
 };
 
 operandlist operands_test[] = {
-    {OP_NONE, OP_NONE, 0x00,0x00,0x80, NONE},
+    {OP_I, OP_NONE, 0x00,0x00,0x80, NONE},
 };
 
 instruction instructions[] = {
