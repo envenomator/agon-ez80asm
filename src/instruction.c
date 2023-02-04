@@ -13,125 +13,166 @@
 bool none_match(operand *op) {
     return ((op->reg == R_NONE) && (op->immediate_provided == false));
 }
-
 bool cc_match(operand *op) {
     return false; // not implemented yet
 }
-
 bool ir_match(operand *op) {
     return ((op->reg >= R_IXH) && (op->reg <= R_IYL));
 }
-
 bool ixy_match(operand *op) {
     return (((op->reg == R_IX) || (op->reg == R_IY)) && !(op->indirect));
 }
-
 bool indirect_ixyd_match(operand *op) {
     return (((op->reg == R_IX) || (op->reg == R_IY)) && op->indirect);
 }
-
 bool mmn_match(operand *op) {
     return (!(op->indirect) && (op->immediate_provided));
 }
-
 bool indirect_mmn_match(operand *op) {
     return ((op->indirect) && (op->immediate_provided));
 }
-
 bool n_match(operand *op) {
     return (!(op->indirect) && (op->immediate_provided));
 }
-
 bool a_match(operand *op) {
     return(op->reg == R_A);
 }
-
 bool hl_match(operand *op) {
     return((op->reg == R_HL) && !(op->indirect));
 }
-
 bool indirect_hl_match(operand *op) {
     return((op->reg == R_HL) && (op->indirect));
 }
-
 bool rr_match(operand *op) {
     return((op->reg >= R_BC) && (op->reg <= R_HL) && !(op->indirect));
 }
-
 bool indirect_rr_match(operand *op) {
     return((op->reg >= R_BC) && (op->reg <= R_HL) && (op->indirect));
 }
-
 bool rxy_match(operand *op) {
     return(!(op->indirect) && ((op->reg == R_BC) || (op->reg == R_DE) || (op->reg == R_IX) || (op->reg == R_IY)));
 }
-
 bool sp_match(operand *op) {
     return(!(op->indirect) && (op->reg == R_SP));
 }
-
 bool indirect_sp_match(operand *op) {
     return((op->indirect) && (op->reg == R_SP));
 }
-
 bool r_match(operand *op) {
     return((op->reg >= R_A) && (op->reg <= R_L));
 }
-
 bool reg_r_match(operand *op) {
     return(op->reg == R_R);
 }
-
 bool mb_match(operand *op) {
     return(op->reg == R_MB);
 }
-
 bool i_match(operand *op) {
     return(op->reg == R_I);
+}
+void none_transform(operandlist *list, operand *op) {
+    return;
+}
+void cc_transform(operandlist *list, operand *op) {
+    return;
+}
+void ir_transform(operandlist *list, operand *op) {
+    return;
+}
+void ixy_transform(operandlist *list, operand *op) {
+    return;
+}
+void indirect_ixyd_transform(operandlist *list, operand *op) {
+    return;
+}
+void mmn_transform(operandlist *list, operand *op) {
+    return;
+}
+void indirect_mmn_transform(operandlist *list, operand *op) {
+    return;
+}
+void n_transform(operandlist *list, operand *op) {
+    return;
+}
+void a_transform(operandlist *list, operand *op) {
+    return;
+}
+void hl_transform(operandlist *list, operand *op) {
+    return;
+}
+void indirect_hl_transform(operandlist *list, operand *op) {
+    return;
+}
+void rr_transform(operandlist *list, operand *op) {
+    return;
+}
+void indirect_rr_transform(operandlist *list, operand *op) {
+    return;
+}
+void rxy_transform(operandlist *list, operand *op) {
+    return;
+}
+void sp_transform(operandlist *list, operand *op) {
+    return;
+}
+void indirect_sp_transform(operandlist *list, operand *op) {
+    return;
+}
+void r_transform(operandlist *list, operand *op) {
+    return;
+}
+void reg_r_transform(operandlist *list, operand *op) {
+    return;
+}
+void mb_transform(operandlist *list, operand *op) {
+    return;
+}
+void i_transform(operandlist *list, operand *op) {
+    return;
 }
 
 instruction * instruction_table[INSTRUCTION_TABLE_SIZE]; // hashtable of possible instructions, indexed by mnemonic name
 operandtype_match operandtype_matchlist[] = {            // table with fast access to functions that perform matching to an specific operandtype
-    {OP_NONE, none_match},
-    {OP_CC, cc_match},
-    {OP_IR, ir_match},
-    {OP_IXY, ixy_match},
-    {OP_INDIRECT_IXYd, indirect_ixyd_match},
-    {OP_MMN, mmn_match},
-    {OP_INDIRECT_MMN, indirect_mmn_match},
-    {OP_N, n_match},
-    {OP_A, a_match},
-    {OP_HL, hl_match},
-    {OP_INDIRECT_HL, indirect_hl_match},
-    {OP_RR, rr_match},
-    {OP_INDIRECT_RR, indirect_rr_match},
-    {OP_RXY, rxy_match},
-    {OP_SP, sp_match},
-    {OP_INDIRECT_SP, indirect_sp_match},
-    {OP_R, r_match},
-    {OP_REG_R, reg_r_match},
-    {OP_MB, mb_match},
-    {OP_I, i_match}
+    {OP_NONE, none_match, none_transform},
+    {OP_CC, cc_match, cc_transform},
+    {OP_IR, ir_match, ir_transform},
+    {OP_IXY, ixy_match, ixy_transform},
+    {OP_INDIRECT_IXYd, indirect_ixyd_match, indirect_ixyd_transform},
+    {OP_MMN, mmn_match, mmn_transform},
+    {OP_INDIRECT_MMN, indirect_mmn_match, indirect_mmn_transform},
+    {OP_N, n_match, n_transform},
+    {OP_A, a_match, a_transform},
+    {OP_HL, hl_match, hl_transform},
+    {OP_INDIRECT_HL, indirect_hl_match, indirect_hl_transform},
+    {OP_RR, rr_match, rr_transform},
+    {OP_INDIRECT_RR, indirect_rr_match, indirect_rr_transform},
+    {OP_RXY, rxy_match, rxy_transform},
+    {OP_SP, sp_match, sp_transform},
+    {OP_INDIRECT_SP, indirect_sp_match, indirect_sp_transform},
+    {OP_R, r_match, r_transform},
+    {OP_REG_R, reg_r_match, reg_r_transform},
+    {OP_MB, mb_match, mb_transform},
+    {OP_I, i_match, i_transform}
 };
 
 unsigned int collisions;    // internal use
 
 operandlist operands_adc[] = {
-    {OP_A, OP_INDIRECT_HL,  0x00, 0x00, 0x8E, SL_ONLY},
-    {OP_A, OP_IR,           0x00, 0xDD, 0x8C, NONE},
-    {OP_A, OP_INDIRECT_IXYd,0x00, 0xDD, 0x8E, SL_ONLY},
-    {OP_A, OP_N,            0x00, 0x00, 0xCE, NONE},
-    {OP_A, OP_R,            0x00, 0x00, 0x88, NONE},
-    {OP_HL, OP_RR,          0x00, 0xED, 0x4A, SL_ONLY},
-    {OP_HL, OP_SP,          0x00, 0xED, 0x7A, SL_ONLY},
+    {OP_A, OP_INDIRECT_HL,  false, false, 0x00, 0x00, 0x8E, SL_ONLY},
+    {OP_A, OP_IR,           false, true,  0x00, 0xDD, 0x8C, NONE},
+    {OP_A, OP_INDIRECT_IXYd,false, true,  0x00, 0xDD, 0x8E, SL_ONLY},
+    {OP_A, OP_N,            false, false, 0x00, 0x00, 0xCE, NONE},
+    {OP_A, OP_R,            false, true,  0x00, 0x00, 0x88, NONE},
+    {OP_HL, OP_RR,          false, true,  0x00, 0xED, 0x4A, SL_ONLY},
+    {OP_HL, OP_SP,          false, false, 0x00, 0xED, 0x7A, SL_ONLY},
 };
 
 operandlist operands_add[] = {
-    {OP_A, OP_INDIRECT_HL,  0x00, 0x00, 0x86, SL_ONLY},
+    {OP_A, OP_INDIRECT_HL,  false, false, 0x00, 0x00, 0x86, SL_ONLY},
 };
 
 operandlist operands_test[] = {
-    {OP_I, OP_NONE, 0x00,0x00,0x80, NONE},
+    {OP_I, OP_NONE,         false, false, 0x00, 0x00, 0x80, NONE},
 };
 
 instruction instructions[] = {

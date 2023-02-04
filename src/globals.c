@@ -17,6 +17,7 @@ bool adlmode;
 tokenline currentline;
 operand operand1;
 operand operand2;
+opcodesequence output;
 
 /*
  * Messages

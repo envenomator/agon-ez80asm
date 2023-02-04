@@ -17,6 +17,7 @@ typedef struct {
     uint8_t size;
 } tokenline;
 
+
 // Global variables
 extern bool debug_enabled;
 extern bool listing_enabled;
@@ -30,6 +31,7 @@ extern bool adlmode;
 extern tokenline currentline;
 extern operand operand1;
 extern operand operand2;
+extern opcodesequence output;
 
 // Errors
 enum {
@@ -43,6 +45,7 @@ enum {
     ERROR_INVALIDOPERAND,
     ERROR_OPERANDSNOTMATCHING,
 };
-
+// Error messages
 extern char *message[];
+
 #endif // GLOBALS_H

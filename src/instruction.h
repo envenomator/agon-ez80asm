@@ -64,9 +64,10 @@ typedef struct {
 } operand;
 
 typedef struct {
-    operandtype type;
-    bool (*match)(operand *);
-} operandtype_match;
+    uint8_t prefix1;
+    uint8_t prefix2;
+    uint8_t opcode;
+} opcodesequence;
 
 typedef enum {
     NONE,
@@ -77,13 +78,22 @@ typedef enum {
 } adltype;
 
 typedef struct {
-    operandtype operandA;
-    operandtype operandB;
-    uint8_t prefix1;
-    uint8_t prefix2;
-    uint8_t opcode;
-    adltype adl;
+    operandtype operandA;           // Filter for operandA - which register applies?
+    operandtype operandB;           // Filter for operandB
+    bool        transformA;         // Do we transform acc to operandA
+    bool        transformB;         //  "        "       " "  operandB
+    uint8_t     prefix1;            // base prefix1, may be transformed by A/B
+    uint8_t     prefix2;            // base prefix2, may be transformed by A/B
+    uint8_t     opcode;             // base opcode, may be transformed by A/B
+    adltype     adl;                // the adl mode allowed in set of operands
 } operandlist;
+
+// An array-based index of this structure will act as a fast lookup table
+typedef struct {
+    operandtype type;
+    bool (*match)(operand *);
+    void (*transform)(operandlist *, operand *);       // transform output according to given operand
+} operandtype_match;
 
 enum {
     EZ80,

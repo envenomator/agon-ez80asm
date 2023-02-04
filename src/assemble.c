@@ -582,6 +582,16 @@ void emit_instruction(operandlist *list) {
         // add 2 or 3 bytes, according to adl mode and suffix
     }
 
+    // Transform necessary prefix/opcode in output, according to given list and operands
+    output.prefix1 = list->prefix1;
+    output.prefix2 = list->prefix2;
+    output.opcode = list->opcode;
+    if(list->transformA) operandtype_matchlist[list->operandA].transform(list, &operand1);
+    if(list->transformB) operandtype_matchlist[list->operandB].transform(list, &operand2);
+
+
+
+
     if(pass == 1) {
         if(debug_enabled) printf("DEBUG - Line %d - instruction size %d\n", linenumber, size);
         definelabel(size);
