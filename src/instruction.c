@@ -211,13 +211,13 @@ operandtype_match operandtype_matchlist[] = {            // table with fast acce
 unsigned int collisions;    // internal use
 
 operandlist operands_adc[] = {
-    {OPTYPE_A, OPTYPE_INDIRECT_HL,  TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x00, 0x8E, SL_ONLY}, // tested without ADL
+    {OPTYPE_A, OPTYPE_INDIRECT_HL,  TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x00, 0x8E, SL_ONLY}, // tested
     {OPTYPE_A, OPTYPE_IR,           TRANSFORM_NONE, TRANSFORM_IXY,  0x00, 0xDD, 0x8C, NONE}, // tested voorlopig, twijfel over IX/Y code
-    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,TRANSFORM_NONE, TRANSFORM_IXY,  0x00, 0xDD, 0x8E, SL_ONLY}, // tested voorlopig without ADL, twijfel over IX/Y code
+    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,TRANSFORM_NONE, TRANSFORM_IXY,  0x00, 0xDD, 0x8E, SL_ONLY}, // tested voorlopig, twijfel over IX/Y code
     {OPTYPE_A, OPTYPE_N,            TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x00, 0xCE, NONE}, // tested
     {OPTYPE_A, OPTYPE_R,            TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x00, 0x88, NONE}, // tested
-    {OPTYPE_HL, OPTYPE_RR,          TRANSFORM_NONE, TRANSFORM_P,    0x00, 0xED, 0x4A, SL_ONLY}, // tested without ADL
-    {OPTYPE_HL, OPTYPE_SP,          TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xED, 0x7A, SL_ONLY}, // tested without ADL
+    {OPTYPE_HL, OPTYPE_RR,          TRANSFORM_NONE, TRANSFORM_P,    0x00, 0xED, 0x4A, SL_ONLY}, // tested
+    {OPTYPE_HL, OPTYPE_SP,          TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xED, 0x7A, SL_ONLY}, // tested
 };
 
 operandlist operands_add[] = {

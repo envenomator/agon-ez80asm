@@ -622,6 +622,8 @@ void emit_instruction(operandlist *list) {
         printf("0x%02x",output.opcode);
         if(list->operandA == OPTYPE_N) printf(":0x%02x", operand1.immediate & 0xFF);
         if(list->operandB == OPTYPE_N) printf(":0x%02x", operand2.immediate & 0xFF);
+        if(list->operandA == OPTYPE_INDIRECT_IXYd) printf(":0x%02x", operand1.displacement & 0xFF);
+        if(list->operandB == OPTYPE_INDIRECT_IXYd) printf(":0x%02x", operand2.displacement & 0xFF);
 
         printf("\n");
     //    if(suffix) printf("0x%02x-",suffix);
