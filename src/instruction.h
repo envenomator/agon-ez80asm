@@ -8,26 +8,26 @@
 #define MAX_MNEMONIC_SIZE 6
 
 typedef enum { // permitted operand type
-    OP_NONE,
-    OP_CC,
-    OP_IR,
-    OP_IXY,
-    OP_INDIRECT_IXYd,
-    OP_MMN,
-    OP_INDIRECT_MMN,
-    OP_N,
-    OP_A,
-    OP_HL,
-    OP_INDIRECT_HL,
-    OP_RR,
-    OP_INDIRECT_RR,
-    OP_RXY,
-    OP_SP,
-    OP_INDIRECT_SP,
-    OP_R,
-    OP_REG_R,
-    OP_MB,
-    OP_I,
+    OPTYPE_NONE,
+    OPTYPE_CC,
+    OPTYPE_IR,
+    OPTYPE_IXY,
+    OPTYPE_INDIRECT_IXYd,
+    OPTYPE_MMN,
+    OPTYPE_INDIRECT_MMN,
+    OPTYPE_N,
+    OPTYPE_A,
+    OPTYPE_HL,
+    OPTYPE_INDIRECT_HL,
+    OPTYPE_RR,
+    OPTYPE_INDIRECT_RR,
+    OPTYPE_RXY,
+    OPTYPE_SP,
+    OPTYPE_INDIRECT_SP,
+    OPTYPE_R,
+    OPTYPE_REG_R,
+    OPTYPE_MB,
+    OPTYPE_I,
 } operandtype;
 
 typedef enum {
@@ -55,8 +55,28 @@ typedef enum {
     R_I
 } cpuregister;
 
+#define R_INDEX_B   0
+#define R_INDEX_C   1
+#define R_INDEX_D   2
+#define R_INDEX_E   3
+#define R_INDEX_H   4
+#define R_INDEX_L   5
+#define R_INDEX_M   6
+#define R_INDEX_A   7
+
+#define R_INDEX_BC  0
+#define R_INDEX_DE  1
+#define R_INDEX_HL  2
+#define R_INDEX_SP  3
+#define R_INDEX_AF  3
+
+#define R_INDEX_I   0
+#define R_INDEX_MB  0
+#define R_INDEX_R   0
+
 typedef struct {
     cpuregister reg;
+    uint8_t     reg_index;
     bool        indirect;
     uint8_t     displacement;
     bool        immediate_provided;
@@ -77,22 +97,32 @@ typedef enum {
     SISLIL
 } adltype;
 
+typedef enum {
+    TRANSFORM_NONE,
+    TRANSFORM_X,
+    TRANSFORM_Y,
+    TRANSFORM_Z,
+    TRANSFORM_P,
+    TRANSFORM_Q,
+    TRANSFORM_IXY
+}opcodetransformtype;
+
 typedef struct {
-    operandtype operandA;           // Filter for operandA - which register applies?
-    operandtype operandB;           // Filter for operandB
-    bool        transformA;         // Do we transform acc to operandA
-    bool        transformB;         //  "        "       " "  operandB
-    uint8_t     prefix1;            // base prefix1, may be transformed by A/B
-    uint8_t     prefix2;            // base prefix2, may be transformed by A/B
-    uint8_t     opcode;             // base opcode, may be transformed by A/B
-    adltype     adl;                // the adl mode allowed in set of operands
+    operandtype         operandA;           // Filter for operandA - which register applies?
+    operandtype         operandB;           // Filter for operandB
+    opcodetransformtype transformA;         // Do we transform acc to operandA
+    opcodetransformtype transformB;         //  "        "       " "  operandB
+    uint8_t             prefix1;            // base prefix1, may be transformed by A/B
+    uint8_t             prefix2;            // base prefix2, may be transformed by A/B
+    uint8_t             opcode;             // base opcode, may be transformed by A/B
+    adltype             adl;                // the adl mode allowed in set of operands
 } operandlist;
 
 // An array-based index of this structure will act as a fast lookup table
 typedef struct {
     operandtype type;
     bool (*match)(operand *);
-    void (*transform)(operandlist *, operand *);       // transform output according to given operand
+    void (*transform)(opcodetransformtype type, operand *);       // transform output according to given operand
 } operandtype_match;
 
 enum {

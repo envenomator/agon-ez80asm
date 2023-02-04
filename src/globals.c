@@ -31,5 +31,7 @@ char *message[] = {
     "Missing operand",
     "Invalid mnemonic",
     "Invalid operand",
-    "Operand(s) not matching mnemonic"
+    "Operand(s) not matching mnemonic",
+    "Error in opcode transformation",
+    "Constant in operand larger than 8 bit"
 };

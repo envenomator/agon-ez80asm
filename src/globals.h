@@ -44,6 +44,8 @@ enum {
     ERROR_INVALIDMNEMONIC,
     ERROR_INVALIDOPERAND,
     ERROR_OPERANDSNOTMATCHING,
+    ERROR_TRANSFORMATION,
+    WARNING_N_TOOLARGE,
 };
 // Error messages
 extern char *message[];

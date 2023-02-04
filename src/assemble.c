@@ -18,6 +18,7 @@ void parse_operand(char *string, operand *operand) {
 
     // defaults
     operand->reg = R_NONE;
+    operand->reg_index = 0;
     operand->displacement = 0;
     operand->immediate = 0;
     operand->immediate_provided = false;
@@ -42,12 +43,14 @@ void parse_operand(char *string, operand *operand) {
             switch(*ptr++) {
                 case 0:
                     operand->reg = R_A;
+                    operand->reg_index = R_INDEX_A;
                     return;
                 case 'f':
                     switch(*ptr++) {
                         case 0:
                         case '\'':
                             operand->reg = R_AF;
+                            operand->reg_index = R_INDEX_AF;
                             if(operand->indirect) error(message[ERROR_INVALIDREGISTER]);
                             return;
                         default:
@@ -62,10 +65,12 @@ void parse_operand(char *string, operand *operand) {
             switch(*ptr++) {
                 case 0:
                     operand->reg = R_B;
+                    operand->reg_index = R_INDEX_B;
                     return;
                 case 'c':
                     if(*ptr == 0) {
                         operand->reg = R_BC;
+                        operand->reg_index = R_INDEX_BC;
                         return;
                     }
                     break;
@@ -77,6 +82,7 @@ void parse_operand(char *string, operand *operand) {
             switch(*ptr++) {
                 case 0:
                     operand->reg = R_C;
+                    operand->reg_index = R_INDEX_C;
                     return;
                 default:
                     break;
@@ -86,11 +92,13 @@ void parse_operand(char *string, operand *operand) {
             switch(*ptr++) {
                 case 0:
                     operand->reg = R_D;
+                    operand->reg_index = R_INDEX_D;
                     return;
                 case 'e':
                     switch(*ptr++) {
                         case 0:
                             operand->reg = R_DE;
+                            operand->reg_index = R_INDEX_DE;
                             return;
                         default:
                             break;
@@ -104,6 +112,7 @@ void parse_operand(char *string, operand *operand) {
             switch(*ptr++) {
                 case 0:
                     operand->reg = R_E;
+                    operand->reg_index = R_INDEX_E;
                     return;
                 default:
                     break;
@@ -113,10 +122,12 @@ void parse_operand(char *string, operand *operand) {
             switch(*ptr++) {
                 case 0:
                     operand->reg = R_H;
+                    operand->reg_index = R_INDEX_H;
                     return;
                 case 'l':
                     if(*ptr == 0) {
                         operand->reg = R_HL;
+                        operand->reg_index = R_INDEX_HL;
                         return;
                     }
                     break;
@@ -128,6 +139,7 @@ void parse_operand(char *string, operand *operand) {
             switch(*ptr++) {
                 case 0:
                     operand->reg = R_I;
+                    operand->reg_index = R_INDEX_I;
                     return;
                 case 'x':
                     switch(*ptr++) {
@@ -183,6 +195,7 @@ void parse_operand(char *string, operand *operand) {
             switch(*ptr++) {
                 case 0:
                     operand->reg = R_L;
+                    operand->reg_index = R_INDEX_L;
                     return;
                 default:
                     break;
@@ -191,17 +204,20 @@ void parse_operand(char *string, operand *operand) {
         case 'm':
             if((*ptr == 'b') && ptr[1] == 0) {
                 operand->reg = R_MB;
+                operand->reg_index = R_INDEX_MB;
                 return;
             }
             break;
         case 'r':
             if(*ptr == 0) {
                 operand->reg = R_R;
+                operand->reg_index = R_INDEX_R;
                 return;
             }
         case 's':
             if((*ptr == 'p') && ptr[1] == 0) {
                 operand->reg = R_SP;
+                operand->reg_index = R_INDEX_SP;
                 return;
             }
             break;
@@ -340,6 +356,7 @@ void parse(char *line) {
                     while(isspace(*ptr) != 0) ptr++; // skip over whitespace
                     token = currentline.operand1;
                     state = STATE_OPERAND1;
+                    currentline.suffix_present = true;
                 }
                 break;
             case STATE_OPERAND1:
@@ -460,13 +477,13 @@ uint8_t getADLsuffix(adltype allowed) {
                 if(currentline.suffix[1] != 'i') break; // illegal suffix
                 switch(currentline.suffix[0]) {
                     case 's':
-                        if(currentline.suffix[2] == 's') code=0x40;
-                        if(currentline.suffix[2] == 'l') code=0x52;
+                        if(currentline.suffix[2] == 's') code=0x40; // SIS
+                        if(currentline.suffix[2] == 'l') code=0x52; // SIL
                         // illegal suffix
                         break;
                     case 'l':
-                        if(currentline.suffix[2] == 's') code=0x49;
-                        if(currentline.suffix[2] == 'l') code=0x5B;
+                        if(currentline.suffix[2] == 's') code=0x49; // LIS
+                        if(currentline.suffix[2] == 'l') code=0x5B; // LIL
                         // illegal suffix
                         break;
                     default: // illegal suffix
@@ -572,31 +589,41 @@ void emit_instruction(uint8_t immsize, uint8_t suffix, uint8_t prefix, uint8_t o
 */
 
 void emit_instruction(operandlist *list) {
-    uint8_t size = 1; // the actual opcode
-
-    size += list->prefix1?1:0 + list->prefix2?1:0;
-    if((list->operandA == OP_INDIRECT_IXYd) || (list->operandB == OP_INDIRECT_IXYd)) size++; // Displacement byte
-    if(list->operandB == OP_N) size++; // n byte
-
-    if((list->operandA == OP_MMN) || (list->operandB == OP_MMN) || (list->operandA == OP_INDIRECT_MMN) || (list->operandB == OP_INDIRECT_MMN)) {
-        // add 2 or 3 bytes, according to adl mode and suffix
-    }
+    uint8_t size = 1; // There is always 1 opcode to output
+    uint8_t suffix = getADLsuffix(list->adl);
 
     // Transform necessary prefix/opcode in output, according to given list and operands
     output.prefix1 = list->prefix1;
     output.prefix2 = list->prefix2;
     output.opcode = list->opcode;
-    if(list->transformA) operandtype_matchlist[list->operandA].transform(list, &operand1);
-    if(list->transformB) operandtype_matchlist[list->operandB].transform(list, &operand2);
+    if(list->transformA != TRANSFORM_NONE) operandtype_matchlist[list->operandA].transform(list->transformA, &operand1);
+    if(list->transformB != TRANSFORM_NONE) operandtype_matchlist[list->operandB].transform(list->transformB, &operand2);
 
-
-
+    size += output.prefix1?1:0 + output.prefix2?1:0 + suffix?1:0;
+    if((list->operandA == OPTYPE_INDIRECT_IXYd) || (list->operandB == OPTYPE_INDIRECT_IXYd)) size++; // Displacement byte
+    if((list->operandA == OPTYPE_N) || (list->operandB == OPTYPE_N)) size++; // n == 1byte
+    if((list->operandA == OPTYPE_MMN) || (list->operandB == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) {
+        // add 2 or 3 bytes, according to adl mode and suffix
+    }
 
     if(pass == 1) {
         if(debug_enabled) printf("DEBUG - Line %d - instruction size %d\n", linenumber, size);
+        if((list->operandA == OPTYPE_N) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
+        if((list->operandB == OPTYPE_N) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
+        printf("DEBUG: ADL code %d\n", suffix);
+        printf("DEBUG: ADL string %s\n",currentline.suffix);
+        printf("DEBUG: ADL suffix present: %d\n", currentline.suffix_present);
         definelabel(size);
     }
     if(pass == 2) {
+        if(suffix) printf("0x%02x:",suffix);
+        if(output.prefix1) printf("0x%02x:",output.prefix1);
+        if(output.prefix2) printf("0x%02x:",output.prefix2);
+        printf("0x%02x",output.opcode);
+        if(list->operandA == OPTYPE_N) printf(":0x%02x", operand1.immediate & 0xFF);
+        if(list->operandB == OPTYPE_N) printf(":0x%02x", operand2.immediate & 0xFF);
+
+        printf("\n");
     //    if(suffix) printf("0x%02x-",suffix);
     //    if(prefix) printf("0x%02x-",prefix);
     //    printf("0x%02x-",opcode);
@@ -661,11 +688,11 @@ void process(void){
         }
         match = false;
         for(listitem = 0; listitem < current_instruction->listnumber; listitem++) {
-            if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->prefix1, list->prefix2, list->opcode, list->adl);
+            if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->transformA, list->transformB, list->prefix1, list->prefix2, list->opcode, list->adl);
             if(operandtype_matchlist[list->operandA].match(&operand1) && operandtype_matchlist[list->operandB].match(&operand2)) {
                 match = true;
                 if((debug_enabled) && pass == 1) printf("DEBUG - Line %d - match found on ^last^ filter list tuple\n", linenumber);
-                printf("Line %d - match found\n",linenumber);
+                //printf("Line %d - match found\n",linenumber);
                 emit_instruction(list);
                 break;
             }
@@ -682,7 +709,7 @@ void process(void){
     return;
 }
 
-void print_linelisting(void) {
+void print_linelisting_old(void) {
 
     printf("Line %04d - \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"", linenumber, currentline.label, currentline.mnemonic, currentline.suffix, currentline.operand1, currentline.operand2, currentline.comment);
     printf("\n");
@@ -704,7 +731,7 @@ void print_linelisting(void) {
 }
 
 
-void parsed_listing(void) {
+void print_linelisting(void) {
     printf("Line       %04d - ", linenumber);
     printf("Operand1:\n");
     printf("Register:    %02x\n", operand1.reg);

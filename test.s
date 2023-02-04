@@ -1,29 +1,24 @@
-	test
-	test a
-	test b
-	test c
-	test d
-	test e
-	test h
-	test l
-	test bc
-	test de
-	test hl
-	test sp
-	test ix
-	test iy
-	test ixh
-	test ixl
-	test iyh
-	test iyl
-	test (bc)
-	test (de)
-	test (hl)
-	test (sp)
-	test (ix+5)
-	test (iy+5)
-	test mb
-	test r
-	test i
-	test 500
-	test (500)
+adl 1
+adc.s a, (hl)
+adl 0
+adc.l a, (hl)
+
+;adc hl, bc
+;adc hl, de
+;adc hl, hl
+;adc hl, sp
+;adc a,0xff
+;adc a,0xff
+;adc a,b
+;adc a,c
+;adc a,d
+;adc a,e
+;adc a,h
+;adc a,l
+;adc a,a
+;adc a, ixh
+;adc a, ixl
+;adc a, iyh
+;adc a, iyl
+;adc a, (ix+5)
+;adc a, (iy+5)
