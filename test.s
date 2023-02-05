@@ -135,7 +135,32 @@
 ;inc e
 ;inc h
 ;inc l
-inc bc
-inc de
-inc hl
-inc sp
+;inc bc
+;inc de
+;inc hl
+;inc sp
+;ind
+;ind2
+;ind2r
+;indm
+;indmr
+;indr
+;indrx
+;ini
+;ini2
+;ini2r
+;inim
+;inimr
+;inir
+;inirx
+;jp nz, 0xaabbcc
+;jp (hl)
+;jp (ix)
+;jp (iy)
+;jp 0xaabbcc
+adl 0
+jp nz, 0xaabbcc
+adl 1
+jp nz, 0xaabbcc
+jp.sis nz, 0xaabbcc
+jp.lil nz, 0xaabbcc

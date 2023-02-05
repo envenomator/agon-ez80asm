@@ -151,7 +151,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                 case 'x':
                     switch(*ptr++) {
                         case 0:
-                            if(operand->indirect) error(message[ERROR_INVALIDREGISTER]);
                             operand->reg = R_IX;
                             return;
                         case 'h':
@@ -175,7 +174,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                 case 'y':
                     switch(*ptr++) {
                         case 0:
-                            if(operand->indirect) error(message[ERROR_INVALIDREGISTER]);
                             operand->reg = R_IY;
                             return;
                         case 'h':

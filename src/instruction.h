@@ -35,7 +35,8 @@ typedef enum { // permitted operand type
     OPTYPE_NSELECT,
     OPTYPE_INDIRECT_N,
     OPTYPE_INDIRECT_BC,
-    OPTYPE_INDIRECT_C
+    OPTYPE_INDIRECT_C,
+    OPTYPE_INDIRECT_IXY
 } operandtype;
 
 typedef enum {
