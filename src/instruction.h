@@ -85,16 +85,23 @@ typedef enum {
 #define CC_INDEX_P  6
 #define CC_INDEX_M  7
 
+
+typedef enum {
+    POS_SOURCE,
+    POS_DESTINATION
+} operand_position;
+
 typedef struct {
-    cpuregister reg;
-    uint8_t     reg_index;
-    bool        indirect;
-    bool        cc;
-    uint8_t     cc_index;
-    uint8_t     displacement;
-    bool        displacement_provided;
-    bool        immediate_provided;
-    uint32_t    immediate;
+    operand_position    position;
+    cpuregister         reg;
+    uint8_t             reg_index;
+    bool                indirect;
+    bool                cc;
+    uint8_t             cc_index;
+    uint8_t             displacement;
+    bool                displacement_provided;
+    bool                immediate_provided;
+    uint32_t            immediate;
 } operand;
 
 typedef struct {

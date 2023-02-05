@@ -93,14 +93,16 @@ void ir_transform(opcodetransformtype type, operand *op) {
                 return;
             case R_IXL:
                 output.prefix1 = 0xDD;
-                output.opcode++;
+                if(op->position == POS_SOURCE) output.opcode++; // bit 0
+                else output.opcode |= 0x08; // bit 3
                 return;
             case R_IYH:
                 output.prefix1 = 0xFD;
                 return;
             case R_IYL:
                 output.prefix1 = 0xFD;
-                output.opcode++;
+                if(op->position == POS_SOURCE) output.opcode++; // bit 0
+                else output.opcode |= 0x08; // bit 3
                 return;
             default:
                 break;
@@ -235,8 +237,8 @@ unsigned int collisions;    // internal use
 
 operandlist operands_adc[] = {
     {OPTYPE_A, OPTYPE_INDIRECT_HL,  TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x8E, SL_ONLY}, // tested
-    {OPTYPE_A, OPTYPE_IR,           TRANSFORM_NONE, TRANSFORM_DDFD, 0xDD, 0x8C, NONE}, // tested voorlopig, twijfel over IX/Y code
-    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,TRANSFORM_NONE, TRANSFORM_DDFD, 0xDD, 0x8E, SL_ONLY}, // tested voorlopig, twijfel over IX/Y code
+    {OPTYPE_A, OPTYPE_IR,           TRANSFORM_NONE, TRANSFORM_DDFD, 0x00, 0x8C, NONE}, // tested
+    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,TRANSFORM_NONE, TRANSFORM_DDFD, 0x00, 0x8E, SL_ONLY}, // tested
     {OPTYPE_A, OPTYPE_N,            TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xCE, NONE}, // tested
     {OPTYPE_A, OPTYPE_R,            TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x88, NONE}, // tested
     {OPTYPE_HL, OPTYPE_RR,          TRANSFORM_NONE, TRANSFORM_P,    0xED, 0x4A, SL_ONLY}, // tested
@@ -262,7 +264,7 @@ operandlist operands_and[] = {
 };
 operandlist operands_bit[] = {
     {OPTYPE_BIT, OPTYPE_INDIRECT_HL,  TRANSFORM_Y, TRANSFORM_NONE,  0xCB, 0x46, SL_ONLY}, // tested
-    {OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,TRANSFORM_Y, TRANSFORM_DDFD,  0xCB, 0x46, SL_ONLY}, // zeker testen!
+    {OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,TRANSFORM_Y, TRANSFORM_DDFD,  0xCB, 0x46, SL_ONLY}, // tested
     {OPTYPE_BIT, OPTYPE_R,            TRANSFORM_Y, TRANSFORM_Z,     0xCB, 0x40, NONE},
 };
 operandlist operands_call[] = {
@@ -280,7 +282,26 @@ operandlist operands_cp[]= {
     {OPTYPE_A, OPTYPE_R,            TRANSFORM_NONE, TRANSFORM_Z,   0x00, 0xB8, NONE},
 };
 operandlist operands_cpd[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xED, SL_ONLY},
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xA9, SL_ONLY},
+};
+operandlist operands_cpdr[]= {
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xB9, SL_ONLY},
+};
+operandlist operands_cpi[]= {
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xA1, SL_ONLY},
+};
+operandlist operands_cpir[]= {
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xB1, SL_ONLY},
+};
+operandlist operands_cpl[]= {
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x2F, NONE},
+};
+operandlist operands_daa[]= {
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x27, NONE},
+};
+operandlist operands_dec[]= {
+    {OPTYPE_HL, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x35, SL_ONLY},
+    {OPTYPE_IR, OPTYPE_NONE,      TRANSFORM_DDFD, TRANSFORM_NONE,0x00, 0x25, NONE},
 };
 operandlist operands_xxx[]= {
     {},
@@ -300,6 +321,13 @@ instruction instructions[] = {
     {"call",EZ80, sizeof(operands_call)/sizeof(operandlist), operands_call},
     {"ccf",EZ80, sizeof(operands_ccf)/sizeof(operandlist), operands_ccf},
     {"cp",EZ80, sizeof(operands_cp)/sizeof(operandlist), operands_cp},
+    {"cpd",EZ80, sizeof(operands_cpd)/sizeof(operandlist), operands_cpd},
+    {"cpdr",EZ80, sizeof(operands_cpdr)/sizeof(operandlist), operands_cpdr},
+    {"cpi",EZ80, sizeof(operands_cpi)/sizeof(operandlist), operands_cpi},
+    {"cpir",EZ80, sizeof(operands_cpir)/sizeof(operandlist), operands_cpir},
+    {"cpl",EZ80, sizeof(operands_cpl)/sizeof(operandlist), operands_cpl},
+    {"daa",EZ80, sizeof(operands_daa)/sizeof(operandlist), operands_daa},
+    {"dec",EZ80, sizeof(operands_dec)/sizeof(operandlist), operands_dec},
     {"ld",  EZ80, sizeof(operands_ld)/sizeof(operandlist), operands_ld},
     {"adl", ASSEMBLER, 0, NULL}
 };

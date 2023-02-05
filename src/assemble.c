@@ -12,12 +12,13 @@
 
 // parses the given string to the operand, or throws errors along the way
 // will destruct parts of the original string during the process
-void parse_operand(char *string, operand *operand) {
+void parse_operand(operand_position pos, char *string, operand *operand) {
     char *ptr = string;
     uint8_t len = strlen(string);
     label *lbl;
 
     // defaults
+    operand->position = pos;
     operand->reg = R_NONE;
     operand->reg_index = 0;
     operand->cc = false;
@@ -494,8 +495,8 @@ void parse(char *line) {
                 }
                 break;
             case STATE_DONE:
-                parse_operand(currentline.operand1, &operand1);
-                parse_operand(currentline.operand2, &operand2);
+                parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
+                parse_operand(POS_SOURCE, currentline.operand2, &operand2);
                 return;
             case STATE_MISSINGOPERAND:
                 error(message[ERROR_MISSINGOPERAND]);

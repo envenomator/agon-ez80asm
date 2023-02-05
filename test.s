@@ -65,4 +65,24 @@
 ;    add a,10
 ;    call labelb
 ;ccf
-bit 1,(ix+5)
+;bit 1,(iy+5)
+;adc a, ixh
+;adc a, ixl
+;adc a, iyh
+;adc a, iyl
+
+;adc a, (ix+5)
+;adl 1
+;adc.s a, (ix+5)
+;adl 0
+;adc.l a, (ix+5)
+;
+;adc a, (iy+10)
+;adl 1
+;adc.s a, (iy+10)
+;adl 0
+;adc.l a, (iy+10) 
+dec ixh
+dec ixl
+dec iyh
+dec iyl
