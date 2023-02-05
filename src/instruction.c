@@ -107,6 +107,12 @@ bool cca_match(operand *op) {
 bool indirect_de_match(operand *op) {
     return((op->indirect) && (op->reg == R_DE));
 }
+bool ix_match(operand *op) {
+    return(!(op->indirect) && (op->reg == R_IX));
+}
+bool iy_match(operand *op) {
+    return(!(op->indirect) && (op->reg == R_IY));
+}
 void none_transform(opcodetransformtype type, operand *op) {
     return;
 }
@@ -312,7 +318,12 @@ void cca_transform(opcodetransformtype type, operand *op) {
 void indirect_de_transform(opcodetransformtype type, operand *op) {
     return;
 }
-
+void ix_transform(opcodetransformtype type, operand *op) {
+    return;
+}
+void iy_transform(opcodetransformtype type, operand *op) {
+    return;
+}
 instruction * instruction_table[INSTRUCTION_TABLE_SIZE]; // hashtable of possible instructions, indexed by mnemonic name
 operandtype_match operandtype_matchlist[] = {            // table with fast access to functions that perform matching to an specific operandtype
     {OPTYPE_NONE, none_match, none_transform},
@@ -346,6 +357,8 @@ operandtype_match operandtype_matchlist[] = {            // table with fast acce
     {OPTYPE_INDIRECT_IXY, indirect_ixy_match, indirect_ixy_transform},
     {OPTYPE_CCA, cca_match, cca_transform},
     {OPTYPE_INDIRECT_DE, indirect_de_match, indirect_de_transform},
+    {OPTYPE_IX, ix_match, ix_transform},
+    {OPTYPE_IY, iy_match, iy_transform},
 };
 
 unsigned int collisions;    // internal use
@@ -517,26 +530,29 @@ operandlist operands_jr[]= {
     {OPTYPE_N, OPTYPE_NONE,         TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x18, NONE},
 };
 operandlist operands_ld[] = {
-    {OPTYPE_A, OPTYPE_I,              TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x57, NONE},
-    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,  TRANSFORM_NONE, TRANSFORM_DDFD, 0x00, 0x7E, SL_ONLY},
-    {OPTYPE_A, OPTYPE_MB,             TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x6E, NONE},
-    {OPTYPE_A, OPTYPE_INDIRECT_MMN,   TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3A, SISLIL},
-    {OPTYPE_A, OPTYPE_REG_R,          TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x5F, NONE},
-    {OPTYPE_A, OPTYPE_INDIRECT_BC,    TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x0A, SL_ONLY},
-    {OPTYPE_A, OPTYPE_INDIRECT_DE,    TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x1A, SL_ONLY},
-    {OPTYPE_A, OPTYPE_INDIRECT_HL,    TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x7E, SL_ONLY},
-    {OPTYPE_HL, OPTYPE_I,             TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0xD7, NONE},
-    {OPTYPE_INDIRECT_HL, OPTYPE_IXY,  TRANSFORM_NONE, TRANSFORM_DDFD, 0xED, 0x3F, SL_ONLY},
-    {OPTYPE_INDIRECT_HL, OPTYPE_N,    TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x36, SL_ONLY},
-    {OPTYPE_INDIRECT_HL, OPTYPE_R,    TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x70, SL_ONLY},
-    {OPTYPE_INDIRECT_HL, OPTYPE_RR,   TRANSFORM_NONE, TRANSFORM_P,    0xED, 0x0F, SL_ONLY},
-    {OPTYPE_I, OPTYPE_HL,             TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0xC7, NONE},
-    {OPTYPE_I, OPTYPE_A,              TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x47, NONE},
-    {OPTYPE_IR, OPTYPE_IR,            TRANSFORM_NONE, TRANSFORM_DDFD, 0x00, 0x64, NONE}, // CHECKEN!!
-    {OPTYPE_IR, OPTYPE_N,             TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x26, NONE}, // CHECKEN
-    {OPTYPE_IR, OPTYPE_R,             TRANSFORM_DDFD, TRANSFORM_Z,    0x00, 0x60, NONE}, // CHECKEN!!!
-    {OPTYPE_IXY, OPTYPE_INDIRECT_HL,  TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x37, SL_ONLY}, // CHECKEN niet ok
-    {OPTYPE_IXY, OPTYPE_INDIRECT_IXYd,TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x37, SL_ONLY}, // CHECKEN niet ok
+    {OPTYPE_A, OPTYPE_I,              TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x57, NONE}, // tested
+    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,  TRANSFORM_NONE, TRANSFORM_DDFD, 0x00, 0x7E, SL_ONLY}, // tested, no ADL
+    {OPTYPE_A, OPTYPE_MB,             TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x6E, NONE}, // tested
+    {OPTYPE_A, OPTYPE_INDIRECT_MMN,   TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3A, SISLIL}, // testd with ADL
+    {OPTYPE_A, OPTYPE_REG_R,          TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x5F, NONE}, // tested with ADL
+    {OPTYPE_A, OPTYPE_INDIRECT_BC,    TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x0A, SL_ONLY}, // tested no ADL
+    {OPTYPE_A, OPTYPE_INDIRECT_DE,    TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x1A, SL_ONLY}, // tested no ADL
+    {OPTYPE_A, OPTYPE_INDIRECT_HL,    TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x7E, SL_ONLY}, // tested no ADL
+    {OPTYPE_HL, OPTYPE_I,             TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0xD7, NONE}, // tested
+    {OPTYPE_INDIRECT_HL, OPTYPE_IX,   TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x3F, SL_ONLY}, // tested no ADL
+    {OPTYPE_INDIRECT_HL, OPTYPE_IY,   TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x3E, SL_ONLY}, // tested no ADL
+    {OPTYPE_INDIRECT_HL, OPTYPE_N,    TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x36, SL_ONLY}, // tested no ADL
+    {OPTYPE_INDIRECT_HL, OPTYPE_R,    TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x70, SL_ONLY}, // tested no ADL
+    {OPTYPE_INDIRECT_HL, OPTYPE_RR,   TRANSFORM_NONE, TRANSFORM_P,    0xED, 0x0F, SL_ONLY}, // testd no ADL
+    {OPTYPE_I, OPTYPE_HL,             TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0xC7, NONE}, // tested no ADL
+    {OPTYPE_I, OPTYPE_A,              TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x47, NONE}, // tested no ADL
+    {OPTYPE_IR, OPTYPE_IR,            TRANSFORM_DDFD, TRANSFORM_DDFD, 0x00, 0x64, NONE}, // tested
+    {OPTYPE_IR, OPTYPE_N,             TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x26, NONE}, // tested
+    {OPTYPE_IR, OPTYPE_R,             TRANSFORM_DDFD, TRANSFORM_Z,    0x00, 0x60, NONE}, // tested
+    {OPTYPE_IX, OPTYPE_INDIRECT_HL,   TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x37, SL_ONLY}, // tested
+    {OPTYPE_IY, OPTYPE_INDIRECT_HL,   TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x31, SL_ONLY}, // tested
+    {OPTYPE_IX, OPTYPE_INDIRECT_IXYd, TRANSFORM_NONE, TRANSFORM_DDFD, 0x00, 0x37, SL_ONLY}, // tested
+    {OPTYPE_IY, OPTYPE_INDIRECT_IXYd, TRANSFORM_NONE, TRANSFORM_DDFD, 0x00, 0x31, SL_ONLY}, // tested
     {OPTYPE_IXY, OPTYPE_MMN,          TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x21, SISLIL},
     {OPTYPE_IXY, OPTYPE_INDIRECT_MMN, TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x2A, SISLIL},
     {OPTYPE_INDIRECT_IXYd, OPTYPE_IXY,TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x3F, SL_ONLY},

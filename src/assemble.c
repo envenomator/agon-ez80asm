@@ -744,8 +744,8 @@ void emit_instruction(operandlist *list) {
         if(ddfddd) printf("0x%02x",output.opcode);
 
         //output remaining immediate bytes
-        if(list->operandA == OPTYPE_MMN) emit_immediate(&operand1, suffix);
-        if(list->operandB == OPTYPE_MMN) emit_immediate(&operand2, suffix);
+        if((list->operandA == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand1, suffix);
+        if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand2, suffix);
         printf("\n");
     }
 }
