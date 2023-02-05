@@ -64,4 +64,5 @@
 ;labelb:
 ;    add a,10
 ;    call labelb
-ccf
+;ccf
+bit 1,(ix+5)

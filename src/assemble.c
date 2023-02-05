@@ -712,14 +712,14 @@ void emit_instruction(operandlist *list) {
         if(debug_enabled) printf("DEBUG - Line %d - instruction size %d\n", linenumber, size);
         if((list->operandA == OPTYPE_N) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
         if((list->operandB == OPTYPE_N) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
-        printf("DEBUG: ADL code %d\n", suffix);
-        printf("DEBUG: ADL string %s\n",currentline.suffix);
-        printf("DEBUG: ADL suffix present: %d\n", currentline.suffix_present);
+        //printf("DEBUG: ADL code %d\n", suffix);
+        //printf("DEBUG: ADL string %s\n",currentline.suffix);
+        //printf("DEBUG: ADL suffix present: %d\n", currentline.suffix_present);
         definelabel(size);
     }
     if(pass == 2) {
         // determine position of dd
-        ddfddd = (((output.prefix1 == 0xDD) || (output.prefix2 == 0xFD)) &&
+        ddfddd = ((output.prefix1 == 0xDD) && (output.prefix2 == 0xFD) &&
                   ((operand1.displacement_provided) || (operand2.displacement_provided)));
         
         // output adl suffix and any prefixes
@@ -733,8 +733,8 @@ void emit_instruction(operandlist *list) {
         if(list->operandA == OPTYPE_N) printf(":0x%02x", operand1.immediate & 0xFF);
         if(list->operandB == OPTYPE_N) printf(":0x%02x", operand2.immediate & 0xFF);
 
-        if(list->operandA == OPTYPE_INDIRECT_IXYd) printf(":0x%02x", operand1.displacement & 0xFF);
-        if(list->operandB == OPTYPE_INDIRECT_IXYd) printf(":0x%02x", operand2.displacement & 0xFF);
+        if(operand1.displacement_provided) printf(":0x%02x", operand1.displacement & 0xFF);
+        if(operand2.displacement_provided) printf(":0x%02x", operand2.displacement & 0xFF);
 
         // opcode in DDCBdd/DFCBdd position
         if(ddfddd) printf("0x%02x",output.opcode);
@@ -743,9 +743,6 @@ void emit_instruction(operandlist *list) {
         if(list->operandA == OPTYPE_MMN) emit_immediate(&operand1, suffix);
         if(list->operandB == OPTYPE_MMN) emit_immediate(&operand2, suffix);
         printf("\n");
-    //    if(suffix) printf("0x%02x-",suffix);
-    //    if(prefix) printf("0x%02x-",prefix);
-    //    printf("0x%02x-",opcode);
     }
 }
 
