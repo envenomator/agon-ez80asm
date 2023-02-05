@@ -405,16 +405,24 @@ operandlist operands_halt[]= {
     {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x76, NONE},
 };
 operandlist operands_im[]= {
-    {OPTYPE_NSELECT, OPTYPE_NONE,      TRANSFORM_P, TRANSFORM_NONE,0xED, 0x46, NONE},
+    {OPTYPE_NSELECT, OPTYPE_NONE,      TRANSFORM_P, TRANSFORM_NONE,0xED, 0x46, NONE}, // tested
 };
 operandlist operands_in[]= {
-    {OPTYPE_A, OPTYPE_INDIRECT_N,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xDB, NONE},
-    {OPTYPE_R, OPTYPE_INDIRECT_BC,     TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x40, NONE},
-    {OPTYPE_R, OPTYPE_INDIRECT_C,      TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x40, NONE},
+    {OPTYPE_A, OPTYPE_INDIRECT_N,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xDB, NONE}, // tested
+    {OPTYPE_R, OPTYPE_INDIRECT_BC,     TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x40, NONE}, // tested
+    {OPTYPE_R, OPTYPE_INDIRECT_C,      TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x40, NONE}, // tested
 };
-
-operandlist operands_xxx[]= {
-    {},
+operandlist operands_in0[]= {
+    {OPTYPE_R, OPTYPE_INDIRECT_N,     TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x00, NONE}, // tested
+};
+operandlist operands_inc[]= {
+    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,       TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x34, SL_ONLY}, // tested
+    {OPTYPE_IR, OPTYPE_NONE,                TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x24, NONE}, // tested
+    {OPTYPE_IXY, OPTYPE_NONE,               TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x23, SL_ONLY}, // tested
+    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,     TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x34, SL_ONLY}, // tested
+    {OPTYPE_R, OPTYPE_NONE,                 TRANSFORM_Y, TRANSFORM_NONE, 0x00, 0x04, NONE}, // tested
+    {OPTYPE_RR, OPTYPE_NONE,                TRANSFORM_P, TRANSFORM_NONE, 0x00, 0x03, SL_ONLY}, // tested
+    {OPTYPE_SP, OPTYPE_NONE,                TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x33, SL_ONLY}, // tested
 };
 operandlist operands_test[] = {
     {OPTYPE_R, OPTYPE_R,            TRANSFORM_Y, TRANSFORM_Z, 0x00, 0x80, NONE},
@@ -446,6 +454,8 @@ instruction instructions[] = {
     {"halt",EZ80, sizeof(operands_halt)/sizeof(operandlist), operands_halt},
     {"im",EZ80, sizeof(operands_im)/sizeof(operandlist), operands_im},
     {"in",EZ80, sizeof(operands_in)/sizeof(operandlist), operands_in},
+    {"in0",EZ80, sizeof(operands_in0)/sizeof(operandlist), operands_in0},
+    {"inc",EZ80, sizeof(operands_inc)/sizeof(operandlist), operands_inc},
     {"ld",  EZ80, sizeof(operands_ld)/sizeof(operandlist), operands_ld},
     {"adl", ASSEMBLER, 0, NULL}
 };

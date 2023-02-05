@@ -105,10 +105,37 @@
 ;im 1
 ;im 2
 ;in a, (5)
-in a, (c)
-in b, (c)
-in c, (c)
-in d, (c)
-in e, (c)
-in h, (c)
-in l, (c)
+;in a, (c)
+;in b, (c)
+;in c, (c)
+;in d, (c)
+;in e, (c)
+;in h, (c)
+;in l, (c)
+;in0 a, (0x10)
+;in0 b, (0x10)
+;in0 c, (0x10)
+;in0 d, (0x10)
+;in0 e, (0x10)
+;in0 h, (0x10)
+;in0 l, (0x10)
+;inc ixh
+;inc ixl
+;inc iyh
+;inc iyl
+;inc ix
+;inc iy
+;inc (hl)
+;inc (ix+5)
+;inc (iy+5)
+;inc a
+;inc b
+;inc c
+;inc d
+;inc e
+;inc h
+;inc l
+inc bc
+inc de
+inc hl
+inc sp
