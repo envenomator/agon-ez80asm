@@ -23,6 +23,7 @@ void parse_operand(char *string, operand *operand) {
     operand->cc = false;
     operand->cc_index = 0;
     operand->displacement = 0;
+    operand->displacement_provided = false;
     operand->immediate = 0;
     operand->immediate_provided = false;
     // direct or indirect
@@ -161,6 +162,7 @@ void parse_operand(char *string, operand *operand) {
                         case '+':
                             if(isdigit(*ptr)) {
                                 operand->reg = R_IX;
+                                operand->displacement_provided = true;
                                 operand->displacement = (uint8_t) str2num(ptr);
                                 return;
                             }
@@ -184,6 +186,7 @@ void parse_operand(char *string, operand *operand) {
                         case '+':
                             if(isdigit(*ptr)) {
                                 operand->reg = R_IY;
+                                operand->displacement_provided = true;
                                 operand->displacement = (uint8_t) str2num(ptr);
                                 return;
                             }
@@ -302,7 +305,14 @@ void parse_operand(char *string, operand *operand) {
             operand->immediate_provided = true;
             return;
         }
-        error(message[ERROR_INVALIDREGISTER]);
+        else {
+            if(pass == 1) {
+                // might be a lable that isn't defined yet. will see in pass 2
+                operand->immediate = 0;
+                operand->immediate_provided = true;
+            }
+            else error(message[ERROR_INVALIDREGISTER]); // pass 2, not a label, error
+        }
     }
 }
 
@@ -326,6 +336,7 @@ void convertLower(char *line) {
     }
 }
 
+// split line in string tokens and try to parse them into appropriate mnemonics and operands
 void parse(char *line) {
     uint8_t state;
     char *ptr;
@@ -680,10 +691,10 @@ void emit_immediate(operand *op, uint8_t suffix) {
 void emit_instruction(operandlist *list) {
     uint8_t size = 1; // There is always 1 opcode to output
     uint8_t suffix = getADLsuffix(list->adl);
-
+    bool ddfddd; // determine position of displacement byte in case of DDCBdd/DDFDdd
     // Transform necessary prefix/opcode in output, according to given list and operands
-    output.prefix1 = list->prefix1;
-    output.prefix2 = list->prefix2;
+    output.prefix1 = 0;
+    output.prefix2 = list->prefix;
     output.opcode = list->opcode;
     if(list->transformA != TRANSFORM_NONE) operandtype_matchlist[list->operandA].transform(list->transformA, &operand1);
     if(list->transformB != TRANSFORM_NONE) operandtype_matchlist[list->operandB].transform(list->transformB, &operand2);
@@ -696,7 +707,7 @@ void emit_instruction(operandlist *list) {
         // add 2 or 3 bytes, according to adl mode and suffix
         size += adlmode?3:2;
     }
-
+    
     if(pass == 1) {
         if(debug_enabled) printf("DEBUG - Line %d - instruction size %d\n", linenumber, size);
         if((list->operandA == OPTYPE_N) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
@@ -707,14 +718,26 @@ void emit_instruction(operandlist *list) {
         definelabel(size);
     }
     if(pass == 2) {
+        // determine position of dd
+        ddfddd = (((output.prefix1 == 0xDD) || (output.prefix2 == 0xFD)) &&
+                  ((operand1.displacement_provided) || (operand2.displacement_provided)));
+        
+        // output adl suffix and any prefixes
         if(suffix) printf("0x%02x:",suffix);
         if(output.prefix1) printf("0x%02x:",output.prefix1);
         if(output.prefix2) printf("0x%02x:",output.prefix2);
-        printf("0x%02x",output.opcode);
+
+        // opcode in normal position
+        if(!ddfddd) printf("0x%02x",output.opcode);
+        
         if(list->operandA == OPTYPE_N) printf(":0x%02x", operand1.immediate & 0xFF);
         if(list->operandB == OPTYPE_N) printf(":0x%02x", operand2.immediate & 0xFF);
+
         if(list->operandA == OPTYPE_INDIRECT_IXYd) printf(":0x%02x", operand1.displacement & 0xFF);
         if(list->operandB == OPTYPE_INDIRECT_IXYd) printf(":0x%02x", operand2.displacement & 0xFF);
+
+        // opcode in DDCBdd/DFCBdd position
+        if(ddfddd) printf("0x%02x",output.opcode);
 
         //output remaining immediate bytes
         if(list->operandA == OPTYPE_MMN) emit_immediate(&operand1, suffix);
@@ -784,7 +807,7 @@ void process(void){
         }
         match = false;
         for(listitem = 0; listitem < current_instruction->listnumber; listitem++) {
-            if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->transformA, list->transformB, list->prefix1, list->prefix2, list->opcode, list->adl);
+            if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->transformA, list->transformB, list->prefix, list->opcode, list->adl);
             if(operandtype_matchlist[list->operandA].match(&operand1) && operandtype_matchlist[list->operandB].match(&operand2)) {
                 match = true;
                 if((debug_enabled) && pass == 1) printf("DEBUG - Line %d - match found on ^last^ filter list tuple\n", linenumber);

@@ -12,6 +12,7 @@ typedef enum { // permitted operand type
     OPTYPE_CC,
     OPTYPE_IR,
     OPTYPE_IXY,
+    OPTYPE_IXYd,
     OPTYPE_INDIRECT_IXYd,
     OPTYPE_MMN,
     OPTYPE_INDIRECT_MMN,
@@ -91,6 +92,7 @@ typedef struct {
     bool        cc;
     uint8_t     cc_index;
     uint8_t     displacement;
+    bool        displacement_provided;
     bool        immediate_provided;
     uint32_t    immediate;
 } operand;
@@ -116,7 +118,7 @@ typedef enum {
     TRANSFORM_Z,
     TRANSFORM_P,
     TRANSFORM_Q,
-    TRANSFORM_IXY
+    TRANSFORM_DDFD
 }opcodetransformtype;
 
 typedef struct {
@@ -124,8 +126,7 @@ typedef struct {
     operandtype         operandB;           // Filter for operandB
     opcodetransformtype transformA;         // Do we transform acc to operandA
     opcodetransformtype transformB;         //  "        "       " "  operandB
-    uint8_t             prefix1;            // base prefix1, may be transformed by A/B
-    uint8_t             prefix2;            // base prefix2, may be transformed by A/B
+    uint8_t             prefix;            // base prefix1, may be transformed by A/B
     uint8_t             opcode;             // base opcode, may be transformed by A/B
     adltype             adl;                // the adl mode allowed in set of operands
 } operandlist;
