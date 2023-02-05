@@ -732,13 +732,15 @@ void emit_instruction(operandlist *list) {
         // opcode in normal position
         if(!ddfddd) printf("0x%02x",output.opcode);
         
+        // output displacement
+        if(operand1.displacement_provided) printf(":0x%02x", operand1.displacement & 0xFF);
+        if(operand2.displacement_provided) printf(":0x%02x", operand2.displacement & 0xFF);
+        // output n
         if((list->operandA == OPTYPE_N) || 
            (list->operandA == OPTYPE_INDIRECT_N)) printf(":0x%02x", operand1.immediate & 0xFF);
         if((list->operandB == OPTYPE_N) ||
            (list->operandB == OPTYPE_INDIRECT_N)) printf(":0x%02x", operand2.immediate & 0xFF);
 
-        if(operand1.displacement_provided) printf(":0x%02x", operand1.displacement & 0xFF);
-        if(operand2.displacement_provided) printf(":0x%02x", operand2.displacement & 0xFF);
 
         // opcode in DDCBdd/DFCBdd position
         if(ddfddd) printf("0x%02x",output.opcode);

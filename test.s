@@ -37,7 +37,33 @@
 ;ld iyl, iyl
 ;ld ix,(hl)
 ;ld iy,(hl)
-ld ix, (ix+5)
-ld iy, (ix+5)
-ld ix, (iy+5)
-ld iy, (iy+5)
+;ld ix, (ix+5)
+;ld iy, (ix+5)
+;ld ix, (iy+5)
+;ld iy, (iy+5)
+;ld ix, 0xaabbcc
+;ld iy, 0xaabbcc
+;ld ix, (0xaabbcc)
+;ld iy, (0xaabbcc)
+;ld (ix+5),0x10
+;ld (iy+5),0x10
+;ld (ix+5), b
+;ld (iy+5), b
+;ld (ix+5),bc
+;ld (ix+5),de
+;ld (ix+5),hl
+;ld (iy+5),bc
+;ld (iy+5),de
+;ld (iy+5),hl
+;ld mb, a
+;adl 0
+;ld (0xaabbcc),a
+;adl 1
+;ld (0xaabbcc),a
+;adl 1
+;ld.sis (0xaabbcc),a
+;adl 0
+;ld.lil (0xaabbcc),a
+adl 0
+ld.lil (0xaabbcc),ix
+ld.lil (0xaabbcc),iy
