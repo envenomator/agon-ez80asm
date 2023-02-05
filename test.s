@@ -158,9 +158,14 @@
 ;jp (ix)
 ;jp (iy)
 ;jp 0xaabbcc
-adl 0
-jp nz, 0xaabbcc
-adl 1
-jp nz, 0xaabbcc
-jp.sis nz, 0xaabbcc
-jp.lil nz, 0xaabbcc
+;adl 0
+;jp nz, 0xaabbcc
+;adl 1
+;jp nz, 0xaabbcc
+;jp.sis nz, 0xaabbcc
+;jp.lil nz, 0xaabbcc
+;jr nz, 5
+;jr z, 5
+;jr nc, 5
+;jr c, 5
+jr -5

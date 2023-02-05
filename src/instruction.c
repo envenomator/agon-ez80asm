@@ -97,7 +97,13 @@ bool indirect_c_match(operand *op) {
 bool indirect_ixy_match(operand *op) {
     return (((op->reg == R_IX) || (op->reg == R_IY)) && (op->indirect)  && !(op->displacement_provided));
 }
-
+bool cca_match(operand *op) {
+    return ((op->cc) && 
+            ((op->cc_index == CC_INDEX_NZ) ||
+             (op->cc_index == CC_INDEX_Z) ||
+             (op->cc_index == CC_INDEX_NC) ||
+             (op->cc_index == CC_INDEX_C)));
+}
 void none_transform(opcodetransformtype type, operand *op) {
     return;
 }
@@ -294,6 +300,12 @@ void indirect_ixy_transform(opcodetransformtype type, operand *op) {
     error(message[ERROR_TRANSFORMATION]);
     return;
 }
+void cca_transform(opcodetransformtype type, operand *op) {
+    if(type == TRANSFORM_P) {
+        output.opcode |= (op->cc_index << 3);
+    }
+    return;
+}
 
 instruction * instruction_table[INSTRUCTION_TABLE_SIZE]; // hashtable of possible instructions, indexed by mnemonic name
 operandtype_match operandtype_matchlist[] = {            // table with fast access to functions that perform matching to an specific operandtype
@@ -325,7 +337,8 @@ operandtype_match operandtype_matchlist[] = {            // table with fast acce
     {OPTYPE_INDIRECT_N, indirect_n_match, indirect_n_transform},
     {OPTYPE_INDIRECT_BC, indirect_bc_match, indirect_bc_transform},
     {OPTYPE_INDIRECT_C, indirect_c_match, indirect_c_transform},
-    {OPTYPE_INDIRECT_IXY, indirect_ixy_match, indirect_ixy_transform}
+    {OPTYPE_INDIRECT_IXY, indirect_ixy_match, indirect_ixy_transform},
+    {OPTYPE_CCA, cca_match, cca_transform}
 };
 
 unsigned int collisions;    // internal use
@@ -492,7 +505,10 @@ operandlist operands_jp[] = {
     {OPTYPE_INDIRECT_IXY, OPTYPE_NONE, TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0xE9, SL_ONLY},
     {OPTYPE_MMN, OPTYPE_NONE,       TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xC3, SISLIL},
 };
-
+operandlist operands_jr[]= {
+    {OPTYPE_CCA, OPTYPE_N,          TRANSFORM_P, TRANSFORM_NONE, 0x00, 0x20, NONE}, // tested without negative numbers
+    {OPTYPE_N, OPTYPE_NONE,         TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x18, NONE},
+};
 operandlist operands_test[] = {
     {OPTYPE_R, OPTYPE_R,            TRANSFORM_Y, TRANSFORM_Z, 0x00, 0x80, NONE},
 };
@@ -540,6 +556,7 @@ instruction instructions[] = {
     {"inir",EZ80, sizeof(operands_inir)/sizeof(operandlist), operands_inir},
     {"inirx",EZ80, sizeof(operands_inirx)/sizeof(operandlist), operands_inirx},
     {"jp",  EZ80, sizeof(operands_jp)/sizeof(operandlist), operands_jp},
+    {"jr",  EZ80, sizeof(operands_jr)/sizeof(operandlist), operands_jr},
     {"ld",  EZ80, sizeof(operands_ld)/sizeof(operandlist), operands_ld},
     {"adl", ASSEMBLER, 0, NULL}
 };
