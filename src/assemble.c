@@ -522,7 +522,7 @@ void definelabel(uint8_t size){
     address += size;
 }
 
-// return ADL prefix code, or 0 if none present
+// return ADL prefix bitfield, or 0 if none present
 uint8_t getADLsuffix(void) {
     if(currentline.suffix_present) {
         switch(strlen(currentline.suffix)) {
@@ -679,12 +679,12 @@ void emit_instruction(uint8_t immsize, uint8_t suffix, uint8_t prefix, uint8_t o
 void emit_immediate(operand *op, uint8_t suffix) {
     uint8_t num;
     switch(suffix) {
-        case 0x40:
-        case 0x49:
+        case S_SIS:
+        case S_LIS:
             num = 2;
             break;
-        case 0x52:
-        case 0x5B:
+        case S_SIL:
+        case S_LIL:
             num = 3;
             break;
         case 0:
@@ -699,6 +699,29 @@ void emit_immediate(operand *op, uint8_t suffix) {
     printf(":0x%02x", (op->immediate >> 8) & 0xFF);
     if(num == 3) printf(":0x%02x", (op->immediate >> 16) & 0xFF);
 }
+
+void emit_adlsuffix_code(uint8_t suffix) {
+    uint8_t code;
+    switch(suffix) {
+        case S_SIS:
+            code = CODE_SIS;
+            break;
+        case S_LIS:
+            code = CODE_LIS;
+            break;
+        case S_SIL:
+            code = CODE_SIL;
+            break;
+        case S_LIL:
+            code = CODE_LIL;
+            break;
+        default:
+            error(message[ERROR_INVALIDSUFFIX]);
+            return;
+    }
+    printf("0x%02x:", code);
+}
+
 void emit_instruction(operandlist *list) {
     uint8_t size = 1; // There is always 1 opcode to output
     bool ddfddd; // determine position of displacement byte in case of DDCBdd/DDFDdd
@@ -728,6 +751,10 @@ void emit_instruction(operandlist *list) {
         //printf("DEBUG: ADL code %d\n", output.suffix);
         //printf("DEBUG: ADL string %s\n",currentline.suffix);
         //printf("DEBUG: ADL suffix present: %d\n", currentline.suffix_present);
+
+        // issue any errors here
+        if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
+        // Output label at this address
         definelabel(size);
     }
     if(pass == 2) {
@@ -736,7 +763,7 @@ void emit_instruction(operandlist *list) {
                   ((operand1.displacement_provided) || (operand2.displacement_provided)));
         
         // output adl suffix and any prefixes
-        if(output.suffix > 0) printf("0x%02x:",output.suffix);
+        if(output.suffix > 0) emit_adlsuffix_code(output.suffix);
         if(output.prefix1) printf("0x%02x:",output.prefix1);
         if(output.prefix2) printf("0x%02x:",output.prefix2);
 

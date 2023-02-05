@@ -64,6 +64,10 @@
 ;ld.sis (0xaabbcc),a
 ;adl 0
 ;ld.lil (0xaabbcc),a
-adl 1
-ld.s (0xaabbcc),ix
-ld.s (0xaabbcc),iy
+;adl 1
+;ld.s (0xaabbcc),ix
+;ld.s (0xaabbcc),iy
+test.lis a,b
+test.sil a,b
+test.sis a,b
+test.lil a,b

@@ -585,7 +585,7 @@ operandlist operands_ld[] = {
 };
 
 operandlist operands_test[] = {
-    {OPTYPE_R, OPTYPE_R,            TRANSFORM_Y, TRANSFORM_Z, 0x00, 0x80, S_NONE},
+    {OPTYPE_R, OPTYPE_R,            TRANSFORM_Y, TRANSFORM_Z, 0x00, 0x80, S_ANY},
 };
 
 instruction instructions[] = {
