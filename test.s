@@ -82,7 +82,33 @@
 ;adc.s a, (iy+10)
 ;adl 0
 ;adc.l a, (iy+10) 
-dec ixh
-dec ixl
-dec iyh
-dec iyl
+;dec ixh
+;dec ixl
+;dec iyh
+;dec iyl
+;dec ix
+;dec iy
+
+;dec (ix+5)
+;dec (iy+5)
+;dec a,
+;dec b,
+;dec l
+
+;dec (hl)
+;dec bc
+;dec de
+;dec hl
+;dec sp
+;djnz 0x100
+;im 0
+;im 1
+;im 2
+;in a, (5)
+in a, (c)
+in b, (c)
+in c, (c)
+in d, (c)
+in e, (c)
+in h, (c)
+in l, (c)

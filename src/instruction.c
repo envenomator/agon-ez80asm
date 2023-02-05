@@ -76,6 +76,25 @@ bool i_match(operand *op) {
 bool b_match(operand *op) {
     return (!(op->indirect) && (op->immediate_provided));
 }
+bool af_match(operand *op) {
+    return(op->reg == R_AF);
+}
+bool de_match(operand *op) {
+    return(op->reg == R_DE);
+}
+bool nselect_match(operand *op) {
+    return (!(op->indirect) && (op->immediate_provided));
+}
+bool indirect_n_match(operand *op) {
+    return ((op->indirect) && (op->immediate_provided));
+}
+bool indirect_bc_match(operand *op) {
+    return((op->indirect) && (op->reg == R_BC));
+}
+bool indirect_c_match(operand *op) {
+    return((op->indirect) && (op->reg == R_C));
+}
+
 void none_transform(opcodetransformtype type, operand *op) {
     return;
 }
@@ -113,6 +132,19 @@ void ir_transform(opcodetransformtype type, operand *op) {
     return;
 }
 void ixy_transform(opcodetransformtype type, operand *op) {
+    if(type == TRANSFORM_DDFD) {
+        switch(op->reg) {
+            case R_IX:
+                output.prefix1 = 0xDD;
+                return;
+            case R_IY:
+                output.prefix1 = 0xFD;
+                return;
+            default:
+                break;
+        }
+    }
+    error(message[ERROR_TRANSFORMATION]);
     return;
 }
 void ixyd_transform(opcodetransformtype type, operand *op) {
@@ -129,7 +161,6 @@ void indirect_ixyd_transform(opcodetransformtype type, operand *op) {
                 return;
             default:
                 break;
-
         }
     }
     error(message[ERROR_TRANSFORMATION]);
@@ -207,6 +238,44 @@ void b_transform(opcodetransformtype type, operand *op) {
     }
     return;
 }
+void af_transform(opcodetransformtype type, operand *op) {
+    return;
+}
+void de_transform(opcodetransformtype type, operand *op) {
+    return;
+}
+void nselect_transform(opcodetransformtype type, operand *op) {
+    uint8_t y;
+    if(type == TRANSFORM_P) {
+        switch(op->immediate) {
+            case 0:
+                y = 0;
+                break;
+            case 1:
+                y = 2;
+                break;
+            case 2:
+                y = 3;
+                break;
+            default:
+                error(message[ERROR_INVALIDOPERAND]);
+                y = 0;
+        }
+        output.opcode |= (y << 3); // shift 3 lower bits 3 to the left
+        op->immediate_provided = false; // no separate output for this transform
+    }
+    return;
+}
+void indirect_n_transform(opcodetransformtype type, operand *op) {
+    return;
+}
+void indirect_bc_transform(opcodetransformtype type, operand *op) {
+    return;
+}
+void indirect_c_transform(opcodetransformtype type, operand *op) {
+    return;
+}
+
 instruction * instruction_table[INSTRUCTION_TABLE_SIZE]; // hashtable of possible instructions, indexed by mnemonic name
 operandtype_match operandtype_matchlist[] = {            // table with fast access to functions that perform matching to an specific operandtype
     {OPTYPE_NONE, none_match, none_transform},
@@ -230,7 +299,13 @@ operandtype_match operandtype_matchlist[] = {            // table with fast acce
     {OPTYPE_REG_R, reg_r_match, reg_r_transform},
     {OPTYPE_MB, mb_match, mb_transform},
     {OPTYPE_I, i_match, i_transform},
-    {OPTYPE_BIT, b_match, b_transform}
+    {OPTYPE_BIT, b_match, b_transform},
+    {OPTYPE_AF, af_match, af_transform},
+    {OPTYPE_DE, de_match, de_transform},
+    {OPTYPE_NSELECT, nselect_match, nselect_transform},
+    {OPTYPE_INDIRECT_N, indirect_n_match, indirect_n_transform},
+    {OPTYPE_INDIRECT_BC, indirect_bc_match, indirect_bc_transform},
+    {OPTYPE_INDIRECT_C, indirect_c_match, indirect_c_transform}
 };
 
 unsigned int collisions;    // internal use
@@ -300,9 +375,44 @@ operandlist operands_daa[]= {
     {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x27, NONE},
 };
 operandlist operands_dec[]= {
-    {OPTYPE_HL, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x35, SL_ONLY},
-    {OPTYPE_IR, OPTYPE_NONE,      TRANSFORM_DDFD, TRANSFORM_NONE,0x00, 0x25, NONE},
+    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x35, SL_ONLY}, // tested
+    {OPTYPE_IR, OPTYPE_NONE,      TRANSFORM_DDFD, TRANSFORM_NONE,0x00, 0x25, NONE}, // tested
+    {OPTYPE_IXY, OPTYPE_NONE,     TRANSFORM_DDFD, TRANSFORM_NONE,0x00, 0x2B, SL_ONLY}, // tested
+    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE, TRANSFORM_DDFD, TRANSFORM_NONE,0x00,0x35,SL_ONLY}, // tested
+    {OPTYPE_R, OPTYPE_NONE,       TRANSFORM_Y, TRANSFORM_NONE, 0x00, 0x05, NONE}, // tested
+    {OPTYPE_RR, OPTYPE_NONE,      TRANSFORM_P, TRANSFORM_NONE, 0x00, 0x0B, SL_ONLY}, // tested
+    {OPTYPE_SP, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3B, SL_ONLY}, // tested
 };
+operandlist operands_di[]= {
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xF3, NONE},
+};
+operandlist operands_djnz[]= {
+    {OPTYPE_N, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x10, NONE},
+};
+operandlist operands_ei[]= {
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xFB, NONE},
+};
+operandlist operands_ex[]= {
+    {OPTYPE_AF, OPTYPE_AF,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x08, NONE},
+    {OPTYPE_DE, OPTYPE_HL,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xEB, NONE},
+    {OPTYPE_INDIRECT_SP, OPTYPE_HL, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xE3, SL_ONLY},
+    {OPTYPE_INDIRECT_SP, OPTYPE_IXY, TRANSFORM_NONE, TRANSFORM_DDFD, 0x00, 0xE3, SL_ONLY},
+};
+operandlist operands_exx[]= {
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xD9, NONE},
+};
+operandlist operands_halt[]= {
+    {OPTYPE_NONE, OPTYPE_NONE,      TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x76, NONE},
+};
+operandlist operands_im[]= {
+    {OPTYPE_NSELECT, OPTYPE_NONE,      TRANSFORM_P, TRANSFORM_NONE,0xED, 0x46, NONE},
+};
+operandlist operands_in[]= {
+    {OPTYPE_A, OPTYPE_INDIRECT_N,      TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xDB, NONE},
+    {OPTYPE_R, OPTYPE_INDIRECT_BC,     TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x40, NONE},
+    {OPTYPE_R, OPTYPE_INDIRECT_C,      TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x40, NONE},
+};
+
 operandlist operands_xxx[]= {
     {},
 };
@@ -328,6 +438,14 @@ instruction instructions[] = {
     {"cpl",EZ80, sizeof(operands_cpl)/sizeof(operandlist), operands_cpl},
     {"daa",EZ80, sizeof(operands_daa)/sizeof(operandlist), operands_daa},
     {"dec",EZ80, sizeof(operands_dec)/sizeof(operandlist), operands_dec},
+    {"di",EZ80, sizeof(operands_di)/sizeof(operandlist), operands_di},
+    {"djnz",EZ80, sizeof(operands_djnz)/sizeof(operandlist), operands_djnz},
+    {"ei",EZ80, sizeof(operands_ei)/sizeof(operandlist), operands_ei},
+    {"ex",EZ80, sizeof(operands_ex)/sizeof(operandlist), operands_ex},
+    {"exx",EZ80, sizeof(operands_exx)/sizeof(operandlist), operands_exx},
+    {"halt",EZ80, sizeof(operands_halt)/sizeof(operandlist), operands_halt},
+    {"im",EZ80, sizeof(operands_im)/sizeof(operandlist), operands_im},
+    {"in",EZ80, sizeof(operands_in)/sizeof(operandlist), operands_in},
     {"ld",  EZ80, sizeof(operands_ld)/sizeof(operandlist), operands_ld},
     {"adl", ASSEMBLER, 0, NULL}
 };

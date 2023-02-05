@@ -703,7 +703,10 @@ void emit_instruction(operandlist *list) {
     // calculate size
     size += output.prefix1?1:0 + output.prefix2?1:0 + suffix?1:0;
     if((list->operandA == OPTYPE_INDIRECT_IXYd) || (list->operandB == OPTYPE_INDIRECT_IXYd)) size++; // Displacement byte
-    if((list->operandA == OPTYPE_N) || (list->operandB == OPTYPE_N)) size++; // n == 1byte
+    if((list->operandA == OPTYPE_N) || 
+       (list->operandB == OPTYPE_N) ||
+       (list->operandA == OPTYPE_INDIRECT_N) ||
+       (list->operandB == OPTYPE_INDIRECT_N)) size++; // n == 1byte    
     if((list->operandA == OPTYPE_MMN) || (list->operandB == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) {
         // add 2 or 3 bytes, according to adl mode and suffix
         size += adlmode?3:2;
@@ -711,8 +714,8 @@ void emit_instruction(operandlist *list) {
     
     if(pass == 1) {
         if(debug_enabled) printf("DEBUG - Line %d - instruction size %d\n", linenumber, size);
-        if((list->operandA == OPTYPE_N) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
-        if((list->operandB == OPTYPE_N) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
+        if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
+        if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
         //printf("DEBUG: ADL code %d\n", suffix);
         //printf("DEBUG: ADL string %s\n",currentline.suffix);
         //printf("DEBUG: ADL suffix present: %d\n", currentline.suffix_present);
@@ -731,8 +734,10 @@ void emit_instruction(operandlist *list) {
         // opcode in normal position
         if(!ddfddd) printf("0x%02x",output.opcode);
         
-        if(list->operandA == OPTYPE_N) printf(":0x%02x", operand1.immediate & 0xFF);
-        if(list->operandB == OPTYPE_N) printf(":0x%02x", operand2.immediate & 0xFF);
+        if((list->operandA == OPTYPE_N) || 
+           (list->operandA == OPTYPE_INDIRECT_N)) printf(":0x%02x", operand1.immediate & 0xFF);
+        if((list->operandB == OPTYPE_N) ||
+           (list->operandB == OPTYPE_INDIRECT_N)) printf(":0x%02x", operand2.immediate & 0xFF);
 
         if(operand1.displacement_provided) printf(":0x%02x", operand1.displacement & 0xFF);
         if(operand2.displacement_provided) printf(":0x%02x", operand2.displacement & 0xFF);

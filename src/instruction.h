@@ -29,7 +29,13 @@ typedef enum { // permitted operand type
     OPTYPE_REG_R,
     OPTYPE_MB,
     OPTYPE_I,
-    OPTYPE_BIT
+    OPTYPE_BIT,
+    OPTYPE_AF,
+    OPTYPE_DE,
+    OPTYPE_NSELECT,
+    OPTYPE_INDIRECT_N,
+    OPTYPE_INDIRECT_BC,
+    OPTYPE_INDIRECT_C
 } operandtype;
 
 typedef enum {
