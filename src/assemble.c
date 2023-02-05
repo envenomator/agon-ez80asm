@@ -160,10 +160,12 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                             operand->reg = R_IXL;
                             return;
                         case '+':
+                        case '-':
                             if(isdigit(*ptr)) {
                                 operand->reg = R_IX;
                                 operand->displacement_provided = true;
-                                operand->displacement = (uint8_t) str2num(ptr);
+                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr);
+                                else operand->displacement = (int16_t) str2num(ptr);
                                 return;
                             }
                             break;
@@ -183,10 +185,12 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                             operand->reg = R_IYL;
                             return;
                         case '+':
+                        case '-':
                             if(isdigit(*ptr)) {
                                 operand->reg = R_IY;
                                 operand->displacement_provided = true;
-                                operand->displacement = (uint8_t) str2num(ptr);
+                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr);
+                                else operand->displacement = (int16_t) str2num(ptr);
                                 return;
                             }
                             break;
@@ -754,6 +758,18 @@ void emit_instruction(operandlist *list) {
 
         // issue any errors here
         if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
+        printf("Displacement %d\n",operand2.displacement);
+        //printf("Displacement provided %d\n",operand2.displacement_provided);
+
+        if((operand2.displacement_provided) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
+        /*
+        if(operand1.displacement_provided && 
+           ((operand1.displacement > 127) || 
+            (operand1.displacement < 128))) error(message[ERROR_DISPLACEMENT_RANGE]);
+        if(operand2.displacement_provided && 
+           ((operand2.displacement > 127) || 
+            (operand2.displacement < 128))) error(message[ERROR_DISPLACEMENT_RANGE]);
+        */
         // Output label at this address
         definelabel(size);
     }

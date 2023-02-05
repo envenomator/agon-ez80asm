@@ -123,7 +123,7 @@ typedef struct {
     bool                indirect;
     bool                cc;
     uint8_t             cc_index;
-    uint8_t             displacement;
+    int16_t             displacement;           // larger, so we can check range
     bool                displacement_provided;
     bool                immediate_provided;
     uint32_t            immediate;

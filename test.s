@@ -67,7 +67,5 @@
 ;adl 1
 ;ld.s (0xaabbcc),ix
 ;ld.s (0xaabbcc),iy
-test.lis a,b
-test.sil a,b
-test.sis a,b
-test.lil a,b
+test b, (ix+127)
+test b, (iy-128)

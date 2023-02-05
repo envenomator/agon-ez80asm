@@ -36,5 +36,6 @@ char *message[] = {
     "Range error in immediate",
     "Invalid suffix",
     "Range error in immediate",
-    "Illegal suffix for this mnemonic"
+    "Illegal suffix for this mnemonic",
+    "Displacement range error"
 };
