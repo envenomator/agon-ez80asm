@@ -96,10 +96,20 @@ typedef enum {
 #define CC_INDEX_P  6
 #define CC_INDEX_M  7
 
-#define SUFFIX_SIS  0x40
-#define SUFFIX_LIS  0x49
-#define SUFFIX_SIL  0x52
-#define SUFFIX_LIL  0x5B
+// bitfield codes to check allowed emission
+#define S_SIS         0x01
+#define S_LIS         0x02
+#define S_SIL         0x04
+#define S_LIL         0x08
+#define S_ANY         0xFF
+#define S_NONE        0x00
+#define S_SISLIL      S_SIS | S_LIL
+
+// actual codes to emit
+#define CODE_SIS    0x40
+#define CODE_LIS    0x49
+#define CODE_SIL    0x52
+#define CODE_LIL    0x5B
 
 typedef enum {
     POS_SOURCE,
@@ -127,14 +137,6 @@ typedef struct {
 } opcodesequence;
 
 typedef enum {
-    NONE,
-    ANY,
-    L_ONLY,
-    SL_ONLY,
-    SISLIL
-} adltype;
-
-typedef enum {
     TRANSFORM_NONE,
     TRANSFORM_X,
     TRANSFORM_Y,
@@ -151,7 +153,7 @@ typedef struct {
     opcodetransformtype transformB;         //  "        "       " "  operandB
     uint8_t             prefix;            // base prefix1, may be transformed by A/B
     uint8_t             opcode;             // base opcode, may be transformed by A/B
-    adltype             adl;                // the adl mode allowed in set of operands
+    uint8_t             adl;                // the adl mode allowed in set of operands
 } operandlist;
 
 // An array-based index of this structure will act as a fast lookup table

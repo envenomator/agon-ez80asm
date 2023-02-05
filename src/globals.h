@@ -50,6 +50,7 @@ enum {
     ERROR_TRANSFORMATION,
     WARNING_N_TOOLARGE,
     ERROR_INVALIDSUFFIX,
+    ERROR_MMN_TOOLARGE
 };
 // Error messages
 extern char *message[];

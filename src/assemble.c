@@ -496,6 +496,13 @@ void parse(char *line) {
                 parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
                 parse_operand(POS_SOURCE, currentline.operand2, &operand2);
                 output.suffix = getADLsuffix();
+                // Basic number checks according
+                if(operand1.immediate_provided) {
+                    if((!adlmode) && (operand1.immediate > 0xFFFF)) error(message[ERROR_MMN_TOOLARGE]);
+                }
+                if(operand2.immediate_provided) {
+                    if((!adlmode) && (operand2.immediate > 0xFFFF)) error(message[ERROR_MMN_TOOLARGE]);
+                }
                 return;
             case STATE_MISSINGOPERAND:
                 error(message[ERROR_MISSINGOPERAND]);
@@ -522,12 +529,12 @@ uint8_t getADLsuffix(void) {
             case 1: // .s or .l
                 switch(currentline.suffix[0]) {
                     case 's':
-                        if(adlmode) return SUFFIX_SIL;  // SIL
-                        else return SUFFIX_SIS;         // SIS
+                        if(adlmode) return S_SIL;  // SIL
+                        else return S_SIS;         // SIS
                         break;
                     case 'l':
-                        if(adlmode) return SUFFIX_LIL;  // LIL
-                        else return SUFFIX_LIS;         // LIS
+                        if(adlmode) return S_LIL;  // LIL
+                        else return S_LIS;         // LIS
                         break;
                     default: // illegal suffix
                         break;
@@ -537,12 +544,12 @@ uint8_t getADLsuffix(void) {
                 if(currentline.suffix[0] != 'i') break; // illegal suffix
                 switch(currentline.suffix[1]) {
                     case 's':
-                        if(adlmode) return SUFFIX_LIS;  // LIS
-                        else return SUFFIX_SIS;         // SIS
+                        if(adlmode) return S_LIS;  // LIS
+                        else return S_SIS;         // SIS
                         break;
                     case 'l':
-                        if(adlmode) return SUFFIX_LIL;  // LIL
-                        else return SUFFIX_SIL;         // SIL
+                        if(adlmode) return S_LIL;  // LIL
+                        else return S_SIL;         // SIL
                         break;
                     default: // illegal suffix
                         break;
@@ -552,13 +559,13 @@ uint8_t getADLsuffix(void) {
                 if(currentline.suffix[1] != 'i') break; // illegal suffix
                 switch(currentline.suffix[0]) {
                     case 's':
-                        if(currentline.suffix[2] == 's') return SUFFIX_SIS; // SIS
-                        if(currentline.suffix[2] == 'l') return SUFFIX_SIL; // SIL
+                        if(currentline.suffix[2] == 's') return S_SIS; // SIS
+                        if(currentline.suffix[2] == 'l') return S_SIL; // SIL
                         // illegal suffix
                         break;
                     case 'l':
-                        if(currentline.suffix[2] == 's') return SUFFIX_LIS; // LIS
-                        if(currentline.suffix[2] == 'l') return SUFFIX_LIL; // LIL
+                        if(currentline.suffix[2] == 's') return S_LIS; // LIS
+                        if(currentline.suffix[2] == 'l') return S_LIL; // LIL
                         // illegal suffix
                         break;
                     default: // illegal suffix

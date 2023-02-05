@@ -33,6 +33,7 @@ char *message[] = {
     "Invalid operand",
     "Operand(s) not matching mnemonic",
     "Error in opcode transformation",
-    "Range error",
-    "Invalid suffix"
+    "Range error in immediate",
+    "Invalid suffix",
+    "Range error in immediate"
 };
