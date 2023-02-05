@@ -495,6 +495,7 @@ void parse(char *line) {
             case STATE_DONE:
                 parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
                 parse_operand(POS_SOURCE, currentline.operand2, &operand2);
+                output.suffix = getADLsuffix();
                 return;
             case STATE_MISSINGOPERAND:
                 error(message[ERROR_MISSINGOPERAND]);
@@ -515,20 +516,18 @@ void definelabel(uint8_t size){
 }
 
 // return ADL prefix code, or 0 if none present
-uint8_t getADLsuffix(adltype allowed) {
-    uint8_t code=0;
-
+uint8_t getADLsuffix(void) {
     if(currentline.suffix_present) {
         switch(strlen(currentline.suffix)) {
             case 1: // .s or .l
                 switch(currentline.suffix[0]) {
                     case 's':
-                        if(adlmode) code=0x52;    // SIL
-                        else code=0x40;           // SIS
+                        if(adlmode) return SUFFIX_SIL;  // SIL
+                        else return SUFFIX_SIS;         // SIS
                         break;
                     case 'l':
-                        if(adlmode) code=0x5B;    // LIL
-                        else code=0x49;           // LIS
+                        if(adlmode) return SUFFIX_LIL;  // LIL
+                        else return SUFFIX_LIS;         // LIS
                         break;
                     default: // illegal suffix
                         break;
@@ -538,12 +537,12 @@ uint8_t getADLsuffix(adltype allowed) {
                 if(currentline.suffix[0] != 'i') break; // illegal suffix
                 switch(currentline.suffix[1]) {
                     case 's':
-                        if(adlmode) code=0x49;    // LIS
-                        else code=0x40;           // SIS
+                        if(adlmode) return SUFFIX_LIS;  // LIS
+                        else return SUFFIX_SIS;         // SIS
                         break;
                     case 'l':
-                        if(adlmode) code=0x5B;    // LIL
-                        else code=0x52;           // SIL
+                        if(adlmode) return SUFFIX_LIL;  // LIL
+                        else return SUFFIX_SIL;         // SIL
                         break;
                     default: // illegal suffix
                         break;
@@ -553,13 +552,13 @@ uint8_t getADLsuffix(adltype allowed) {
                 if(currentline.suffix[1] != 'i') break; // illegal suffix
                 switch(currentline.suffix[0]) {
                     case 's':
-                        if(currentline.suffix[2] == 's') code=0x40; // SIS
-                        if(currentline.suffix[2] == 'l') code=0x52; // SIL
+                        if(currentline.suffix[2] == 's') return SUFFIX_SIS; // SIS
+                        if(currentline.suffix[2] == 'l') return SUFFIX_SIL; // SIL
                         // illegal suffix
                         break;
                     case 'l':
-                        if(currentline.suffix[2] == 's') code=0x49; // LIS
-                        if(currentline.suffix[2] == 'l') code=0x5B; // LIL
+                        if(currentline.suffix[2] == 's') return SUFFIX_LIS; // LIS
+                        if(currentline.suffix[2] == 'l') return SUFFIX_LIL; // LIL
                         // illegal suffix
                         break;
                     default: // illegal suffix
@@ -569,6 +568,11 @@ uint8_t getADLsuffix(adltype allowed) {
             default: // illegal suffix
                 break;
         }
+        error(message[ERROR_INVALIDSUFFIX]);
+    }
+    return 0;
+}
+/*
         if(code == 0) error("Illegal ADL suffix");
         // check for allowed suffixes
         switch(allowed) {
@@ -594,6 +598,7 @@ uint8_t getADLsuffix(adltype allowed) {
     }
     return code;
 }
+*/
 
 /*
 void emit_ld_from_immediate(uint8_t prefix, uint8_t opcode, char *valstring) {
@@ -689,7 +694,6 @@ void emit_immediate(operand *op, uint8_t suffix) {
 }
 void emit_instruction(operandlist *list) {
     uint8_t size = 1; // There is always 1 opcode to output
-    uint8_t suffix = getADLsuffix(list->adl);
     bool ddfddd; // determine position of displacement byte in case of DDCBdd/DDFDdd
     // Transform necessary prefix/opcode in output, according to given list and operands
     output.prefix1 = 0;
@@ -699,7 +703,7 @@ void emit_instruction(operandlist *list) {
     if(list->transformB != TRANSFORM_NONE) operandtype_matchlist[list->operandB].transform(list->transformB, &operand2);
 
     // calculate size
-    size += output.prefix1?1:0 + output.prefix2?1:0 + suffix?1:0;
+    size += output.prefix1?1:0 + output.prefix2?1:0 + output.suffix?1:0;
     if((list->operandA == OPTYPE_INDIRECT_IXYd) || (list->operandB == OPTYPE_INDIRECT_IXYd)) size++; // Displacement byte
     if((list->operandA == OPTYPE_N) || 
        (list->operandB == OPTYPE_N) ||
@@ -714,7 +718,7 @@ void emit_instruction(operandlist *list) {
         if(debug_enabled) printf("DEBUG - Line %d - instruction size %d\n", linenumber, size);
         if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
         if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
-        //printf("DEBUG: ADL code %d\n", suffix);
+        //printf("DEBUG: ADL code %d\n", output.suffix);
         //printf("DEBUG: ADL string %s\n",currentline.suffix);
         //printf("DEBUG: ADL suffix present: %d\n", currentline.suffix_present);
         definelabel(size);
@@ -725,7 +729,7 @@ void emit_instruction(operandlist *list) {
                   ((operand1.displacement_provided) || (operand2.displacement_provided)));
         
         // output adl suffix and any prefixes
-        if(suffix) printf("0x%02x:",suffix);
+        if(output.suffix > 0) printf("0x%02x:",output.suffix);
         if(output.prefix1) printf("0x%02x:",output.prefix1);
         if(output.prefix2) printf("0x%02x:",output.prefix2);
 
@@ -746,8 +750,8 @@ void emit_instruction(operandlist *list) {
         if(ddfddd) printf("0x%02x",output.opcode);
 
         //output remaining immediate bytes
-        if((list->operandA == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand1, suffix);
-        if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand2, suffix);
+        if((list->operandA == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand1, output.suffix);
+        if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand2, output.suffix);
         printf("\n");
     }
 }

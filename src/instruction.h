@@ -96,6 +96,10 @@ typedef enum {
 #define CC_INDEX_P  6
 #define CC_INDEX_M  7
 
+#define SUFFIX_SIS  0x40
+#define SUFFIX_LIS  0x49
+#define SUFFIX_SIL  0x52
+#define SUFFIX_LIL  0x5B
 
 typedef enum {
     POS_SOURCE,
@@ -116,6 +120,7 @@ typedef struct {
 } operand;
 
 typedef struct {
+    uint8_t suffix;
     uint8_t prefix1;
     uint8_t prefix2;
     uint8_t opcode;

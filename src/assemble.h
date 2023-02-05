@@ -16,7 +16,7 @@ void extcheck(bool passed);
 void instsize(uint8_t instruction_size);
 
 uint32_t immediate(char *arg);
-uint8_t getADLsuffix(adltype allowed);  // checks defined types and also checks if the allowed type is present vs the adlmode
+uint8_t getADLsuffix(void);  // checks defined types and also checks if the allowed type is present vs the adlmode
 void emit_ld_from_immediate(uint8_t prefix, uint8_t opcode, char *valstring);
 void emit_8bit(uint8_t value);
 void emit_16bit(uint16_t value);

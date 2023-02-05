@@ -29,6 +29,9 @@ extern uint32_t address;
 extern uint16_t global_errors;
 extern bool adlmode;
 extern tokenline currentline;
+
+// Global parsed results
+extern uint8_t suffix;      // per-instruction suffix code
 extern operand operand1;
 extern operand operand2;
 extern opcodesequence output;
@@ -46,6 +49,7 @@ enum {
     ERROR_OPERANDSNOTMATCHING,
     ERROR_TRANSFORMATION,
     WARNING_N_TOOLARGE,
+    ERROR_INVALIDSUFFIX,
 };
 // Error messages
 extern char *message[];
