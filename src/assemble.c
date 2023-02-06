@@ -500,13 +500,6 @@ void parse(char *line) {
                 parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
                 parse_operand(POS_SOURCE, currentline.operand2, &operand2);
                 output.suffix = getADLsuffix();
-                // Basic number checks according
-                if(operand1.immediate_provided) {
-                    if((!adlmode) && (operand1.immediate > 0xFFFF)) error(message[ERROR_MMN_TOOLARGE]);
-                }
-                if(operand2.immediate_provided) {
-                    if((!adlmode) && (operand2.immediate > 0xFFFF)) error(message[ERROR_MMN_TOOLARGE]);
-                }
                 return;
             case STATE_MISSINGOPERAND:
                 error(message[ERROR_MISSINGOPERAND]);
@@ -679,8 +672,8 @@ void emit_instruction(uint8_t immsize, uint8_t suffix, uint8_t prefix, uint8_t o
     }
 }
 */
-
-void emit_immediate(operand *op, uint8_t suffix) {
+// get the number of bytes to emit from an immediate
+uint8_t get_immediate_size(operand *op, uint8_t suffix) {
     uint8_t num;
     switch(suffix) {
         case S_SIS:
@@ -691,14 +684,23 @@ void emit_immediate(operand *op, uint8_t suffix) {
         case S_LIL:
             num = 3;
             break;
-        case 0:
+        case 0: // Use current ADL mode to determine 16/24 bit
             if(adlmode) num = 3;
             else num = 2;
             break;
-        default:
+        default: // This really shouldn't happen
             error(message[ERROR_INVALIDMNEMONIC]);
-            return;
+            return 0;
     }
+    if((num == 2) && (op->immediate > 0xFFFF)) error(message[ERROR_MMN_TOOLARGE]);
+    return num;
+}
+// Emit a 16 or 24 bit immediate number, according to
+// given suffix bit, or in lack of it, the current ADL mode
+void emit_immediate(operand *op, uint8_t suffix) {
+    uint8_t num;
+
+    num = get_immediate_size(op, suffix);
     printf(":0x%02x", op->immediate & 0xFF);
     printf(":0x%02x", (op->immediate >> 8) & 0xFF);
     if(num == 3) printf(":0x%02x", (op->immediate >> 16) & 0xFF);
@@ -729,6 +731,7 @@ void emit_adlsuffix_code(uint8_t suffix) {
 void emit_instruction(operandlist *list) {
     uint8_t size = 1; // There is always 1 opcode to output
     bool ddfddd; // determine position of displacement byte in case of DDCBdd/DDFDdd
+
     // Transform necessary prefix/opcode in output, according to given list and operands
     output.prefix1 = 0;
     output.prefix2 = list->prefix;
@@ -736,18 +739,16 @@ void emit_instruction(operandlist *list) {
     if(list->transformA != TRANSFORM_NONE) operandtype_matchlist[list->operandA].transform(list->transformA, &operand1);
     if(list->transformB != TRANSFORM_NONE) operandtype_matchlist[list->operandB].transform(list->transformB, &operand2);
 
-    // calculate size
+    // calculate size of output
     size += output.prefix1?1:0 + output.prefix2?1:0 + output.suffix?1:0;
     if((list->operandA == OPTYPE_INDIRECT_IXYd) || (list->operandB == OPTYPE_INDIRECT_IXYd)) size++; // Displacement byte
     if((list->operandA == OPTYPE_N) || 
        (list->operandB == OPTYPE_N) ||
        (list->operandA == OPTYPE_INDIRECT_N) ||
        (list->operandB == OPTYPE_INDIRECT_N)) size++; // n == 1byte    
-    if((list->operandA == OPTYPE_MMN) || (list->operandB == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) {
-        // add 2 or 3 bytes, according to adl mode and suffix
-        size += adlmode?3:2;
-    }
-    
+    if((list->operandA == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN)) size += get_immediate_size(&operand1, output.suffix); // 2 or 3 bytes
+    if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) size += get_immediate_size(&operand2, output.suffix); // 2, or 3 bytes
+        
     if(pass == 1) {
         if(debug_enabled) printf("DEBUG - Line %d - instruction size %d\n", linenumber, size);
         if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
@@ -758,18 +759,8 @@ void emit_instruction(operandlist *list) {
 
         // issue any errors here
         if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
-        printf("Displacement %d\n",operand2.displacement);
-        //printf("Displacement provided %d\n",operand2.displacement_provided);
-
         if((operand2.displacement_provided) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
-        /*
-        if(operand1.displacement_provided && 
-           ((operand1.displacement > 127) || 
-            (operand1.displacement < 128))) error(message[ERROR_DISPLACEMENT_RANGE]);
-        if(operand2.displacement_provided && 
-           ((operand2.displacement > 127) || 
-            (operand2.displacement < 128))) error(message[ERROR_DISPLACEMENT_RANGE]);
-        */
+
         // Output label at this address
         definelabel(size);
     }
@@ -821,19 +812,6 @@ void emit_24bit(uint32_t value) {
         printf("0x%02x-0x%02x-0x%02x\n", value&0xFF, (value>>8)&0xFF, (value>>16)&0xFF);
     }
 }
-
-void argcheck(bool passed)
-{
-    if (passed == false)
-        error("arguments not correct for mnemonic");
-}
-
-void extcheck(bool passed)
-{
-    if (passed == false)
-        error("extension not correct for mnemonic");
-}
-
 
 void process(void){
     instruction *current_instruction;

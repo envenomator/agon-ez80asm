@@ -67,5 +67,20 @@
 ;adl 1
 ;ld.s (0xaabbcc),ix
 ;ld.s (0xaabbcc),iy
-test b, (ix+127)
-test b, (iy-128)
+;test b, (ix+127)
+;test b, (iy-128)
+;ld (0xaabbcc),a
+;.assume adl=0
+;    ld ($bbcc),a
+;    ld.il ($aabbcc),a
+;
+;.assume adl=1
+;    ld ($aabbcc),a
+;    ld.is ($bbcc),a
+adl 0
+    ld ($bbcc),a
+    ld.il ($aabbcc),a
+
+adl 1
+    ld ($aabbcc),a
+    ld.is ($bbcc),a

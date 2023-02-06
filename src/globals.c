@@ -35,7 +35,7 @@ char *message[] = {
     "Error in opcode transformation",
     "Range error in immediate",
     "Invalid suffix",
-    "Range error in immediate",
+    "Value too large for 16-bits, truncation required",
     "Illegal suffix for this mnemonic",
     "Displacement range error"
 };
