@@ -41,6 +41,8 @@ typedef enum { // permitted operand type
     OPTYPE_INDIRECT_DE,
     OPTYPE_IX,
     OPTYPE_IY,
+    OPTYPE_IXd,
+    OPTYPE_IYd,
 } operandtype;
 
 typedef enum {
@@ -170,8 +172,8 @@ enum {
 
 typedef struct {
     char        name[MAX_MNEMONIC_SIZE];
-    uint8_t     type;
-    uint8_t     listnumber;
+    uint8_t     type;                       // EZ80 / Assembler
+    uint8_t     listnumber;                 // number of items to iterate over in the list
     operandlist *list;
 } instruction;
 

@@ -22,4 +22,16 @@ void emit_8bit(uint8_t value);
 void emit_16bit(uint16_t value);
 void emit_24bit(uint32_t value);
 
+enum {
+    STATE_LINESTART,
+    STATE_MNEMONIC,
+    STATE_SUFFIX,
+    STATE_OPERAND1,
+    STATE_OPERAND2,
+    STATE_ASM_ARG,
+    STATE_COMMENT,
+    STATE_DONE,
+    STATE_MISSINGOPERAND
+};
+
 #endif // ASSEMBLE_H

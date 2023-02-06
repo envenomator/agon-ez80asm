@@ -319,17 +319,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
     }
 }
 
-enum {
-    STATE_LINESTART,
-    STATE_MNEMONIC,
-    STATE_SUFFIX,
-    STATE_OPERAND1,
-    STATE_OPERAND2,
-    STATE_COMMENT,
-    STATE_DONE,
-    STATE_MISSINGOPERAND
-};
-
 // converts everything to lower case, except comments
 void convertLower(char *line) {
     char *ptr = line;
@@ -340,11 +329,14 @@ void convertLower(char *line) {
 }
 
 // split line in string tokens and try to parse them into appropriate mnemonics and operands
+// Format 1: [label:] [[mnemonic][.suffix][operand1][,operand2]] [;comment] <- separate parser for operands and suffix
+// Format 2: [label:] [[asmcmd][cmdargument]] [;comment] <- requires separate parser for cmdargument
 void parse(char *line) {
     uint8_t state;
     char *ptr;
     char *token;
     char *tstart;
+    instruction *instr;
 
     currentline.label[0] = 0;
     currentline.mnemonic[0] = 0;
@@ -391,8 +383,9 @@ void parse(char *line) {
                     case ':':
                         // token proves to be a label after all
                         *token = 0; // close string
-                        *ptr = 0;
-                        strcpy(currentline.label, tstart);
+                        //*ptr = 0;
+                        //strcpy(currentline.label, tstart);
+                        strncpy(currentline.label, tstart, (ptr-tstart));
                         currentline.mnemonic[0] = 0; // empty mnemonic again
                         ptr++;
                         while(isspace(*ptr) != 0) ptr++; // skip over whitespace
@@ -416,9 +409,44 @@ void parse(char *line) {
                             *token = 0;
                             ptr++;
                             while(isspace(*ptr) != 0) ptr++; // skip over whitespace
-                            token = currentline.operand1;
-                            state = STATE_OPERAND1;
+                            // either go to operand (EZ80 instruction), or assembler argument
+                            instr = instruction_table_lookup(currentline.mnemonic);
+                            if(instr) {
+                                switch(instr->type) {
+                                    case EZ80:
+                                        token = currentline.operand1;
+                                        state = STATE_OPERAND1;
+                                        break;
+                                    case ASSEMBLER: // nothing yet, will break this out in the future
+                                        //error("Assembler command");
+                                        token = currentline.operand1;
+                                        state = STATE_OPERAND1;
+                                        break;
+                                    default:
+                                        error(message[ERROR_INVALIDMNEMONIC]); // actually: internal error
+                                        break;
+                                }
+                            }
+                            else error(message[ERROR_INVALIDMNEMONIC]);
+                            break;
                         }
+                }
+                break;
+            case STATE_ASM_ARG:
+                switch(*ptr) {
+                    case 0:
+                        *token = 0;
+                        state = STATE_DONE;
+                        break;
+                    case ';':
+                        *token = 0;
+                        token = currentline.comment;
+                        state = STATE_COMMENT;
+                        ptr++;
+                        break;
+                    default:
+                        if(isspace(*ptr) == 0) *token++ = *ptr++;
+                        break;
                 }
                 break;
             case STATE_SUFFIX:
@@ -510,7 +538,7 @@ void parse(char *line) {
 }
 
 void definelabel(uint8_t size){
-    // add label to label if defined
+    // add label to table if defined
     if(strlen(currentline.label)) {
         if(label_table_insert(currentline.label, address) == false){
             error("Out of label space");
@@ -576,75 +604,6 @@ uint8_t getADLsuffix(void) {
     }
     return 0;
 }
-/*
-        if(code == 0) error("Illegal ADL suffix");
-        // check for allowed suffixes
-        switch(allowed) {
-            case NONE:
-                error("No suffix allowed");
-                break;
-            case L_ONLY:
-                if((code == 0x40) || (code == 0x52)) error("Only .L allowed");
-                break;
-            case SL_ONLY:
-                if((code == 0x40) || (code == 0x5B)) error("No SIS or LIL allowed");
-                if((code == 0x49) && adlmode) error("L only allowed in z80 mode");
-                if((code == 0x52) && !adlmode) error("S only allowed in ADL mode");
-                break;
-            case SISLIL:
-                if((code == 0x49) || (code == 0x52)) error("No SIL or LIS allowed");
-                if((code == 0x40) && (!adlmode)) error("SIS only allowed in ADL mode");
-                if((code == 0x5B) && adlmode) error("LIL only allowed in z80 mode");
-                break;
-            case ANY:
-                break;
-        }
-    }
-    return code;
-}
-*/
-
-/*
-void emit_ld_from_immediate(uint8_t prefix, uint8_t opcode, char *valstring) {
-    uint8_t suffix;
-    uint8_t immsize;
-    uint32_t tmp32 = str2num(valstring);
-
-    suffix = getADLsuffix(ANY); // only takes care of illegal suffixes
-    if(adlmode) {
-        switch(suffix) {
-            case 0: // According to mode
-                immsize = 3;
-                break;
-            case 0x40: // SIS
-                immsize = 2;
-                break;
-            default:
-                immsize = 0;
-                break;
-        }
-    }
-    else {
-        switch(suffix) {
-            case 0: // According to mode
-                immsize = 2;
-                break;
-            case 0x5B: // LIL
-                immsize = 3;
-                break;
-            default:
-                immsize = 0;
-                break;
-        }
-    }
-    if(immsize) {
-        emit_instruction(immsize, suffix, prefix, opcode);
-        if(immsize == 2) emit_16bit(tmp32);
-        if(immsize == 3) emit_24bit(tmp32);
-    }
-    else error("Illegal ADL suffix");
-}
-*/
 
 void adl_action() {
     if(strcmp(currentline.operand1, "0") == 0) adlmode = false;
@@ -657,21 +616,6 @@ void adl_action() {
     }
 }
 
-/*
-void emit_instruction(uint8_t immsize, uint8_t suffix, uint8_t prefix, uint8_t opcode) {
-    uint8_t size;
-
-    if(pass == 1) {
-        size = immsize + (suffix>0)?1:0 + (prefix>0)?1:0 + 1;
-        definelabel(size);
-    }
-    if(pass == 2) {
-        if(suffix) printf("0x%02x-",suffix);
-        if(prefix) printf("0x%02x-",prefix);
-        printf("0x%02x-",opcode);
-    }
-}
-*/
 // get the number of bytes to emit from an immediate
 uint8_t get_immediate_size(operand *op, uint8_t suffix) {
     uint8_t num;
@@ -753,9 +697,6 @@ void emit_instruction(operandlist *list) {
         if(debug_enabled) printf("DEBUG - Line %d - instruction size %d\n", linenumber, size);
         if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
         if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
-        //printf("DEBUG: ADL code %d\n", output.suffix);
-        //printf("DEBUG: ADL string %s\n",currentline.suffix);
-        //printf("DEBUG: ADL suffix present: %d\n", currentline.suffix_present);
 
         // issue any errors here
         if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
