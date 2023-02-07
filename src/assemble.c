@@ -568,7 +568,22 @@ void parse(char *line) {
                         }
                         escaped = false;
                         break;
+                    case 'n':
+                        if(escaped) *bufferptr++ = 0x0a;
+                        else *bufferptr++ = 'n';
+                        currentline.size++;
+                        ptr++;
+                        escaped = false;
+                        break;
+                    case 'r':
+                        if(escaped) *bufferptr++ = 0x0d;
+                        else *bufferptr++ = 'd';
+                        currentline.size++;
+                        ptr++;
+                        escaped = false;
+                        break;
                     default:
+                        if(escaped) error("Invalid escape character in string");
                         *bufferptr++ = *ptr++;
                         currentline.size++;
                         escaped = false;

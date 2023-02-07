@@ -1,1 +1,1 @@
-db 0xff,"Dit is een test", 0x15
+db 0xff,"Dit is een test\n\r\d", 0x15
