@@ -172,9 +172,6 @@ void ixy_transform(opcodetransformtype type, operand *op) {
     error(message[ERROR_TRANSFORMATION]);
     return;
 }
-void ixyd_transform(opcodetransformtype type, operand *op) {
-    return;
-}
 void indirect_ixyd_transform(opcodetransformtype type, operand *op) {
     if(type == TRANSFORM_DDFD) {
         switch(op->reg) {
@@ -191,24 +188,6 @@ void indirect_ixyd_transform(opcodetransformtype type, operand *op) {
     error(message[ERROR_TRANSFORMATION]);
     return;
 }
-void mmn_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void indirect_mmn_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void n_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void a_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void hl_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void indirect_hl_transform(opcodetransformtype type, operand *op) {
-    return;
-}
 void rr_transform(opcodetransformtype type, operand *op) {
     switch(type) {
         case TRANSFORM_P:
@@ -217,18 +196,6 @@ void rr_transform(opcodetransformtype type, operand *op) {
         default:
             error(message[ERROR_TRANSFORMATION]);
     }
-    return;
-}
-void indirect_rr_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void rxy_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void sp_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void indirect_sp_transform(opcodetransformtype type, operand *op) {
     return;
 }
 void r_transform(opcodetransformtype type, operand *op) {
@@ -244,15 +211,6 @@ void r_transform(opcodetransformtype type, operand *op) {
     }
     return;
 }
-void reg_r_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void mb_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void i_transform(opcodetransformtype type, operand *op) {
-    return;
-}
 void b_transform(opcodetransformtype type, operand *op) {
     switch(type) {
         case TRANSFORM_Y:
@@ -261,12 +219,6 @@ void b_transform(opcodetransformtype type, operand *op) {
         default:
             error(message[ERROR_TRANSFORMATION]);
     }
-    return;
-}
-void af_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void de_transform(opcodetransformtype type, operand *op) {
     return;
 }
 void nselect_transform(opcodetransformtype type, operand *op) {
@@ -291,15 +243,6 @@ void nselect_transform(opcodetransformtype type, operand *op) {
     }
     return;
 }
-void indirect_n_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void indirect_bc_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void indirect_c_transform(opcodetransformtype type, operand *op) {
-    return;
-}
 void indirect_ixy_transform(opcodetransformtype type, operand *op) {
     if(type == TRANSFORM_DDFD) {
         switch(op->reg) {
@@ -322,21 +265,6 @@ void cca_transform(opcodetransformtype type, operand *op) {
     }
     return;
 }
-void indirect_de_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void ix_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void iy_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void ixd_transform(opcodetransformtype type, operand *op) {
-    return;
-}
-void iyd_transform(opcodetransformtype type, operand *op) {
-    return;
-}
 
 instruction * instruction_table[INSTRUCTION_TABLE_SIZE]; // hashtable of possible instructions, indexed by mnemonic name
 operandtype_match operandtype_matchlist[] = {            // table with fast access to functions that perform matching to an specific operandtype
@@ -344,37 +272,37 @@ operandtype_match operandtype_matchlist[] = {            // table with fast acce
     {OPTYPE_CC, cc_match, cc_transform},
     {OPTYPE_IR, ir_match, ir_transform},
     {OPTYPE_IXY, ixy_match, ixy_transform},
-    {OPTYPE_IXYd, ixyd_match, ixyd_transform},
+    {OPTYPE_IXYd, ixyd_match, none_transform},
     {OPTYPE_INDIRECT_IXYd, indirect_ixyd_match, indirect_ixyd_transform},
-    {OPTYPE_MMN, mmn_match, mmn_transform},
-    {OPTYPE_INDIRECT_MMN, indirect_mmn_match, indirect_mmn_transform},
-    {OPTYPE_N, n_match, n_transform},
-    {OPTYPE_A, a_match, a_transform},
-    {OPTYPE_HL, hl_match, hl_transform},
-    {OPTYPE_INDIRECT_HL, indirect_hl_match, indirect_hl_transform},
+    {OPTYPE_MMN, mmn_match, none_transform},
+    {OPTYPE_INDIRECT_MMN, indirect_mmn_match, none_transform},
+    {OPTYPE_N, n_match, none_transform},
+    {OPTYPE_A, a_match, none_transform},
+    {OPTYPE_HL, hl_match, none_transform},
+    {OPTYPE_INDIRECT_HL, indirect_hl_match, none_transform},
     {OPTYPE_RR, rr_match, rr_transform},
-    {OPTYPE_INDIRECT_RR, indirect_rr_match, indirect_rr_transform},
-    {OPTYPE_RXY, rxy_match, rxy_transform},
-    {OPTYPE_SP, sp_match, sp_transform},
-    {OPTYPE_INDIRECT_SP, indirect_sp_match, indirect_sp_transform},
+    {OPTYPE_INDIRECT_RR, indirect_rr_match, none_transform},
+    {OPTYPE_RXY, rxy_match, none_transform},
+    {OPTYPE_SP, sp_match, none_transform},
+    {OPTYPE_INDIRECT_SP, indirect_sp_match, none_transform},
     {OPTYPE_R, r_match, r_transform},
-    {OPTYPE_REG_R, reg_r_match, reg_r_transform},
-    {OPTYPE_MB, mb_match, mb_transform},
-    {OPTYPE_I, i_match, i_transform},
+    {OPTYPE_REG_R, reg_r_match, none_transform},
+    {OPTYPE_MB, mb_match, none_transform},
+    {OPTYPE_I, i_match, none_transform},
     {OPTYPE_BIT, b_match, b_transform},
-    {OPTYPE_AF, af_match, af_transform},
-    {OPTYPE_DE, de_match, de_transform},
+    {OPTYPE_AF, af_match, none_transform},
+    {OPTYPE_DE, de_match, none_transform},
     {OPTYPE_NSELECT, nselect_match, nselect_transform},
-    {OPTYPE_INDIRECT_N, indirect_n_match, indirect_n_transform},
-    {OPTYPE_INDIRECT_BC, indirect_bc_match, indirect_bc_transform},
-    {OPTYPE_INDIRECT_C, indirect_c_match, indirect_c_transform},
+    {OPTYPE_INDIRECT_N, indirect_n_match, none_transform},
+    {OPTYPE_INDIRECT_BC, indirect_bc_match, none_transform},
+    {OPTYPE_INDIRECT_C, indirect_c_match, none_transform},
     {OPTYPE_INDIRECT_IXY, indirect_ixy_match, indirect_ixy_transform},
     {OPTYPE_CCA, cca_match, cca_transform},
-    {OPTYPE_INDIRECT_DE, indirect_de_match, indirect_de_transform},
-    {OPTYPE_IX, ix_match, ix_transform},
-    {OPTYPE_IY, iy_match, iy_transform},
-    {OPTYPE_IXd, ixd_match, ixd_transform},
-    {OPTYPE_IYd, iyd_match, iyd_transform},
+    {OPTYPE_INDIRECT_DE, indirect_de_match, none_transform},
+    {OPTYPE_IX, ix_match, none_transform},
+    {OPTYPE_IY, iy_match, none_transform},
+    {OPTYPE_IXd, ixd_match, none_transform},
+    {OPTYPE_IYd, iyd_match, none_transform},
 };
 
 unsigned int collisions;    // internal use
