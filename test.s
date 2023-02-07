@@ -1,7 +1,7 @@
-org $40000
+    .org $40000
 adl 1
 bla:
-ld a,b
+ld.s a, (hl)
 adl 0
 bla2:
 db 0xff,"Dit is een test\n\r", 0x15

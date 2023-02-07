@@ -372,7 +372,7 @@ void parse(char *line) {
                 ptr = line;
                 while(isspace(*ptr) != 0) ptr++; // skip over whitespace
                 tstart = ptr;
-                if(isalnum(*ptr)) {
+                if(isalnum(*ptr) || *ptr == '.') {
                     state = STATE_MNEMONIC;
                     token = currentline.mnemonic;
                     break;
@@ -411,10 +411,18 @@ void parse(char *line) {
                         break;
                     case '.':
                         *token = 0; // terminate token string
-                        state = STATE_SUFFIX;
-                        ptr++;
-                        while(isspace(*ptr) != 0) ptr++; // skip over whitespace
-                        token = currentline.suffix;
+                        printf("DEBUG - lenght mnemonic %d\n",(int)strlen(currentline.mnemonic));
+                        if(strlen(currentline.mnemonic)) {
+                            state = STATE_SUFFIX;
+                            ptr++;
+                            while(isspace(*ptr) != 0) ptr++; // skip over whitespace
+                            token = currentline.suffix;
+                        }
+                        else {
+                            ptr++;
+                            token = currentline.mnemonic;
+                        }
+                        printf("DEBUG - %s\n",currentline.mnemonic);
                         break;
                     case ',':
                         state = STATE_MISSINGOPERAND;
