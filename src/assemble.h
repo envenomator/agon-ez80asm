@@ -8,7 +8,7 @@
 #include "label.h"
 
 #define LINEMAX    256
-#define START_ADDRESS 0x40000
+#define START_ADDRESS 0x0
 
 bool assemble(FILE *infile, FILE *outfile);
 void argcheck(bool passed);

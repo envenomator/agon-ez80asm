@@ -915,6 +915,33 @@ void emit_24bit(uint32_t value) {
     }
 }
 
+void handle_asm_db(instruction *instr) {
+    uint8_t i;
+
+    if(pass == 1) {
+        // Output label at this address
+        definelabel(currentline.size);
+    }
+    if(pass == 2) {
+        for(i = 0; i < currentline.size; i++) printf("DB OUTPUT %02x: %02x\n",i,(uint8_t)(currentline.buffer[i]));
+    }
+}
+
+void handle_assembler_command(instruction *instr) {
+    switch(instr->asmtype) {
+    case(ASM_ADL):
+        break;
+    case(ASM_ORG):
+        break;
+    case(ASM_DB):
+        handle_asm_db(instr);
+        break;
+    case(ASM_DW):
+        break;        
+    }
+    return;
+}
+
 void process(void){
     instruction *current_instruction;
     operandlist *list;
@@ -957,13 +984,7 @@ void process(void){
         if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
         return;
     }
-    if(current_instruction->type == ASSEMBLER)
-    {
-        //adl_action();
-        uint8_t i;
-        for(i = 0; i < currentline.size; i++) printf("ASSEMBLER: %02x\n",(uint8_t)(currentline.buffer[i]));
-        return;
-    }
+    else handle_assembler_command(current_instruction);
     return;
 }
 
