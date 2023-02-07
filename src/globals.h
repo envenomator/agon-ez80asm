@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include "instruction.h"
 
+#define DBBUFFERSIZE 256
+
 typedef struct {
     char label[32];
     char mnemonic[16];
@@ -14,7 +16,8 @@ typedef struct {
     char operand1[32];
     char operand2[32];
     char comment[128];
-    uint8_t size;
+    char buffer[DBBUFFERSIZE];
+    uint16_t size;      // byte size of the assembler-command output in db/defb/dw/defw
 } tokenline;
 
 
@@ -53,6 +56,7 @@ enum {
     ERROR_MMN_TOOLARGE,
     ERROR_ILLEGAL_SUFFIXMODE,
     ERROR_DISPLACEMENT_RANGE,
+    ERROR_STRING_NOTTERMINATED,
 };
 // Error messages
 extern char *message[];

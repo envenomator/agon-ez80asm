@@ -328,14 +328,30 @@ void convertLower(char *line) {
     }
 }
 
+// convert a token to a value, store it LSB first in *buffptr
+// return number of bytes written
+uint8_t storevalue(uint8_t type, char* buffptr, char *token) {
+    uint8_t size;
+    uint32_t number;
+
+    number = str2num(token);
+
+    *buffptr = (uint8_t)(number & 0xFF);
+    size = 1;
+    return size;
+}
+
 // split line in string tokens and try to parse them into appropriate mnemonics and operands
 // Format 1: [label:] [[mnemonic][.suffix][operand1][,operand2]] [;comment] <- separate parser for operands and suffix
 // Format 2: [label:] [[asmcmd][cmdargument]] [;comment] <- requires separate parser for cmdargument
 void parse(char *line) {
     uint8_t state;
+    bool escaped;
     char *ptr;
     char *token;
     char *tstart;
+    char *bufferptr;
+    uint8_t tmpsize;
     instruction *instr;
 
     currentline.label[0] = 0;
@@ -346,6 +362,7 @@ void parse(char *line) {
     currentline.operand2[0] = 0;
     currentline.comment[0] = 0;
     currentline.size = 0;
+    currentline.buffer[0] = 0;
 
     state = STATE_LINESTART;
 
@@ -420,7 +437,8 @@ void parse(char *line) {
                                     case ASSEMBLER: // nothing yet, will break this out in the future
                                         //error("Assembler command");
                                         token = currentline.operand1;
-                                        state = STATE_OPERAND1;
+                                        bufferptr = currentline.buffer;
+                                        state = STATE_ASM_PARSE;
                                         break;
                                     default:
                                         error(message[ERROR_INVALIDMNEMONIC]); // actually: internal error
@@ -432,20 +450,148 @@ void parse(char *line) {
                         }
                 }
                 break;
-            case STATE_ASM_ARG:
+            case STATE_ASM_PARSE:
+                switch(instr->asmtype) { // parse according to expected format
+                    case ASM_ADL:
+                        break;
+                    case ASM_ORG:
+                        break;
+                    case ASM_DB:
+                        state = STATE_ASM_VALUE_ENTRY;
+                        //printf("DEBUG: %s\n",ptr);
+                        break;
+                    case ASM_DW:
+                        break;
+                }
+                break;
+            case STATE_ASM_VALUE_ENTRY:
                 switch(*ptr) {
                     case 0:
-                        *token = 0;
                         state = STATE_DONE;
                         break;
                     case ';':
-                        *token = 0;
-                        token = currentline.comment;
+                        ptr++;
                         state = STATE_COMMENT;
+                        break;
+                    case ' ':
+                    case '\n':
+                    case '\r':
+                        ptr++;
+                        break;
+                    case '"':
+                        state = STATE_ASM_STRINGARG;
                         ptr++;
                         break;
                     default:
-                        if(isspace(*ptr) == 0) *token++ = *ptr++;
+                        state = STATE_ASM_VALUE;
+                        break;
+                }
+                break;
+            case STATE_ASM_VALUE_EXIT:
+                switch(*ptr) {
+                    case ' ':
+                    case '\r':
+                    case '\n':
+                        ptr++;
+                        break;
+                    default: // exit
+                        if(*ptr == ',') ptr++; // skip
+                        state = STATE_ASM_VALUE_CLOSEOUT;
+                        break;
+                }
+                break;
+            case STATE_ASM_VALUE: // create list of strings in buffer, separated by comma's, eliminate spaces
+                switch(*ptr) {
+                    case 0:
+                    case ';':
+                        state = STATE_ASM_VALUE_CLOSEOUT;
+                        break;
+                    case ' ':
+                    case '\n':
+                    case '\r':
+                        state = STATE_ASM_VALUE_EXIT;
+                        break;
+                    case ',': // skip
+                        ptr++;
+                        state = STATE_ASM_VALUE_CLOSEOUT;
+                        break;
+                    default:
+                        *token++ = *ptr++;
+                        break;
+                }
+                break;
+            case STATE_ASM_VALUE_CLOSEOUT:
+                *token = 0;
+                token = currentline.operand1;
+                tmpsize = storevalue(instr->asmtype, bufferptr, currentline.operand1);
+                bufferptr += tmpsize;
+                currentline.size += tmpsize;
+                switch(*ptr) {
+                    case 0:
+                        state = STATE_DONE;
+                        break;
+                    case ';':
+                        ptr++;
+                        state = STATE_COMMENT;
+                        break;
+                    default:
+                        state = STATE_ASM_VALUE_ENTRY;
+                        break;
+                }
+                break;
+            case STATE_ASM_ARG:
+                break;
+            case STATE_ASM_STRINGARG:
+                switch(*ptr) {
+                    case 0:
+                        error(message[ERROR_STRING_NOTTERMINATED]);
+                        //*token = 0;
+                        state = STATE_DONE;
+                        break;
+                    case '\\':
+                        if(escaped) {
+                            *bufferptr++ = '\\';
+                            currentline.size++;
+                            escaped = false;
+                        }
+                        else escaped = true;
+                        ptr++;
+                        break;
+                    case '"':
+                        if(escaped) {
+                            *bufferptr++ = *ptr++;
+                            currentline.size++;
+                        }
+                        else { // end of string value
+                            ptr++;
+                            state = STATE_ASM_STRINGARG_CLOSEOUT;
+                        }
+                        escaped = false;
+                        break;
+                    default:
+                        *bufferptr++ = *ptr++;
+                        currentline.size++;
+                        escaped = false;
+                        break;
+                }
+                break;
+            case STATE_ASM_STRINGARG_CLOSEOUT:
+                switch(*ptr) {
+                    case 0:
+                        state = STATE_DONE;
+                        break;
+                    case ';':
+                        state = STATE_COMMENT;
+                        ptr++;
+                        break;
+                    case ' ':
+                    case '\r':
+                    case '\n':
+                        ptr++;
+                        break;
+                    default: // exit
+                        if(*ptr == ',') ptr++; // skip
+                        state = STATE_ASM_VALUE_ENTRY;
                         break;
                 }
                 break;
@@ -798,7 +944,9 @@ void process(void){
     }
     if(current_instruction->type == ASSEMBLER)
     {
-        adl_action();
+        //adl_action();
+        uint8_t i;
+        for(i = 0; i < currentline.size; i++) printf("ASSEMBLER: %02x\n",(uint8_t)(currentline.buffer[i]));
         return;
     }
     return;

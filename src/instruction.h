@@ -170,9 +170,17 @@ enum {
     ASSEMBLER
 };
 
+enum {
+    ASM_ADL,
+    ASM_ORG,
+    ASM_DB,
+    ASM_DW
+};
+
 typedef struct {
     char        name[MAX_MNEMONIC_SIZE];
     uint8_t     type;                       // EZ80 / Assembler
+    uint8_t     asmtype;                    // assembler subcommand
     uint8_t     listnumber;                 // number of items to iterate over in the list
     operandlist *list;
 } instruction;

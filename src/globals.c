@@ -17,6 +17,7 @@ bool adlmode;
 tokenline currentline;
 operand operand1;
 operand operand2;
+char buffer[DBBUFFERSIZE];
 opcodesequence output;
 
 /*
@@ -37,5 +38,6 @@ char *message[] = {
     "Invalid suffix",
     "Value too large for 16-bits, truncation required",
     "Illegal suffix for this mnemonic",
-    "Displacement range error"
+    "Displacement range error",
+    "String format error"
 };
