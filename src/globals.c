@@ -39,5 +39,7 @@ char *message[] = {
     "Value too large for 16-bits, truncation required",
     "Illegal suffix for this mnemonic",
     "Displacement range error",
-    "String format error"
+    "String format error",
+    "Invalid ADL mode",
+    "Invalid assembler command"
 };

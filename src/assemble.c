@@ -453,8 +453,9 @@ void parse(char *line) {
             case STATE_ASM_PARSE:
                 switch(instr->asmtype) { // parse according to expected format
                     case ASM_ADL:
-                        break;
                     case ASM_ORG:
+                        token = currentline.operand1;
+                        state = STATE_OPERAND1;
                         break;
                     case ASM_DB:
                         state = STATE_ASM_VALUE_ENTRY;
@@ -462,6 +463,8 @@ void parse(char *line) {
                         break;
                     case ASM_DW:
                         break;
+                    default:
+                        error(message[ERROR_INVALID_ASSEMBLERCMD]);
                 }
                 break;
             case STATE_ASM_VALUE_ENTRY:
@@ -686,9 +689,12 @@ void parse(char *line) {
                 }
                 break;
             case STATE_DONE:
-                parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
-                parse_operand(POS_SOURCE, currentline.operand2, &operand2);
-                output.suffix = getADLsuffix();
+                //if(instr->type == EZ80) {
+                    parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
+                    parse_operand(POS_SOURCE, currentline.operand2, &operand2);
+                    output.suffix = getADLsuffix();
+                //}
+                // ASSEMBLER commands will be handled individually, potentially using operand1/operand2 as string
                 return;
             case STATE_MISSINGOPERAND:
                 error(message[ERROR_MISSINGOPERAND]);
@@ -927,11 +933,24 @@ void handle_asm_db(instruction *instr) {
     }
 }
 
+void handle_asm_adl(instruction *instr) {
+    if((operand1.immediate != 0) && (operand1.immediate) != 1) error(message[ERROR_INVALID_ADLMODE]);
+    adlmode = operand1.immediate;
+}
+
+void handle_asm_org(instruction *instr) {
+    address = operand1.immediate;
+
+    printf("DEBUG - setting address %08x\n",address);
+}
+
 void handle_assembler_command(instruction *instr) {
     switch(instr->asmtype) {
     case(ASM_ADL):
+        handle_asm_adl(instr);
         break;
     case(ASM_ORG):
+        handle_asm_org(instr);
         break;
     case(ASM_DB):
         handle_asm_db(instr);

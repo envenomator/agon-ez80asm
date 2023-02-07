@@ -803,7 +803,8 @@ instruction instructions[] = {
     {"jr",    EZ80, 0, sizeof(operands_jr)/sizeof(operandlist), operands_jr},
     {"ld",    EZ80, 0, sizeof(operands_ld)/sizeof(operandlist), operands_ld},
     {"adl",   ASSEMBLER, ASM_ADL, 0, NULL},
-    {"db",    ASSEMBLER, ASM_DB, 0, NULL}
+    {"db",    ASSEMBLER, ASM_DB, 0, NULL},
+    {"org",   ASSEMBLER, ASM_ORG, 0, NULL}
 };
 
 bool instruction_table_insert(instruction *p){
