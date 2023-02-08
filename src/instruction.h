@@ -84,6 +84,8 @@ typedef enum {
 #define R_INDEX_HL  2
 #define R_INDEX_SP  3
 #define R_INDEX_AF  3
+#define R_INDEX_IX  2   // same as HL
+#define R_INDEX_IY  2   // same as HL
 
 #define R_INDEX_I   0
 #define R_INDEX_MB  0

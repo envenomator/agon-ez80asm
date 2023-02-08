@@ -172,6 +172,16 @@ void ixy_transform(opcodetransformtype type, operand *op) {
     error(message[ERROR_TRANSFORMATION]);
     return;
 }
+void rxy_transform(opcodetransformtype type, operand *op) {
+    switch(type) {
+        case TRANSFORM_P:
+            output.opcode |= (op->reg_index << 4);
+            return;
+        default:
+            error(message[ERROR_TRANSFORMATION]);
+    }
+    return;
+}
 void indirect_ixyd_transform(opcodetransformtype type, operand *op) {
     if(type == TRANSFORM_DDFD) {
         switch(op->reg) {
@@ -282,7 +292,7 @@ operandtype_match operandtype_matchlist[] = {            // table with fast acce
     {OPTYPE_INDIRECT_HL, indirect_hl_match, none_transform},
     {OPTYPE_RR, rr_match, rr_transform},
     {OPTYPE_INDIRECT_RR, indirect_rr_match, none_transform},
-    {OPTYPE_RXY, rxy_match, none_transform},
+    {OPTYPE_RXY, rxy_match, rxy_transform},
     {OPTYPE_SP, sp_match, none_transform},
     {OPTYPE_INDIRECT_SP, indirect_sp_match, none_transform},
     {OPTYPE_R, r_match, r_transform},
@@ -322,8 +332,8 @@ operandlist operands_add[] = {
     {OPTYPE_A, OPTYPE_INDIRECT_IXYd,TRANSFORM_NONE, TRANSFORM_DDFD, 0x00, 0x86, S_ANY},
     {OPTYPE_A, OPTYPE_N,            TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xC6, S_NONE},
     {OPTYPE_A, OPTYPE_R,            TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x80, S_NONE},
-    {OPTYPE_A, OPTYPE_RR,           TRANSFORM_NONE, TRANSFORM_P,    0x00, 0x09, S_ANY},
-    {OPTYPE_A, OPTYPE_SP,           TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x39, S_ANY},
+    {OPTYPE_HL, OPTYPE_RR,           TRANSFORM_NONE, TRANSFORM_P,    0x00, 0x09, S_ANY},
+    {OPTYPE_HL, OPTYPE_SP,           TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x39, S_ANY},
     {OPTYPE_IXY, OPTYPE_RXY,        TRANSFORM_DDFD, TRANSFORM_P,    0x00, 0x09, S_ANY}, // zeker testen
     {OPTYPE_IXY, OPTYPE_SP,         TRANSFORM_DDFD, TRANSFORM_NONE, 0x00, 0x39, S_ANY}, // zeker testen
 };

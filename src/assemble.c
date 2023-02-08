@@ -152,6 +152,7 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     switch(*ptr++) {
                         case 0:
                             operand->reg = R_IX;
+                            operand->reg_index = R_INDEX_IX;
                             return;
                         case 'h':
                             operand->reg = R_IXH;
@@ -177,6 +178,7 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     switch(*ptr++) {
                         case 0:
                             operand->reg = R_IY;
+                            operand->reg_index = R_INDEX_IY;
                             return;
                         case 'h':
                             operand->reg = R_IYH;
