@@ -306,9 +306,11 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
         if(lbl) {
             operand->immediate = lbl->address;
             operand->immediate_provided = true;
+            //printf("Label found: %s, %u\n",lbl->name, lbl->address);
             return;
         }
         else {
+            //printf("Label not found\n");
             if(pass == 1) {
                 // might be a lable that isn't defined yet. will see in pass 2
                 operand->immediate = 0;
@@ -715,6 +717,7 @@ void parse(char *line) {
 void definelabel(void){
     // add label to table if defined
     if(strlen(currentline.label)) {
+        printf("Inserting label %s, %u\n",currentline.label, address);
         if(label_table_insert(currentline.label, address) == false){
             error("Out of label space");
         }
@@ -848,8 +851,7 @@ void emit_adlsuffix_code(uint8_t suffix) {
 }
 
 void emit_instruction(operandlist *list) {
-    uint8_t size = 1; // There is always 1 opcode to output
-    bool ddfddd; // determine position of displacement byte in case of DDCBdd/DDFDdd
+    bool ddbeforeopcode; // determine position of displacement byte in case of DDCBdd/DDFDdd
 
     // Transform necessary prefix/opcode in output, according to given list and operands
     output.prefix1 = 0;
@@ -858,58 +860,44 @@ void emit_instruction(operandlist *list) {
     if(list->transformA != TRANSFORM_NONE) operandtype_matchlist[list->operandA].transform(list->transformA, &operand1);
     if(list->transformB != TRANSFORM_NONE) operandtype_matchlist[list->operandB].transform(list->transformB, &operand2);
 
-    // calculate size of output
-    size += output.prefix1?1:0 + output.prefix2?1:0 + output.suffix?1:0;
-    if((list->operandA == OPTYPE_INDIRECT_IXYd) || (list->operandB == OPTYPE_INDIRECT_IXYd)) size++; // Displacement byte
-    if((list->operandA == OPTYPE_N) || 
-       (list->operandB == OPTYPE_N) ||
-       (list->operandA == OPTYPE_INDIRECT_N) ||
-       (list->operandB == OPTYPE_INDIRECT_N)) size++; // n == 1byte    
-    if((list->operandA == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN)) size += get_immediate_size(&operand1, output.suffix); // 2 or 3 bytes
-    if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) size += get_immediate_size(&operand2, output.suffix); // 2, or 3 bytes
-        
     if(pass == 1) {
-        if(debug_enabled) printf("DEBUG - Line %d - instruction size %d\n", linenumber, size);
+        // issue any errors here
         if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
         if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
-
-        // issue any errors here
         if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
         if((operand2.displacement_provided) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
-
         // Output label at this address
         definelabel();
     }
-    if(pass == 2) {
-        // determine position of dd
-        ddfddd = ((output.prefix1 == 0xDD) && (output.prefix2 == 0xFD) &&
-                  ((operand1.displacement_provided) || (operand2.displacement_provided)));
-        
-        // output adl suffix and any prefixes
-        if(output.suffix > 0) emit_adlsuffix_code(output.suffix);
-        if(output.prefix1) emit_8bit(output.prefix1); //printf("0x%02x:",output.prefix1);
-        if(output.prefix2) emit_8bit(output.prefix2); //printf("0x%02x:",output.prefix2);
 
-        // opcode in normal position
-        if(!ddfddd) emit_8bit(output.opcode); //printf("0x%02x",output.opcode);
-        
-        // output displacement
-        if(operand1.displacement_provided) emit_8bit(operand1.displacement & 0xFF);
-        if(operand2.displacement_provided) emit_8bit(operand2.displacement & 0xFF);
-        // output n
-        if((list->operandA == OPTYPE_N) || 
-           (list->operandA == OPTYPE_INDIRECT_N)) emit_8bit(operand1.immediate & 0xFF);
-        if((list->operandB == OPTYPE_N) ||
-           (list->operandB == OPTYPE_INDIRECT_N)) emit_8bit(operand2.immediate & 0xFF);
+    // determine position of dd
+    ddbeforeopcode = ((output.prefix1 == 0xDD) && (output.prefix2 == 0xFD) &&
+                ((operand1.displacement_provided) || (operand2.displacement_provided)));
+    
+    // output adl suffix and any prefixes
+    if(output.suffix > 0) emit_adlsuffix_code(output.suffix);
+    if(output.prefix1) emit_8bit(output.prefix1);
+    if(output.prefix2) emit_8bit(output.prefix2);
+
+    // opcode in normal position
+    if(!ddbeforeopcode) emit_8bit(output.opcode);
+    
+    // output displacement
+    if(operand1.displacement_provided) emit_8bit(operand1.displacement & 0xFF);
+    if(operand2.displacement_provided) emit_8bit(operand2.displacement & 0xFF);
+    // output n
+    if((list->operandA == OPTYPE_N) || 
+        (list->operandA == OPTYPE_INDIRECT_N)) emit_8bit(operand1.immediate & 0xFF);
+    if((list->operandB == OPTYPE_N) ||
+        (list->operandB == OPTYPE_INDIRECT_N)) emit_8bit(operand2.immediate & 0xFF);
 
 
-        // opcode in DDCBdd/DFCBdd position
-        if(ddfddd) emit_8bit(output.opcode);
+    // opcode in DDCBdd/DFCBdd position
+    if(ddbeforeopcode) emit_8bit(output.opcode);
 
-        //output remaining immediate bytes
-        if((list->operandA == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand1, output.suffix);
-        if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand2, output.suffix);
-    }
+    //output remaining immediate bytes
+    if((list->operandA == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand1, output.suffix);
+    if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand2, output.suffix);
 }
 
 void emit_8bit(uint8_t value) {
@@ -1118,8 +1106,9 @@ bool assemble(FILE *infile, FILE *outfile){
     rewind(infile);
     pass_init(2);
         while (fgets(line, sizeof(line), infile)){
-        printf("in:  %s",line);
-        printf("out: ");
+        printf("address: %08x\n",address);
+        printf("input:   %s",line);
+        printf("output:  ");
 
         convertLower(line);
         parse(line);
@@ -1127,7 +1116,7 @@ bool assemble(FILE *infile, FILE *outfile){
         if(listing_enabled) print_linelisting();
         linenumber++;
 
-        printf("\n");
+        printf("\n\n");
     }
     pass_assemble(infile, line);
     return true;

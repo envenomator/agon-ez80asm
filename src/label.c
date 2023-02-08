@@ -4,7 +4,7 @@
 #include "label.h"
 #include "hash.h"
 
-#define LABELBUFFERSIZE 65536
+#define LABELBUFFERSIZE 131072
 
 // memory buffer for sequentially storing label strings
 char labelbuffer[LABELBUFFERSIZE];

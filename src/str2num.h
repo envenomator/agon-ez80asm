@@ -7,6 +7,11 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+// Transforms a binary/hexadecimal/decimal string to an uint32_t number
+// Valid strings are
+// BINARY:  0b..., ...b
+// HEX:     0x..., ...h, $...
+// DECIMAL ...
 uint32_t str2num(char *string);
 
 #endif // STR2NUM_H
