@@ -878,7 +878,6 @@ void emit_instruction(operandlist *list) {
 
         // Output label at this address
         definelabel();
-        address += size;
     }
     if(pass == 2) {
         // determine position of dd
@@ -911,6 +910,7 @@ void emit_instruction(operandlist *list) {
         if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand2, output.suffix);
         printf("\n");
     }
+    address += size;
     totalsize += size;
 }
 
@@ -959,6 +959,7 @@ void handle_asm_org(instruction *instr) {
     uint32_t size;
     uint32_t newaddress = operand1.immediate;
 
+    printf("DEBUG - setting address %08x, pass %d\n",newaddress, pass);
     if(newaddress >= address) {
         size = newaddress-address;
         if(pass == 1) {
@@ -968,13 +969,13 @@ void handle_asm_org(instruction *instr) {
         if(totalsize > 0) {
             printf("DEBUG - Output %d GAP bytes\n", size);
             for(i = 0; i < (size); i++) emit_8bit(FILLBYTE);
+            totalsize += size;
         }
-        totalsize += size;
         address = newaddress;
     }
     else error(message[ERROR_ADDRESSLOWER]);
 
-    printf("DEBUG - setting address %08x, pass %d\n",address, pass);
+
 }
 
 void handle_assembler_command(instruction *instr) {
@@ -1037,6 +1038,9 @@ void process(void){
         return;
     }
     else handle_assembler_command(current_instruction);
+
+    printf("DEBUG - Address is now 0x%08x, totalsize is %d\n", address, totalsize);
+
     return;
 }
 
