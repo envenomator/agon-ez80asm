@@ -1,3 +1,3 @@
 org 10
-ld a,b
+ld.s a,(ix+5)
 org 20

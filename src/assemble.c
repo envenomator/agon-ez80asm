@@ -819,9 +819,9 @@ void emit_immediate(operand *op, uint8_t suffix) {
     uint8_t num;
 
     num = get_immediate_size(op, suffix);
-    printf(":0x%02x", op->immediate & 0xFF);
-    printf(":0x%02x", (op->immediate >> 8) & 0xFF);
-    if(num == 3) printf(":0x%02x", (op->immediate >> 16) & 0xFF);
+    emit_8bit(op->immediate & 0xFF);
+    emit_8bit((op->immediate >> 8) & 0xFF);
+    if(num == 3) emit_8bit((op->immediate >> 16) & 0xFF);
 }
 
 void emit_adlsuffix_code(uint8_t suffix) {
@@ -843,7 +843,8 @@ void emit_adlsuffix_code(uint8_t suffix) {
             error(message[ERROR_INVALIDSUFFIX]);
             return;
     }
-    printf("0x%02x:", code);
+    emit_8bit(code);
+    //printf("0x%02x:", code);
 }
 
 void emit_instruction(operandlist *list) {
@@ -886,47 +887,43 @@ void emit_instruction(operandlist *list) {
         
         // output adl suffix and any prefixes
         if(output.suffix > 0) emit_adlsuffix_code(output.suffix);
-        if(output.prefix1) printf("0x%02x:",output.prefix1);
-        if(output.prefix2) printf("0x%02x:",output.prefix2);
+        if(output.prefix1) emit_8bit(output.prefix1); //printf("0x%02x:",output.prefix1);
+        if(output.prefix2) emit_8bit(output.prefix2); //printf("0x%02x:",output.prefix2);
 
         // opcode in normal position
-        if(!ddfddd) printf("0x%02x",output.opcode);
+        if(!ddfddd) emit_8bit(output.opcode); //printf("0x%02x",output.opcode);
         
         // output displacement
-        if(operand1.displacement_provided) printf(":0x%02x", operand1.displacement & 0xFF);
-        if(operand2.displacement_provided) printf(":0x%02x", operand2.displacement & 0xFF);
+        if(operand1.displacement_provided) emit_8bit(operand1.displacement & 0xFF);
+        if(operand2.displacement_provided) emit_8bit(operand2.displacement & 0xFF);
         // output n
         if((list->operandA == OPTYPE_N) || 
-           (list->operandA == OPTYPE_INDIRECT_N)) printf(":0x%02x", operand1.immediate & 0xFF);
+           (list->operandA == OPTYPE_INDIRECT_N)) emit_8bit(operand1.immediate & 0xFF);
         if((list->operandB == OPTYPE_N) ||
-           (list->operandB == OPTYPE_INDIRECT_N)) printf(":0x%02x", operand2.immediate & 0xFF);
+           (list->operandB == OPTYPE_INDIRECT_N)) emit_8bit(operand2.immediate & 0xFF);
 
 
         // opcode in DDCBdd/DFCBdd position
-        if(ddfddd) printf("0x%02x",output.opcode);
+        if(ddfddd) emit_8bit(output.opcode);
 
         //output remaining immediate bytes
         if((list->operandA == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand1, output.suffix);
         if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand2, output.suffix);
-        printf("\n");
     }
-    address += size;
-    totalsize += size;
 }
 
 void emit_8bit(uint8_t value) {
-    if(pass == 2) printf("0x%02x\n",value);
+    if(pass == 2) printf("%02x:",value);
     address++;
     totalsize++;
 }
 
 void emit_16bit(uint16_t value) {
     if(pass == 2) {
-        printf("0x%02x-0x%02x\n",value&0xFF, (value>>8)&0xFF);
+        printf("%02x:%02x\n",value&0xFF, (value>>8)&0xFF);
     }
     address += 2;
     totalsize += 2;
-
 }
 
 void emit_24bit(uint32_t value) {
@@ -959,7 +956,7 @@ void handle_asm_org(instruction *instr) {
     uint32_t size;
     uint32_t newaddress = operand1.immediate;
 
-    printf("DEBUG - setting address %08x, pass %d\n",newaddress, pass);
+    //printf("DEBUG - setting address %08x, pass %d\n",newaddress, pass);
     if(newaddress >= address) {
         size = newaddress-address;
         if(pass == 1) {
@@ -967,7 +964,7 @@ void handle_asm_org(instruction *instr) {
             definelabel(); // set address to current line
         }
         if(totalsize > 0) {
-            printf("DEBUG - Output %d GAP bytes\n", size);
+            //printf("DEBUG - Output %d GAP bytes\n", size);
             for(i = 0; i < (size); i++) emit_8bit(FILLBYTE);
             totalsize += size;
         }
@@ -1039,8 +1036,7 @@ void process(void){
     }
     else handle_assembler_command(current_instruction);
 
-    printf("DEBUG - Address is now 0x%08x, totalsize is %d\n", address, totalsize);
-
+    //printf("DEBUG - Address is now 0x%08x, totalsize is %d\n", address, totalsize);
     return;
 }
 
@@ -1110,22 +1106,28 @@ bool assemble(FILE *infile, FILE *outfile){
     }
     if(debug_enabled) print_label_table();
     //print_label_table();
-    printf("%d lines\n", linenumber);
-    printf("%d labels\n", label_table_count());
     if(global_errors) {
-        printf("Errors in input, aborting\n");
+        printf("Abort\n");
         return false;
     }
+    printf("%d lines\n", linenumber);
+    printf("%d labels\n", label_table_count());
+
     // Pass 2
     printf("Pass 2...\n");
     rewind(infile);
     pass_init(2);
         while (fgets(line, sizeof(line), infile)){
+        printf("in:  %s",line);
+        printf("out: ");
+
         convertLower(line);
         parse(line);
         process();
         if(listing_enabled) print_linelisting();
         linenumber++;
+
+        printf("\n");
     }
     pass_assemble(infile, line);
     return true;
