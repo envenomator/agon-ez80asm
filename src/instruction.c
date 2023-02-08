@@ -270,7 +270,7 @@ void indirect_ixy_transform(opcodetransformtype type, operand *op) {
     return;
 }
 void cca_transform(opcodetransformtype type, operand *op) {
-    if(type == TRANSFORM_P) {
+    if(type == TRANSFORM_Y) {
         output.opcode |= (op->cc_index << 3);
     }
     return;
@@ -480,7 +480,7 @@ operandlist operands_jp[] = {
     {OPTYPE_MMN, OPTYPE_NONE,       TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xC3, S_SISLIL},
 };
 operandlist operands_jr[]= {
-    {OPTYPE_CCA, OPTYPE_N,          TRANSFORM_P, TRANSFORM_NONE, 0x00, 0x20, S_NONE}, // tested without negative numbers
+    {OPTYPE_CCA, OPTYPE_N,          TRANSFORM_Y, TRANSFORM_NONE, 0x00, 0x20, S_NONE}, // tested without negative numbers
     {OPTYPE_N, OPTYPE_NONE,         TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x18, S_NONE},
 };
 operandlist operands_ld[] = {
