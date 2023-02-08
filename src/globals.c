@@ -11,6 +11,7 @@ FILE *outfile;
 unsigned int linenumber;
 unsigned int pass;
 uint32_t address;
+uint32_t totalsize;      // total size of assembled binary
 uint16_t global_errors;
 bool adlmode;
 
@@ -41,5 +42,6 @@ char *message[] = {
     "Displacement range error",
     "String format error",
     "Invalid ADL mode",
-    "Invalid assembler command"
+    "Invalid assembler command",
+    "New address lower than PC"
 };

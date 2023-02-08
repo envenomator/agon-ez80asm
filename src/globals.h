@@ -29,6 +29,7 @@ extern FILE *outfile;
 extern unsigned int linenumber;
 extern unsigned int pass;
 extern uint32_t address;
+extern uint32_t totalsize;
 extern uint16_t global_errors;
 extern bool adlmode;
 extern tokenline currentline;
@@ -58,7 +59,8 @@ enum {
     ERROR_DISPLACEMENT_RANGE,
     ERROR_STRING_NOTTERMINATED,
     ERROR_INVALID_ADLMODE,
-    ERROR_INVALID_ASSEMBLERCMD
+    ERROR_INVALID_ASSEMBLERCMD,
+    ERROR_ADDRESSLOWER
 };
 // Error messages
 extern char *message[];

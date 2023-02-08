@@ -1,10 +1,5 @@
-    .org $40000
-adl 1
-bla:
-ld.s a, (hl)
-adl 0
-bla2:
-db 0xff,"Dit is een test\n\r", 0x15
-bla3:
-ld b,c
-adl 1
+org 0
+org 10
+db "Jeroen",0
+org 21
+db 1,2,3,4,5

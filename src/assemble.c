@@ -411,18 +411,18 @@ void parse(char *line) {
                         break;
                     case '.':
                         *token = 0; // terminate token string
-                        printf("DEBUG - lenght mnemonic %d\n",(int)strlen(currentline.mnemonic));
-                        if(strlen(currentline.mnemonic)) {
+                        //printf("DEBUG - lenght mnemonic %d\n",(int)strlen(currentline.mnemonic));
+                        //if(strlen(currentline.mnemonic)) {
                             state = STATE_SUFFIX;
                             ptr++;
                             while(isspace(*ptr) != 0) ptr++; // skip over whitespace
                             token = currentline.suffix;
-                        }
-                        else {
-                            ptr++;
-                            token = currentline.mnemonic;
-                        }
-                        printf("DEBUG - %s\n",currentline.mnemonic);
+                        //}
+                        //else {
+                        //    ptr++;
+                        //    token = currentline.mnemonic;
+                        //}
+                        //printf("DEBUG - %s\n",currentline.mnemonic);
                         break;
                     case ',':
                         state = STATE_MISSINGOPERAND;
@@ -712,14 +712,13 @@ void parse(char *line) {
     }
 }
 
-void definelabel(uint8_t size){
+void definelabel(void){
     // add label to table if defined
     if(strlen(currentline.label)) {
         if(label_table_insert(currentline.label, address) == false){
             error("Out of label space");
         }
     }
-    address += size;
 }
 
 // return ADL prefix bitfield, or 0 if none present
@@ -878,7 +877,8 @@ void emit_instruction(operandlist *list) {
         if((operand2.displacement_provided) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
 
         // Output label at this address
-        definelabel(size);
+        definelabel();
+        address += size;
     }
     if(pass == 2) {
         // determine position of dd
@@ -911,22 +911,30 @@ void emit_instruction(operandlist *list) {
         if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand2, output.suffix);
         printf("\n");
     }
+    totalsize += size;
 }
 
 void emit_8bit(uint8_t value) {
     if(pass == 2) printf("0x%02x\n",value);
+    address++;
+    totalsize++;
 }
 
 void emit_16bit(uint16_t value) {
     if(pass == 2) {
         printf("0x%02x-0x%02x\n",value&0xFF, (value>>8)&0xFF);
     }
+    address += 2;
+    totalsize += 2;
+
 }
 
 void emit_24bit(uint32_t value) {
     if(pass == 2) {
         printf("0x%02x-0x%02x-0x%02x\n", value&0xFF, (value>>8)&0xFF, (value>>16)&0xFF);
     }
+    address += 3;
+    totalsize +=3;
 }
 
 void handle_asm_db(instruction *instr) {
@@ -934,10 +942,10 @@ void handle_asm_db(instruction *instr) {
 
     if(pass == 1) {
         // Output label at this address
-        definelabel(currentline.size);
+        definelabel();
     }
-    if(pass == 2) {
-        for(i = 0; i < currentline.size; i++) printf("DB OUTPUT %02x: %02x\n",i,(uint8_t)(currentline.buffer[i]));
+    for(i = 0; i < currentline.size; i++) {
+        emit_8bit(currentline.buffer[i]);
     }
 }
 
@@ -947,9 +955,26 @@ void handle_asm_adl(instruction *instr) {
 }
 
 void handle_asm_org(instruction *instr) {
-    address = operand1.immediate;
+    uint32_t i;
+    uint32_t size;
+    uint32_t newaddress = operand1.immediate;
 
-    printf("DEBUG - setting address %08x\n",address);
+    if(newaddress >= address) {
+        size = newaddress-address;
+        if(pass == 1) {
+            // Output label at this address
+            definelabel(); // set address to current line
+        }
+        if(totalsize > 0) {
+            printf("DEBUG - Output %d GAP bytes\n", size);
+            for(i = 0; i < (size); i++) emit_8bit(FILLBYTE);
+        }
+        totalsize += size;
+        address = newaddress;
+    }
+    else error(message[ERROR_ADDRESSLOWER]);
+
+    printf("DEBUG - setting address %08x, pass %d\n",address, pass);
 }
 
 void handle_assembler_command(instruction *instr) {
@@ -978,7 +1003,7 @@ void process(void){
     // return on empty lines
     if((currentline.mnemonic[0]) == 0) {
         // check if there is a single label on a line in during pass 1
-        if(pass == 1) definelabel(0);
+        if(pass == 1) definelabel();
         return; // valid line, but empty
     }
 
@@ -1051,19 +1076,28 @@ void print_linelisting(void) {
     printf("Immediate: %04x\n", operand2.immediate);
 
 }
+
+void pass_init(uint8_t n) {
+    pass = n;
+    adlmode = true;
+    linenumber = 1;
+    address = START_ADDRESS;
+    totalsize = 0;
+}
+
+void pass_assemble(FILE *infile, char *line) {
+
+}
+
 bool assemble(FILE *infile, FILE *outfile){
     char line[LINEMAX];
-
-    adlmode = true;
     global_errors = 0;
-
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\n");
-    pass = 1;
-    linenumber = 1;
-    address = START_ADDRESS;
-    while (fgets(line, sizeof(line), infile)){
+    pass_init(1);
+    pass_assemble(infile, line);
+        while (fgets(line, sizeof(line), infile)){
         convertLower(line);
         parse(line);
         process();
@@ -1071,22 +1105,25 @@ bool assemble(FILE *infile, FILE *outfile){
         linenumber++;
     }
     if(debug_enabled) print_label_table();
+    //print_label_table();
     printf("%d lines\n", linenumber);
     printf("%d labels\n", label_table_count());
-    if(global_errors) return false;
-
+    if(global_errors) {
+        printf("Errors in input, aborting\n");
+        return false;
+    }
     // Pass 2
     printf("Pass 2...\n");
     rewind(infile);
-    pass = 2;
-    linenumber = 1;
-    address = START_ADDRESS;
-    while (fgets(line, sizeof(line), infile)){
+    pass_init(2);
+        while (fgets(line, sizeof(line), infile)){
         convertLower(line);
         parse(line);
         process();
+        if(listing_enabled) print_linelisting();
         linenumber++;
     }
+    pass_assemble(infile, line);
     return true;
 }
 
