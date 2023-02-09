@@ -1,0 +1,249 @@
+Pass 1...
+62 lines
+0 labels
+Pass 2...
+address: 00000000
+input:   adc a,(hl)
+output:  8e:
+
+address: 00000001
+input:   adc a,ixh
+output:  dd:8c:
+
+address: 00000003
+input:   adc a,ixl
+output:  dd:8d:
+
+address: 00000005
+input:   adc a,iyh
+output:  fd:8c:
+
+address: 00000007
+input:   adc a,iyl
+output:  fd:8d:
+
+address: 00000009
+input:   adc a,(ix+5)
+output:  dd:8e:05:
+
+address: 0000000c
+input:   adc a,(iy+5)
+output:  fd:8e:05:
+
+address: 0000000f
+input:   adc a,5
+output:  ce:05:
+
+address: 00000011
+input:   adc a,a
+output:  8f:
+
+address: 00000012
+input:   adc a,b
+output:  88:
+
+address: 00000013
+input:   adc a,c
+output:  89:
+
+address: 00000014
+input:   adc a,d
+output:  8a:
+
+address: 00000015
+input:   adc a,e
+output:  8b:
+
+address: 00000016
+input:   adc a,h
+output:  8c:
+
+address: 00000017
+input:   adc a,l
+output:  8d:
+
+address: 00000018
+input:   adc hl,bc
+output:  ed:4a:
+
+address: 0000001a
+input:   adc hl,de
+output:  ed:5a:
+
+address: 0000001c
+input:   adc hl,hl
+output:  ed:6a:
+
+address: 0000001e
+input:   adc hl,sp
+output:  ed:7a:
+
+address: 00000020
+input:   add a,(hl)
+output:  86:
+
+address: 00000021
+input:   add a,ixh
+output:  dd:84:
+
+address: 00000023
+input:   add a,ixl
+output:  dd:85:
+
+address: 00000025
+input:   add a,iyh
+output:  fd:84:
+
+address: 00000027
+input:   add a,iyl
+output:  fd:85:
+
+address: 00000029
+input:   add a,(ix+5)
+output:  dd:86:05:
+
+address: 0000002c
+input:   add a,(iy+5)
+output:  fd:86:05:
+
+address: 0000002f
+input:   add a,5
+output:  c6:05:
+
+address: 00000031
+input:   add a,a
+output:  87:
+
+address: 00000032
+input:   add a,b
+output:  80:
+
+address: 00000033
+input:   add a,c
+output:  81:
+
+address: 00000034
+input:   add a,d
+output:  82:
+
+address: 00000035
+input:   add a,e
+output:  83:
+
+address: 00000036
+input:   add a,h
+output:  84:
+
+address: 00000037
+input:   add a,l
+output:  85:
+
+address: 00000038
+input:   add hl,bc
+output:  09:
+
+address: 00000039
+input:   add hl,de
+output:  19:
+
+address: 0000003a
+input:   add hl,hl
+output:  29:
+
+address: 0000003b
+input:   add hl,sp
+output:  39:
+
+address: 0000003c
+input:   add ix,bc
+output:  dd:09:
+
+address: 0000003e
+input:   add ix,de
+output:  dd:19:
+
+address: 00000040
+input:   add ix,ix
+output:  dd:29:
+
+address: 00000042
+input:   add iy,bc
+output:  fd:09:
+
+address: 00000044
+input:   add iy,de
+output:  fd:19:
+
+address: 00000046
+input:   add iy,iy
+output:  fd:29:
+
+address: 00000048
+input:   add ix,sp
+output:  dd:39:
+
+address: 0000004a
+input:   add iy,sp
+output:  fd:39:
+
+address: 0000004c
+input:   and a,(hl)
+output:  a6:
+
+address: 0000004d
+input:   and a,ixh
+output:  dd:a4:
+
+address: 0000004f
+input:   and a,ixl
+output:  dd:a5:
+
+address: 00000051
+input:   and a,iyh
+output:  fd:a4:
+
+address: 00000053
+input:   and a,iyl
+output:  fd:a5:
+
+address: 00000055
+input:   and a,(ix+5)
+output:  dd:a6:05:
+
+address: 00000058
+input:   and a,(iy+5)
+output:  fd:a6:05:
+
+address: 0000005b
+input:   and a,5
+output:  e6:05:
+
+address: 0000005d
+input:   and a,a
+output:  a7:
+
+address: 0000005e
+input:   and a,b
+output:  a0:
+
+address: 0000005f
+input:   and a,c
+output:  a1:
+
+address: 00000060
+input:   and a,d
+output:  a2:
+
+address: 00000061
+input:   and a,e
+output:  a3:
+
+address: 00000062
+input:   and a,h
+output:  a4:
+
+address: 00000063
+input:   and a,l
+output:  a5:
+
+
