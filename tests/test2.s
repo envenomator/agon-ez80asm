@@ -1,3 +1,5 @@
+.assume adl=1	
+; adl 1
 	ld a, i
 	ld a, (ix+5)
 	ld a, (iy+5)
@@ -31,6 +33,7 @@
 	ld iyh, iyl
 	ld iyl, iyh
 	ld iyl, iyl
+; vanaf hier
 	ld ixh, 5
 	ld ixl, 5
 	ld iyh, 5
@@ -55,6 +58,7 @@
 	ld iyl, c
 	ld iyl, d
 	ld iyl, e
+; vanaf hier
 	ld ix, (hl)
 	ld iy, (hl)
 	ld ix, (ix+5)
@@ -65,12 +69,14 @@
 	ld iy, $aabbcc
 	ld ix, ($aabbcc)
 	ld iy, ($aabbcc)
+; vanaf hier
 	ld (ix+5), ix
 	ld (ix+5), iy
 	ld (iy+5), ix
 	ld (iy+5), iy
 	ld (ix+5), 10
 	ld (iy+5), 10
+; vanaf hier
 	ld (ix+5), a
 	ld (ix+5), b
 	ld (ix+5), c
@@ -149,12 +155,6 @@
 	ld h, 5
 	ld l, 5
 	ld a, a
-	ld b, b
-	ld c, c
-	ld d, d
-	ld e, e
-	ld h, h
-	ld l, l
 	ld bc, (hl)
 	ld de, (hl)
 	ld hl, (hl)

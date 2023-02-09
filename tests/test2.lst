@@ -1,0 +1,207 @@
+    1 00:0000 -  -  -  -  .assume adl=1	
+    2 00:0000 -  -  -  -  ; adl 1
+    3 00:0000 ED 57 -  -  	ld a, i
+    4 00:0002 DD 7E 05 -  	ld a, (ix+5)
+    5 00:0005 FD 7E 05 -  	ld a, (iy+5)
+    6 00:0008 ED 6E -  -  	ld a, mb
+    7 00:000A 3A CC BB AA 	ld a, ($aabbcc)
+    8 00:000E ED 5F -  -  	ld a, r
+    9 00:0010 0A -  -  -  	ld a, (bc)
+   10 00:0011 1A -  -  -  	ld a, (de)
+   11 00:0012 7E -  -  -  	ld a, (hl)
+   12 00:0013 ED D7 -  -  	ld hl, i
+   13 00:0015 ED 3F -  -  	ld (hl), ix
+   14 00:0017 ED 3E -  -  	ld (hl), iy
+   15 00:0019 36 05 -  -  	ld (hl), 5
+   16 00:001B 77 -  -  -  	ld (hl), a
+   17 00:001C 70 -  -  -  	ld (hl), b
+   18 00:001D 71 -  -  -  	ld (hl), c
+   19 00:001E 72 -  -  -  	ld (hl), d
+   20 00:001F 73 -  -  -  	ld (hl), e
+   21 00:0020 74 -  -  -  	ld (hl), h
+   22 00:0021 75 -  -  -  	ld (hl), l
+   23 00:0022 ED 0F -  -  	ld (hl), bc
+   24 00:0024 ED 1F -  -  	ld (hl), de
+   25 00:0026 ED 2F -  -  	ld (hl), hl
+   26 00:0028 ED C7 -  -  	ld i, hl
+   27 00:002A ED 47 -  -  	ld i, a
+   28 00:002C DD 64 -  -  	ld ixh, ixh
+   29 00:002E DD 65 -  -  	ld ixh, ixl
+   30 00:0030 DD 6C -  -  	ld ixl, ixh
+   31 00:0032 DD 6D -  -  	ld ixl, ixl
+   32 00:0034 FD 64 -  -  	ld iyh, iyh
+   33 00:0036 FD 65 -  -  	ld iyh, iyl
+   34 00:0038 FD 6C -  -  	ld iyl, iyh
+   35 00:003A FD 6D -  -  	ld iyl, iyl
+   36 00:003C -  -  -  -  ; vanaf hier
+   37 00:003C DD 26 05 -  	ld ixh, 5
+   38 00:003F DD 2E 05 -  	ld ixl, 5
+   39 00:0042 FD 26 05 -  	ld iyh, 5
+   40 00:0045 FD 2E 05 -  	ld iyl, 5
+   41 00:0048 DD 67 -  -  	ld ixh, a
+   42 00:004A DD 60 -  -  	ld ixh, b
+   43 00:004C DD 61 -  -  	ld ixh, c
+   44 00:004E DD 62 -  -  	ld ixh, d
+   45 00:0050 DD 63 -  -  	ld ixh, e
+   46 00:0052 DD 6F -  -  	ld ixl, a
+   47 00:0054 DD 68 -  -  	ld ixl, b
+   48 00:0056 DD 69 -  -  	ld ixl, c
+   49 00:0058 DD 6A -  -  	ld ixl, d
+   50 00:005A DD 6B -  -  	ld ixl, e
+   51 00:005C FD 67 -  -  	ld iyh, a
+   52 00:005E FD 60 -  -  	ld iyh, b
+   53 00:0060 FD 61 -  -  	ld iyh, c
+   54 00:0062 FD 62 -  -  	ld iyh, d
+   55 00:0064 FD 63 -  -  	ld iyh, e
+   56 00:0066 FD 6F -  -  	ld iyl, a
+   57 00:0068 FD 68 -  -  	ld iyl, b
+   58 00:006A FD 69 -  -  	ld iyl, c
+   59 00:006C FD 6A -  -  	ld iyl, d
+   60 00:006E FD 6B -  -  	ld iyl, e
+   61 00:0070 -  -  -  -  ; vanaf hier
+   62 00:0070 ED 37 -  -  	ld ix, (hl)
+   63 00:0072 ED 31 -  -  	ld iy, (hl)
+   64 00:0074 DD 37 05 -  	ld ix, (ix+5)
+   65 00:0077 DD 31 05 -  	ld iy, (ix+5)
+   66 00:007A FD 31 05 -  	ld ix, (iy+5)
+   67 00:007D FD 37 05 -  	ld iy, (iy+5)
+   68 00:0080 DD 21 CC BB 
+              AA -  -  -  	ld ix, $aabbcc
+   69 00:0085 FD 21 CC BB 
+              AA -  -  -  	ld iy, $aabbcc
+   70 00:008A DD 2A CC BB 
+              AA -  -  -  	ld ix, ($aabbcc)
+   71 00:008F FD 2A CC BB 
+              AA -  -  -  	ld iy, ($aabbcc)
+   72 00:0094 -  -  -  -  ; vanaf hier
+   73 00:0094 DD 3F 05 -  	ld (ix+5), ix
+   74 00:0097 DD 3E 05 -  	ld (ix+5), iy
+   75 00:009A FD 3E 05 -  	ld (iy+5), ix
+   76 00:009D FD 3F 05 -  	ld (iy+5), iy
+   77 00:00A0 DD 36 05 0A 	ld (ix+5), 10
+   78 00:00A4 FD 36 05 0A 	ld (iy+5), 10
+   79 00:00A8 -  -  -  -  ; vanaf hier
+   80 00:00A8 DD 77 05 -  	ld (ix+5), a
+   81 00:00AB DD 70 05 -  	ld (ix+5), b
+   82 00:00AE DD 71 05 -  	ld (ix+5), c
+   83 00:00B1 DD 72 05 -  	ld (ix+5), d
+   84 00:00B4 DD 73 05 -  	ld (ix+5), e
+   85 00:00B7 DD 74 05 -  	ld (ix+5), h
+   86 00:00BA DD 75 05 -  	ld (ix+5), l
+   87 00:00BD FD 77 05 -  	ld (iy+5), a
+   88 00:00C0 FD 70 05 -  	ld (iy+5), b
+   89 00:00C3 FD 71 05 -  	ld (iy+5), c
+   90 00:00C6 FD 72 05 -  	ld (iy+5), d
+   91 00:00C9 FD 73 05 -  	ld (iy+5), e
+   92 00:00CC FD 74 05 -  	ld (iy+5), h
+   93 00:00CF FD 75 05 -  	ld (iy+5), l
+   94 00:00D2 DD 0F 05 -  	ld (ix+5), bc
+   95 00:00D5 DD 1F 05 -  	ld (ix+5), de
+   96 00:00D8 DD 2F 05 -  	ld (ix+5), hl
+   97 00:00DB FD 0F 05 -  	ld (iy+5), bc
+   98 00:00DE FD 1F 05 -  	ld (iy+5), de
+   99 00:00E1 FD 2F 05 -  	ld (iy+5), hl
+  100 00:00E4 ED 6D -  -  	ld mb, a
+  101 00:00E6 32 CC BB AA 	ld ($aabbcc), a
+  102 00:00EA DD 22 CC BB 
+              AA -  -  -  	ld ($aabbcc), ix
+  103 00:00EF FD 22 CC BB 
+              AA -  -  -  	ld ($aabbcc), iy
+  104 00:00F4 ED 43 CC BB 
+              AA -  -  -  	ld ($aabbcc), bc
+  105 00:00F9 ED 53 CC BB 
+              AA -  -  -  	ld ($aabbcc), de
+  106 00:00FE 22 CC BB AA 	ld ($aabbcc), hl
+  107 00:0102 ED 73 CC BB 
+              AA -  -  -  	ld ($aabbcc), sp
+  108 00:0107 ED 4F -  -  	ld r, a
+  109 00:0109 7E -  -  -  	ld a, (hl)
+  110 00:010A 46 -  -  -  	ld b, (hl)
+  111 00:010B 4E -  -  -  	ld c, (hl)
+  112 00:010C 56 -  -  -  	ld d, (hl)
+  113 00:010D 5E -  -  -  	ld e, (hl)
+  114 00:010E 66 -  -  -  	ld h, (hl)
+  115 00:010F 6E -  -  -  	ld l, (hl)
+  116 00:0110 DD 7C -  -  	ld a, ixh
+  117 00:0112 DD 7D -  -  	ld a, ixl
+  118 00:0114 FD 7C -  -  	ld a, iyh
+  119 00:0116 FD 7D -  -  	ld a, iyl
+  120 00:0118 DD 44 -  -  	ld b, ixh
+  121 00:011A DD 45 -  -  	ld b, ixl
+  122 00:011C FD 44 -  -  	ld b, iyh
+  123 00:011E FD 45 -  -  	ld b, iyl
+  124 00:0120 DD 4C -  -  	ld c, ixh
+  125 00:0122 DD 4D -  -  	ld c, ixl
+  126 00:0124 FD 4C -  -  	ld c, iyh
+  127 00:0126 FD 4D -  -  	ld c, iyl
+  128 00:0128 DD 54 -  -  	ld d, ixh
+  129 00:012A DD 55 -  -  	ld d, ixl
+  130 00:012C FD 54 -  -  	ld d, iyh
+  131 00:012E FD 55 -  -  	ld d, iyl
+  132 00:0130 DD 5C -  -  	ld e, ixh
+  133 00:0132 DD 5D -  -  	ld e, ixl
+  134 00:0134 FD 5C -  -  	ld e, iyh
+  135 00:0136 FD 5D -  -  	ld e, iyl
+  136 00:0138 DD 7E 05 -  	ld a, (ix+5)
+  137 00:013B DD 46 05 -  	ld b, (ix+5)
+  138 00:013E DD 4E 05 -  	ld c, (ix+5)
+  139 00:0141 DD 56 05 -  	ld d, (ix+5)
+  140 00:0144 DD 5E 05 -  	ld e, (ix+5)
+  141 00:0147 DD 66 05 -  	ld h, (ix+5)
+  142 00:014A DD 6E 05 -  	ld l, (ix+5)
+  143 00:014D FD 7E 05 -  	ld a, (iy+5)
+  144 00:0150 FD 46 05 -  	ld b, (iy+5)
+  145 00:0153 FD 4E 05 -  	ld c, (iy+5)
+  146 00:0156 FD 56 05 -  	ld d, (iy+5)
+  147 00:0159 FD 5E 05 -  	ld e, (iy+5)
+  148 00:015C FD 66 05 -  	ld h, (iy+5)
+  149 00:015F FD 6E 05 -  	ld l, (iy+5)
+  150 00:0162 3E 05 -  -  	ld a, 5
+  151 00:0164 06 05 -  -  	ld b, 5
+  152 00:0166 0E 05 -  -  	ld c, 5
+  153 00:0168 16 05 -  -  	ld d, 5
+  154 00:016A 1E 05 -  -  	ld e, 5
+  155 00:016C 26 05 -  -  	ld h, 5
+  156 00:016E 2E 05 -  -  	ld l, 5
+  157 00:0170 7F -  -  -  	ld a, a
+  158 00:0171 ED 07 -  -  	ld bc, (hl)
+  159 00:0173 ED 17 -  -  	ld de, (hl)
+  160 00:0175 ED 27 -  -  	ld hl, (hl)
+  161 00:0177 DD 07 05 -  	ld bc, (ix+5)
+  162 00:017A DD 17 05 -  	ld de, (ix+5)
+  163 00:017D DD 27 05 -  	ld hl, (ix+5)
+  164 00:0180 FD 07 05 -  	ld bc, (iy+5)
+  165 00:0183 FD 17 05 -  	ld de, (iy+5)
+  166 00:0186 FD 27 05 -  	ld hl, (iy+5)
+  167 00:0189 01 CC BB AA 	ld bc, $aabbcc
+  168 00:018D 11 CC BB AA 	ld de, $aabbcc
+  169 00:0191 21 CC BB AA 	ld hl, $aabbcc
+  170 00:0195 ED 4B CC BB 
+              AA -  -  -  	ld bc, ($aabbcc)
+  171 00:019A ED 5B CC BB 
+              AA -  -  -  	ld de, ($aabbcc)
+  172 00:019F 2A CC BB AA 	ld hl, ($aabbcc)
+  173 00:01A3 02 -  -  -  	ld (bc), a
+  174 00:01A4 12 -  -  -  	ld (de), a
+  175 00:01A5 77 -  -  -  	ld (hl), a
+  176 00:01A6 F9 -  -  -  	ld sp, hl
+  177 00:01A7 DD F9 -  -  	ld sp, ix
+  178 00:01A9 FD F9 -  -  	ld sp, iy
+  179 00:01AB 31 CC BB AA 	ld sp, $aabbcc
+  180 00:01AF ED 7B CC BB 
+              AA -  -  -  	ld sp, ($aabbcc)
+  181 00:01B4 ED A8 -  -  	ldd
+  182 00:01B6 ED B8 -  -  	lddr
+  183 00:01B8 ED A0 -  -  	ldi
+  184 00:01BA ED B0 -  -  	ldir
+  185 00:01BC ED 32 05 -  	lea ix, ix+5
+  186 00:01BF ED 55 05 -  	lea iy, ix+5
+  187 00:01C2 ED 54 05 -  	lea ix, iy+5
+  188 00:01C5 ED 33 05 -  	lea iy, iy+5
+  189 00:01C8 ED 02 05 -  	lea bc, ix+5
+  190 00:01CB ED 12 05 -  	lea de, ix+5
+  191 00:01CE ED 22 05 -  	lea hl, ix+5
+  192 00:01D1 ED 03 05 -  	lea bc, iy+5
+  193 00:01D4 ED 13 05 -  	lea de, iy+5
+  194 00:01D7 ED 23 05 -  	lea hl, iy+5
+  195 00:01DA -  -  -  -  	

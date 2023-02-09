@@ -931,9 +931,40 @@ void prefix_ddfd_suffix(operandlist *op) {
         prefix1 = get_ddfd_prefix(operand1.reg);
         prefix2 = get_ddfd_prefix(operand2.reg);
 
+
         // prefix in either of these two cases
-        if(prefix2) output.prefix1 = prefix2;
-        if(prefix1) output.prefix1 = prefix1; // operand1 has precendence
+        if(prefix1) {
+            printf("Prefix1\n");
+            if(prefix2) {
+                // both prefixes set
+                if(operand1.indirect) {
+                    printf("both - setting op1\n");
+                    output.prefix1 = prefix1;
+                }
+                else {
+                    printf("both - Setting op2\n");
+                    output.prefix1 = prefix2;
+                }
+            }
+            else {
+                // only prefix1 is set
+                printf("only 1 - setting op1\n");
+                output.prefix1 = prefix1;
+            }
+        }
+        else {
+            if(prefix2) {
+                // only prefix2 is set
+                printf("only 2 - setting op2\n");
+                output.prefix1 = prefix2;
+            }
+        }
+        /*
+        if(prefix1) output.prefix1 = prefix1;
+        else {
+            if(prefix2) output.prefix1 = prefix2;
+        }
+        */
     }
 }
 
@@ -958,6 +989,14 @@ void transform_opcode(operand *op, permittype type) {
             break;
         case TRANSFORM_CC:
             output.opcode |= (op->cc_index << 3);
+            break;
+        case TRANSFORM_N:
+            output.opcode |= op->immediate;
+            op->immediate_provided = false; // no separate output for this transform
+            break;
+        case TRANSFORM_BIT:
+            output.opcode |= (op->immediate << 3);
+            op->immediate_provided = false;
             break;
         case TRANSFORM_SELECT:
             switch(op->immediate) {
@@ -1025,10 +1064,8 @@ void emit_instruction(operandlist *list) {
     if(operand1.displacement_provided) emit_8bit(operand1.displacement & 0xFF);
     if(operand2.displacement_provided) emit_8bit(operand2.displacement & 0xFF);
     // output n
-    if((list->operandA == OPTYPE_N) || 
-        (list->operandA == OPTYPE_INDIRECT_N)) emit_8bit(operand1.immediate & 0xFF);
-    if((list->operandB == OPTYPE_N) ||
-        (list->operandB == OPTYPE_INDIRECT_N)) emit_8bit(operand2.immediate & 0xFF);
+    if((operand1.immediate_provided) && ((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N))) emit_8bit(operand1.immediate & 0xFF);
+    if((operand2.immediate_provided) && ((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N))) emit_8bit(operand2.immediate & 0xFF);
 
 
     // opcode in DDCBdd/DFCBdd position

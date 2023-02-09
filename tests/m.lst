@@ -1,0 +1,389 @@
+    1 00:0000 ED 4C -  -  	mlt bc
+    2 00:0002 ED 5C -  -  	mlt de
+    3 00:0004 ED 6C -  -  	mlt hl
+    4 00:0006 ED 7C -  -  	mlt sp
+    5 00:0008 ED 44 -  -  	neg
+    6 00:000A 00 -  -  -  	nop
+    7 00:000B B6 -  -  -  	or a, (hl)
+    8 00:000C DD B4 -  -  	or a, ixh
+    9 00:000E DD B5 -  -  	or a, ixl
+   10 00:0010 FD B4 -  -  	or a, iyh
+   11 00:0012 FD B5 -  -  	or a, iyl
+   12 00:0014 DD B6 05 -  	or a, (ix+5)
+   13 00:0017 FD B6 05 -  	or a, (iy+5)
+   14 00:001A F6 05 -  -  	or a, 5
+   15 00:001C B7 -  -  -  	or a, a
+   16 00:001D B0 -  -  -  	or a, b
+   17 00:001E B1 -  -  -  	or a, c
+   18 00:001F B2 -  -  -  	or a, d
+   19 00:0020 B3 -  -  -  	or a, e
+   20 00:0021 B4 -  -  -  	or a, h
+   21 00:0022 B5 -  -  -  	or a, l
+   22 00:0023 ED BC -  -  	otd2r
+   23 00:0025 ED 8B -  -  	otdm
+   24 00:0027 ED 9B -  -  	otdmr
+   25 00:0029 ED BB -  -  	otdr
+   26 00:002B ED CB -  -  	otdrx
+   27 00:002D ED B4 -  -  	oti2r
+   28 00:002F ED 83 -  -  	otim
+   29 00:0031 ED 93 -  -  	otimr
+   30 00:0033 ED B3 -  -  	otir
+   31 00:0035 ED C3 -  -  	otirx
+   32 00:0037 ED 79 -  -  	out (bc), a
+   33 00:0039 ED 41 -  -  	out (bc), b
+   34 00:003B ED 49 -  -  	out (bc), c
+   35 00:003D ED 51 -  -  	out (bc), d
+   36 00:003F ED 59 -  -  	out (bc), e
+   37 00:0041 ED 61 -  -  	out (bc), h
+   38 00:0043 ED 69 -  -  	out (bc), l
+   39 00:0045 ED 79 -  -  	out (c), a
+   40 00:0047 ED 41 -  -  	out (c), b
+   41 00:0049 ED 49 -  -  	out (c), c
+   42 00:004B ED 51 -  -  	out (c), d
+   43 00:004D ED 59 -  -  	out (c), e
+   44 00:004F ED 61 -  -  	out (c), h
+   45 00:0051 ED 69 -  -  	out (c), l
+   46 00:0053 D3 05 -  -  	out (5), a
+   47 00:0055 ED 39 05 -  	out0 (5), a
+   48 00:0058 ED 01 05 -  	out0 (5), b
+   49 00:005B ED 09 05 -  	out0 (5), c
+   50 00:005E ED 11 05 -  	out0 (5), d
+   51 00:0061 ED 19 05 -  	out0 (5), e
+   52 00:0064 ED 21 05 -  	out0 (5), h
+   53 00:0067 ED 29 05 -  	out0 (5), l
+   54 00:006A ED AB -  -  	outd
+   55 00:006C ED AC -  -  	outd2
+   56 00:006E ED A3 -  -  	outi
+   57 00:0070 ED A4 -  -  	outi2
+   58 00:0072 ED 65 05 -  	pea ix+5
+   59 00:0075 ED 66 05 -  	pea iy+5
+   60 00:0078 F1 -  -  -  	pop af
+   61 00:0079 DD E1 -  -  	pop ix
+   62 00:007B FD E1 -  -  	pop iy
+   63 00:007D C1 -  -  -  	pop bc
+   64 00:007E D1 -  -  -  	pop de
+   65 00:007F E1 -  -  -  	pop hl
+   66 00:0080 F5 -  -  -  	push af
+   67 00:0081 DD E5 -  -  	push ix
+   68 00:0083 FD E5 -  -  	push iy
+   69 00:0085 C5 -  -  -  	push bc
+   70 00:0086 D5 -  -  -  	push de
+   71 00:0087 E5 -  -  -  	push hl
+   72 00:0088 CB 86 -  -  	res 0, (hl)
+   73 00:008A CB 8E -  -  	res 1, (hl)
+   74 00:008C CB 96 -  -  	res 2, (hl)
+   75 00:008E CB 9E -  -  	res 3, (hl)
+   76 00:0090 CB A6 -  -  	res 4, (hl)
+   77 00:0092 CB AE -  -  	res 5, (hl)
+   78 00:0094 CB B6 -  -  	res 6, (hl)
+   79 00:0096 CB BE -  -  	res 7, (hl)
+   80 00:0098 DD CB 05 86 	res 0, (ix+5)
+   81 00:009C DD CB 05 8E 	res 1, (ix+5)
+   82 00:00A0 DD CB 05 96 	res 2, (ix+5)
+   83 00:00A4 DD CB 05 9E 	res 3, (ix+5)
+   84 00:00A8 DD CB 05 A6 	res 4, (ix+5)
+   85 00:00AC DD CB 05 AE 	res 5, (ix+5)
+   86 00:00B0 DD CB 05 B6 	res 6, (ix+5)
+   87 00:00B4 DD CB 05 BE 	res 7, (ix+5)
+   88 00:00B8 FD CB 05 86 	res 0, (iy+5)
+   89 00:00BC FD CB 05 8E 	res 1, (iy+5)
+   90 00:00C0 FD CB 05 96 	res 2, (iy+5)
+   91 00:00C4 FD CB 05 9E 	res 3, (iy+5)
+   92 00:00C8 FD CB 05 A6 	res 4, (iy+5)
+   93 00:00CC FD CB 05 AE 	res 5, (iy+5)
+   94 00:00D0 FD CB 05 B6 	res 6, (iy+5)
+   95 00:00D4 FD CB 05 BE 	res 7, (iy+5)
+   96 00:00D8 CB 87 -  -  	res 0, a
+   97 00:00DA CB 8F -  -  	res 1, a
+   98 00:00DC CB 97 -  -  	res 2, a
+   99 00:00DE CB 9F -  -  	res 3, a
+  100 00:00E0 CB A7 -  -  	res 4, a
+  101 00:00E2 CB AF -  -  	res 5, a
+  102 00:00E4 CB B7 -  -  	res 6, a
+  103 00:00E6 CB BF -  -  	res 7, a
+  104 00:00E8 CB 80 -  -  	res 0, b
+  105 00:00EA CB 88 -  -  	res 1, b
+  106 00:00EC CB 90 -  -  	res 2, b
+  107 00:00EE CB 98 -  -  	res 3, b
+  108 00:00F0 CB A0 -  -  	res 4, b
+  109 00:00F2 CB A8 -  -  	res 5, b
+  110 00:00F4 CB B0 -  -  	res 6, b
+  111 00:00F6 CB B8 -  -  	res 7, b
+  112 00:00F8 CB 81 -  -  	res 0, c
+  113 00:00FA CB 89 -  -  	res 1, c
+  114 00:00FC CB 91 -  -  	res 2, c
+  115 00:00FE CB 99 -  -  	res 3, c
+  116 00:0100 CB A1 -  -  	res 4, c
+  117 00:0102 CB A9 -  -  	res 5, c
+  118 00:0104 CB B1 -  -  	res 6, c
+  119 00:0106 CB B9 -  -  	res 7, c
+  120 00:0108 CB 82 -  -  	res 0, d
+  121 00:010A CB 8A -  -  	res 1, d
+  122 00:010C CB 92 -  -  	res 2, d
+  123 00:010E CB 9A -  -  	res 3, d
+  124 00:0110 CB A2 -  -  	res 4, d
+  125 00:0112 CB AA -  -  	res 5, d
+  126 00:0114 CB B2 -  -  	res 6, d
+  127 00:0116 CB BA -  -  	res 7, d
+  128 00:0118 CB 83 -  -  	res 0, e
+  129 00:011A CB 8B -  -  	res 1, e
+  130 00:011C CB 93 -  -  	res 2, e
+  131 00:011E CB 9B -  -  	res 3, e
+  132 00:0120 CB A3 -  -  	res 4, e
+  133 00:0122 CB AB -  -  	res 5, e
+  134 00:0124 CB B3 -  -  	res 6, e
+  135 00:0126 CB BB -  -  	res 7, e
+  136 00:0128 CB 84 -  -  	res 0, h
+  137 00:012A CB 8C -  -  	res 1, h
+  138 00:012C CB 94 -  -  	res 2, h
+  139 00:012E CB 9C -  -  	res 3, h
+  140 00:0130 CB A4 -  -  	res 4, h
+  141 00:0132 CB AC -  -  	res 5, h
+  142 00:0134 CB B4 -  -  	res 6, h
+  143 00:0136 CB BC -  -  	res 7, h
+  144 00:0138 CB 85 -  -  	res 0, l
+  145 00:013A CB 8D -  -  	res 1, l
+  146 00:013C CB 95 -  -  	res 2, l
+  147 00:013E CB 9D -  -  	res 3, l
+  148 00:0140 CB A5 -  -  	res 4, l
+  149 00:0142 CB AD -  -  	res 5, l
+  150 00:0144 CB B5 -  -  	res 6, l
+  151 00:0146 CB BD -  -  	res 7, l
+  152 00:0148 C9 -  -  -  	ret
+  153 00:0149 C0 -  -  -  	ret nz
+  154 00:014A C8 -  -  -  	ret z
+  155 00:014B D0 -  -  -  	ret nc
+  156 00:014C D8 -  -  -  	ret c
+  157 00:014D E0 -  -  -  	ret po
+  158 00:014E E8 -  -  -  	ret pe
+  159 00:014F F0 -  -  -  	ret p
+  160 00:0150 F8 -  -  -  	ret m
+  161 00:0151 ED 4D -  -  	reti
+  162 00:0153 ED 45 -  -  	retn
+  163 00:0155 CB 16 -  -  	rl (hl)
+  164 00:0157 DD CB 05 16 	rl (ix+5)
+  165 00:015B FD CB 05 16 	rl (iy+5)
+  166 00:015F CB 17 -  -  	rl a
+  167 00:0161 CB 10 -  -  	rl b
+  168 00:0163 CB 11 -  -  	rl c
+  169 00:0165 CB 12 -  -  	rl d
+  170 00:0167 CB 13 -  -  	rl e
+  171 00:0169 CB 14 -  -  	rl h
+  172 00:016B CB 15 -  -  	rl l
+  173 00:016D 17 -  -  -  	rla
+  174 00:016E CB 06 -  -  	rlc (hl)
+  175 00:0170 DD CB 05 06 	rlc (ix+5)
+  176 00:0174 FD CB 05 06 	rlc (iy+5)
+  177 00:0178 CB 07 -  -  	rlc a
+  178 00:017A CB 00 -  -  	rlc b
+  179 00:017C CB 01 -  -  	rlc c
+  180 00:017E CB 02 -  -  	rlc d
+  181 00:0180 CB 03 -  -  	rlc e
+  182 00:0182 CB 04 -  -  	rlc h
+  183 00:0184 CB 05 -  -  	rlc l
+  184 00:0186 07 -  -  -  	rlca
+  185 00:0187 ED 6F -  -  	rld
+  186 00:0189 CB 1E -  -  	rr (hl)
+  187 00:018B DD CB 05 1E 	rr (ix+5)
+  188 00:018F FD CB 05 1E 	rr (iy+5)
+  189 00:0193 CB 1F -  -  	rr a
+  190 00:0195 CB 18 -  -  	rr b
+  191 00:0197 CB 19 -  -  	rr c
+  192 00:0199 CB 1A -  -  	rr d
+  193 00:019B CB 1B -  -  	rr e
+  194 00:019D CB 1C -  -  	rr h
+  195 00:019F CB 1D -  -  	rr l
+  196 00:01A1 1F -  -  -  	rra
+  197 00:01A2 CB 0E -  -  	rrc (hl)
+  198 00:01A4 DD CB 05 0E 	rrc (ix+5)
+  199 00:01A8 FD CB 05 0E 	rrc (iy+5)
+  200 00:01AC CB 0F -  -  	rrc a
+  201 00:01AE CB 08 -  -  	rrc b
+  202 00:01B0 CB 09 -  -  	rrc c
+  203 00:01B2 CB 0A -  -  	rrc d
+  204 00:01B4 CB 0B -  -  	rrc e
+  205 00:01B6 CB 0C -  -  	rrc h
+  206 00:01B8 CB 0D -  -  	rrc l
+  207 00:01BA 0F -  -  -  	rrca
+  208 00:01BB ED 67 -  -  	rrd
+  209 00:01BD ED 7E -  -  	rsmix
+  210 00:01BF C7 -  -  -  	rst 0
+  211 00:01C0 CF -  -  -  	rst 08h
+  212 00:01C1 D7 -  -  -  	rst 10h
+  213 00:01C2 DF -  -  -  	rst 18h
+  214 00:01C3 E7 -  -  -  	rst 20h
+  215 00:01C4 EF -  -  -  	rst 28h
+  216 00:01C5 F7 -  -  -  	rst 30h
+  217 00:01C6 FF -  -  -  	rst 38h
+  218 00:01C7 9E -  -  -  	sbc a, (hl)
+  219 00:01C8 DD 9C -  -  	sbc a, ixh
+  220 00:01CA DD 9D -  -  	sbc a, ixl
+  221 00:01CC FD 9C -  -  	sbc a, iyh
+  222 00:01CE FD 9D -  -  	sbc a, iyl
+  223 00:01D0 DD 9E 05 -  	sbc a, (ix+5)
+  224 00:01D3 FD 9E 05 -  	sbc a, (iy+5)
+  225 00:01D6 DE 05 -  -  	sbc a, 5
+  226 00:01D8 9F -  -  -  	sbc a, a
+  227 00:01D9 98 -  -  -  	sbc a, b
+  228 00:01DA 99 -  -  -  	sbc a, c
+  229 00:01DB 9A -  -  -  	sbc a, d
+  230 00:01DC 9B -  -  -  	sbc a, e
+  231 00:01DD 9C -  -  -  	sbc a, h
+  232 00:01DE 9D -  -  -  	sbc a, l
+  233 00:01DF ED 42 -  -  	sbc hl, bc
+  234 00:01E1 ED 52 -  -  	sbc hl, de
+  235 00:01E3 ED 62 -  -  	sbc hl, hl
+  236 00:01E5 ED 72 -  -  	sbc hl, sp
+  237 00:01E7 37 -  -  -  	scf
+  238 00:01E8 CB C6 -  -  	set 0, (hl)
+  239 00:01EA CB CE -  -  	set 1, (hl)
+  240 00:01EC CB D6 -  -  	set 2, (hl)
+  241 00:01EE CB DE -  -  	set 3, (hl)
+  242 00:01F0 CB E6 -  -  	set 4, (hl)
+  243 00:01F2 CB EE -  -  	set 5, (hl)
+  244 00:01F4 CB F6 -  -  	set 6, (hl)
+  245 00:01F6 CB FE -  -  	set 7, (hl)
+  246 00:01F8 DD CB 05 C6 	set 0, (ix+5)
+  247 00:01FC DD CB 05 CE 	set 1, (ix+5)
+  248 00:0200 DD CB 05 D6 	set 2, (ix+5)
+  249 00:0204 DD CB 05 DE 	set 3, (ix+5)
+  250 00:0208 DD CB 05 E6 	set 4, (ix+5)
+  251 00:020C DD CB 05 EE 	set 5, (ix+5)
+  252 00:0210 DD CB 05 F6 	set 6, (ix+5)
+  253 00:0214 DD CB 05 FE 	set 7, (ix+5)
+  254 00:0218 FD CB 05 C6 	set 0, (iy+5)
+  255 00:021C FD CB 05 CE 	set 1, (iy+5)
+  256 00:0220 FD CB 05 D6 	set 2, (iy+5)
+  257 00:0224 FD CB 05 DE 	set 3, (iy+5)
+  258 00:0228 FD CB 05 E6 	set 4, (iy+5)
+  259 00:022C FD CB 05 EE 	set 5, (iy+5)
+  260 00:0230 FD CB 05 F6 	set 6, (iy+5)
+  261 00:0234 FD CB 05 FE 	set 7, (iy+5)
+  262 00:0238 CB C7 -  -  	set 0, a
+  263 00:023A CB C0 -  -  	set 0, b
+  264 00:023C CB C1 -  -  	set 0, c
+  265 00:023E CB C2 -  -  	set 0, d
+  266 00:0240 CB C3 -  -  	set 0, e
+  267 00:0242 CB C4 -  -  	set 0, h
+  268 00:0244 CB C5 -  -  	set 0, l
+  269 00:0246 CB CF -  -  	set 1, a
+  270 00:0248 CB C8 -  -  	set 1, b
+  271 00:024A CB C9 -  -  	set 1, c
+  272 00:024C CB CA -  -  	set 1, d
+  273 00:024E CB CB -  -  	set 1, e
+  274 00:0250 CB CC -  -  	set 1, h
+  275 00:0252 CB CD -  -  	set 1, l
+  276 00:0254 CB D7 -  -  	set 2, a
+  277 00:0256 CB D0 -  -  	set 2, b
+  278 00:0258 CB D1 -  -  	set 2, c
+  279 00:025A CB D2 -  -  	set 2, d
+  280 00:025C CB D3 -  -  	set 2, e
+  281 00:025E CB D4 -  -  	set 2, h
+  282 00:0260 CB D5 -  -  	set 2, l
+  283 00:0262 CB DF -  -  	set 3, a
+  284 00:0264 CB D8 -  -  	set 3, b
+  285 00:0266 CB D9 -  -  	set 3, c
+  286 00:0268 CB DA -  -  	set 3, d
+  287 00:026A CB DB -  -  	set 3, e
+  288 00:026C CB DC -  -  	set 3, h
+  289 00:026E CB DD -  -  	set 3, l
+  290 00:0270 CB E7 -  -  	set 4, a
+  291 00:0272 CB E0 -  -  	set 4, b
+  292 00:0274 CB E1 -  -  	set 4, c
+  293 00:0276 CB E2 -  -  	set 4, d
+  294 00:0278 CB E3 -  -  	set 4, e
+  295 00:027A CB E4 -  -  	set 4, h
+  296 00:027C CB E5 -  -  	set 4, l
+  297 00:027E CB EF -  -  	set 5, a
+  298 00:0280 CB E8 -  -  	set 5, b
+  299 00:0282 CB E9 -  -  	set 5, c
+  300 00:0284 CB EA -  -  	set 5, d
+  301 00:0286 CB EB -  -  	set 5, e
+  302 00:0288 CB EC -  -  	set 5, h
+  303 00:028A CB ED -  -  	set 5, l
+  304 00:028C CB F7 -  -  	set 6, a
+  305 00:028E CB F0 -  -  	set 6, b
+  306 00:0290 CB F1 -  -  	set 6, c
+  307 00:0292 CB F2 -  -  	set 6, d
+  308 00:0294 CB F3 -  -  	set 6, e
+  309 00:0296 CB F4 -  -  	set 6, h
+  310 00:0298 CB F5 -  -  	set 6, l
+  311 00:029A CB FF -  -  	set 7, a
+  312 00:029C CB F8 -  -  	set 7, b
+  313 00:029E CB F9 -  -  	set 7, c
+  314 00:02A0 CB FA -  -  	set 7, d
+  315 00:02A2 CB FB -  -  	set 7, e
+  316 00:02A4 CB FC -  -  	set 7, h
+  317 00:02A6 CB FD -  -  	set 7, l
+  318 00:02A8 CB 26 -  -  	sla (hl)
+  319 00:02AA DD CB 05 26 	sla (ix+5)
+  320 00:02AE FD CB 05 26 	sla (iy+5)
+  321 00:02B2 CB 27 -  -  	sla a
+  322 00:02B4 CB 20 -  -  	sla b
+  323 00:02B6 CB 21 -  -  	sla c
+  324 00:02B8 CB 22 -  -  	sla d
+  325 00:02BA CB 23 -  -  	sla e
+  326 00:02BC CB 24 -  -  	sla h
+  327 00:02BE CB 25 -  -  	sla l
+  328 00:02C0 ED 76 -  -  	slp
+  329 00:02C2 CB 2E -  -  	sra (hl)
+  330 00:02C4 DD CB 05 2E 	sra (ix+5)
+  331 00:02C8 FD CB 05 2E 	sra (iy+5)
+  332 00:02CC CB 2F -  -  	sra a
+  333 00:02CE CB 28 -  -  	sra b
+  334 00:02D0 CB 29 -  -  	sra c
+  335 00:02D2 CB 2A -  -  	sra d
+  336 00:02D4 CB 2B -  -  	sra e
+  337 00:02D6 CB 2C -  -  	sra h
+  338 00:02D8 CB 2D -  -  	sra l
+  339 00:02DA CB 3E -  -  	srl (hl)
+  340 00:02DC DD CB 05 3E 	srl (ix+5)
+  341 00:02E0 FD CB 05 3E 	srl (iy+5)
+  342 00:02E4 CB 3F -  -  	srl a
+  343 00:02E6 CB 38 -  -  	srl b
+  344 00:02E8 CB 39 -  -  	srl c
+  345 00:02EA CB 3A -  -  	srl d
+  346 00:02EC CB 3B -  -  	srl e
+  347 00:02EE CB 3C -  -  	srl h
+  348 00:02F0 CB 3D -  -  	srl l
+  349 00:02F2 ED 7D -  -  	stmix
+  350 00:02F4 96 -  -  -  	sub a, (hl)
+  351 00:02F5 DD 94 -  -  	sub a, ixh
+  352 00:02F7 DD 95 -  -  	sub a, ixl
+  353 00:02F9 FD 94 -  -  	sub a, iyh
+  354 00:02FB FD 95 -  -  	sub a, iyl
+  355 00:02FD DD 96 05 -  	sub a, (ix+5)
+  356 00:0300 FD 96 05 -  	sub a, (iy+5)
+  357 00:0303 D6 05 -  -  	sub a, 5
+  358 00:0305 97 -  -  -  	sub a, a
+  359 00:0306 90 -  -  -  	sub a, b
+  360 00:0307 91 -  -  -  	sub a, c
+  361 00:0308 92 -  -  -  	sub a, d
+  362 00:0309 93 -  -  -  	sub a, e
+  363 00:030A 94 -  -  -  	sub a, h
+  364 00:030B 95 -  -  -  	sub a, l
+  365 00:030C ED 34 -  -  	tst a, (hl)
+  366 00:030E ED 64 05 -  	tst a, 5
+  367 00:0311 ED 3C -  -  	tst a, a
+  368 00:0313 ED 04 -  -  	tst a, b
+  369 00:0315 ED 0C -  -  	tst a, c
+  370 00:0317 ED 14 -  -  	tst a, d
+  371 00:0319 ED 1C -  -  	tst a, e
+  372 00:031B ED 24 -  -  	tst a, h
+  373 00:031D ED 2C -  -  	tst a, l
+  374 00:031F ED 74 05 -  	tstio 5
+  375 00:0322 AE -  -  -  	xor a, (hl)
+  376 00:0323 DD AC -  -  	xor a, ixh
+  377 00:0325 DD AD -  -  	xor a, ixl
+  378 00:0327 FD AC -  -  	xor a, iyh
+  379 00:0329 FD AD -  -  	xor a, iyl
+  380 00:032B DD AE 05 -  	xor a, (ix+5)
+  381 00:032E FD AE 05 -  	xor a, (iy+5)
+  382 00:0331 EE 05 -  -  	xor a, 5
+  383 00:0333 AF -  -  -  	xor a, a
+  384 00:0334 A8 -  -  -  	xor a, b
+  385 00:0335 A9 -  -  -  	xor a, c
+  386 00:0336 AA -  -  -  	xor a, d
+  387 00:0337 AB -  -  -  	xor a, e
+  388 00:0338 AC -  -  -  	xor a, h
+  389 00:0339 AD -  -  -  	xor a, l

@@ -154,7 +154,9 @@ typedef enum {
     TRANSFORM_DDFD,
     TRANSFORM_CC,
     TRANSFORM_IR,
-    TRANSFORM_SELECT
+    TRANSFORM_SELECT,
+    TRANSFORM_N,
+    TRANSFORM_BIT
 }opcodetransformtype;
 
 typedef struct {
