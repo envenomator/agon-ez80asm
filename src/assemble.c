@@ -906,7 +906,6 @@ void emit_adlsuffix_code(uint8_t suffix) {
             return;
     }
     emit_8bit(code);
-    //printf("0x%02x:", code);
 }
 
 uint8_t get_ddfd_prefix(cpuregister reg) {
@@ -1041,7 +1040,10 @@ void emit_instruction(operandlist *list) {
 }
 
 void emit_8bit(uint8_t value) {
-    if(pass == 2) printf("%02x:",value);
+    if(pass == 2) {
+        printf("%02x:",value);
+        fwrite(&value, sizeof(char), 1, outfile);
+    }
     address++;
     totalsize++;
 }

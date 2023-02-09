@@ -44,7 +44,8 @@ int main(int argc, char *argv[])
     // Init tables
     init_instruction_table();
     init_label_table();
-    
+    outputbufferptr = outputbuffer;
+
     // Assemble input to output
     assemble(infile, outfile);
     printf("\n");

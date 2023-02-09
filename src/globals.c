@@ -15,6 +15,9 @@ uint32_t totalsize;      // total size of assembled binary
 uint16_t global_errors;
 bool adlmode;
 
+char outputbuffer[65535];
+char * outputbufferptr;
+
 tokenline currentline;
 operand operand1;
 operand operand2;
