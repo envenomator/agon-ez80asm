@@ -21,6 +21,7 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
     operand->position = pos;
     operand->reg = R_NONE;
     operand->reg_index = 0;
+    operand->reg_alternate = false;
     operand->cc = false;
     operand->cc_index = 0;
     operand->displacement = 0;
@@ -50,6 +51,14 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_A;
                     operand->reg_index = R_INDEX_A;
                     return;
+                case '\'':
+                    if(*(ptr+1) == 0) {
+                        operand->reg = R_A;
+                        operand->reg_index = R_INDEX_A;
+                        operand->reg_alternate = true;
+                        return;
+                    }
+                    break;
                 case 'f':
                     switch(*ptr++) {
                         case 0:
@@ -72,6 +81,14 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_B;
                     operand->reg_index = R_INDEX_B;
                     return;
+                case '\'':
+                    if(*(ptr+1) == 0) {
+                        operand->reg = R_B;
+                        operand->reg_index = R_INDEX_B;
+                        operand->reg_alternate = true;
+                        return;
+                    }
+                    break;
                 case 'c':
                     if(*ptr == 0) {
                         operand->reg = R_BC;
@@ -91,6 +108,14 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->cc = true;
                     operand->cc_index = CC_INDEX_C;
                     return;
+                case '\'':
+                    if(*(ptr+1) == 0) {
+                        operand->reg = R_C;
+                        operand->reg_index = R_INDEX_C;
+                        operand->reg_alternate = true;
+                        return;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -101,6 +126,14 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_D;
                     operand->reg_index = R_INDEX_D;
                     return;
+                case '\'':
+                    if(*(ptr+1) == 0) {
+                        operand->reg = R_D;
+                        operand->reg_index = R_INDEX_D;
+                        operand->reg_alternate = true;
+                        return;
+                    }
+                    break;
                 case 'e':
                     switch(*ptr++) {
                         case 0:
@@ -121,6 +154,14 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_E;
                     operand->reg_index = R_INDEX_E;
                     return;
+                case '\'':
+                    if(*(ptr+1) == 0) {
+                        operand->reg = R_E;
+                        operand->reg_index = R_INDEX_E;
+                        operand->reg_alternate = true;
+                        return;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -131,6 +172,14 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_H;
                     operand->reg_index = R_INDEX_H;
                     return;
+                case '\'':
+                    if(*(ptr+1) == 0) {
+                        operand->reg = R_H;
+                        operand->reg_index = R_INDEX_H;
+                        operand->reg_alternate = true;
+                        return;
+                    }
+                    break;
                 case 'l':
                     if(*ptr == 0) {
                         operand->reg = R_HL;
@@ -210,6 +259,14 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_L;
                     operand->reg_index = R_INDEX_L;
                     return;
+                case '\'':
+                    if(*(ptr+1) == 0) {
+                        operand->reg = R_L;
+                        operand->reg_index = R_INDEX_L;
+                        operand->reg_alternate = true;
+                        return;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -852,23 +909,35 @@ void emit_adlsuffix_code(uint8_t suffix) {
     //printf("0x%02x:", code);
 }
 
-
-void prefix_ddfd_suffix(operand *op) {
-    switch(op->reg) {
+uint8_t get_ddfd_prefix(cpuregister reg) {
+    switch(reg) {
         case R_IX:
         case R_IXH:
         case R_IXL:
-            output.prefix1 = 0xDD;
-            return;
+            return 0xDD;
         case R_IY:
         case R_IYH:
         case R_IYL:
-            output.prefix1 = 0xFD;
-            return;
+            return 0xFD;
         default:
             break;
     }
+    return 0;    
 }
+
+void prefix_ddfd_suffix(operandlist *op) {
+    uint8_t prefix1, prefix2;
+
+    if(op->ddfdpermitted) {
+        prefix1 = get_ddfd_prefix(operand1.reg);
+        prefix2 = get_ddfd_prefix(operand2.reg);
+
+        // prefix in either of these two cases
+        if(prefix2) output.prefix1 = prefix2;
+        if(prefix1) output.prefix1 = prefix1; // operand1 has precendence
+    }
+}
+
 void transform_opcode(operand *op, permittype type) {
     uint8_t y;
     switch(type) {
@@ -937,13 +1006,12 @@ void emit_instruction(operandlist *list) {
     }
 
     // prepare extra DD/FD suffix if needed
-    prefix_ddfd_suffix(&operand1);
-    prefix_ddfd_suffix(&operand2);
+    prefix_ddfd_suffix(list);
     // Transform the opcode according to the current ruleset
     transform_opcode(&operand1, list->transformA);
     transform_opcode(&operand2, list->transformB);
     // determine position of dd
-    ddbeforeopcode = ((output.prefix1 == 0xDD) && (output.prefix2 == 0xFD) &&
+    ddbeforeopcode = (((output.prefix1 == 0xDD) || (output.prefix1 == 0xFD)) && (output.prefix2 == 0xCB) &&
                 ((operand1.displacement_provided) || (operand2.displacement_provided)));
     
     // output adl suffix and any prefixes

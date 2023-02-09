@@ -1,0 +1,17 @@
+jp nz, $aabbcc
+jp z, $aabbcc
+jp nc, $aabbcc
+jp c, $aabbcc
+jp po, $aabbcc
+jp pe, $aabbcc
+jp p, $aabbcc
+jp m, $aabbcc
+jp (hl)
+jp (ix)
+jp (iy)
+jp $aabbcc
+jr nz, 5
+jr z, 5
+jr nc,5 5
+jr c, 5
+jr 5

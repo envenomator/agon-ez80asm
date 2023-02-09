@@ -43,6 +43,9 @@ typedef enum { // permitted operand type
     OPTYPE_IY,
     OPTYPE_IXd,
     OPTYPE_IYd,
+    OPTYPE_INDIRECT_IXd,
+    OPTYPE_INDIRECT_IYd,
+    OPTYPE_R_AEONLY
 } permittype;
 
 typedef enum {
@@ -124,6 +127,7 @@ typedef struct {
     operand_position    position;
     cpuregister         reg;
     uint8_t             reg_index;
+    bool                reg_alternate;
     bool                indirect;
     bool                cc;
     uint8_t             cc_index;
@@ -156,6 +160,7 @@ typedef enum {
 typedef struct {
     permittype          operandA;           // Filter for operandA - which register applies?
     permittype          operandB;           // Filter for operandB
+    bool                ddfdpermitted;         
     opcodetransformtype transformA;         // Do we transform acc to operandA
     opcodetransformtype transformB;         //  "        "       " "  operandB
     uint8_t             prefix;            // base prefix1, or 0 if none to output
