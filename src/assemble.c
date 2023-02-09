@@ -852,6 +852,72 @@ void emit_adlsuffix_code(uint8_t suffix) {
     //printf("0x%02x:", code);
 }
 
+
+void prefix_ddfd_suffix(operand *op) {
+    switch(op->reg) {
+        case R_IX:
+        case R_IXH:
+        case R_IXL:
+            output.prefix1 = 0xDD;
+            return;
+        case R_IY:
+        case R_IYH:
+        case R_IYL:
+            output.prefix1 = 0xFD;
+            return;
+        default:
+            break;
+    }
+}
+void transform_opcode(operand *op, permittype type) {
+    uint8_t y;
+    switch(type) {
+        case TRANSFORM_IR:
+            if((op->reg == R_IXL) || (op->reg == R_IYL)) {
+                if(op->position == POS_SOURCE) output.opcode++; // bit 0
+                else output.opcode |= 0x08; // bit 3
+            }
+            break;
+        case TRANSFORM_Z:
+            output.opcode |= op->reg_index;
+            break;
+        case TRANSFORM_Y:
+            if(op->immediate_provided) output.opcode |= (op->immediate << 3);
+            else output.opcode |= (op->reg_index << 3);
+            break;
+        case TRANSFORM_P:
+            output.opcode |= (op->reg_index << 4);
+            break;
+        case TRANSFORM_CC:
+            output.opcode |= (op->cc_index << 3);
+            break;
+        case TRANSFORM_SELECT:
+            switch(op->immediate) {
+                case 0:
+                    y = 0;
+                    break;
+                case 1:
+                    y = 2;
+                    break;
+                case 2:
+                    y = 3;
+                    break;
+                default:
+                    error(message[ERROR_INVALIDOPERAND]);
+                    y = 0;
+            }
+            output.opcode |= (y << 3); // shift 3 lower bits 3 to the left
+            op->immediate_provided = false; // no separate output for this transform
+            break;
+        case TRANSFORM_NONE:
+            break;
+        default:
+            error(message[ERROR_TRANSFORMATION]);
+            break;
+    }
+    return;
+}
+
 void emit_instruction(operandlist *list) {
     bool ddbeforeopcode; // determine position of displacement byte in case of DDCBdd/DDFDdd
 
@@ -859,8 +925,6 @@ void emit_instruction(operandlist *list) {
     output.prefix1 = 0;
     output.prefix2 = list->prefix;
     output.opcode = list->opcode;
-    if(list->transformA != TRANSFORM_NONE) operandtype_matchlist[list->operandA].transform(list->transformA, &operand1);
-    if(list->transformB != TRANSFORM_NONE) operandtype_matchlist[list->operandB].transform(list->transformB, &operand2);
 
     if(pass == 1) {
         // issue any errors here
@@ -868,10 +932,16 @@ void emit_instruction(operandlist *list) {
         if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
         if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
         if((operand2.displacement_provided) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
-        // Output label at this address
+        // Define label at this address
         definelabel();
     }
 
+    // prepare extra DD/FD suffix if needed
+    prefix_ddfd_suffix(&operand1);
+    prefix_ddfd_suffix(&operand2);
+    // Transform the opcode according to the current ruleset
+    transform_opcode(&operand1, list->transformA);
+    transform_opcode(&operand2, list->transformB);
     // determine position of dd
     ddbeforeopcode = ((output.prefix1 == 0xDD) && (output.prefix2 == 0xFD) &&
                 ((operand1.displacement_provided) || (operand2.displacement_provided)));
@@ -1012,7 +1082,7 @@ void process(void){
         match = false;
         for(listitem = 0; listitem < current_instruction->listnumber; listitem++) {
             if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->transformA, list->transformB, list->prefix, list->opcode, list->adl);
-            if(operandtype_matchlist[list->operandA].match(&operand1) && operandtype_matchlist[list->operandB].match(&operand2)) {
+            if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
                 match = true;
                 if((debug_enabled) && pass == 1) printf("DEBUG - Line %d - match found on ^last^ filter list tuple\n", linenumber);
                 //printf("Line %d - match found\n",linenumber);

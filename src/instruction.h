@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define INSTRUCTION_TABLE_SIZE 256
-#define MAX_MNEMONIC_SIZE 6
+#define INSTRUCTION_TABLE_SIZE  256
+#define MAX_MNEMONIC_SIZE         8
 
 typedef enum { // permitted operand type
     OPTYPE_NONE,
@@ -43,7 +43,7 @@ typedef enum { // permitted operand type
     OPTYPE_IY,
     OPTYPE_IXd,
     OPTYPE_IYd,
-} operandtype;
+} permittype;
 
 typedef enum {
     R_NONE,
@@ -147,25 +147,27 @@ typedef enum {
     TRANSFORM_Z,
     TRANSFORM_P,
     TRANSFORM_Q,
-    TRANSFORM_DDFD
+    TRANSFORM_DDFD,
+    TRANSFORM_CC,
+    TRANSFORM_IR,
+    TRANSFORM_SELECT
 }opcodetransformtype;
 
 typedef struct {
-    operandtype         operandA;           // Filter for operandA - which register applies?
-    operandtype         operandB;           // Filter for operandB
+    permittype          operandA;           // Filter for operandA - which register applies?
+    permittype          operandB;           // Filter for operandB
     opcodetransformtype transformA;         // Do we transform acc to operandA
     opcodetransformtype transformB;         //  "        "       " "  operandB
-    uint8_t             prefix;            // base prefix1, may be transformed by A/B
-    uint8_t             opcode;             // base opcode, may be transformed by A/B
+    uint8_t             prefix;            // base prefix1, or 0 if none to output
+    uint8_t             opcode;             // base opcode, may be transformed by A/B, according to opcodetransformtype
     uint8_t             adl;                // the adl mode allowed in set of operands
 } operandlist;
 
 // An array-based index of this structure will act as a fast lookup table
 typedef struct {
-    operandtype type;
+    permittype type;
     bool (*match)(operand *);
-    void (*transform)(opcodetransformtype type, operand *);       // transform output according to given operand
-} operandtype_match;
+} permittype_match;
 
 enum {
     EZ80,
@@ -190,5 +192,5 @@ typedef struct {
 void init_instruction_table();
 instruction * instruction_table_lookup(char *name);
 
-extern operandtype_match operandtype_matchlist[];
+extern permittype_match permittype_matchlist[];
 #endif // INSTRUCTION_H
