@@ -154,9 +154,9 @@ typedef enum {
     TRANSFORM_CC,
     TRANSFORM_IR,
     TRANSFORM_SELECT,
-    TRANSFORM_N,
-    TRANSFORM_BIT,
-    TRANSFORM_REL
+    TRANSFORM_N,            // only used by RST
+    TRANSFORM_BIT,          // only used by RES/SET
+    TRANSFORM_REL           // only used by JR/DJNZ
 }opcodetransformtype;
 
 typedef struct {

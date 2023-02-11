@@ -1,3 +1,4 @@
+.assume adl=1	
 	ld a, i
 	ld a, (ix+5)
 	ld a, (iy+5)
@@ -149,12 +150,6 @@
 	ld h, 5
 	ld l, 5
 	ld a, a
-	ld b, b
-	ld c, c
-	ld d, d
-	ld e, e
-	ld h, h
-	ld l, l
 	ld bc, (hl)
 	ld de, (hl)
 	ld hl, (hl)

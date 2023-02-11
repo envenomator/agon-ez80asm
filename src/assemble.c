@@ -606,7 +606,7 @@ void transform_instruction(operand *op, permittype type) {
     switch(type) {
         case TRANSFORM_IR:
             if((op->reg == R_IXL) || (op->reg == R_IYL)) {
-                if(op->position == POS_SOURCE) output.opcode++; // bit 0
+                if(op->position == POS_DESTINATION) output.opcode |= 0x01; // bit 0
                 else output.opcode |= 0x08; // bit 3
             }
             break;
