@@ -402,10 +402,69 @@ uint8_t storevalue(uint8_t type, char* buffptr, char *token) {
     return size;
 }
 
+void parse(char *line) {
+    char buffer[32];
+    char *next;
+
+    // default current line items
+    currentline.current_instruction = NULL;
+    currentline.next = NULL;
+    currentline.label[0] = 0;
+    currentline.mnemonic[0] = 0;
+    currentline.suffix[0] = 0;
+    currentline.operand1[0] = 0;
+    currentline.operand2[0] = 0;
+    currentline.comment[0] = 0;
+    currentline.size = 0;
+    currentline.buffer[0] = 0;
+
+    // find label
+    currentline.next = parse_token(currentline.label, line, ':', true);
+    // find command token, may yet contain .suffix
+    if(currentline.next) currentline.next = parse_token(buffer, currentline.next, ' ', false); // label on line
+    else currentline.next = parse_token(buffer, line, ' ', false); // no label on line
+    // split command token in mnemonic.suffix, if we got any results
+    if(buffer[0]) { 
+        next = parse_token(currentline.mnemonic, buffer, '.', false); // split command part
+        if(next) parse_token(currentline.suffix, next, ' ', false);   // split suffix part, only if present
+
+        currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
+        if(currentline.current_instruction == NULL) {
+            // check if 'suffix' part is actually a assembly command
+            currentline.current_instruction = instruction_table_lookup(currentline.suffix);
+            if(currentline.current_instruction == NULL) {
+                error(message[ERROR_INVALIDMNEMONIC]);
+                return;
+            }
+            // instruction is an assembly command, copy it to mnemonic and clear out suffix part
+            strcpy(currentline.mnemonic, currentline.suffix);
+            currentline.suffix[0] = 0;
+        }
+        // we have an instruction here, decide parsing tree upon which type
+        // When type is ASSEMBLER, leave parsing irregular argument tree for later in process phase
+        if(currentline.current_instruction->type == EZ80) {
+            if(currentline.next) { // any operands to tokenize?
+                currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
+                if(currentline.next) {
+                    parse_token(currentline.operand2, currentline.next, ',', false);
+                    currentline.next = NULL; // max expecting 2 tokens here
+                }
+            }
+            // parse both operands, also if the tokens are empty, so they'll clear out
+            parse_operand(POS_SOURCE,      currentline.operand1, &operand1);
+            parse_operand(POS_DESTINATION, currentline.operand2, &operand2);
+        }
+    }
+}
+
+void parseprint() {
+    printf("Line %03d - %s:%s.%s %s %s\n", linenumber, currentline.label, currentline.mnemonic, currentline.suffix, currentline.operand1, currentline.operand2);
+}
+
 // split line in string tokens and try to parse them into appropriate mnemonics and operands
 // Format 1: [label:] [[mnemonic][.suffix][operand1][,operand2]] [;comment] <- separate parser for operands and suffix
 // Format 2: [label:] [[asmcmd][cmdargument]] [;comment] <- requires separate parser for cmdargument
-void parse(char *line) {
+void parse_old(char *line) {
     uint8_t state;
     bool escaped;
     char *ptr;
@@ -417,7 +476,6 @@ void parse(char *line) {
 
     currentline.label[0] = 0;
     currentline.mnemonic[0] = 0;
-    currentline.suffix_present = false;
     currentline.suffix[0] = 0;
     currentline.operand1[0] = 0;
     currentline.operand2[0] = 0;
@@ -697,7 +755,6 @@ void parse(char *line) {
                     while(isspace(*ptr) != 0) ptr++; // skip over whitespace
                     token = currentline.operand1;
                     state = STATE_OPERAND1;
-                    currentline.suffix_present = true;
                 }
                 break;
             case STATE_OPERAND1:
@@ -785,7 +842,7 @@ void definelabel(void){
 
 // return ADL prefix bitfield, or 0 if none present
 uint8_t getADLsuffix(void) {
-    if(currentline.suffix_present) {
+    if(currentline.suffix[0]) {
         switch(strlen(currentline.suffix)) {
             case 1: // .s or .l
                 switch(currentline.suffix[0]) {
@@ -1101,7 +1158,7 @@ void emit_24bit(uint32_t value) {
     totalsize +=3;
 }
 
-void handle_asm_db(instruction *instr) {
+void handle_asm_db(void) {
     uint8_t i;
 
     if(pass == 1) {
@@ -1113,12 +1170,12 @@ void handle_asm_db(instruction *instr) {
     }
 }
 
-void handle_asm_adl(instruction *instr) {
+void handle_asm_adl(void) {
     if((operand1.immediate != 0) && (operand1.immediate) != 1) error(message[ERROR_INVALID_ADLMODE]);
     adlmode = operand1.immediate;
 }
 
-void handle_asm_org(instruction *instr) {
+void handle_asm_org(void) {
     uint32_t i;
     uint32_t size;
     uint32_t newaddress = operand1.immediate;
@@ -1142,16 +1199,16 @@ void handle_asm_org(instruction *instr) {
 
 }
 
-void handle_assembler_command(instruction *instr) {
-    switch(instr->asmtype) {
+void handle_assembler_command(void) {
+    switch(currentline.current_instruction->asmtype) {
     case(ASM_ADL):
-        handle_asm_adl(instr);
+        handle_asm_adl();
         break;
     case(ASM_ORG):
-        handle_asm_org(instr);
+        handle_asm_org();
         break;
     case(ASM_DB):
-        handle_asm_db(instr);
+        handle_asm_db();
         break;
     case(ASM_DW):
         break;        
@@ -1160,7 +1217,6 @@ void handle_assembler_command(instruction *instr) {
 }
 
 void process(void){
-    instruction *current_instruction;
     operandlist *list;
     uint8_t listitem;
     bool match;
@@ -1172,14 +1228,9 @@ void process(void){
         return; // valid line, but empty
     }
 
-    current_instruction = instruction_table_lookup(currentline.mnemonic);
-    if(current_instruction == NULL) {
-        error(message[ERROR_INVALIDMNEMONIC]);
-        return;
-    }
-    if(current_instruction->type == EZ80) {
+    if(currentline.current_instruction->type == EZ80) {
         // process this mnemonic by applying the instruction list as a filter to the operand-set
-        list = current_instruction->list;
+        list = currentline.current_instruction->list;
         if(debug_enabled && pass == 1) {
             printf("DEBUG - Line %d - Mmemonic \'%s\'\n", linenumber, currentline.mnemonic);
             printf("DEBUG - Line %d - regA %02x regB %02x\n", linenumber, operand1.reg, operand2.reg);
@@ -1187,7 +1238,7 @@ void process(void){
             printf("DEBUG - Line %d - indirectB %02x\n", linenumber, operand2.indirect);
         }
         match = false;
-        for(listitem = 0; listitem < current_instruction->listnumber; listitem++) {
+        for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
             if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->transformA, list->transformB, list->prefix, list->opcode, list->adl);
             if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
                 match = true;
@@ -1201,7 +1252,7 @@ void process(void){
         if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
         return;
     }
-    else handle_assembler_command(current_instruction);
+    else handle_assembler_command();
 
     //printf("DEBUG - Address is now 0x%08x, totalsize is %d\n", address, totalsize);
     return;
@@ -1230,7 +1281,9 @@ void print_linelisting_old(void) {
 
 
 void print_linelisting(void) {
-    printf("Line       %04d - ", linenumber);
+    printf("Line       %04d\n", linenumber);
+    printf("Command: %s\n", currentline.mnemonic);
+    printf("Suffix: %s\n", currentline.suffix);
     printf("Operand1:\n");
     printf("Register:    %02x\n", operand1.reg);
     printf("Indirect:    %02x\n", operand1.indirect);
@@ -1241,6 +1294,7 @@ void print_linelisting(void) {
     printf("Indirect:    %02x\n", operand2.indirect);
     printf("d:           %02x\n", operand2.displacement);
     printf("Immediate: %04x\n", operand2.immediate);
+    printf("\n\n");
 
 }
 
@@ -1262,12 +1316,13 @@ bool assemble(FILE *infile, FILE *outfile){
     while (fgets(line, sizeof(line), infile)){
         convertLower(line);
         parse(line);
-        process();
-        if(listing_enabled) print_linelisting();
+        //parseprint();
+        print_linelisting();
+//        process();
+//        if(listing_enabled) print_linelisting();
         linenumber++;
     }
     if(debug_enabled) print_label_table();
-    //print_label_table();
 
     if(global_errors) {
         printf("Abort\n");
@@ -1275,7 +1330,7 @@ bool assemble(FILE *infile, FILE *outfile){
     }
     printf("%d lines\n", linenumber);
     printf("%d labels\n", label_table_count());
-
+/*
     // Pass 2
     printf("Pass 2...\n");
     rewind(infile);
@@ -1292,6 +1347,7 @@ bool assemble(FILE *infile, FILE *outfile){
 
         printf("\n\n");
     }
+*/
     return true;
 }
 

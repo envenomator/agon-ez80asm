@@ -9,9 +9,10 @@
 #define DBBUFFERSIZE 256
 
 typedef struct {
+    instruction *current_instruction;
+    char *next;
     char label[32];
     char mnemonic[16];
-    bool suffix_present;
     char suffix[16];
     char operand1[32];
     char operand2[32];
