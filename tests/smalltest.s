@@ -1,4 +1,5 @@
-.org 0x40000
+.assume adl = 0
+org 0xf000
 labela:
     add a, b
 labelb:

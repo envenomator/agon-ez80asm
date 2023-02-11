@@ -1158,6 +1158,31 @@ void emit_24bit(uint32_t value) {
     totalsize +=3;
 }
 
+void parse_asm_single_immediate(void) {
+    if(currentline.next) {
+        currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
+        if(currentline.operand1[0]) {
+            operand1.immediate = str2num(currentline.operand1);
+            operand1.immediate_provided = true;
+        }
+        else error(message[ERROR_MISSINGOPERAND]);
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+}
+
+void parse_asm_keyval_pair(char separator) {
+    if(currentline.next) {
+        currentline.next = parse_token(currentline.operand1, currentline.next, separator, true);
+        if(currentline.next) {
+            currentline.next = parse_token(currentline.operand2, currentline.next, ' ', false);
+            operand2.immediate = str2num(currentline.operand2);
+            operand2.immediate_provided = true;
+        }
+        else error(message[ERROR_MISSINGOPERAND]);
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+}
+
 void handle_asm_db(void) {
     uint8_t i;
 
@@ -1171,20 +1196,15 @@ void handle_asm_db(void) {
 }
 
 void handle_asm_adl(void) {
-    if((operand1.immediate != 0) && (operand1.immediate) != 1) error(message[ERROR_INVALID_ADLMODE]);
-    adlmode = operand1.immediate;
-}
-
-void parse_asm_single_immediate(void) {
-    if(currentline.next) {
-        currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
-        if(currentline.operand1[0]) {
-            operand1.immediate = str2num(currentline.operand1);
-            operand1.immediate_provided = true;
+    parse_asm_keyval_pair('=');
+    if(strcmp(currentline.operand1, "adl") == 0) {
+        if((operand2.immediate == 0) || (operand2.immediate == 1)) {
+            adlmode = operand2.immediate;
+            //printf("Set ADL mode to %d\n",adlmode);
         }
-        else error(message[ERROR_MISSINGOPERAND]);
+        else error(message[ERROR_INVALID_ADLMODE]);
     }
-    else error(message[ERROR_MISSINGOPERAND]);
+    else error(message[ERROR_INVALIDOPERAND]);
 }
 
 void handle_asm_org(void) {
@@ -1194,7 +1214,7 @@ void handle_asm_org(void) {
     
     parse_asm_single_immediate(); // get address from next token
     newaddress = operand1.immediate;
-
+    if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE]); 
     //printf("DEBUG - setting address %08x, pass %d\n",newaddress, pass);
     if(newaddress >= address) {
         size = newaddress-address;
@@ -1210,8 +1230,6 @@ void handle_asm_org(void) {
         address = newaddress;
     }
     else error(message[ERROR_ADDRESSLOWER]);
-
-
 }
 
 void handle_assembler_command(void) {

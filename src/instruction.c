@@ -735,7 +735,7 @@ instruction instructions[] = {
     {"tst",  EZ80, 0, sizeof(operands_tst)/sizeof(operandlist), operands_tst},
     {"tstio",  EZ80, 0, sizeof(operands_tstio)/sizeof(operandlist), operands_tstio},
     {"xor",  EZ80, 0, sizeof(operands_xor)/sizeof(operandlist), operands_xor},
-    {"adl",   ASSEMBLER, ASM_ADL, 0, NULL},
+    {"assume",   ASSEMBLER, ASM_ADL, 0, NULL},
     {"db",    ASSEMBLER, ASM_DB, 0, NULL},
     {"org",   ASSEMBLER, ASM_ORG, 0, NULL}
 };
