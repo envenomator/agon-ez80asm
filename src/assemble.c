@@ -1228,57 +1228,36 @@ void process(void){
         return; // valid line, but empty
     }
 
-    if(currentline.current_instruction->type == EZ80) {
-        // process this mnemonic by applying the instruction list as a filter to the operand-set
-        list = currentline.current_instruction->list;
-        if(debug_enabled && pass == 1) {
-            printf("DEBUG - Line %d - Mmemonic \'%s\'\n", linenumber, currentline.mnemonic);
-            printf("DEBUG - Line %d - regA %02x regB %02x\n", linenumber, operand1.reg, operand2.reg);
-            printf("DEBUG - Line %d - indirectA %02x\n", linenumber, operand1.indirect);
-            printf("DEBUG - Line %d - indirectB %02x\n", linenumber, operand2.indirect);
-        }
-        match = false;
-        for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
-            if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->transformA, list->transformB, list->prefix, list->opcode, list->adl);
-            if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
-                match = true;
-                if((debug_enabled) && pass == 1) printf("DEBUG - Line %d - match found on ^last^ filter list tuple\n", linenumber);
-                //printf("Line %d - match found\n",linenumber);
-                emit_instruction(list);
-                break;
+    if(currentline.current_instruction) {
+        if(currentline.current_instruction->type == EZ80) {
+            // process this mnemonic by applying the instruction list as a filter to the operand-set
+            list = currentline.current_instruction->list;
+            if(debug_enabled && pass == 1) {
+                printf("DEBUG - Line %d - Mmemonic \'%s\'\n", linenumber, currentline.mnemonic);
+                printf("DEBUG - Line %d - regA %02x regB %02x\n", linenumber, operand1.reg, operand2.reg);
+                printf("DEBUG - Line %d - indirectA %02x\n", linenumber, operand1.indirect);
+                printf("DEBUG - Line %d - indirectB %02x\n", linenumber, operand2.indirect);
             }
-            list++;
+            match = false;
+            for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
+                if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->transformA, list->transformB, list->prefix, list->opcode, list->adl);
+                if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
+                    match = true;
+                    if((debug_enabled) && pass == 1) printf("DEBUG - Line %d - match found on ^last^ filter list tuple\n", linenumber);
+                    //printf("Line %d - match found\n",linenumber);
+                    emit_instruction(list);
+                    break;
+                }
+                list++;
+            }
+            if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
+            return;
         }
-        if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
-        return;
+        else handle_assembler_command();
     }
-    else handle_assembler_command();
-
     //printf("DEBUG - Address is now 0x%08x, totalsize is %d\n", address, totalsize);
     return;
 }
-
-void print_linelisting_old(void) {
-
-    printf("Line %04d - \"%s\" \"%s\" \"%s\" \"%s\" \"%s\" \"%s\"", linenumber, currentline.label, currentline.mnemonic, currentline.suffix, currentline.operand1, currentline.operand2, currentline.comment);
-    printf("\n");
-
-    printf("Line %04d - %10s %4s - %d %d %d %d - %d %d %d %d\n",linenumber, currentline.mnemonic, currentline.suffix, operand1.reg, operand1.indirect, operand1.displacement, operand1.immediate, operand2.reg, operand2.indirect, operand2.displacement, operand2.immediate);
-    /*
-    printf("Line       %04d\n", linenumber);
-    printf("Operand1:\n");
-    printf("Register:    %02x\n", operand1.reg);
-    printf("Indirect:    %02x\n", operand1.indirect);
-    printf("d:           %02x\n", operand1.displacement);
-    printf("Immediate: %04x\n", operand1.immediate);
-    printf("Operand2:\n");
-    printf("Register:    %02x\n", operand2.reg);
-    printf("Indirect:    %02x\n", operand2.indirect);
-    printf("d:           %02x\n", operand2.displacement);
-    printf("Immediate: %04x\n", operand2.immediate);
-    */
-}
-
 
 void print_linelisting(void) {
     printf("Line       %04d\n", linenumber);
@@ -1316,21 +1295,17 @@ bool assemble(FILE *infile, FILE *outfile){
     while (fgets(line, sizeof(line), infile)){
         convertLower(line);
         parse(line);
-        //parseprint();
-        print_linelisting();
-//        process();
-//        if(listing_enabled) print_linelisting();
+        process();
+        if(listing_enabled) print_linelisting();
         linenumber++;
     }
     if(debug_enabled) print_label_table();
 
-    if(global_errors) {
-        printf("Abort\n");
-        return false;
-    }
+    if(global_errors) return false;
+
     printf("%d lines\n", linenumber);
     printf("%d labels\n", label_table_count());
-/*
+
     // Pass 2
     printf("Pass 2...\n");
     rewind(infile);
@@ -1342,12 +1317,11 @@ bool assemble(FILE *infile, FILE *outfile){
         convertLower(line);
         parse(line);
         process();
-        if(listing_enabled) print_linelisting();
         linenumber++;
 
-        printf("\n\n");
+        printf("\n");
     }
-*/
+
     return true;
 }
 
