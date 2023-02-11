@@ -47,5 +47,6 @@ char *message[] = {
     "Invalid ADL mode",
     "Invalid assembler command",
     "New address lower than PC",
-    "Address outside 16-bit range"
+    "Address outside 16-bit range",
+    "String format error"
 };

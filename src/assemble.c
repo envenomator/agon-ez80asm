@@ -404,375 +404,6 @@ void parseprint() {
     printf("Line %03d - %s:%s.%s %s %s\n", linenumber, currentline.label, currentline.mnemonic, currentline.suffix, currentline.operand1, currentline.operand2);
 }
 
-// split line in string tokens and try to parse them into appropriate mnemonics and operands
-// Format 1: [label:] [[mnemonic][.suffix][operand1][,operand2]] [;comment] <- separate parser for operands and suffix
-// Format 2: [label:] [[asmcmd][cmdargument]] [;comment] <- requires separate parser for cmdargument
-void parse_old(char *line) {
-    uint8_t state;
-    bool escaped;
-    char *ptr;
-    char *token;
-    char *tstart;
-    char *bufferptr;
-    uint8_t tmpsize;
-    instruction *instr;
-
-    currentline.label[0] = 0;
-    currentline.mnemonic[0] = 0;
-    currentline.suffix[0] = 0;
-    currentline.operand1[0] = 0;
-    currentline.operand2[0] = 0;
-    currentline.comment[0] = 0;
-    currentline.size = 0;
-    currentline.buffer[0] = 0;
-
-    state = STATE_LINESTART;
-
-    while(1) {
-        switch(state) {
-            case STATE_LINESTART:
-                ptr = line;
-                while(isspace(*ptr) != 0) ptr++; // skip over whitespace
-                tstart = ptr;
-                if(isalnum(*ptr) || *ptr == '.') {
-                    state = STATE_MNEMONIC;
-                    token = currentline.mnemonic;
-                    break;
-                }
-                if(*ptr == ';') {
-                    token = currentline.comment;
-                    state = STATE_COMMENT;
-                    ptr++;
-                    break;
-                }
-                state = STATE_DONE; // empty line
-                break;
-            case STATE_MNEMONIC:
-                switch(*ptr) {
-                    case 0:
-                        *token = 0;
-                        state = STATE_DONE;
-                        break;
-                    case ';':
-                        *token = 0;
-                        token = currentline.comment;
-                        state = STATE_COMMENT;
-                        ptr++;
-                        break;
-                    case ':':
-                        // token proves to be a label after all
-                        *token = 0; // close string
-                        //*ptr = 0;
-                        //strcpy(currentline.label, tstart);
-                        strncpy(currentline.label, tstart, (ptr-tstart));
-                        currentline.mnemonic[0] = 0; // empty mnemonic again
-                        ptr++;
-                        while(isspace(*ptr) != 0) ptr++; // skip over whitespace
-                        token = currentline.mnemonic;
-                        // no change in state - MNEMONIC expected
-                        break;
-                    case '.':
-                        *token = 0; // terminate token string
-                        //printf("DEBUG - lenght mnemonic %d\n",(int)strlen(currentline.mnemonic));
-                        //if(strlen(currentline.mnemonic)) {
-                            state = STATE_SUFFIX;
-                            ptr++;
-                            while(isspace(*ptr) != 0) ptr++; // skip over whitespace
-                            token = currentline.suffix;
-                        //}
-                        //else {
-                        //    ptr++;
-                        //    token = currentline.mnemonic;
-                        //}
-                        //printf("DEBUG - %s\n",currentline.mnemonic);
-                        break;
-                    case ',':
-                        state = STATE_MISSINGOPERAND;
-                        break;
-                    default:
-                        if(isspace(*ptr) == 0) *token++ = *ptr++;
-                        else {
-                            // close out token
-                            *token = 0;
-                            ptr++;
-                            while(isspace(*ptr) != 0) ptr++; // skip over whitespace
-                            // either go to operand (EZ80 instruction), or assembler argument
-                            instr = instruction_table_lookup(currentline.mnemonic);
-                            if(instr) {
-                                switch(instr->type) {
-                                    case EZ80:
-                                        token = currentline.operand1;
-                                        state = STATE_OPERAND1;
-                                        break;
-                                    case ASSEMBLER: // nothing yet, will break this out in the future
-                                        //error("Assembler command");
-                                        token = currentline.operand1;
-                                        bufferptr = currentline.buffer;
-                                        state = STATE_ASM_PARSE;
-                                        break;
-                                    default:
-                                        error(message[ERROR_INVALIDMNEMONIC]); // actually: internal error
-                                        break;
-                                }
-                            }
-                            else error(message[ERROR_INVALIDMNEMONIC]);
-                            break;
-                        }
-                }
-                break;
-            case STATE_ASM_PARSE:
-                switch(instr->asmtype) { // parse according to expected format
-                    case ASM_ADL:
-                    case ASM_ORG:
-                        token = currentline.operand1;
-                        state = STATE_OPERAND1;
-                        break;
-                    case ASM_DB:
-                        state = STATE_ASM_VALUE_ENTRY;
-                        //printf("DEBUG: %s\n",ptr);
-                        break;
-                    case ASM_DW:
-                        break;
-                    default:
-                        error(message[ERROR_INVALID_ASSEMBLERCMD]);
-                }
-                break;
-            case STATE_ASM_VALUE_ENTRY:
-                switch(*ptr) {
-                    case 0:
-                        state = STATE_DONE;
-                        break;
-                    case ';':
-                        ptr++;
-                        state = STATE_COMMENT;
-                        break;
-                    case ' ':
-                    case '\n':
-                    case '\r':
-                        ptr++;
-                        break;
-                    case '"':
-                        state = STATE_ASM_STRINGARG;
-                        ptr++;
-                        break;
-                    default:
-                        state = STATE_ASM_VALUE;
-                        break;
-                }
-                break;
-            case STATE_ASM_VALUE_EXIT:
-                switch(*ptr) {
-                    case ' ':
-                    case '\r':
-                    case '\n':
-                        ptr++;
-                        break;
-                    default: // exit
-                        if(*ptr == ',') ptr++; // skip
-                        state = STATE_ASM_VALUE_CLOSEOUT;
-                        break;
-                }
-                break;
-            case STATE_ASM_VALUE: // create list of strings in buffer, separated by comma's, eliminate spaces
-                switch(*ptr) {
-                    case 0:
-                    case ';':
-                        state = STATE_ASM_VALUE_CLOSEOUT;
-                        break;
-                    case ' ':
-                    case '\n':
-                    case '\r':
-                        state = STATE_ASM_VALUE_EXIT;
-                        break;
-                    case ',': // skip
-                        ptr++;
-                        state = STATE_ASM_VALUE_CLOSEOUT;
-                        break;
-                    default:
-                        *token++ = *ptr++;
-                        break;
-                }
-                break;
-            case STATE_ASM_VALUE_CLOSEOUT:
-                *token = 0;
-                token = currentline.operand1;
-                tmpsize = storevalue(instr->asmtype, bufferptr, currentline.operand1);
-                bufferptr += tmpsize;
-                currentline.size += tmpsize;
-                switch(*ptr) {
-                    case 0:
-                        state = STATE_DONE;
-                        break;
-                    case ';':
-                        ptr++;
-                        state = STATE_COMMENT;
-                        break;
-                    default:
-                        state = STATE_ASM_VALUE_ENTRY;
-                        break;
-                }
-                break;
-            case STATE_ASM_ARG:
-                break;
-            case STATE_ASM_STRINGARG:
-                switch(*ptr) {
-                    case 0:
-                        error(message[ERROR_STRING_NOTTERMINATED]);
-                        //*token = 0;
-                        state = STATE_DONE;
-                        break;
-                    case '\\':
-                        if(escaped) {
-                            *bufferptr++ = '\\';
-                            currentline.size++;
-                            escaped = false;
-                        }
-                        else escaped = true;
-                        ptr++;
-                        break;
-                    case '"':
-                        if(escaped) {
-                            *bufferptr++ = *ptr++;
-                            currentline.size++;
-                        }
-                        else { // end of string value
-                            ptr++;
-                            state = STATE_ASM_STRINGARG_CLOSEOUT;
-                        }
-                        escaped = false;
-                        break;
-                    case 'n':
-                        if(escaped) *bufferptr++ = 0x0a;
-                        else *bufferptr++ = 'n';
-                        currentline.size++;
-                        ptr++;
-                        escaped = false;
-                        break;
-                    case 'r':
-                        if(escaped) *bufferptr++ = 0x0d;
-                        else *bufferptr++ = 'd';
-                        currentline.size++;
-                        ptr++;
-                        escaped = false;
-                        break;
-                    default:
-                        if(escaped) error("Invalid escape character in string");
-                        *bufferptr++ = *ptr++;
-                        currentline.size++;
-                        escaped = false;
-                        break;
-                }
-                break;
-            case STATE_ASM_STRINGARG_CLOSEOUT:
-                switch(*ptr) {
-                    case 0:
-                        state = STATE_DONE;
-                        break;
-                    case ';':
-                        state = STATE_COMMENT;
-                        ptr++;
-                        break;
-                    case ' ':
-                    case '\r':
-                    case '\n':
-                        ptr++;
-                        break;
-                    default: // exit
-                        if(*ptr == ',') ptr++; // skip
-                        state = STATE_ASM_VALUE_ENTRY;
-                        break;
-                }
-                break;
-            case STATE_SUFFIX:
-                if(*ptr == ',') {
-                    state = STATE_MISSINGOPERAND;
-                    break;
-                }
-                if(isspace(*ptr) == 0) {
-                    *token++ = *ptr++;
-                }
-                else {
-                    // close out token
-                    *token = 0;
-                    ptr++;
-                    while(isspace(*ptr) != 0) ptr++; // skip over whitespace
-                    token = currentline.operand1;
-                    state = STATE_OPERAND1;
-                }
-                break;
-            case STATE_OPERAND1:
-                switch(*ptr) {
-                    case 0:
-                        *token = 0;
-                        state = STATE_DONE;
-                        break;
-                    case '.':
-                    case ':':
-                        state = ERROR_INVALIDOPERAND;
-                        break;
-                    case ',':
-                        *token = 0;
-                        ptr++;
-                        while(isspace(*ptr) != 0) ptr++; // skip over whitespace
-                        token = currentline.operand2;
-                        state = STATE_OPERAND2;
-                        break;
-                    case ';':
-                        *token = 0;
-                        ptr++;
-                        token = currentline.comment;
-                        state = STATE_COMMENT;
-                        break;
-                    default:
-                        *token++ = *ptr++;
-                        while(isspace(*ptr) != 0) ptr++; // skip over whitespace
-                }
-                break;
-            case STATE_OPERAND2:
-                switch(*ptr) {
-                    case 0:
-                        *token = 0;
-                        state = STATE_DONE;
-                        break;
-                    case '.':
-                    case ':':
-                    case ',':
-                        state = ERROR_INVALIDOPERAND;
-                        break;
-                    case ';':
-                        *token = 0;
-                        ptr++;
-                        token = currentline.comment;
-                        state = STATE_COMMENT;
-                        break;
-                    default:
-                        *token++ = *ptr++;
-                        while(isspace(*ptr) != 0) ptr++; // skip over whitespace
-                }
-                break;
-            case STATE_COMMENT:
-                if((*ptr != 0) && (*ptr != '\r') && (*ptr != '\n')) *token++ = *ptr++;
-                else {
-                    *token = 0;
-                    state = STATE_DONE;
-                }
-                break;
-            case STATE_DONE:
-                //if(instr->type == EZ80) {
-                    parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
-                    parse_operand(POS_SOURCE, currentline.operand2, &operand2);
-                    output.suffix = getADLsuffix();
-                //}
-                // ASSEMBLER commands will be handled individually, potentially using operand1/operand2 as string
-                return;
-            case STATE_MISSINGOPERAND:
-                error(message[ERROR_MISSINGOPERAND]);
-                state = STATE_DONE;
-                break;
-        }
-    }
-}
-
 void definelabel(void){
     // add label to table if defined
     if(strlen(currentline.label)) {
@@ -1100,6 +731,49 @@ void emit_24bit(uint32_t value) {
     address += 3;
     totalsize +=3;
 }
+// emits a string surrounded by literal string quotes, as the token gets in from a file
+void emit_quotedstring(char *str) {
+    bool escaped = false;
+
+    if(*str == '\"') {
+        str++;
+        while(*str) {
+            switch(*str) {
+                case '\\':
+                    if(escaped) {
+                        emit_8bit('\\');
+                        escaped = false;
+                    }
+                    else escaped = true;
+                    break;
+                case 'n':
+                case 'r':
+                case 't':
+                    if(escaped) {
+                        if(*str == 'n') emit_8bit(0x0a); // \n
+                        if(*str == 'r') emit_8bit(0x0d); // \r
+                        if(*str == 't') emit_8bit(0x09); // \t
+                        escaped = false;
+                    }
+                    else emit_8bit(*str); // the normal character
+                    break;
+                case '\"':
+                    if(escaped) {
+                        emit_8bit('\"');
+                        escaped = false;
+                    }
+                    else return; // end of quoted string
+                    break;
+                default:
+                    emit_8bit(*str);
+            }
+            str++;
+        }
+        // we missed an end-quote to this string, we shouldn't reach this
+        error(message[ERROR_STRINGFORMAT]);
+    }
+    else error(message[ERROR_STRINGFORMAT]);
+}
 
 void parse_asm_single_immediate(void) {
     if(currentline.next) {
@@ -1129,28 +803,28 @@ void parse_asm_keyval_pair(char separator) {
     else error(message[ERROR_MISSINGOPERAND]);
 }
 
-void parse_asm_list_immediate(void) {
-    if(currentline.next) {
-        currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
-        if(currentline.operand1[0]) {
-            operand1.immediate = str2num(currentline.operand1);
-            operand1.immediate_provided = true;
-        }
-        else operand1.immediate_provided = false;
-    }
-    else error(message[ERROR_MISSINGOPERAND]);
 
-}
 void handle_asm_db(void) {
-    uint8_t i;
-
     if(pass == 1) {
         // Output label at this address
         definelabel();
     }
-    for(i = 0; i < currentline.size; i++) {
-        emit_8bit(currentline.buffer[i]);
+
+    if(currentline.next) {
+        while(currentline.next) {
+            currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
+            if(currentline.operand1[0]) {
+                // either an immediate value, or a string
+                if(currentline.operand1[0] == '\"') emit_quotedstring(currentline.operand1);
+                else {
+                    operand1.immediate = str2num(currentline.operand1);
+                    if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
+                    emit_8bit(operand1.immediate);
+                }
+            }
+        }
     }
+    else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
 }
 
 void handle_asm_adl(void) {

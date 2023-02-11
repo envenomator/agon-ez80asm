@@ -3,3 +3,4 @@
 labela:
     add a, (hl)
     add a, (ix+5)
+    db "Test\n",0
