@@ -21,7 +21,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
     operand->position = pos;
     operand->reg = R_NONE;
     operand->reg_index = 0;
-    operand->reg_alternate = false;
     operand->cc = false;
     operand->cc_index = 0;
     operand->displacement = 0;
@@ -51,14 +50,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_A;
                     operand->reg_index = R_INDEX_A;
                     return;
-                case '\'':
-                    if(*(ptr+1) == 0) {
-                        operand->reg = R_A;
-                        operand->reg_index = R_INDEX_A;
-                        operand->reg_alternate = true;
-                        return;
-                    }
-                    break;
                 case 'f':
                     switch(*ptr++) {
                         case 0:
@@ -81,14 +72,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_B;
                     operand->reg_index = R_INDEX_B;
                     return;
-                case '\'':
-                    if(*(ptr+1) == 0) {
-                        operand->reg = R_B;
-                        operand->reg_index = R_INDEX_B;
-                        operand->reg_alternate = true;
-                        return;
-                    }
-                    break;
                 case 'c':
                     if(*ptr == 0) {
                         operand->reg = R_BC;
@@ -108,14 +91,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->cc = true;
                     operand->cc_index = CC_INDEX_C;
                     return;
-                case '\'':
-                    if(*(ptr+1) == 0) {
-                        operand->reg = R_C;
-                        operand->reg_index = R_INDEX_C;
-                        operand->reg_alternate = true;
-                        return;
-                    }
-                    break;
                 default:
                     break;
             }
@@ -126,14 +101,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_D;
                     operand->reg_index = R_INDEX_D;
                     return;
-                case '\'':
-                    if(*(ptr+1) == 0) {
-                        operand->reg = R_D;
-                        operand->reg_index = R_INDEX_D;
-                        operand->reg_alternate = true;
-                        return;
-                    }
-                    break;
                 case 'e':
                     switch(*ptr++) {
                         case 0:
@@ -154,14 +121,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_E;
                     operand->reg_index = R_INDEX_E;
                     return;
-                case '\'':
-                    if(*(ptr+1) == 0) {
-                        operand->reg = R_E;
-                        operand->reg_index = R_INDEX_E;
-                        operand->reg_alternate = true;
-                        return;
-                    }
-                    break;
                 default:
                     break;
             }
@@ -172,14 +131,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_H;
                     operand->reg_index = R_INDEX_H;
                     return;
-                case '\'':
-                    if(*(ptr+1) == 0) {
-                        operand->reg = R_H;
-                        operand->reg_index = R_INDEX_H;
-                        operand->reg_alternate = true;
-                        return;
-                    }
-                    break;
                 case 'l':
                     if(*ptr == 0) {
                         operand->reg = R_HL;
@@ -259,14 +210,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                     operand->reg = R_L;
                     operand->reg_index = R_INDEX_L;
                     return;
-                case '\'':
-                    if(*(ptr+1) == 0) {
-                        operand->reg = R_L;
-                        operand->reg_index = R_INDEX_L;
-                        operand->reg_alternate = true;
-                        return;
-                    }
-                    break;
                 default:
                     break;
             }

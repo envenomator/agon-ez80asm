@@ -127,7 +127,6 @@ typedef struct {
     operand_position    position;
     cpuregister         reg;
     uint8_t             reg_index;
-    bool                reg_alternate;
     bool                indirect;
     bool                cc;
     uint8_t             cc_index;
