@@ -833,7 +833,7 @@ void parse_old(char *line) {
 void definelabel(void){
     // add label to table if defined
     if(strlen(currentline.label)) {
-        printf("Inserting label %s, %u\n",currentline.label, address);
+        printf("Inserting label %s, %08x\n",currentline.label, address);
         if(label_table_insert(currentline.label, address) == false){
             error("Out of label space");
         }
@@ -1175,10 +1175,25 @@ void handle_asm_adl(void) {
     adlmode = operand1.immediate;
 }
 
+void parse_asm_single_immediate(void) {
+    if(currentline.next) {
+        currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
+        if(currentline.operand1[0]) {
+            operand1.immediate = str2num(currentline.operand1);
+            operand1.immediate_provided = true;
+        }
+        else error(message[ERROR_MISSINGOPERAND]);
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+}
+
 void handle_asm_org(void) {
     uint32_t i;
     uint32_t size;
-    uint32_t newaddress = operand1.immediate;
+    uint32_t newaddress;
+    
+    parse_asm_single_immediate(); // get address from next token
+    newaddress = operand1.immediate;
 
     //printf("DEBUG - setting address %08x, pass %d\n",newaddress, pass);
     if(newaddress >= address) {
