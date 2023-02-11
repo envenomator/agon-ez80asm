@@ -1252,10 +1252,6 @@ void pass_init(uint8_t n) {
     totalsize = 0;
 }
 
-void pass_assemble(FILE *infile, char *line) {
-
-}
-
 bool assemble(FILE *infile, FILE *outfile){
     char line[LINEMAX];
     global_errors = 0;
@@ -1263,8 +1259,7 @@ bool assemble(FILE *infile, FILE *outfile){
     // Pass 1
     printf("Pass 1...\n");
     pass_init(1);
-    pass_assemble(infile, line);
-        while (fgets(line, sizeof(line), infile)){
+    while (fgets(line, sizeof(line), infile)){
         convertLower(line);
         parse(line);
         process();
@@ -1273,6 +1268,7 @@ bool assemble(FILE *infile, FILE *outfile){
     }
     if(debug_enabled) print_label_table();
     //print_label_table();
+
     if(global_errors) {
         printf("Abort\n");
         return false;
@@ -1284,11 +1280,10 @@ bool assemble(FILE *infile, FILE *outfile){
     printf("Pass 2...\n");
     rewind(infile);
     pass_init(2);
-        while (fgets(line, sizeof(line), infile)){
-        printf("address: %08x\n",address);
-        printf("input:   %s",line);
-        printf("output:  ");
-
+    while (fgets(line, sizeof(line), infile)){
+        //printf("address: %08x\n",address);
+        //printf("input:   %s",line);
+        //printf("output:  ");
         convertLower(line);
         parse(line);
         process();
@@ -1297,7 +1292,6 @@ bool assemble(FILE *infile, FILE *outfile){
 
         printf("\n\n");
     }
-    pass_assemble(infile, line);
     return true;
 }
 

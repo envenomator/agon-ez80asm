@@ -89,3 +89,50 @@ void trimEdges(char *str) {
     }
     *target = 0;     // close out token
 }
+
+// Find a token, ending with delimiter character
+// token is copied over and species are trimmed from it
+// Source string is not altered in any way
+//
+// Returns:
+// Pointer to next token in source or NULL
+char *parse_token(char *token, char  *src, char delimiter, bool required) {
+    char *target;
+    uint8_t index = 0;
+    bool found = false;
+
+    target = token;
+    // remove leading space
+    while(*src) {
+        if((*src == ' ') || (*src == '\n') || (*src == '\r') || (*src == '\t')) {
+            src++;
+        }
+        else break;
+    }
+    // copy potential token
+    while(*src) {
+        if(*src == delimiter) {
+            found = true;
+            break;
+        }
+        *target++ = *src++;
+        index++;
+    }
+    // finalize found or remaining token
+    if(found || !required) {
+        // remove trailing space
+        while(index--) {
+            target--;
+            if((*target != ' ') && (*target != '\n') && (*target != '\r') && (*target != '\t')) {
+                target++;
+                break;
+            }
+        }
+        *target = 0;     // close out token
+        if(found) return src+1;
+        else return NULL;
+    }
+    // no result
+    *token = 0; // empty token
+    return NULL;
+}
