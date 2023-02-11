@@ -7,5 +7,6 @@ void error(char* msg);
 void debugmsg(char *msg);
 bool isempty(const char *str);
 bool notempty(const char *str);
+void trimEdges(char *str);
 
 #endif // UTILS_H

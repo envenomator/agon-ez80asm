@@ -63,3 +63,29 @@ void debugmsg(char *msg)
         printf("DEBUG - Line %d - %s\n", linenumber, msg);
     }
 }
+
+void trimEdges(char *str) {
+    uint8_t index = 0;
+    char *target = str;
+    // skip leading space
+    while(*str) {
+        if((*str == ' ') || (*str == '\n') || (*str == '\r') || (*str == '\t')) {
+            str++;
+        }
+        else break;
+    }
+    // start copying data back
+    while(*str) {
+        *target++ = *str++;
+        index++;
+    }
+    // remove trailing spaces
+    while(index--) {
+        target--;
+        if((*target != ' ') && (*target != '\n') && (*target != '\r') && (*target != '\t')) {
+            target++;
+            break;
+        }
+    }
+    *target = 0;     // close out token
+}
