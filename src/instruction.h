@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define INSTRUCTION_TABLE_SIZE  256
-#define MAX_MNEMONIC_SIZE         8
+#define MAX_MNEMONIC_SIZE         10
 
 typedef enum { // permitted operand type
     OPTYPE_NONE,

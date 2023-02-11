@@ -948,14 +948,14 @@ void prefix_ddfd_suffix(operandlist *op) {
             }
             else {
                 // only prefix1 is set
-                printf("only 1 - setting op1\n");
+                //printf("only 1 - setting op1\n");
                 output.prefix1 = prefix1;
             }
         }
         else {
             if(prefix2) {
                 // only prefix2 is set
-                printf("only 2 - setting op2\n");
+                //printf("only 2 - setting op2\n");
                 output.prefix1 = prefix2;
             }
         }
@@ -1118,14 +1118,29 @@ void parse_asm_keyval_pair(char separator) {
         currentline.next = parse_token(currentline.operand1, currentline.next, separator, true);
         if(currentline.next) {
             currentline.next = parse_token(currentline.operand2, currentline.next, ' ', false);
-            operand2.immediate = str2num(currentline.operand2);
-            operand2.immediate_provided = true;
+            if(currentline.operand2[0]) {
+                operand2.immediate = str2num(currentline.operand2);
+                operand2.immediate_provided = true;
+            }
+            else error(message[ERROR_MISSINGOPERAND]);
         }
         else error(message[ERROR_MISSINGOPERAND]);
     }
     else error(message[ERROR_MISSINGOPERAND]);
 }
 
+void parse_asm_list_immediate(void) {
+    if(currentline.next) {
+        currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
+        if(currentline.operand1[0]) {
+            operand1.immediate = str2num(currentline.operand1);
+            operand1.immediate_provided = true;
+        }
+        else operand1.immediate_provided = false;
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+
+}
 void handle_asm_db(void) {
     uint8_t i;
 
