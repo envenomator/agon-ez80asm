@@ -51,10 +51,8 @@ bool notempty(const char *str) {
 
 void error(char* msg)
 {
-    if(pass == 1) {
-        printf("asm - line %d - %s\n", linenumber, msg);
-        global_errors++;
-    }
+    printf("Error in line %d - %s\n", linenumber, msg);
+    global_errors++;
 }
 
 void debugmsg(char *msg)

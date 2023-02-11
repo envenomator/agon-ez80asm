@@ -407,7 +407,7 @@ void parseprint() {
 void definelabel(void){
     // add label to table if defined
     if(strlen(currentline.label)) {
-        printf("Inserting label %s, %08x\n",currentline.label, address);
+        //printf("Inserting label %s, %08x\n",currentline.label, address);
         if(label_table_insert(currentline.label, address) == false){
             error("Out of label space");
         }
@@ -599,8 +599,10 @@ void prefix_ddfd_suffix(operandlist *op) {
     }
 }
 
-void transform_opcode(operand *op, permittype type) {
+void transform_instruction(operand *op, permittype type) {
     uint8_t y;
+    int32_t rel;
+
     switch(type) {
         case TRANSFORM_IR:
             if((op->reg == R_IXL) || (op->reg == R_IYL)) {
@@ -641,11 +643,19 @@ void transform_opcode(operand *op, permittype type) {
                     y = 3;
                     break;
                 default:
-                    error(message[ERROR_INVALIDOPERAND]);
                     y = 0;
             }
             output.opcode |= (y << 3); // shift 3 lower bits 3 to the left
             op->immediate_provided = false; // no separate output for this transform
+            break;
+        case TRANSFORM_REL:
+            if(pass == 2) {
+                // label still potentially unknown in pass 1, so output the existing '0' in pass 1
+                rel = op->immediate - address - 2;
+                if((rel > 127) || (rel < -128)) error(message[ERROR_RELATIVEJUMPTOOLARGE]);
+                op->immediate = ((int8_t)(rel & 0xFF));
+                op->immediate_provided = true;
+            }
             break;
         case TRANSFORM_NONE:
             break;
@@ -666,19 +676,25 @@ void emit_instruction(operandlist *list) {
 
     if(pass == 1) {
         // issue any errors here
-        if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
-        if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
+        if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
+            if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
+            if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
+        }
         if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
         if((operand2.displacement_provided) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
+
+        // Specific checks
+        if((list->operandA == OPTYPE_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
+        if((list->operandA == OPTYPE_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE]);
         // Define label at this address
         definelabel();
     }
 
     // prepare extra DD/FD suffix if needed
     prefix_ddfd_suffix(list);
-    // Transform the opcode according to the current ruleset
-    transform_opcode(&operand1, list->transformA);
-    transform_opcode(&operand2, list->transformB);
+    // Transform the opcode and potential immediate values, according to the current ruleset
+    transform_instruction(&operand1, list->transformA);
+    transform_instruction(&operand2, list->transformB);
     // determine position of dd
     ddbeforeopcode = (((output.prefix1 == 0xDD) || (output.prefix1 == 0xFD)) && (output.prefix2 == 0xCB) &&
                 ((operand1.displacement_provided) || (operand2.displacement_provided)));

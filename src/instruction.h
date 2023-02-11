@@ -155,7 +155,8 @@ typedef enum {
     TRANSFORM_IR,
     TRANSFORM_SELECT,
     TRANSFORM_N,
-    TRANSFORM_BIT
+    TRANSFORM_BIT,
+    TRANSFORM_REL
 }opcodetransformtype;
 
 typedef struct {

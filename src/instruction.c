@@ -337,8 +337,8 @@ operandlist operands_jp[] = {
     {OPTYPE_MMN, OPTYPE_NONE,       false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xC3, S_SISLIL},
 };
 operandlist operands_jr[]= {
-    {OPTYPE_CCA, OPTYPE_N,          false, TRANSFORM_CC, TRANSFORM_NONE, 0x00, 0x20, S_NONE}, // tested without negative numbers
-    {OPTYPE_N, OPTYPE_NONE,         false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x18, S_NONE},
+    {OPTYPE_CCA, OPTYPE_N,          false, TRANSFORM_CC, TRANSFORM_REL, 0x00, 0x20, S_NONE}, // tested without negative numbers
+    {OPTYPE_N, OPTYPE_NONE,         false, TRANSFORM_REL, TRANSFORM_NONE, 0x00, 0x18, S_NONE},
 };
 operandlist operands_ld[] = {
     {OPTYPE_A, OPTYPE_I,              false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x57, S_NONE}, // tested

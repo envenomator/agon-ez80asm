@@ -48,5 +48,8 @@ char *message[] = {
     "Invalid assembler command",
     "New address lower than PC",
     "Address outside 16-bit range",
-    "String format error"
+    "String format error",
+    "Relative jump too large",
+    "Invalid bit number (0-7)",
+    "Illegal interrupt mode (0-2)"
 };

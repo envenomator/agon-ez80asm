@@ -48,7 +48,8 @@ int main(int argc, char *argv[])
 
     // Assemble input to output
     assemble(infile, outfile);
-    printf("\n");
+
+    if(global_errors) printf("Error in input\n");
     
     // Cleanup
     fclose(infile);

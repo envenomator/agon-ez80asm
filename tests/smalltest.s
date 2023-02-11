@@ -1,6 +1,2 @@
-.assume adl=0
-.org 0x1000
-labela:
-    add a, (hl)
-    add a, (ix+5)
-    db "Test\n",0
+res 8,(hl)
+im 2
