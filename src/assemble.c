@@ -686,6 +686,7 @@ void emit_instruction(operandlist *list) {
         // Specific checks
         if((list->operandA == OPTYPE_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
         if((list->operandA == OPTYPE_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE]);
+        if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0b1000111)) error(message[ERROR_ILLEGALRESTARTADDRESS]);
         // Define label at this address
         definelabel();
     }
