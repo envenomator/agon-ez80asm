@@ -747,6 +747,29 @@ void emit_24bit(uint32_t value) {
     address += 3;
     totalsize +=3;
 }
+
+// return the value of a previously escaped character with backslash
+uint8_t get_escaped_char(char n) {
+    switch(n) {
+        case 'n':
+            return(0x0a);
+        case 'r':
+            return(0x0d);
+        case 't':
+            return(0x09);
+        case 'b':
+            return(0x08);
+        case 'e':
+            return(0x1b);
+        case '\"':
+            return('\"');
+        case '\'':
+            return('\'');
+        default:
+            return(n);
+    }
+}
+
 // emits a string surrounded by literal string quotes, as the token gets in from a file
 void emit_quotedstring(char *str) {
     bool escaped = false;
@@ -765,13 +788,12 @@ void emit_quotedstring(char *str) {
                 case 'n':
                 case 'r':
                 case 't':
-                    if(escaped) {
-                        if(*str == 'n') emit_8bit(0x0a); // \n
-                        if(*str == 'r') emit_8bit(0x0d); // \r
-                        if(*str == 't') emit_8bit(0x09); // \t
-                        escaped = false;
-                    }
+                case 'b':
+                case 'e':
+                case '\'':
+                    if(escaped) emit_8bit(get_escaped_char(*str));
                     else emit_8bit(*str); // the normal character
+                    escaped = false;
                     break;
                 case '\"':
                     if(escaped) {

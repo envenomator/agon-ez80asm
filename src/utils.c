@@ -140,7 +140,10 @@ char *parse_token(char *token, char  *src, char delimiter, bool required) {
             }
         }
         *target = 0;     // close out token
-        if(found) return src+1;
+        if(found) {
+            if(*src) return src+1;
+            return NULL;
+        }
         else return NULL;
     }
     // no result
