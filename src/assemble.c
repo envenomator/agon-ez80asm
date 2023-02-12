@@ -899,15 +899,18 @@ void handle_asm_equ(void) {
     uint32_t value;
 
     if(pass == 1) {
-        if(currentline.next) {
-            currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
-            if(currentline.operand1[0]) {
-                value = str2num(currentline.operand1);
-                definelabel(value);
+        if(currentline.label[0]) {
+            if(currentline.next) {
+                currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
+                if(currentline.operand1[0]) {
+                    value = str2num(currentline.operand1);
+                    definelabel(value);
+                }
+                else error(message[ERROR_MISSINGOPERAND]);
             }
             else error(message[ERROR_MISSINGOPERAND]);
         }
-        else error(message[ERROR_MISSINGOPERAND]);
+        else error(message[ERROR_MISSINGLABEL]);
     }
 }
 

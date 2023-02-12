@@ -53,5 +53,6 @@ char *message[] = {
     "Invalid bit number (0-7)",
     "Illegal interrupt mode (0-2)",
     "Illegal restart address",
-    "Value format error"
+    "Value format error",
+    "Missing label"
 };
