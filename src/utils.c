@@ -25,21 +25,6 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
     }
 }
 
-void strstripleft(const char *source_str, char *dest_str)
-{
-    int index = 0, j, k = 0;
- 
-    while (source_str[index] == ' '
-        || source_str[index] == '\t'
-        || source_str[index] == '\n'){
-        index++;
-    }
-    for (j = index; source_str[j] != '\0'; j++){
-        dest_str[k] = source_str[j];
-        k++;
-    } 
-    dest_str[k] = '\0'; 
-}
 
 bool isempty(const char *str){
     return (str[0] == '\0');
@@ -92,12 +77,16 @@ void trimEdges(char *str) {
 // token is copied over and species are trimmed from it
 // Source string is not altered in any way
 //
+// A token is parses as a literal string, when the first non-space character is a double quote
+//
 // Returns:
 // Pointer to next token in source or NULL
 char *parse_token(char *token, char  *src, char delimiter, bool required) {
     char *target;
     uint8_t index = 0;
     bool found = false;
+    bool escaped = false;
+    bool string = false;
 
     target = token;
     // remove leading space
@@ -107,14 +96,38 @@ char *parse_token(char *token, char  *src, char delimiter, bool required) {
         }
         else break;
     }
+    if(*src == '\"') {
+        string = true;
+        *target++ = *src++;
+    }
     // copy potential token
     while(*src) {
-        if(*src == delimiter) {
-            found = true;
-            break;
+        if(string) {
+            switch(*src) {
+                case '\\':
+                    escaped = !escaped;
+                    break;
+                case '\"':
+                    if(!escaped) {
+                        found = true;
+                        string = false;
+                    }
+                    escaped = false;
+                    break;
+                default:
+                    escaped = false;
+                    break;
+            }
+        }
+        else {
+            if(*src == delimiter) {
+                found = true;
+                break;
+            }
         }
         *target++ = *src++;
         index++;
+        if(found == true) break;
     }
     // finalize found or remaining token
     if(found || !required) {

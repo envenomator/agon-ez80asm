@@ -836,6 +836,7 @@ void handle_asm_db(void) {
         while(currentline.next) {
             currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
             if(currentline.operand1[0]) {
+                printf("DEBUG db <<%s>>\n",currentline.operand1);
                 switch(currentline.operand1[0]) {
                     case '\"':
                         emit_quotedstring(currentline.operand1);
