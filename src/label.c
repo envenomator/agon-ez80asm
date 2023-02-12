@@ -5,6 +5,7 @@
 #include "hash.h"
 #include "str2num.h"
 #include "utils.h"
+#include "globals.h"
 
 #define LABELBUFFERSIZE 131072
 
@@ -45,22 +46,24 @@ void init_label_table(void) {
     tmplocal = label_table_lookup("TMPLOCAL");
 }
 
+void flush_locallabels(void) {
+    if(localLabels.number) {
+        write_localLabels(locals);
+    }
+}
+
 void write_localLabels(FILE *fp) {
     uint8_t i;
 
     fwrite(&localLabels.number, 1, sizeof(localLabels.number), fp);
     for(i = 0; i < localLabels.number; i++) fwrite(&localLabels.id[i], 1, sizeof(localLabels.id[0]), fp);
-    //fwrite(&localLabels, 1, sizeof(localLabels), fp);
     printf("LOCALS WRITTEN: %d\n", localLabels.number);
 }
 
 void read_localLabels(FILE *fp) {
     uint8_t i;
-    clear_localLabels();
     fread(&localLabels.number, sizeof(localLabels.number), 1, fp);
     for(i = 0; i < localLabels.number; i++) fread(&localLabels.id[i], sizeof(localLabels.id[0]), 1, fp);
-    fread(&localLabels, sizeof(localLabels), 1, fp);
-    //fread(&(localLabels.number), sizeof(uint8_t), 1, fp);
     printf("LOCALS READ: %d\n",localLabels.number);
     print_localLabels();
 }

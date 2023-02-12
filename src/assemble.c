@@ -422,6 +422,7 @@ void refreshlocalLabels(void) {
         if(currentline.label[0]) {
             if(isglobalLabel(currentline.label)) {
                 printf("Line %d Global label found - reading local labels\n", linenumber);
+                clear_localLabels();
                 read_localLabels(locals);
             }
         }
@@ -1129,6 +1130,8 @@ bool assemble(FILE *infile, FILE *outfile){
         if(listing_enabled) print_linelisting();
         linenumber++;
     }
+    flush_locallabels();
+
     if(debug_enabled) print_label_table();
 
     if(global_errors) return false;
@@ -1139,8 +1142,8 @@ bool assemble(FILE *infile, FILE *outfile){
     // Pass 2
     printf("Pass 2...\n");
     rewind(infile);
-    //rewind(locals);
-    fseek(locals, 0, SEEK_SET);
+    rewind(locals);
+    //fseek(locals, 0, SEEK_SET);
     pass_init(2);
     read_localLabels(locals);
     while (fgets(line, sizeof(line), infile)){

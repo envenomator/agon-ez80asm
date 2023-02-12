@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 #define LABEL_TABLE_SIZE 8192
-#define LOCAL_LABELS    2
+#define LOCAL_LABELS    64
 
 typedef struct {
     char *name;
@@ -22,6 +22,7 @@ void init_label_table(void);
 void print_localLabels(void);
 void clear_localLabels(void);
 void write_localLabels(FILE *fp);
+void flush_locallabels(void);
 void read_localLabels(FILE *fp);
 bool isglobalLabel(char *name);
 bool label_table_insert(char *labelname, uint32_t address);
