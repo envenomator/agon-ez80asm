@@ -27,12 +27,21 @@ int main(int argc, char *argv[])
     // prepare output filename
     strcpy(outfilename, argv[1]);
     remove_ext(outfilename, '.', '/');
+    strcpy(localsfilename, outfilename);
     strcat(outfilename, ".bin");
+    strcat(localsfilename, ".lbls");
     
     outfile = fopen(outfilename, "wb");
     if(outfile == NULL){
         printf("Error opening \"%s\"\n",outfilename);
         fclose(infile);
+        exit(1);
+    }
+    locals = fopen(localsfilename, "wb+");
+    if(locals == NULL) {
+        printf("Error opening \"%s\"\n",localsfilename);
+        fclose(infile);
+        fclose(outfile);
         exit(1);
     }
 
@@ -54,5 +63,7 @@ int main(int argc, char *argv[])
     // Cleanup
     fclose(infile);
     fclose(outfile);
+    fclose(locals);
+    //remove(localsfilename);
     return 0;
 }

@@ -27,6 +27,8 @@ extern bool debug_enabled;
 extern bool listing_enabled;
 extern FILE *infile;
 extern FILE *outfile;
+extern FILE *locals;
+extern char localsfilename[256];
 extern unsigned int linenumber;
 extern unsigned int pass;
 extern uint32_t address;

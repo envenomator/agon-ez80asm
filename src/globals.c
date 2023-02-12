@@ -8,6 +8,8 @@ bool debug_enabled;
 bool listing_enabled;
 FILE *infile;
 FILE *outfile;
+FILE *locals;
+char localsfilename[256];
 unsigned int linenumber;
 unsigned int pass;
 uint32_t address;

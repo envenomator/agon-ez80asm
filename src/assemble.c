@@ -404,11 +404,26 @@ void parseprint() {
 }
 
 void definelabel(uint32_t num){
-    // add label to table if defined
     if(strlen(currentline.label)) {
         printf("Inserting label %s, %08x\n",currentline.label, num);
         if(label_table_insert(currentline.label, num) == false){
             error("Out of label space");
+        }
+        if(isglobalLabel(currentline.label)) {
+            printf("Line %d Global label found - writing local labels\n", linenumber);
+            write_localLabels(locals);
+            clear_localLabels();
+        }
+    }
+}
+
+void refreshlocalLabels(void) {
+    if(pass == 2) {
+        if(currentline.label[0]) {
+            if(isglobalLabel(currentline.label)) {
+                printf("Line %d Global label found - reading local labels\n", linenumber);
+                read_localLabels(locals);
+            }
         }
     }
 }
@@ -1124,13 +1139,18 @@ bool assemble(FILE *infile, FILE *outfile){
     // Pass 2
     printf("Pass 2...\n");
     rewind(infile);
+    //rewind(locals);
+    fseek(locals, 0, SEEK_SET);
     pass_init(2);
+    read_localLabels(locals);
     while (fgets(line, sizeof(line), infile)){
         //printf("address: %08x\n",address);
         //printf("input:   %s",line);
         //printf("output:  ");
         convertLower(line);
         parse(line);
+        refreshlocalLabels();
+        printf("Line %d\n",linenumber);
         process();
         linenumber++;
 
