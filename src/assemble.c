@@ -856,6 +856,29 @@ void handle_asm_db(void) {
     else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
 }
 
+void handle_asm_ds(void) {
+    uint16_t num;
+    uint8_t val;
+
+    if(pass == 1) {
+        // Output label at this address
+        definelabel();
+    }
+    if(currentline.next) {
+        currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
+        if(currentline.operand1[0]) {
+
+            num = str2num(currentline.operand1);
+            if(currentline.next) parse_token(currentline.operand2, currentline.next, ' ', false);
+            val = str2num(currentline.operand2);
+
+            while(num--) emit_8bit(val);
+        }
+        else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+    }
+    else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+}
+
 void handle_asm_asciiz(void) {
     if(pass == 1) {
         // Output label at this address
@@ -919,6 +942,9 @@ void handle_assembler_command(void) {
         break;
     case(ASM_DB):
         handle_asm_db();
+        break;
+    case(ASM_DS):
+        handle_asm_ds();
         break;
     case(ASM_DW):
         break;

@@ -1,1 +1,1 @@
-.asciiz "bla"
+labelb: ds 10, 0b1010
