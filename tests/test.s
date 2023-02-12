@@ -6,4 +6,4 @@ labela:
 .assume adl=0
 labelb: dw 0x15, labela, $aabbcc
 .assume adl=1
-labelc: dw labela
+labelc: dw labelc, labelc
