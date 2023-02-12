@@ -738,6 +738,7 @@ instruction instructions[] = {
     {"assume",   ASSEMBLER, ASM_ADL, 0, NULL},
     {"db",    ASSEMBLER, ASM_DB, 0, NULL},
     {"defb",    ASSEMBLER, ASM_DB, 0, NULL},
+    {"ascii",    ASSEMBLER, ASM_ASCII, 0, NULL},
     {"asciiz",    ASSEMBLER, ASM_ASCIIZ, 0, NULL},
     {"ds",    ASSEMBLER, ASM_DS, 0, NULL},
     {"defs",    ASSEMBLER, ASM_DS, 0, NULL},

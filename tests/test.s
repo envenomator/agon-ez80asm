@@ -1,1 +1,2 @@
-labelb: ds 10, 0b1010
+labelb: .asciiz "Test"
+.ascii "Test"

@@ -879,7 +879,7 @@ void handle_asm_ds(void) {
     else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
 }
 
-void handle_asm_asciiz(void) {
+void handle_asm_ascii(bool terminate) {
     if(pass == 1) {
         // Output label at this address
         definelabel();
@@ -888,7 +888,7 @@ void handle_asm_asciiz(void) {
         currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
         if(currentline.operand1[0] == '\"') {
             emit_quotedstring(currentline.operand1);
-            emit_8bit(0);
+            if(terminate) emit_8bit(0);
         }
         else error(message[ERROR_STRINGFORMAT]);
     }
@@ -948,8 +948,11 @@ void handle_assembler_command(void) {
         break;
     case(ASM_DW):
         break;
+    case(ASM_ASCII):
+        handle_asm_ascii(false);
+        break;
     case(ASM_ASCIIZ):
-        handle_asm_asciiz();
+        handle_asm_ascii(true);
         break;
     }
     return;

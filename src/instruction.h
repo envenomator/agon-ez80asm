@@ -187,6 +187,7 @@ enum {
     ASM_DB,
     ASM_DS,
     ASM_DW,
+    ASM_ASCII,
     ASM_ASCIIZ
 };
 
