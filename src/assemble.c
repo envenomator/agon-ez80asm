@@ -404,11 +404,11 @@ void parseprint() {
     printf("Line %03d - %s:%s.%s %s %s\n", linenumber, currentline.label, currentline.mnemonic, currentline.suffix, currentline.operand1, currentline.operand2);
 }
 
-void definelabel(void){
+void definelabel(uint32_t num){
     // add label to table if defined
     if(strlen(currentline.label)) {
-        //printf("Inserting label %s, %08x\n",currentline.label, address);
-        if(label_table_insert(currentline.label, address) == false){
+        printf("Inserting label %s, %08x\n",currentline.label, num);
+        if(label_table_insert(currentline.label, num) == false){
             error("Out of label space");
         }
     }
@@ -688,7 +688,7 @@ void emit_instruction(operandlist *list) {
         if((list->operandA == OPTYPE_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE]);
         if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0b1000111)) error(message[ERROR_ILLEGALRESTARTADDRESS]);
         // Define label at this address
-        definelabel();
+        definelabel(address);
     }
 
     // prepare extra DD/FD suffix if needed
@@ -831,7 +831,7 @@ void parse_asm_keyval_pair(char separator) {
 void handle_asm_db(void) {
     if(pass == 1) {
         // Output label at this address
-        definelabel();
+        definelabel(address);
     }
     if(currentline.next) {
         while(currentline.next) {
@@ -862,7 +862,7 @@ void handle_asm_ds(void) {
 
     if(pass == 1) {
         // Output label at this address
-        definelabel();
+        definelabel(address);
     }
     if(currentline.next) {
         currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
@@ -882,7 +882,7 @@ void handle_asm_ds(void) {
 void handle_asm_ascii(bool terminate) {
     if(pass == 1) {
         // Output label at this address
-        definelabel();
+        definelabel(address);
     }
     if(currentline.next) {
         currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
@@ -893,6 +893,22 @@ void handle_asm_ascii(bool terminate) {
         else error(message[ERROR_STRINGFORMAT]);
     }
     else error(message[ERROR_MISSINGOPERAND]);
+}
+
+void handle_asm_equ(void) {
+    uint32_t value;
+
+    if(pass == 1) {
+        if(currentline.next) {
+            currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
+            if(currentline.operand1[0]) {
+                value = str2num(currentline.operand1);
+                definelabel(value);
+            }
+            else error(message[ERROR_MISSINGOPERAND]);
+        }
+        else error(message[ERROR_MISSINGOPERAND]);
+    }
 }
 
 void handle_asm_adl(void) {
@@ -920,7 +936,7 @@ void handle_asm_org(void) {
         size = newaddress-address;
         if(pass == 1) {
             // Output label at this address
-            definelabel(); // set address to current line
+            definelabel(address); // set address to current line
         }
         if(totalsize > 0) {
             //printf("DEBUG - Output %d GAP bytes\n", size);
@@ -954,6 +970,9 @@ void handle_assembler_command(void) {
     case(ASM_ASCIIZ):
         handle_asm_ascii(true);
         break;
+    case(ASM_EQU):
+        handle_asm_equ();
+        break;
     }
     return;
 }
@@ -966,7 +985,7 @@ void process(void){
     // return on empty lines
     if((currentline.mnemonic[0]) == 0) {
         // check if there is a single label on a line in during pass 1
-        if(pass == 1) definelabel();
+        if(pass == 1) definelabel(address);
         return; // valid line, but empty
     }
 

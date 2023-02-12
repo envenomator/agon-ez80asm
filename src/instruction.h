@@ -188,7 +188,8 @@ enum {
     ASM_DS,
     ASM_DW,
     ASM_ASCII,
-    ASM_ASCIIZ
+    ASM_ASCIIZ,
+    ASM_EQU
 };
 
 typedef struct {

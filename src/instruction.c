@@ -740,6 +740,7 @@ instruction instructions[] = {
     {"defb",    ASSEMBLER, ASM_DB, 0, NULL},
     {"ascii",    ASSEMBLER, ASM_ASCII, 0, NULL},
     {"asciiz",    ASSEMBLER, ASM_ASCIIZ, 0, NULL},
+    {"equ",     ASSEMBLER, ASM_EQU, 0, NULL},
     {"ds",    ASSEMBLER, ASM_DS, 0, NULL},
     {"defs",    ASSEMBLER, ASM_DS, 0, NULL},
     {"org",   ASSEMBLER, ASM_ORG, 0, NULL}
