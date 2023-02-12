@@ -290,7 +290,6 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
         case '8':
         case '9':
         case '$':
-        case 'f':
             operand->immediate = str2num(ptr-1);
             operand->immediate_provided = true;
             return;
