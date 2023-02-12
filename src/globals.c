@@ -54,5 +54,6 @@ char *message[] = {
     "Illegal interrupt mode (0-2)",
     "Illegal restart address",
     "Value format error",
-    "Missing label"
+    "Missing label",
+    "Wordsize larger than 16-bit while ADL set to 0"
 };

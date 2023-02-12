@@ -855,6 +855,34 @@ void handle_asm_db(void) {
     else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
 }
 
+void handle_asm_dw(void) {
+    label *lbl;
+
+    if(pass == 1) {
+        // Output label at this address
+        definelabel(address);
+    }
+    if(currentline.next) {
+        while(currentline.next) {
+            currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
+            if(currentline.operand1[0]) {
+                lbl = label_table_lookup(currentline.operand1);
+                if(lbl) operand1.immediate = lbl->address;
+                else operand1.immediate = str2num(currentline.operand1);
+                
+                if(adlmode) {
+                    emit_24bit(operand1.immediate);
+                }
+                else {
+                    if(operand1.immediate > 0xffffff) error(message[ERROR_ADLWORDSIZE]);
+                    emit_16bit(operand1.immediate);
+                }
+            }
+        }
+    }
+    else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+}
+
 void handle_asm_ds(void) {
     uint16_t num;
     uint8_t val;
@@ -965,6 +993,7 @@ void handle_assembler_command(void) {
         handle_asm_ds();
         break;
     case(ASM_DW):
+        handle_asm_dw();
         break;
     case(ASM_ASCII):
         handle_asm_ascii(false);

@@ -743,6 +743,8 @@ instruction instructions[] = {
     {"equ",     ASSEMBLER, ASM_EQU, 0, NULL},
     {"ds",    ASSEMBLER, ASM_DS, 0, NULL},
     {"defs",    ASSEMBLER, ASM_DS, 0, NULL},
+    {"dw",    ASSEMBLER, ASM_DW, 0, NULL},
+    {"defw",    ASSEMBLER, ASM_DW, 0, NULL},
     {"org",   ASSEMBLER, ASM_ORG, 0, NULL}
 };
 
