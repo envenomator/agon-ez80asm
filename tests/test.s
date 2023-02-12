@@ -1,1 +1,1 @@
-.db 'x',0
+.asciiz "bla"

@@ -856,6 +856,22 @@ void handle_asm_db(void) {
     else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
 }
 
+void handle_asm_asciiz(void) {
+    if(pass == 1) {
+        // Output label at this address
+        definelabel();
+    }
+    if(currentline.next) {
+        currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
+        if(currentline.operand1[0] == '\"') {
+            emit_quotedstring(currentline.operand1);
+            emit_8bit(0);
+        }
+        else error(message[ERROR_STRINGFORMAT]);
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+}
+
 void handle_asm_adl(void) {
     parse_asm_keyval_pair('=');
     if(strcmp(currentline.operand1, "adl") == 0) {
@@ -905,7 +921,10 @@ void handle_assembler_command(void) {
         handle_asm_db();
         break;
     case(ASM_DW):
-        break;        
+        break;
+    case(ASM_ASCIIZ):
+        handle_asm_asciiz();
+        break;
     }
     return;
 }
