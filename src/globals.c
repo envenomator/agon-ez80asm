@@ -52,5 +52,6 @@ char *message[] = {
     "Relative jump too large",
     "Invalid bit number (0-7)",
     "Illegal interrupt mode (0-2)",
-    "Illegal restart address"
+    "Illegal restart address",
+    "Value format error"
 };

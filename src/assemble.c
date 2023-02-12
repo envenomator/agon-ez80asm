@@ -792,6 +792,13 @@ void emit_quotedstring(char *str) {
     else error(message[ERROR_STRINGFORMAT]);
 }
 
+void emit_quotedvalue(char *str) {
+    str++;
+    if(*(str+1) != '\'') error(message[ERROR_VALUEFORMAT]);
+    if(*str == '\'') emit_8bit(0);
+    else emit_8bit(*str);
+}
+
 void parse_asm_single_immediate(void) {
     if(currentline.next) {
         currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
@@ -826,17 +833,22 @@ void handle_asm_db(void) {
         // Output label at this address
         definelabel();
     }
-
     if(currentline.next) {
         while(currentline.next) {
             currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
             if(currentline.operand1[0]) {
-                // either an immediate value, or a string
-                if(currentline.operand1[0] == '\"') emit_quotedstring(currentline.operand1);
-                else {
-                    operand1.immediate = str2num(currentline.operand1);
-                    if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
-                    emit_8bit(operand1.immediate);
+                switch(currentline.operand1[0]) {
+                    case '\"':
+                        emit_quotedstring(currentline.operand1);
+                        break;
+                    case '\'':
+                        emit_quotedvalue(currentline.operand1);
+                        break;
+                    default:
+                        operand1.immediate = str2num(currentline.operand1);
+                        if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
+                        emit_8bit(operand1.immediate);
+                        break;
                 }
             }
         }

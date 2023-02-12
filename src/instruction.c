@@ -737,6 +737,9 @@ instruction instructions[] = {
     {"xor",  EZ80, 0, sizeof(operands_xor)/sizeof(operandlist), operands_xor},
     {"assume",   ASSEMBLER, ASM_ADL, 0, NULL},
     {"db",    ASSEMBLER, ASM_DB, 0, NULL},
+    {"defb",    ASSEMBLER, ASM_DB, 0, NULL},
+    {"ds",    ASSEMBLER, ASM_DS, 0, NULL},
+    {"defs",    ASSEMBLER, ASM_DS, 0, NULL},
     {"org",   ASSEMBLER, ASM_ORG, 0, NULL}
 };
 

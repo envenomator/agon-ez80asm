@@ -185,6 +185,7 @@ enum {
     ASM_ADL,
     ASM_ORG,
     ASM_DB,
+    ASM_DS,
     ASM_DW
 };
 
