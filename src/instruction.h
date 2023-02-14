@@ -192,12 +192,20 @@ enum {
     ASM_EQU
 };
 
+typedef enum {
+    ASM_ARG_NONE,
+    ASM_ARG_SINGLE,
+    ASM_ARG_LIST,
+    ASM_ARG_KEYVAL
+} asm_argtype;
+
 typedef struct {
     char        name[MAX_MNEMONIC_SIZE];
     uint8_t     type;                       // EZ80 / Assembler
     uint8_t     asmtype;                    // assembler subcommand
     uint8_t     listnumber;                 // number of items to iterate over in the list
     operandlist *list;
+    asm_argtype asmargument;
 } instruction;
 
 void init_instruction_table();

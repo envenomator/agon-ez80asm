@@ -735,17 +735,17 @@ instruction instructions[] = {
     {"tst",  EZ80, 0, sizeof(operands_tst)/sizeof(operandlist), operands_tst},
     {"tstio",  EZ80, 0, sizeof(operands_tstio)/sizeof(operandlist), operands_tstio},
     {"xor",  EZ80, 0, sizeof(operands_xor)/sizeof(operandlist), operands_xor},
-    {"assume",   ASSEMBLER, ASM_ADL, 0, NULL},
-    {"db",    ASSEMBLER, ASM_DB, 0, NULL},
-    {"defb",    ASSEMBLER, ASM_DB, 0, NULL},
-    {"ascii",    ASSEMBLER, ASM_ASCII, 0, NULL},
-    {"asciiz",    ASSEMBLER, ASM_ASCIIZ, 0, NULL},
-    {"equ",     ASSEMBLER, ASM_EQU, 0, NULL},
-    {"ds",    ASSEMBLER, ASM_DS, 0, NULL},
-    {"defs",    ASSEMBLER, ASM_DS, 0, NULL},
-    {"dw",    ASSEMBLER, ASM_DW, 0, NULL},
-    {"defw",    ASSEMBLER, ASM_DW, 0, NULL},
-    {"org",   ASSEMBLER, ASM_ORG, 0, NULL}
+    {"assume",   ASSEMBLER, ASM_ADL, 0, NULL, ASM_ARG_KEYVAL},
+    {"db",    ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
+    {"defb",    ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
+    {"ascii",    ASSEMBLER, ASM_ASCII, 0, NULL, ASM_ARG_SINGLE},
+    {"asciiz",    ASSEMBLER, ASM_ASCIIZ, 0, NULL, ASM_ARG_SINGLE},
+    {"equ",     ASSEMBLER, ASM_EQU, 0, NULL, ASM_ARG_SINGLE},
+    {"ds",    ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
+    {"defs",    ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
+    {"dw",    ASSEMBLER, ASM_DW, 0, NULL, ASM_ARG_LIST},
+    {"defw",    ASSEMBLER, ASM_DW, 0, NULL, ASM_ARG_LIST},
+    {"org",   ASSEMBLER, ASM_ORG, 0, NULL, ASM_ARG_SINGLE}
 };
 
 bool instruction_table_insert(instruction *p){

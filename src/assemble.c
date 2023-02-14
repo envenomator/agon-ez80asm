@@ -10,6 +10,19 @@
 #include "label.h"
 #include "str2num.h"
 
+void empty_operand(operand *op) {
+    // defaults
+    op->position = 0;
+    op->reg = R_NONE;
+    op->reg_index = 0;
+    op->cc = false;
+    op->cc_index = 0;
+    op->displacement = 0;
+    op->displacement_provided = false;
+    op->immediate = 0;
+    op->immediate_provided = false;
+}
+
 // parses the given string to the operand, or throws errors along the way
 // will destruct parts of the original string during the process
 void parse_operand(operand_position pos, char *string, operand *operand) {
@@ -17,16 +30,7 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
     uint8_t len = strlen(string);
     label *lbl;
 
-    // defaults
     operand->position = pos;
-    operand->reg = R_NONE;
-    operand->reg_index = 0;
-    operand->cc = false;
-    operand->cc_index = 0;
-    operand->displacement = 0;
-    operand->displacement_provided = false;
-    operand->immediate = 0;
-    operand->immediate_provided = false;
     // direct or indirect
     if(*ptr == '(') {
         operand->indirect = true;
@@ -344,7 +348,170 @@ uint8_t storevalue(uint8_t type, char* buffptr, char *token) {
     return size;
 }
 
-void parse(char *line) {
+typedef enum {
+    PS_START,
+    PS_LABEL,
+    PS_COMMAND,
+    PS_OP1,
+    PS_OP2,
+    PS_COMMENT,
+    PS_DONE,
+    PS_ERROR
+} parsestate;
+
+void parse(char *src) {
+    uint8_t x;
+    bool done;
+    uint8_t state;
+
+    tokentype token;
+
+    // default current line items
+    currentline.current_instruction = NULL;
+    currentline.next = NULL;
+    currentline.label[0] = 0;
+    currentline.mnemonic[0] = 0;
+    currentline.suffix[0] = 0;
+    currentline.operand1[0] = 0;
+    currentline.operand2[0] = 0;
+    currentline.comment[0] = 0;
+    currentline.size = 0;
+    currentline.buffer[0] = 0;
+
+    empty_operand(&operand1);
+    empty_operand(&operand2);
+
+    state = PS_START;
+    done = false;
+    while(!done) {
+        switch(state) {
+            case PS_START:
+                x = get_token(&token, src);
+                switch(token.terminator) {
+                    case ':':
+                        state = PS_LABEL;
+                        break;
+                    case ';':
+                        state = PS_COMMENT;
+                        break;
+                    case 0:
+                    case ' ':
+                        if(x) state = PS_COMMAND;
+                        else state = PS_DONE;
+                        break;
+                    default:
+                        state = PS_ERROR;
+                        break;
+                }
+                break;
+            case PS_LABEL:
+                strcpy(currentline.label,token.start);
+                x = get_token(&token,token.next);
+                switch(token.terminator) {
+                    case ';':
+                        state = PS_COMMENT;
+                        break;
+                    case 0:
+                    case ' ':
+                        if(x) state = PS_COMMAND;
+                        else state = PS_DONE;
+                        break;
+                    default:
+                        state = PS_ERROR;
+                        break;
+                }                
+                break;
+            case PS_COMMAND:
+                split_suffix(currentline.mnemonic, currentline.suffix, token.start);
+                currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
+                if(currentline.current_instruction == NULL) {
+                    // check if 'suffix' part is actually a assembly command
+                    currentline.current_instruction = instruction_table_lookup(currentline.suffix);
+                    if(currentline.current_instruction == NULL) {
+                        error(message[ERROR_INVALIDMNEMONIC]);
+                        state = PS_DONE;
+                        break;
+                    }
+                    // instruction is an assembly command, copy it to mnemonic and clear out suffix part
+                    strcpy(currentline.mnemonic, currentline.suffix);
+                    currentline.suffix[0] = 0;
+                }
+                // resume parsing the original line
+                switch(token.terminator) {
+                    case ';':
+                        state = PS_COMMENT;
+                        break;
+                    case ' ':
+                        if(currentline.current_instruction->type == EZ80) {
+                            x = get_token(&token,token.next);
+                            state = PS_OP1;
+                        }
+                        else {
+                            currentline.next = token.next;
+                            state = PS_DONE; // parse assembly later
+                        }
+                        break;
+                    case 0:
+                        state = PS_DONE;
+                        break;
+                    default:
+                        state = PS_ERROR;
+                        break;
+                }                
+                break;
+            case PS_OP1:
+                strcpy(currentline.operand1,token.start);
+                switch(token.terminator) {
+                    case ';':
+                        parse_operand(POS_SOURCE, currentline.operand1, &operand1);
+                        state = PS_COMMENT;
+                        break;
+                    case 0:
+                        parse_operand(POS_SOURCE, currentline.operand1, &operand1);
+                        state = PS_DONE;
+                        break;
+                    case ',':
+                        parse_operand(POS_SOURCE, currentline.operand1, &operand1);
+                        x = get_token(&token,token.next);
+                        state = PS_OP2;
+                        break;
+                    default:
+                        state = PS_ERROR;
+                        break;
+                }                
+                break;
+            case PS_OP2:
+                strcpy(currentline.operand2,token.start);
+                switch(token.terminator) {
+                    case ';':
+                    parse_operand(POS_DESTINATION, currentline.operand2, &operand2);
+                        state = PS_COMMENT;
+                        break;
+                    case 0:
+                    parse_operand(POS_DESTINATION, currentline.operand2, &operand2);
+                        state = PS_DONE;
+                        break;
+                    default:
+                        state = PS_ERROR;
+                        break;
+                }                
+                break;
+            case PS_COMMENT:
+                strcpy(currentline.comment,token.next);
+                state = PS_DONE;
+                break;
+            case PS_ERROR:
+                printf("Error during parsing\n");
+                state = PS_DONE;
+                break;
+            case PS_DONE:
+                done = true;
+                break;
+        }
+    }
+}
+
+void parse_old(char *line) {
     char buffer[32];
     char *next;
 
@@ -837,10 +1004,12 @@ void emit_quotedvalue(char *str) {
 }
 
 void parse_asm_single_immediate(void) {
+    tokentype token;
+
     if(currentline.next) {
-        currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
-        if(currentline.operand1[0]) {
-            operand1.immediate = str2num(currentline.operand1);
+        get_token(&token, currentline.next);
+        if(token.start[0]) {
+            operand1.immediate = str2num(token.start);
             operand1.immediate_provided = true;
         }
         else error(message[ERROR_MISSINGOPERAND]);
@@ -848,22 +1017,24 @@ void parse_asm_single_immediate(void) {
     else error(message[ERROR_MISSINGOPERAND]);
 }
 
-void parse_asm_keyval_pair(char separator) {
+void parse_asm_keyval_pair(void) {
+    tokentype token;
+
     if(currentline.next) {
-        currentline.next = parse_token(currentline.operand1, currentline.next, separator, true);
-        if(currentline.next) {
-            currentline.next = parse_token(currentline.operand2, currentline.next, ' ', false);
-            if(currentline.operand2[0]) {
-                operand2.immediate = str2num(currentline.operand2);
+        get_token(&token, currentline.next);
+        strcpy(currentline.operand1, token.start);
+        if(token.terminator == '=') {
+            get_token(&token, token.next);
+            if(token.start[0]) {
+                operand2.immediate = str2num(token.start);
                 operand2.immediate_provided = true;
             }
             else error(message[ERROR_MISSINGOPERAND]);
-        }
+        }        
         else error(message[ERROR_MISSINGOPERAND]);
     }
     else error(message[ERROR_MISSINGOPERAND]);
 }
-
 
 void handle_asm_db(void) {
     if(pass == 1) {
@@ -981,11 +1152,11 @@ void handle_asm_equ(void) {
 }
 
 void handle_asm_adl(void) {
-    parse_asm_keyval_pair('=');
+    parse_asm_keyval_pair();
     if(strcmp(currentline.operand1, "adl") == 0) {
         if((operand2.immediate == 0) || (operand2.immediate == 1)) {
             adlmode = operand2.immediate;
-            //printf("Set ADL mode to %d\n",adlmode);
+            printf("Set ADL mode to %d\n",adlmode);
         }
         else error(message[ERROR_INVALID_ADLMODE]);
     }
@@ -1130,8 +1301,9 @@ bool assemble(FILE *infile, FILE *outfile){
         if(listing_enabled) print_linelisting();
         linenumber++;
     }
-    flush_locallabels();
-
+    //flush_locallabels();
+    write_localLabels(locals);
+    
     if(debug_enabled) print_label_table();
 
     if(global_errors) return false;
