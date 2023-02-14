@@ -423,6 +423,7 @@ void parse(char *src) {
                 break;
             case PS_COMMAND:
                 split_suffix(currentline.mnemonic, currentline.suffix, token.start);
+                printf("cmd: <<%s>> suffix <<%s>>\n", currentline.mnemonic,currentline.suffix);
                 currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
                     // check if 'suffix' part is actually a assembly command

@@ -207,16 +207,14 @@ void split_suffix(char *mnemonic, char *suffix, char *buffer) {
     while(*buffer) {
         if(cmd) {
             *mnemonic = *buffer;
-            if(*buffer == '.') {
-                cmd = false;
-                *mnemonic = 0;
-            }
+            if(*buffer == '.') cmd = false;
             else mnemonic++;
         }
         else *suffix++ = *buffer;
         buffer++;
     }
     *suffix = 0;
+    *mnemonic = 0;
 }
 
 uint8_t get_token(tokentype *token, char *src) {
