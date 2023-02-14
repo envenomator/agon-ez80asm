@@ -423,7 +423,7 @@ void parse(char *src) {
                 break;
             case PS_COMMAND:
                 split_suffix(currentline.mnemonic, currentline.suffix, token.start);
-                printf("cmd: <<%s>> suffix <<%s>>\n", currentline.mnemonic,currentline.suffix);
+                //printf("cmd: <<%s>> suffix <<%s>>\n", currentline.mnemonic,currentline.suffix);
                 currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
                     // check if 'suffix' part is actually a assembly command
@@ -508,61 +508,6 @@ void parse(char *src) {
             case PS_DONE:
                 done = true;
                 break;
-        }
-    }
-}
-
-void parse_old(char *line) {
-    char buffer[32];
-    char *next;
-
-    // default current line items
-    currentline.current_instruction = NULL;
-    currentline.next = NULL;
-    currentline.label[0] = 0;
-    currentline.mnemonic[0] = 0;
-    currentline.suffix[0] = 0;
-    currentline.operand1[0] = 0;
-    currentline.operand2[0] = 0;
-    currentline.comment[0] = 0;
-    currentline.size = 0;
-    currentline.buffer[0] = 0;
-
-    // find label
-    currentline.next = parse_token(currentline.label, line, ':', true);
-    // find command token, may yet contain .suffix
-    if(currentline.next) currentline.next = parse_token(buffer, currentline.next, ' ', false); // label on line
-    else currentline.next = parse_token(buffer, line, ' ', false); // no label on line
-    // split command token in mnemonic.suffix, if we got any results
-    if(buffer[0]) { 
-        next = parse_token(currentline.mnemonic, buffer, '.', false); // split command part
-        if(next) parse_token(currentline.suffix, next, ' ', false);   // split suffix part, only if present
-
-        currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
-        if(currentline.current_instruction == NULL) {
-            // check if 'suffix' part is actually a assembly command
-            currentline.current_instruction = instruction_table_lookup(currentline.suffix);
-            if(currentline.current_instruction == NULL) {
-                error(message[ERROR_INVALIDMNEMONIC]);
-                return;
-            }
-            // instruction is an assembly command, copy it to mnemonic and clear out suffix part
-            strcpy(currentline.mnemonic, currentline.suffix);
-            currentline.suffix[0] = 0;
-        }
-        // we have an instruction here, decide parsing tree upon which type
-        // When type is ASSEMBLER, leave parsing irregular argument tree for later in process phase
-        if(currentline.current_instruction->type == EZ80) {
-            if(currentline.next) { // any operands to tokenize?
-                currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
-                if(currentline.next) {
-                    parse_token(currentline.operand2, currentline.next, ',', false);
-                    currentline.next = NULL; // max expecting 2 tokens here
-                }
-            }
-            // parse both operands, also if the tokens are empty, so they'll clear out
-            parse_operand(POS_SOURCE,      currentline.operand1, &operand1);
-            parse_operand(POS_DESTINATION, currentline.operand2, &operand2);
         }
     }
 }
@@ -1012,6 +957,7 @@ void parse_asm_single_immediate(void) {
         if(token.start[0]) {
             operand1.immediate = str2num(token.start);
             operand1.immediate_provided = true;
+            if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
         }
         else error(message[ERROR_MISSINGOPERAND]);
     }
@@ -1038,28 +984,35 @@ void parse_asm_keyval_pair(void) {
 }
 
 void handle_asm_db(void) {
+    tokentype token;
+
     if(pass == 1) {
         // Output label at this address
         definelabel(address);
     }
     if(currentline.next) {
         while(currentline.next) {
-            currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
-            if(currentline.operand1[0]) {
-                //printf("DEBUG db <<%s>>\n",currentline.operand1);
-                switch(currentline.operand1[0]) {
+            get_token(&token, currentline.next);
+            if(token.start[0]) {
+                //printf("DEBUG db <<%s>>\n",token.start);
+                switch(token.start[0]) {
                     case '\"':
-                        emit_quotedstring(currentline.operand1);
+                        emit_quotedstring(token.start);
                         break;
                     case '\'':
-                        emit_quotedvalue(currentline.operand1);
+                        emit_quotedvalue(token.start);
                         break;
                     default:
-                        operand1.immediate = str2num(currentline.operand1);
+                        operand1.immediate = str2num(token.start);
                         if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
                         emit_8bit(operand1.immediate);
                         break;
                 }
+            }
+            if(token.terminator == ',') currentline.next = token.next;
+            else {
+                if(token.terminator != 0) error(message[ERROR_LISTFORMAT]);
+                currentline.next = NULL; 
             }
         }
     }
@@ -1068,18 +1021,18 @@ void handle_asm_db(void) {
 
 void handle_asm_dw(void) {
     label *lbl;
-
+    tokentype token;
     if(pass == 1) {
         // Output label at this address
         definelabel(address);
     }
     if(currentline.next) {
         while(currentline.next) {
-            currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
-            if(currentline.operand1[0]) {
-                lbl = label_table_lookup(currentline.operand1);
+            get_token(&token, currentline.next);
+            if(token.start[0]) {
+                lbl = label_table_lookup(token.start);
                 if(lbl) operand1.immediate = lbl->address;
-                else operand1.immediate = str2num(currentline.operand1);
+                else operand1.immediate = str2num(token.start);
                 
                 if(adlmode) {
                     emit_24bit(operand1.immediate);
@@ -1089,6 +1042,11 @@ void handle_asm_dw(void) {
                     emit_16bit(operand1.immediate);
                 }
             }
+            if(token.terminator == ',') currentline.next = token.next;
+            else {
+                if(token.terminator != 0) error(message[ERROR_LISTFORMAT]);
+                currentline.next = NULL; 
+            }
         }
     }
     else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
@@ -1096,20 +1054,24 @@ void handle_asm_dw(void) {
 
 void handle_asm_ds(void) {
     uint16_t num;
-    uint8_t val;
+    uint8_t val = 0;
+    tokentype token;
 
     if(pass == 1) {
         // Output label at this address
         definelabel(address);
     }
     if(currentline.next) {
-        currentline.next = parse_token(currentline.operand1, currentline.next, ',', false);
-        if(currentline.operand1[0]) {
+        get_token(&token, currentline.next);
+        if(token.start[0]) {
+            num = str2num(token.start);
 
-            num = str2num(currentline.operand1);
-            if(currentline.next) parse_token(currentline.operand2, currentline.next, ' ', false);
-            val = str2num(currentline.operand2);
-
+            if(token.terminator == ',') {
+                get_token(&token, token.next);
+                if(token.start[0]) val = str2num(token.start);
+                else error(message[ERROR_MISSINGOPERAND]);
+            }
+            else if(token.terminator != 0) error(message[ERROR_LISTFORMAT]);
             while(num--) emit_8bit(val);
         }
         else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
@@ -1118,31 +1080,37 @@ void handle_asm_ds(void) {
 }
 
 void handle_asm_ascii(bool terminate) {
+    tokentype token;
+
     if(pass == 1) {
         // Output label at this address
         definelabel(address);
     }
     if(currentline.next) {
-        currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
-        if(currentline.operand1[0] == '\"') {
-            emit_quotedstring(currentline.operand1);
+        get_token(&token, currentline.next);
+        if(token.start[0] == '\"') {
+            emit_quotedstring(token.start);
             if(terminate) emit_8bit(0);
         }
         else error(message[ERROR_STRINGFORMAT]);
+        if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
     }
     else error(message[ERROR_MISSINGOPERAND]);
 }
 
 void handle_asm_equ(void) {
     uint32_t value;
+    tokentype token;
 
     if(pass == 1) {
         if(currentline.label[0]) {
             if(currentline.next) {
-                currentline.next = parse_token(currentline.operand1, currentline.next, ' ', false);
-                if(currentline.operand1[0]) {
-                    value = str2num(currentline.operand1);
+
+                get_token(&token, currentline.next);
+                if(token.start[0]) {
+                    value = str2num(token.start);
                     definelabel(value);
+                    if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
                 }
                 else error(message[ERROR_MISSINGOPERAND]);
             }
@@ -1157,7 +1125,7 @@ void handle_asm_adl(void) {
     if(strcmp(currentline.operand1, "adl") == 0) {
         if((operand2.immediate == 0) || (operand2.immediate == 1)) {
             adlmode = operand2.immediate;
-            printf("Set ADL mode to %d\n",adlmode);
+            //printf("Set ADL mode to %d\n",adlmode);
         }
         else error(message[ERROR_INVALID_ADLMODE]);
     }

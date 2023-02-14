@@ -57,5 +57,7 @@ char *message[] = {
     "Illegal restart address",
     "Value format error",
     "Missing label",
-    "Wordsize larger than 16-bit while ADL set to 0"
+    "Wordsize larger than 16-bit while ADL set to 0",
+    "Too many arguments",
+    "Invalid list format"
 };
