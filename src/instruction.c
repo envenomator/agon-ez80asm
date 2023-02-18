@@ -130,7 +130,9 @@ bool indirect_iyd_match(operand *op) {
 bool raeonly_match(operand *op) {
     return((op->reg >= R_A) && (op->reg <= R_E));
 }
-permittype_match permittype_matchlist[] = {            // table with fast access to functions that perform matching to an specific permittype
+
+// table with fast access to functions that perform matching to an specific permittype
+permittype_match permittype_matchlist[] = {            
     {OPTYPE_NONE, none_match},
     {OPTYPE_CC, cc_match},
     {OPTYPE_IR, ir_match},
@@ -172,24 +174,24 @@ permittype_match permittype_matchlist[] = {            // table with fast access
 };
 
 operandlist operands_adc[] = {
-    {OPTYPE_A, OPTYPE_INDIRECT_HL,  false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x8E, S_ANY}, // tested
-    {OPTYPE_A, OPTYPE_IR,           true, TRANSFORM_NONE, TRANSFORM_IR, 0x00, 0x8C, S_NONE}, // tested
-    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x8E, S_ANY}, // tested
-    {OPTYPE_A, OPTYPE_N,            false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xCE, S_NONE}, // tested
-    {OPTYPE_A, OPTYPE_R,            false, TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x88, S_NONE}, // tested
-    {OPTYPE_HL, OPTYPE_RR,          false, TRANSFORM_NONE, TRANSFORM_P,    0xED, 0x4A, S_ANY}, // tested
-    {OPTYPE_HL, OPTYPE_SP,          false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x7A, S_ANY}, // tested
+    {OPTYPE_A, OPTYPE_INDIRECT_HL,  false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x8E, S_ANY},
+    {OPTYPE_A, OPTYPE_IR,           true, TRANSFORM_NONE, TRANSFORM_IR, 0x00, 0x8C, S_NONE},
+    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x8E, S_ANY},
+    {OPTYPE_A, OPTYPE_N,            false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xCE, S_NONE},
+    {OPTYPE_A, OPTYPE_R,            false, TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x88, S_NONE},
+    {OPTYPE_HL, OPTYPE_RR,          false, TRANSFORM_NONE, TRANSFORM_P,    0xED, 0x4A, S_ANY},
+    {OPTYPE_HL, OPTYPE_SP,          false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x7A, S_ANY},
 };
 operandlist operands_add[] = {
-    {OPTYPE_A, OPTYPE_INDIRECT_HL,  false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x86, S_ANY}, // tested
+    {OPTYPE_A, OPTYPE_INDIRECT_HL,  false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x86, S_ANY},
     {OPTYPE_A, OPTYPE_IR,           true, TRANSFORM_NONE, TRANSFORM_IR, 0x00, 0x84, S_NONE},
     {OPTYPE_A, OPTYPE_INDIRECT_IXYd,true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x86, S_ANY},
     {OPTYPE_A, OPTYPE_N,            false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xC6, S_NONE},
     {OPTYPE_A, OPTYPE_R,            false, TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x80, S_NONE},
     {OPTYPE_HL, OPTYPE_RR,           false, TRANSFORM_NONE, TRANSFORM_P,    0x00, 0x09, S_ANY},
     {OPTYPE_HL, OPTYPE_SP,           false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x39, S_ANY},
-    {OPTYPE_IXY, OPTYPE_RXY,        true, TRANSFORM_NONE, TRANSFORM_P,    0x00, 0x09, S_ANY}, // zeker testen
-    {OPTYPE_IXY, OPTYPE_SP,         true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x39, S_ANY}, // zeker testen
+    {OPTYPE_IXY, OPTYPE_RXY,        true, TRANSFORM_NONE, TRANSFORM_P,    0x00, 0x09, S_ANY},
+    {OPTYPE_IXY, OPTYPE_SP,         true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x39, S_ANY},
 };
 operandlist operands_and[] = {
     {OPTYPE_A, OPTYPE_INDIRECT_HL,  false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xA6, S_ANY},
@@ -199,13 +201,13 @@ operandlist operands_and[] = {
     {OPTYPE_A, OPTYPE_R,            false, TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0xA0, S_NONE},
 };
 operandlist operands_bit[] = {
-    {OPTYPE_BIT, OPTYPE_INDIRECT_HL,  false, TRANSFORM_Y, TRANSFORM_NONE,  0xCB, 0x46, S_ANY}, // tested
-    {OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,true, TRANSFORM_Y, TRANSFORM_NONE,  0xCB, 0x46, S_ANY}, // tested
+    {OPTYPE_BIT, OPTYPE_INDIRECT_HL,  false, TRANSFORM_Y, TRANSFORM_NONE,  0xCB, 0x46, S_ANY},
+    {OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,true, TRANSFORM_Y, TRANSFORM_NONE,  0xCB, 0x46, S_ANY},
     {OPTYPE_BIT, OPTYPE_R,            false, TRANSFORM_Y, TRANSFORM_Z,     0xCB, 0x40, S_NONE},
 };
 operandlist operands_call[] = {
-    {OPTYPE_CC, OPTYPE_MMN,         false, TRANSFORM_CC, TRANSFORM_NONE,   0x00, 0xC4, S_ANY},  // tested
-    {OPTYPE_MMN, OPTYPE_NONE,       false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xCD, S_ANY}, // tested
+    {OPTYPE_CC, OPTYPE_MMN,         false, TRANSFORM_CC, TRANSFORM_NONE,   0x00, 0xC4, S_ANY},
+    {OPTYPE_MMN, OPTYPE_NONE,       false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xCD, S_ANY},
 };
 operandlist operands_ccf[]= {
     {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x3F, S_NONE},
@@ -236,13 +238,13 @@ operandlist operands_daa[]= {
     {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x27, S_NONE},
 };
 operandlist operands_dec[]= {
-    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x35, S_ANY}, // tested
-    {OPTYPE_IR, OPTYPE_NONE,      true, TRANSFORM_IR, TRANSFORM_NONE,0x00, 0x25, S_NONE}, // tested
-    {OPTYPE_IXY, OPTYPE_NONE,     true, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x2B, S_ANY}, // tested
-    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE, true, TRANSFORM_NONE, TRANSFORM_NONE,0x00,0x35,S_ANY}, // tested
-    {OPTYPE_R, OPTYPE_NONE,       false, TRANSFORM_Y, TRANSFORM_NONE, 0x00, 0x05, S_NONE}, // tested
-    {OPTYPE_RR, OPTYPE_NONE,      false, TRANSFORM_P, TRANSFORM_NONE, 0x00, 0x0B, S_ANY}, // tested
-    {OPTYPE_SP, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3B, S_ANY}, // tested
+    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x35, S_ANY}, 
+    {OPTYPE_IR, OPTYPE_NONE,      true, TRANSFORM_IR, TRANSFORM_NONE,0x00, 0x25, S_NONE}, 
+    {OPTYPE_IXY, OPTYPE_NONE,     true, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x2B, S_ANY}, 
+    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE, true, TRANSFORM_NONE, TRANSFORM_NONE,0x00,0x35,S_ANY}, 
+    {OPTYPE_R, OPTYPE_NONE,       false, TRANSFORM_Y, TRANSFORM_NONE, 0x00, 0x05, S_NONE}, 
+    {OPTYPE_RR, OPTYPE_NONE,      false, TRANSFORM_P, TRANSFORM_NONE, 0x00, 0x0B, S_ANY}, 
+    {OPTYPE_SP, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3B, S_ANY}, 
 };
 operandlist operands_di[]= {
     {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xF3, S_NONE},
@@ -266,66 +268,66 @@ operandlist operands_halt[]= {
     {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0x76, S_NONE},
 };
 operandlist operands_im[]= {
-    {OPTYPE_NSELECT, OPTYPE_NONE,      false, TRANSFORM_SELECT, TRANSFORM_NONE,0xED, 0x46, S_NONE}, // tested
+    {OPTYPE_NSELECT, OPTYPE_NONE,      false, TRANSFORM_SELECT, TRANSFORM_NONE,0xED, 0x46, S_NONE}, 
 };
 operandlist operands_in[]= {
-    {OPTYPE_A, OPTYPE_INDIRECT_N,      false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xDB, S_NONE}, // tested
-    {OPTYPE_R, OPTYPE_INDIRECT_BC,     false, TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x40, S_NONE}, // tested
-    {OPTYPE_R, OPTYPE_INDIRECT_C,      false, TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x40, S_NONE}, // tested
+    {OPTYPE_A, OPTYPE_INDIRECT_N,      false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xDB, S_NONE}, 
+    {OPTYPE_R, OPTYPE_INDIRECT_BC,     false, TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x40, S_NONE}, 
+    {OPTYPE_R, OPTYPE_INDIRECT_C,      false, TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x40, S_NONE}, 
 };
 operandlist operands_in0[]= {
-    {OPTYPE_R, OPTYPE_INDIRECT_N,     false, TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x00, S_NONE}, // tested
+    {OPTYPE_R, OPTYPE_INDIRECT_N,     false, TRANSFORM_Y, TRANSFORM_NONE, 0xED, 0x00, S_NONE}, 
 };
 operandlist operands_inc[]= {
-    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,       false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x34, S_ANY}, // tested
-    {OPTYPE_IR, OPTYPE_NONE,                true, TRANSFORM_IR, TRANSFORM_NONE, 0x00, 0x24, S_NONE}, // tested
-    {OPTYPE_IXY, OPTYPE_NONE,               true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x23, S_ANY}, // tested
-    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,     true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x34, S_ANY}, // tested
-    {OPTYPE_R, OPTYPE_NONE,                 false, TRANSFORM_Y, TRANSFORM_NONE, 0x00, 0x04, S_NONE}, // tested
-    {OPTYPE_RR, OPTYPE_NONE,                false, TRANSFORM_P, TRANSFORM_NONE, 0x00, 0x03, S_ANY}, // tested
-    {OPTYPE_SP, OPTYPE_NONE,                false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x33, S_ANY}, // tested
+    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,       false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x34, S_ANY}, 
+    {OPTYPE_IR, OPTYPE_NONE,                true, TRANSFORM_IR, TRANSFORM_NONE, 0x00, 0x24, S_NONE}, 
+    {OPTYPE_IXY, OPTYPE_NONE,               true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x23, S_ANY}, 
+    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,     true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x34, S_ANY}, 
+    {OPTYPE_R, OPTYPE_NONE,                 false, TRANSFORM_Y, TRANSFORM_NONE, 0x00, 0x04, S_NONE}, 
+    {OPTYPE_RR, OPTYPE_NONE,                false, TRANSFORM_P, TRANSFORM_NONE, 0x00, 0x03, S_ANY}, 
+    {OPTYPE_SP, OPTYPE_NONE,                false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x33, S_ANY}, 
 };
 operandlist operands_ind[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xAA, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xAA, S_ANY}, 
 };
 operandlist operands_ind2[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x8C, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x8C, S_ANY}, 
 };
 operandlist operands_ind2r[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x9C, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x9C, S_ANY}, 
 };
 operandlist operands_indm[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x8A, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x8A, S_ANY}, 
 };
 operandlist operands_indmr[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x9A, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x9A, S_ANY}, 
 };
 operandlist operands_indr[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xBA, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xBA, S_ANY}, 
 };
 operandlist operands_indrx[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xCA, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xCA, S_ANY}, 
 };
 operandlist operands_ini[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xA2, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xA2, S_ANY}, 
 };
 operandlist operands_ini2[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x84, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x84, S_ANY}, 
 };
 operandlist operands_ini2r[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x94, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x94, S_ANY}, 
 };
 operandlist operands_inim[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x82, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x82, S_ANY}, 
 };
 operandlist operands_inimr[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x92, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0x92, S_ANY}, 
 };
 operandlist operands_inir[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xB2, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xB2, S_ANY}, 
 };
 operandlist operands_inirx[]= {
-    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xC2, S_ANY}, // tested
+    {OPTYPE_NONE, OPTYPE_NONE,      false, TRANSFORM_NONE, TRANSFORM_NONE,0xED, 0xC2, S_ANY}, 
 };
 operandlist operands_jp[] = {
     {OPTYPE_CC, OPTYPE_MMN,         false, TRANSFORM_CC, TRANSFORM_NONE,   0x00, 0xC2, S_ANY},
@@ -334,61 +336,56 @@ operandlist operands_jp[] = {
     {OPTYPE_MMN, OPTYPE_NONE,       false, TRANSFORM_NONE, TRANSFORM_NONE,0x00, 0xC3, S_SISLIL},
 };
 operandlist operands_jr[]= {
-    {OPTYPE_CCA, OPTYPE_N,          false, TRANSFORM_CC, TRANSFORM_REL, 0x00, 0x20, S_NONE}, // tested without negative numbers
+    {OPTYPE_CCA, OPTYPE_N,          false, TRANSFORM_CC, TRANSFORM_REL, 0x00, 0x20, S_NONE},
     {OPTYPE_N, OPTYPE_NONE,         false, TRANSFORM_REL, TRANSFORM_NONE, 0x00, 0x18, S_NONE},
 };
 operandlist operands_ld[] = {
-    {OPTYPE_A, OPTYPE_I,              false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x57, S_NONE}, // tested
-    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x7E, S_ANY}, // tested, no ADL
-    {OPTYPE_A, OPTYPE_MB,             false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x6E, S_NONE}, // tested
-    {OPTYPE_A, OPTYPE_INDIRECT_MMN,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3A, S_SISLIL}, // testd with ADL
-    {OPTYPE_A, OPTYPE_REG_R,          false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x5F, S_NONE}, // tested with ADL
-    {OPTYPE_A, OPTYPE_INDIRECT_BC,    false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x0A, S_ANY}, // tested no ADL
-    {OPTYPE_A, OPTYPE_INDIRECT_DE,    false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x1A, S_ANY}, // tested no ADL
-    {OPTYPE_A, OPTYPE_INDIRECT_HL,    false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x7E, S_ANY}, // tested no ADL
-    {OPTYPE_HL, OPTYPE_I,             false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0xD7, S_NONE}, // tested
-    {OPTYPE_INDIRECT_HL, OPTYPE_IX,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x3F, S_ANY}, // tested no ADL
-    {OPTYPE_INDIRECT_HL, OPTYPE_IY,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x3E, S_ANY}, // tested no ADL
-    {OPTYPE_INDIRECT_HL, OPTYPE_N,    false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x36, S_ANY}, // tested no ADL
-    {OPTYPE_INDIRECT_HL, OPTYPE_R,    false, TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x70, S_ANY}, // tested no ADL
-    {OPTYPE_INDIRECT_HL, OPTYPE_RR,   false, TRANSFORM_NONE, TRANSFORM_P,    0xED, 0x0F, S_ANY}, // testd no ADL
-    {OPTYPE_I, OPTYPE_HL,             false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0xC7, S_NONE}, // tested no ADL
-    {OPTYPE_I, OPTYPE_A,              false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x47, S_NONE}, // tested no ADL
-    {OPTYPE_IR, OPTYPE_IR,            true, TRANSFORM_IR, TRANSFORM_IR, 0x00, 0x64, S_NONE}, // tested
-    {OPTYPE_IR, OPTYPE_N,             true, TRANSFORM_IR, TRANSFORM_NONE, 0x00, 0x26, S_NONE}, // tested
-    {OPTYPE_IR, OPTYPE_R_AEONLY,      true, TRANSFORM_IR, TRANSFORM_Z,    0x00, 0x60, S_NONE}, // tested
-    {OPTYPE_IX, OPTYPE_INDIRECT_HL,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x37, S_ANY}, // tested
-    {OPTYPE_IY, OPTYPE_INDIRECT_HL,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x31, S_ANY}, // tested
-    {OPTYPE_IX, OPTYPE_INDIRECT_IXd,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x37, S_ANY}, // tested
-    {OPTYPE_IY, OPTYPE_INDIRECT_IYd,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x37, S_ANY}, // tested
-    {OPTYPE_IX, OPTYPE_INDIRECT_IYd,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x31, S_ANY}, // tested
-    {OPTYPE_IY, OPTYPE_INDIRECT_IXd,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x31, S_ANY}, // tested
-    {OPTYPE_IXY, OPTYPE_MMN,          true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x21, S_SISLIL}, // tested no ADL
-    {OPTYPE_IXY, OPTYPE_INDIRECT_MMN, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x2A, S_SISLIL}, // tested no ADL
-
-    {OPTYPE_INDIRECT_IXd, OPTYPE_IX, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3F, S_ANY}, // <<!!
-    {OPTYPE_INDIRECT_IYd, OPTYPE_IY, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3F, S_ANY}, // <<!!
-    {OPTYPE_INDIRECT_IXd, OPTYPE_IY, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3E, S_ANY}, // <<!!
-    {OPTYPE_INDIRECT_IYd, OPTYPE_IX, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3E, S_ANY}, // <<!!
-
-
-
-
-    {OPTYPE_INDIRECT_IXYd, OPTYPE_N,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x36, S_ANY}, // tested no ADL
-    {OPTYPE_INDIRECT_IXYd, OPTYPE_R,  true, TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x70, S_ANY}, // tested no ADL
-    {OPTYPE_INDIRECT_IXYd, OPTYPE_RR, true, TRANSFORM_NONE, TRANSFORM_P,    0x00, 0x0F, S_ANY}, // tested no ADL
-    {OPTYPE_MB, OPTYPE_A,             false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x6D, S_NONE}, // tested
-    {OPTYPE_INDIRECT_MMN, OPTYPE_A,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x32, S_LIS | S_SIL}, // tested with ADL
-    {OPTYPE_INDIRECT_MMN, OPTYPE_IXY, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x22, S_SISLIL}, // tested
+    {OPTYPE_A, OPTYPE_I,              false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x57, S_NONE}, 
+    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x7E, S_ANY},
+    {OPTYPE_A, OPTYPE_MB,             false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x6E, S_NONE}, 
+    {OPTYPE_A, OPTYPE_INDIRECT_MMN,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3A, S_SISLIL}, 
+    {OPTYPE_A, OPTYPE_REG_R,          false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x5F, S_NONE},
+    {OPTYPE_A, OPTYPE_INDIRECT_BC,    false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x0A, S_ANY},  
+    {OPTYPE_A, OPTYPE_INDIRECT_DE,    false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x1A, S_ANY},  
+    {OPTYPE_A, OPTYPE_INDIRECT_HL,    false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x7E, S_ANY},  
+    {OPTYPE_HL, OPTYPE_I,             false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0xD7, S_NONE}, 
+    {OPTYPE_INDIRECT_HL, OPTYPE_IX,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x3F, S_ANY},  
+    {OPTYPE_INDIRECT_HL, OPTYPE_IY,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x3E, S_ANY},  
+    {OPTYPE_INDIRECT_HL, OPTYPE_N,    false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x36, S_ANY},  
+    {OPTYPE_INDIRECT_HL, OPTYPE_R,    false, TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x70, S_ANY},  
+    {OPTYPE_INDIRECT_HL, OPTYPE_RR,   false, TRANSFORM_NONE, TRANSFORM_P,    0xED, 0x0F, S_ANY}, 
+    {OPTYPE_I, OPTYPE_HL,             false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0xC7, S_NONE},  
+    {OPTYPE_I, OPTYPE_A,              false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x47, S_NONE},  
+    {OPTYPE_IR, OPTYPE_IR,            true, TRANSFORM_IR, TRANSFORM_IR, 0x00, 0x64, S_NONE}, 
+    {OPTYPE_IR, OPTYPE_N,             true, TRANSFORM_IR, TRANSFORM_NONE, 0x00, 0x26, S_NONE}, 
+    {OPTYPE_IR, OPTYPE_R_AEONLY,      true, TRANSFORM_IR, TRANSFORM_Z,    0x00, 0x60, S_NONE}, 
+    {OPTYPE_IX, OPTYPE_INDIRECT_HL,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x37, S_ANY}, 
+    {OPTYPE_IY, OPTYPE_INDIRECT_HL,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x31, S_ANY}, 
+    {OPTYPE_IX, OPTYPE_INDIRECT_IXd,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x37, S_ANY}, 
+    {OPTYPE_IY, OPTYPE_INDIRECT_IYd,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x37, S_ANY}, 
+    {OPTYPE_IX, OPTYPE_INDIRECT_IYd,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x31, S_ANY}, 
+    {OPTYPE_IY, OPTYPE_INDIRECT_IXd,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x31, S_ANY}, 
+    {OPTYPE_IXY, OPTYPE_MMN,          true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x21, S_SISLIL},  
+    {OPTYPE_IXY, OPTYPE_INDIRECT_MMN, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x2A, S_SISLIL},  
+    {OPTYPE_INDIRECT_IXd, OPTYPE_IX, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3F, S_ANY},
+    {OPTYPE_INDIRECT_IYd, OPTYPE_IY, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3F, S_ANY},
+    {OPTYPE_INDIRECT_IXd, OPTYPE_IY, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3E, S_ANY},
+    {OPTYPE_INDIRECT_IYd, OPTYPE_IX, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x3E, S_ANY},
+    {OPTYPE_INDIRECT_IXYd, OPTYPE_N,  true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x36, S_ANY},  
+    {OPTYPE_INDIRECT_IXYd, OPTYPE_R,  true, TRANSFORM_NONE, TRANSFORM_Z,    0x00, 0x70, S_ANY},  
+    {OPTYPE_INDIRECT_IXYd, OPTYPE_RR, true, TRANSFORM_NONE, TRANSFORM_P,    0x00, 0x0F, S_ANY},  
+    {OPTYPE_MB, OPTYPE_A,             false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x6D, S_NONE}, 
+    {OPTYPE_INDIRECT_MMN, OPTYPE_A,   false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x32, S_LIS | S_SIL},
+    {OPTYPE_INDIRECT_MMN, OPTYPE_IXY, true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x22, S_SISLIL}, 
     {OPTYPE_INDIRECT_MMN, OPTYPE_HL,  false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x22, S_SISLIL},
     {OPTYPE_INDIRECT_MMN, OPTYPE_RR,  false, TRANSFORM_NONE, TRANSFORM_P,    0xED, 0x43, S_SISLIL},
     {OPTYPE_INDIRECT_MMN, OPTYPE_SP,  false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x73, S_SISLIL},
     {OPTYPE_REG_R, OPTYPE_A,          false, TRANSFORM_NONE, TRANSFORM_NONE, 0xED, 0x4F, S_NONE},
     {OPTYPE_R, OPTYPE_INDIRECT_HL,    false, TRANSFORM_Y,    TRANSFORM_NONE, 0x00, 0x46, S_NONE},
-    {OPTYPE_R_AEONLY, OPTYPE_IR,      true, TRANSFORM_Y,    TRANSFORM_IR, 0x00, 0x44, S_NONE}, // CHECKEN!!
-    {OPTYPE_R, OPTYPE_INDIRECT_IXYd,  true, TRANSFORM_Y,    TRANSFORM_NONE, 0x00, 0x46, S_NONE}, // CHECKEN!!
+    {OPTYPE_R_AEONLY, OPTYPE_IR,      true, TRANSFORM_Y,    TRANSFORM_IR, 0x00, 0x44, S_NONE},
+    {OPTYPE_R, OPTYPE_INDIRECT_IXYd,  true, TRANSFORM_Y,    TRANSFORM_NONE, 0x00, 0x46, S_NONE},
     {OPTYPE_R, OPTYPE_N,              false, TRANSFORM_Y,    TRANSFORM_NONE, 0x00, 0x06, S_NONE},
-    {OPTYPE_R, OPTYPE_R,              false, TRANSFORM_Y,    TRANSFORM_Z,    0x00, 0x40, S_NONE}, // tested
+    {OPTYPE_R, OPTYPE_R,              false, TRANSFORM_Y,    TRANSFORM_Z,    0x00, 0x40, S_NONE}, 
     {OPTYPE_RR, OPTYPE_INDIRECT_HL,   false, TRANSFORM_P,    TRANSFORM_NONE, 0xED, 0x07, S_ANY},
     {OPTYPE_RR, OPTYPE_INDIRECT_IXYd, true, TRANSFORM_P,    TRANSFORM_NONE, 0x00, 0x07, S_ANY},
     {OPTYPE_RR, OPTYPE_MMN,           true, TRANSFORM_P,    TRANSFORM_NONE, 0x00, 0x01, S_SISLIL},
@@ -576,7 +573,7 @@ operandlist operands_scf[] = {
 operandlist operands_set[] = {
     {OPTYPE_BIT, OPTYPE_INDIRECT_HL,            false, TRANSFORM_Y, TRANSFORM_NONE, 0xCB, 0xC6, S_ANY},
     {OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,          true, TRANSFORM_Y, TRANSFORM_NONE, 0xCB, 0xC6, S_ANY},
-    {OPTYPE_BIT, OPTYPE_R,                      false, TRANSFORM_BIT, TRANSFORM_Z,    0xCB, 0xC0, S_NONE}, // code onduidelijk
+    {OPTYPE_BIT, OPTYPE_R,                      false, TRANSFORM_BIT, TRANSFORM_Z,    0xCB, 0xC0, S_NONE},
 };
 operandlist operands_sla[] = {
     {OPTYPE_INDIRECT_HL, OPTYPE_NONE,            false, TRANSFORM_NONE, TRANSFORM_NONE, 0xCB, 0x26, S_ANY},
@@ -621,18 +618,14 @@ operandlist operands_xor[] = {
     {OPTYPE_A, OPTYPE_N,                      false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xEE, S_NONE},
     {OPTYPE_A, OPTYPE_R,                      false, TRANSFORM_NONE, TRANSFORM_Z, 0x00, 0xA8, S_NONE},
 };
-
-
-
-
 operandlist operands_template[] = {
     {OPTYPE_NONE, OPTYPE_NONE,            true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x00, S_ANY},
 };
-
 operandlist operands_test[] = {
     {OPTYPE_R, OPTYPE_INDIRECT_IXYd,            true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x80, S_ANY},
 };
 
+// this table needs to be sorted on name
 instruction instructions[] = {
     {"adc",   EZ80, 0, sizeof(operands_adc)/sizeof(operandlist), operands_adc},
     {"add",   EZ80, 0, sizeof(operands_add)/sizeof(operandlist), operands_add},
@@ -744,21 +737,22 @@ instruction instructions[] = {
     {"xor",  EZ80, 0, sizeof(operands_xor)/sizeof(operandlist), operands_xor}
 };
 
+// Binary search of instruction table
+// Requires a pre-sorted table
 instruction * instruction_table_lookup(char *key){
 	instruction *base = instructions;
 	int lim, cmp;
 	instruction *p;
-    //size_t size = sizeof(instruction);
 
 	for (lim = sizeof(instructions)/sizeof(instruction); lim != 0; lim >>= 1) {
 		p = base + (lim >> 1);
 		cmp = strcmp(key,p->name);
 		if (cmp == 0)
 			return p;
-		if (cmp > 0) {	/* key > p: move right */
+		if (cmp > 0) {
 			base = p + 1;
 			lim--;
-		} /* else move left */
+		}
 	}
 	return (NULL);
 }
