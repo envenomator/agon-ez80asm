@@ -55,7 +55,8 @@ int main(int argc, char *argv[])
     if((argc == 3) && (strcmp(argv[2], "-l") == 0)) listing_enabled = true;
 
     // Init tables
-    init_label_table();
+    initGlobalLabelTable();
+    initLocalLabelTable();
     outputbufferptr = outputbuffer;
 
     // Assemble input to output

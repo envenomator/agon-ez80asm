@@ -5,30 +5,30 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define LABEL_TABLE_SIZE 8192
-#define LOCAL_LABELS    64
+#define GLOBAL_LABEL_BUFFERSIZE 131072
+#define LOCAL_LABEL_BUFFERSIZE   65536
+#define GLOBAL_LABEL_TABLE_SIZE   8192
+#define LOCAL_LABEL_TABLE_SIZE      64
 
 typedef struct {
     char *name;
     uint32_t address;
 } label;
 
-typedef struct {
-    uint8_t     number;
-    uint32_t    id[LOCAL_LABELS];
-} local_labels;
-
-void init_label_table(void);
-void print_localLabels(void);
-void clear_localLabels(void);
-void write_localLabels(FILE *fp);
-void flush_locallabels(void);
-void read_localLabels(FILE *fp);
-bool isglobalLabel(char *name);
-bool label_table_insert(char *labelname, uint32_t address);
+label *findLabel(char *name);
+void initGlobalLabelTable(void);
+bool insertGlobalLabel(char *labelname, uint32_t address);
+bool insertLocalLabel(char *labelname, uint32_t address);
+void clearLocalLabels(void);
+void writeLocalLabels(FILE *fp);
+void readLocalLabels(FILE *fp);
 uint16_t label_table_count();
 void print_label_table();
-label * label_table_lookup(char *name);
+void printLocalLabels(void);
+label * findGlobalLabel(char *name);
+void initLocalLabelTable(void);
+uint16_t getGlobalLabelCount(void);
+uint16_t getLocalLabelCount(void);
 
 // debug
 void print_bufferspace();

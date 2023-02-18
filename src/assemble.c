@@ -308,7 +308,7 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
             operand->immediate_provided = true;
             return;
         }
-        lbl = label_table_lookup(string);
+        lbl = findLabel(string);
         if(lbl) {
             operand->immediate = lbl->address;
             operand->immediate_provided = true;
@@ -522,13 +522,20 @@ void parseprint() {
 void definelabel(uint32_t num){
     if(strlen(currentline.label)) {
         printf("Inserting label %s, %08x\n",currentline.label, num);
-        if(label_table_insert(currentline.label, num) == false){
-            error("Out of label space");
+        if(currentline.label[0] == '@') {
+            if(insertLocalLabel(currentline.label, num) == false) {
+                error("Out of label space");
+                return;
+            }
         }
-        if(isglobalLabel(currentline.label)) {
+        else {
+            if(insertGlobalLabel(currentline.label, num) == false){
+                error("Out of label space");
+                return;
+            }
             printf("Line %d Global label found - writing local labels\n", linenumber);
-            write_localLabels(locals);
-            clear_localLabels();
+            writeLocalLabels(locals);
+            clearLocalLabels();
         }
     }
 }
@@ -536,10 +543,11 @@ void definelabel(uint32_t num){
 void refreshlocalLabels(void) {
     if(pass == 2) {
         if(currentline.label[0]) {
-            if(isglobalLabel(currentline.label)) {
+            if(currentline.label[0] != '@') {
                 printf("Line %d Global label found - reading local labels\n", linenumber);
-                clear_localLabels();
-                read_localLabels(locals);
+                clearLocalLabels();
+                readLocalLabels(locals);
+                printLocalLabels();
             }
         }
     }
@@ -1034,7 +1042,7 @@ void handle_asm_dw(void) {
         while(currentline.next) {
             get_token(&token, currentline.next);
             if(token.start[0]) {
-                lbl = label_table_lookup(token.start);
+                lbl = findLabel(token.start);
                 if(lbl) operand1.immediate = lbl->address;
                 else operand1.immediate = str2num(token.start);
                 
@@ -1274,23 +1282,19 @@ bool assemble(FILE *infile, FILE *outfile){
         if(listing_enabled) print_linelisting();
         linenumber++;
     }
-    //flush_locallabels();
-    write_localLabels(locals);
+    writeLocalLabels(locals);
     
-    if(debug_enabled) print_label_table();
-
     if(global_errors) return false;
 
     printf("%d lines\n", linenumber);
-    printf("%d labels\n", label_table_count());
+    printf("%d labels\n", getGlobalLabelCount());
 
     // Pass 2
     printf("Pass 2...\n");
     rewind(infile);
     rewind(locals);
-    //fseek(locals, 0, SEEK_SET);
     pass_init(2);
-    read_localLabels(locals);
+    readLocalLabels(locals);
     while (fgets(line, sizeof(line), infile)){
         //printf("address: %08x\n",address);
         //printf("input:   %s",line);
