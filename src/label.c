@@ -100,7 +100,7 @@ void writeLocalLabels(FILE *fp) {
         fwrite(&delta, 1, sizeof(delta), fp);
         fwrite(&localLabelTable[i].address, 1, sizeof(uint32_t), fp);
     }
-    printf("LOCALS WRITTEN: %d\n", localLabelCounter);
+    //printf("LOCALS WRITTEN: %d\n", localLabelCounter);
 }
 
 void readLocalLabels(FILE *fp) {
@@ -115,14 +115,13 @@ void readLocalLabels(FILE *fp) {
         fread(&localLabelTable[i].address, sizeof(uint32_t), 1, fp);
         localLabelTable[i].name = localLabelBuffer + delta;
     }
-    printf("LOCALS READ: %d\n",localLabelCounter);
+    //printf("LOCALS READ: %d\n",localLabelCounter);
 }
 
 bool insertLocalLabel(char *labelname, uint32_t address) {
     int len,i;
     char *ptr;
     char *old_name;
-    int cmp;
     uint32_t old_address;
 
     int p = findLocalLabelIndex(labelname);
@@ -139,9 +138,7 @@ bool insertLocalLabel(char *labelname, uint32_t address) {
             strcpy(ptr, labelname);
 
             for(i = 0; i < localLabelCounter; i++) {
-                cmp = strcmp(labelname, localLabelTable[i].name);
-                printf("Local : %d compare\n",cmp);
-                if(cmp < 0) break;
+                if(strcmp(labelname, localLabelTable[i].name) < 0) break;
             }
             if(i < localLabelCounter) {
                 for(; i < localLabelCounter; i++ ) {
@@ -156,7 +153,6 @@ bool insertLocalLabel(char *labelname, uint32_t address) {
             localLabelTable[localLabelCounter].name = ptr;
             localLabelTable[localLabelCounter].address = address;
             localLabelCounter++;
-            printLocalLabels();
             return true;
         }
         else error("Maximum number of local labels reached");

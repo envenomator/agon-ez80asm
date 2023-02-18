@@ -1,11 +1,10 @@
-label1:
+@test1:
+@test2:
+@test3:
     ld a,b
+    jp @test1
 label2:
-    ld a,b
-@kak1:
-@kak2:
-@kak3:
-@kak0:
-    jp @kak0
-    jp label2
-    jp @kak2
+@test1:
+label3:
+@test1:
+    jp @test1

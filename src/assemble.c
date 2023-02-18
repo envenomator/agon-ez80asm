@@ -324,7 +324,7 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                 operand->immediate_provided = true;
                 operand->wasLabel = true;
             }
-            else error(message[ERROR_INVALIDREGISTER]); // pass 2, not a label, error
+            else error(message[ERROR_INVALIDLABEL]); // pass 2, not a label, error
         }
     }
 }
@@ -521,7 +521,7 @@ void parseprint() {
 
 void definelabel(uint32_t num){
     if(strlen(currentline.label)) {
-        printf("Inserting label %s, %08x\n",currentline.label, num);
+        //printf("Inserting label %s, %08x\n",currentline.label, num);
         if(currentline.label[0] == '@') {
             if(insertLocalLabel(currentline.label, num) == false) {
                 error("Out of label space");
@@ -533,7 +533,7 @@ void definelabel(uint32_t num){
                 error("Out of label space");
                 return;
             }
-            printf("Line %d Global label found - writing local labels\n", linenumber);
+            //printf("Line %d Global label found - writing local labels\n", linenumber);
             writeLocalLabels(locals);
             clearLocalLabels();
         }
@@ -544,10 +544,10 @@ void refreshlocalLabels(void) {
     if(pass == 2) {
         if(currentline.label[0]) {
             if(currentline.label[0] != '@') {
-                printf("Line %d Global label found - reading local labels\n", linenumber);
+                //printf("Line %d Global label found - reading local labels\n", linenumber);
                 clearLocalLabels();
                 readLocalLabels(locals);
-                printLocalLabels();
+                //printLocalLabels();
             }
         }
     }
