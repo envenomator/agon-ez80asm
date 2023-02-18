@@ -15,13 +15,21 @@ typedef struct {
     uint32_t address;
 } label;
 
+typedef struct {
+    bool defined;
+    uint32_t address;
+} anonymouslabeltype;
+
 label *findLabel(char *name);
 void initGlobalLabelTable(void);
+void initAnonymousLabelTable(void);
 bool insertGlobalLabel(char *labelname, uint32_t address);
 bool insertLocalLabel(char *labelname, uint32_t address);
 void clearLocalLabels(void);
 void writeLocalLabels(FILE *fp);
 void readLocalLabels(FILE *fp);
+void writeAnonymousLabel(uint32_t address);
+void readAnonymousLabel(void);
 uint16_t label_table_count();
 void print_label_table();
 void printLocalLabels(void);

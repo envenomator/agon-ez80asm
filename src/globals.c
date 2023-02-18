@@ -9,7 +9,9 @@ bool listing_enabled;
 FILE *infile;
 FILE *outfile;
 FILE *locals;
+FILE *anonlabels;
 char localsfilename[256];
+char anonymousfilename[256];
 unsigned int linenumber;
 unsigned int pass;
 uint32_t address;
@@ -59,5 +61,6 @@ char *message[] = {
     "Missing label",
     "Wordsize larger than 16-bit while ADL set to 0",
     "Too many arguments",
-    "Invalid list format"
+    "Invalid list format",
+    "Error creating label"
 };

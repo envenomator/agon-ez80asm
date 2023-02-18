@@ -24,6 +24,14 @@ void empty_operand(operand *op) {
     op->wasLabel = false;
 }
 
+void advanceLocalLabel(void) {
+    if(currentline.label[0] == '@') {
+        if(currentline.label[1] == '@') {
+            readAnonymousLabel();
+        }
+    }
+}
+
 // parses the given string to the operand, or throws errors along the way
 // will destruct parts of the original string during the process
 void parse_operand(operand_position pos, char *string, operand *operand) {
@@ -308,7 +316,8 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
             operand->immediate_provided = true;
             return;
         }
-        lbl = findLabel(string);
+        if(operand->indirect) lbl = findLabel(string+1);
+        else lbl = findLabel(string);
         if(lbl) {
             operand->immediate = lbl->address;
             operand->immediate_provided = true;
@@ -413,13 +422,16 @@ void parse(char *src) {
                 switch(token.terminator) {
                     case ';':
                         state = PS_COMMENT;
+                        if(pass == 2) advanceLocalLabel();
                         break;
                     case 0:
                     case ' ':
                         if(x) state = PS_COMMAND;
                         else state = PS_DONE;
+                        if(pass == 2) advanceLocalLabel();
                         break;
                     default:
+                        if(pass == 2) advanceLocalLabel();
                         state = PS_ERROR;
                         break;
                 }                
@@ -521,16 +533,21 @@ void parseprint() {
 
 void definelabel(uint32_t num){
     if(strlen(currentline.label)) {
-        //printf("Inserting label %s, %08x\n",currentline.label, num);
+        printf("Inserting label %s, %08x\n",currentline.label, num);
         if(currentline.label[0] == '@') {
+            if(currentline.label[1] == '@') {
+                //printf("Line %d - Writing anon label\n",linenumber);
+                writeAnonymousLabel(num);
+                return;
+            }
             if(insertLocalLabel(currentline.label, num) == false) {
-                error("Out of label space");
+                error(message[ERROR_CREATINGLABEL]);
                 return;
             }
         }
         else {
             if(insertGlobalLabel(currentline.label, num) == false){
-                error("Out of label space");
+                error(message[ERROR_CREATINGLABEL]);
                 return;
             }
             //printf("Line %d Global label found - writing local labels\n", linenumber);
@@ -1294,8 +1311,10 @@ bool assemble(FILE *infile, FILE *outfile){
     printf("Pass 2...\n");
     rewind(infile);
     rewind(locals);
+    rewind(anonlabels);
     pass_init(2);
     readLocalLabels(locals);
+    readAnonymousLabel();
     while (fgets(line, sizeof(line), infile)){
         //printf("address: %08x\n",address);
         //printf("input:   %s",line);

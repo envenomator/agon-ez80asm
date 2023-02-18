@@ -32,8 +32,10 @@ int main(int argc, char *argv[])
     strcpy(outfilename, argv[1]);
     remove_ext(outfilename, '.', '/');
     strcpy(localsfilename, outfilename);
+    strcpy(anonymousfilename,outfilename);
     strcat(outfilename, ".bin");
     strcat(localsfilename, ".lbls");
+    strcat(anonymousfilename, ".anolbls");
     
     outfile = fopen(outfilename, "wb");
     if(outfile == NULL){
@@ -48,6 +50,14 @@ int main(int argc, char *argv[])
         fclose(outfile);
         exit(1);
     }
+    anonlabels = fopen(anonymousfilename, "wb+");
+    if(anonlabels == NULL) {
+        printf("Error opening \"%s\"\n", anonymousfilename);
+        fclose(infile);
+        fclose(outfile);
+        fclose(locals);
+        exit(1);
+    }
 
     debug_enabled = false;
     listing_enabled = false;
@@ -57,6 +67,7 @@ int main(int argc, char *argv[])
     // Init tables
     initGlobalLabelTable();
     initLocalLabelTable();
+    initAnonymousLabelTable();
     outputbufferptr = outputbuffer;
 
     // Assemble input to output
@@ -71,6 +82,7 @@ int main(int argc, char *argv[])
     fclose(infile);
     fclose(outfile);
     fclose(locals);
+    fclose(anonlabels);
     //remove(localsfilename);
     return 0;
 }

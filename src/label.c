@@ -7,6 +7,10 @@
 #include "utils.h"
 #include "globals.h"
 
+// memory for anonymous labels
+anonymouslabeltype an_prev;
+anonymouslabeltype an_next;
+label an_return;
 
 // memory buffer for sequentially storing label strings
 char globalLabelBuffer[GLOBAL_LABEL_BUFFERSIZE];
@@ -41,6 +45,12 @@ void initGlobalLabelTable(void) {
     for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
         globalLabelTable[i] = NULL;
     }
+}
+
+void initAnonymousLabelTable(void) {
+    an_prev.defined = false;
+    an_next.defined = false;
+    an_return.name = NULL;
 }
 
 void initLocalLabelTable(void) {
@@ -118,12 +128,38 @@ void readLocalLabels(FILE *fp) {
     //printf("LOCALS READ: %d\n",localLabelCounter);
 }
 
+void writeAnonymousLabel(uint32_t address) {
+    fwrite(&address, 1, sizeof(address), anonlabels);
+}
+
+void readAnonymousLabel(void) {
+    uint32_t address;
+
+    if(fread(&address, sizeof(address), 1, anonlabels)) {
+        if(an_next.defined) {
+            an_prev.address = an_next.address;
+            an_prev.defined = true;
+        }
+        an_next.address = address;
+        an_next.defined = true;            
+    }
+    else { // last label already read
+        an_prev.address = an_next.address;
+        an_prev.defined = true;
+        an_next.defined = false;
+    }
+}
+
 bool insertLocalLabel(char *labelname, uint32_t address) {
     int len,i;
     char *ptr;
     char *old_name;
     uint32_t old_address;
 
+    if(labelname[1] == 0) {
+        error(message[ERROR_INVALIDLABEL]);
+        return false;
+    }
     int p = findLocalLabelIndex(labelname);
 
     if(p >= LOCAL_LABEL_TABLE_SIZE) {
@@ -226,6 +262,24 @@ label * findGlobalLabel(char *name){
 }
 
 label *findLabel(char *name) {
-    if(name[0] == '@') return findLocalLabel(name);
+    if(name[0] == '@') {
+        
+        if((name[1] == 'f') || (name[1] == 'F')) {
+            if(an_next.defined) {
+                an_return.address = an_next.address;
+                return &an_return;
+            }
+            else return NULL;
+        }
+        if((name[1] == 'b') || (name[1] == 'B')) {
+            if(an_prev.defined) {
+                an_return.address = an_prev.address;
+                return &an_return;
+            }
+            else return NULL;
+        }
+        
+        return findLocalLabel(name);
+    }
     else return findGlobalLabel(name);
 }

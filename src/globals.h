@@ -28,7 +28,9 @@ extern bool listing_enabled;
 extern FILE *infile;
 extern FILE *outfile;
 extern FILE *locals;
+extern FILE *anonlabels;
 extern char localsfilename[256];
+extern char anonymousfilename[256];
 extern unsigned int linenumber;
 extern unsigned int pass;
 extern uint32_t address;
@@ -77,7 +79,8 @@ enum {
     ERROR_MISSINGLABEL,
     ERROR_ADLWORDSIZE,
     ERROR_TOOMANYARGUMENTS,
-    ERROR_LISTFORMAT
+    ERROR_LISTFORMAT,
+    ERROR_CREATINGLABEL
 };
 // Error messages
 extern char *message[];
