@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define INSTRUCTION_TABLE_SIZE  256
 #define MAX_MNEMONIC_SIZE         10
 
 typedef enum { // permitted operand type
@@ -208,8 +207,6 @@ typedef struct {
     asm_argtype asmargument;
 } instruction;
 
-void init_instruction_table();
 instruction * instruction_table_lookup(char *name);
-
 extern permittype_match permittype_matchlist[];
 #endif // INSTRUCTION_H

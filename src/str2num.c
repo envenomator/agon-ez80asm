@@ -15,7 +15,7 @@ enum {
 // string must end with 0 and contain only valid characters (0..1)
 uint32_t str2bin(char *string) {
     uint32_t result = 0;
-    uint8_t x;
+    uint8_t x = 0;
 
     while(*string) {
         if((*string == '0') || (*string == '1')) {x = *string - '0';}
@@ -31,7 +31,7 @@ uint32_t str2bin(char *string) {
 uint32_t str2hex(char *string) {
     uint32_t result = 0;
     char c;
-    uint8_t x;
+    uint8_t x = 0;
 
     while(*string) {
         c = *string;
@@ -51,7 +51,7 @@ uint32_t str2hex(char *string) {
 // string must end with 0 and contain only valid characters (0..9)
 uint32_t str2dec(char *string) {
     uint32_t result = 0;
-    uint8_t x;
+    uint8_t x = 0;
 
     while(*string) {
         if((*string >= '0') && (*string <= '9')) { x = *string - '0'; }

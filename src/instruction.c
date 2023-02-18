@@ -130,7 +130,6 @@ bool indirect_iyd_match(operand *op) {
 bool raeonly_match(operand *op) {
     return((op->reg >= R_A) && (op->reg <= R_E));
 }
-instruction * instruction_table[INSTRUCTION_TABLE_SIZE]; // hashtable of possible instructions, indexed by mnemonic name
 permittype_match permittype_matchlist[] = {            // table with fast access to functions that perform matching to an specific permittype
     {OPTYPE_NONE, none_match},
     {OPTYPE_CC, cc_match},
@@ -171,8 +170,6 @@ permittype_match permittype_matchlist[] = {            // table with fast access
     {OPTYPE_INDIRECT_IYd, indirect_iyd_match},
     {OPTYPE_R_AEONLY, raeonly_match}
 };
-
-unsigned int collisions;    // internal use
 
 operandlist operands_adc[] = {
     {OPTYPE_A, OPTYPE_INDIRECT_HL,  false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x8E, S_ANY}, // tested
@@ -637,10 +634,12 @@ operandlist operands_test[] = {
 };
 
 instruction instructions[] = {
-    {"test",  EZ80, 0, sizeof(operands_test)/sizeof(operandlist),operands_test},
     {"adc",   EZ80, 0, sizeof(operands_adc)/sizeof(operandlist), operands_adc},
     {"add",   EZ80, 0, sizeof(operands_add)/sizeof(operandlist), operands_add},
     {"and",   EZ80, 0, sizeof(operands_and)/sizeof(operandlist), operands_and},
+    {"ascii",    ASSEMBLER, ASM_ASCII, 0, NULL, ASM_ARG_SINGLE},
+    {"asciiz",    ASSEMBLER, ASM_ASCIIZ, 0, NULL, ASM_ARG_SINGLE},
+    {"assume",   ASSEMBLER, ASM_ADL, 0, NULL, ASM_ARG_KEYVAL},
     {"bit",   EZ80, 0, sizeof(operands_bit)/sizeof(operandlist), operands_bit},
     {"call",  EZ80, 0, sizeof(operands_call)/sizeof(operandlist), operands_call},
     {"ccf",   EZ80, 0, sizeof(operands_ccf)/sizeof(operandlist), operands_ccf},
@@ -651,10 +650,17 @@ instruction instructions[] = {
     {"cpir",  EZ80, 0, sizeof(operands_cpir)/sizeof(operandlist), operands_cpir},
     {"cpl",   EZ80, 0, sizeof(operands_cpl)/sizeof(operandlist), operands_cpl},
     {"daa",   EZ80, 0, sizeof(operands_daa)/sizeof(operandlist), operands_daa},
+    {"db",    ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
     {"dec",   EZ80, 0, sizeof(operands_dec)/sizeof(operandlist), operands_dec},
+    {"defb",    ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
+    {"defs",    ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
+    {"defw",    ASSEMBLER, ASM_DW, 0, NULL, ASM_ARG_LIST},
     {"di",    EZ80, 0, sizeof(operands_di)/sizeof(operandlist), operands_di},
     {"djnz",  EZ80, 0, sizeof(operands_djnz)/sizeof(operandlist), operands_djnz},
+    {"ds",    ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
+    {"dw",    ASSEMBLER, ASM_DW, 0, NULL, ASM_ARG_LIST},
     {"ei",    EZ80, 0, sizeof(operands_ei)/sizeof(operandlist), operands_ei},
+    {"equ",     ASSEMBLER, ASM_EQU, 0, NULL, ASM_ARG_SINGLE},
     {"ex",    EZ80, 0, sizeof(operands_ex)/sizeof(operandlist), operands_ex},
     {"exx",   EZ80, 0, sizeof(operands_exx)/sizeof(operandlist), operands_exx},
     {"halt",  EZ80, 0, sizeof(operands_halt)/sizeof(operandlist), operands_halt},
@@ -688,6 +694,7 @@ instruction instructions[] = {
     {"neg",  EZ80, 0, sizeof(operands_neg)/sizeof(operandlist), operands_neg},
     {"nop",  EZ80, 0, sizeof(operands_nop)/sizeof(operandlist), operands_nop},
     {"or",  EZ80, 0, sizeof(operands_or)/sizeof(operandlist), operands_or},
+    {"org",   ASSEMBLER, ASM_ORG, 0, NULL, ASM_ARG_SINGLE},
     {"otd2r",  EZ80, 0, sizeof(operands_otd2r)/sizeof(operandlist), operands_otd2r},
     {"otdm",  EZ80, 0, sizeof(operands_otdm)/sizeof(operandlist), operands_otdm},
     {"otdmr",  EZ80, 0, sizeof(operands_otdmr)/sizeof(operandlist), operands_otdmr},
@@ -734,81 +741,25 @@ instruction instructions[] = {
     {"sub",  EZ80, 0, sizeof(operands_sub)/sizeof(operandlist), operands_sub},
     {"tst",  EZ80, 0, sizeof(operands_tst)/sizeof(operandlist), operands_tst},
     {"tstio",  EZ80, 0, sizeof(operands_tstio)/sizeof(operandlist), operands_tstio},
-    {"xor",  EZ80, 0, sizeof(operands_xor)/sizeof(operandlist), operands_xor},
-    {"assume",   ASSEMBLER, ASM_ADL, 0, NULL, ASM_ARG_KEYVAL},
-    {"db",    ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
-    {"defb",    ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
-    {"ascii",    ASSEMBLER, ASM_ASCII, 0, NULL, ASM_ARG_SINGLE},
-    {"asciiz",    ASSEMBLER, ASM_ASCIIZ, 0, NULL, ASM_ARG_SINGLE},
-    {"equ",     ASSEMBLER, ASM_EQU, 0, NULL, ASM_ARG_SINGLE},
-    {"ds",    ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
-    {"defs",    ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
-    {"dw",    ASSEMBLER, ASM_DW, 0, NULL, ASM_ARG_LIST},
-    {"defw",    ASSEMBLER, ASM_DW, 0, NULL, ASM_ARG_LIST},
-    {"org",   ASSEMBLER, ASM_ORG, 0, NULL, ASM_ARG_SINGLE}
+    {"xor",  EZ80, 0, sizeof(operands_xor)/sizeof(operandlist), operands_xor}
 };
 
-bool instruction_table_insert(instruction *p){
-    int index,i,try;
+instruction * instruction_table_lookup(char *key){
+	instruction *base = instructions;
+	int lim, cmp;
+	instruction *p;
+    //size_t size = sizeof(instruction);
 
-    if(p == NULL) return false;
-    index = hash(p->name, INSTRUCTION_TABLE_SIZE);
-   
-    for(i = 0; i < INSTRUCTION_TABLE_SIZE; i++) {
-        try = (i + index) % INSTRUCTION_TABLE_SIZE;
-        if(instruction_table[try] == NULL){
-            instruction_table[try] = p;
-            return true;
-        } 
-        else collisions++;
-    }
-    return false;
+	for (lim = sizeof(instructions)/sizeof(instruction); lim != 0; lim >>= 1) {
+		p = base + (lim >> 1);
+		cmp = strcmp(key,p->name);
+		if (cmp == 0)
+			return p;
+		if (cmp > 0) {	/* key > p: move right */
+			base = p + 1;
+			lim--;
+		} /* else move left */
+	}
+	return (NULL);
 }
 
-void init_instruction_table(){
-    int i;
-    for(i = 0; i < INSTRUCTION_TABLE_SIZE; i++){
-        instruction_table[i] = NULL;
-    }
-    collisions = 0;
-
-    for(i = 0; i < sizeof(instructions)/sizeof(instruction);i++){
-        instruction_table_insert(&instructions[i]);
-    }
-}
-
-unsigned int instruction_table_entries(){
-    unsigned int i,count = 0;
-    for(i = 0; i < INSTRUCTION_TABLE_SIZE; i++){
-        if(instruction_table[i] != NULL) count++;
-    }
-    return count;
-}
-
-
-void print_instruction_table(){
-    int i;
-    for(i = 0; i < INSTRUCTION_TABLE_SIZE; i++){
-        if(instruction_table[i] == NULL) {
-            printf("\t%i\t---\n",i);
-        } else {
-            printf("\t%i\t%s\n",i,instruction_table[i]->name);
-        }
-    }
-}
-
-instruction * instruction_table_lookup(char *name){
-    int index,i,try;
-    index = hash(name, INSTRUCTION_TABLE_SIZE);
-    for(i = 0; i < INSTRUCTION_TABLE_SIZE; i++){
-        try = (index + i) % INSTRUCTION_TABLE_SIZE;
-        if(instruction_table[try] == NULL){
-            return NULL;
-        }
-        if(instruction_table[try] != NULL &&
-            strncmp(instruction_table[try]->name,name,INSTRUCTION_TABLE_SIZE) == 0){
-            return instruction_table[try];
-        }
-    }
-    return NULL;
-}

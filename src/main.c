@@ -8,10 +8,14 @@
 #include "assemble.h"
 #include "label.h"
 
+#include <time.h>
+#include <sys/time.h>
+
 #define FILENAMEMAXLENGTH 128
 
 int main(int argc, char *argv[])
 {
+    struct timeval stop, start;
     char outfilename[FILENAMEMAXLENGTH];
 
     if(argc < 2){
@@ -51,12 +55,14 @@ int main(int argc, char *argv[])
     if((argc == 3) && (strcmp(argv[2], "-l") == 0)) listing_enabled = true;
 
     // Init tables
-    init_instruction_table();
     init_label_table();
     outputbufferptr = outputbuffer;
 
     // Assemble input to output
+    gettimeofday(&start, NULL);
     assemble(infile, outfile);
+    gettimeofday(&stop, NULL);
+    printf("Assembly took %lu us\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec);
 
     if(global_errors) printf("Error in input\n");
     

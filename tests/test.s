@@ -1,1 +1,2 @@
-asciiz "0123"
+ld a,b
+add a,(hl)
