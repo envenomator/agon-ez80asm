@@ -110,7 +110,7 @@ typedef enum {
 #define S_ANY         0xFF
 #define S_NONE        0x00
 #define S_SISLIL      S_SIS | S_LIL
-#define S_SL          S_SIL | S_LIS
+#define S_S1L0          S_SIL | S_LIS
 
 // actual codes to emit
 #define CODE_SIS    0x40

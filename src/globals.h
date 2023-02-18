@@ -29,8 +29,6 @@ extern FILE *infile;
 extern FILE *outfile;
 extern FILE *locals;
 extern FILE *anonlabels;
-extern char localsfilename[256];
-extern char anonymousfilename[256];
 extern unsigned int linenumber;
 extern unsigned int pass;
 extern uint32_t address;
@@ -38,9 +36,6 @@ extern uint32_t totalsize;
 extern uint16_t global_errors;
 extern bool adlmode;
 extern tokenline currentline;
-
-extern char outputbuffer[];
-char * outputbufferptr;
 
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code

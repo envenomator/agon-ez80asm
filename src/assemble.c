@@ -533,7 +533,7 @@ void parseprint() {
 
 void definelabel(uint32_t num){
     if(strlen(currentline.label)) {
-        printf("Inserting label %s, %08x\n",currentline.label, num);
+        //printf("Inserting label %s, %08x\n",currentline.label, num);
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
                 //printf("Line %d - Writing anon label\n",linenumber);
@@ -721,7 +721,7 @@ void prefix_ddfd_suffix(operandlist *op) {
 
         // prefix in either of these two cases
         if(prefix1) {
-            printf("Prefix1\n");
+            //printf("Prefix1\n");
             if(prefix2) {
                 // both prefixes set
                 if(operand1.indirect) {

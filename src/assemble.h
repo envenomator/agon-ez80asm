@@ -12,7 +12,6 @@
 #define FILLBYTE        0x00 // NOP
 
 bool assemble(FILE *infile, FILE *outfile);
-uint8_t getADLsuffix(void);  // checks defined types and also checks if the allowed type is present vs the adlmode
 void emit_8bit(uint8_t value);
 void emit_16bit(uint16_t value);
 void emit_24bit(uint32_t value);

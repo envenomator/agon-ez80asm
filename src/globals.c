@@ -10,8 +10,6 @@ FILE *infile;
 FILE *outfile;
 FILE *locals;
 FILE *anonlabels;
-char localsfilename[256];
-char anonymousfilename[256];
 unsigned int linenumber;
 unsigned int pass;
 uint32_t address;
@@ -19,13 +17,9 @@ uint32_t totalsize;      // total size of assembled binary
 uint16_t global_errors;
 bool adlmode;
 
-char outputbuffer[65535];
-char * outputbufferptr;
-
 tokenline currentline;
 operand operand1;
 operand operand2;
-char buffer[DBBUFFERSIZE];
 opcodesequence output;
 
 /*

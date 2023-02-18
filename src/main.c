@@ -13,23 +13,19 @@
 
 #define FILENAMEMAXLENGTH 128
 
-int main(int argc, char *argv[])
-{
-    struct timeval stop, start;
+bool openfiles(char *basename) {
     char outfilename[FILENAMEMAXLENGTH];
+    char localsfilename[FILENAMEMAXLENGTH];
+    char anonymousfilename[FILENAMEMAXLENGTH];
 
-    if(argc < 2){
-        printf("Usage: asm <file.s> [-d]\n");
-        exit(1);
-    }
-    infile = fopen(argv[1],"r");
+    infile = fopen(basename,"r");
     if(infile == NULL){
-        printf("Error opening \"%s\"\n",argv[1]);   
-        exit(1);             
+        printf("Error opening \"%s\"\n",basename);   
+        return false;
     }
     
     // prepare output filename
-    strcpy(outfilename, argv[1]);
+    strcpy(outfilename, basename);
     remove_ext(outfilename, '.', '/');
     strcpy(localsfilename, outfilename);
     strcpy(anonymousfilename,outfilename);
@@ -41,14 +37,14 @@ int main(int argc, char *argv[])
     if(outfile == NULL){
         printf("Error opening \"%s\"\n",outfilename);
         fclose(infile);
-        exit(1);
+        return false;
     }
     locals = fopen(localsfilename, "wb+");
     if(locals == NULL) {
         printf("Error opening \"%s\"\n",localsfilename);
         fclose(infile);
         fclose(outfile);
-        exit(1);
+        return false;
     }
     anonlabels = fopen(anonymousfilename, "wb+");
     if(anonlabels == NULL) {
@@ -56,8 +52,31 @@ int main(int argc, char *argv[])
         fclose(infile);
         fclose(outfile);
         fclose(locals);
+        return false;
+    }
+    return true;
+}
+
+void closefiles() {
+   // Cleanup
+    fclose(infile);
+    fclose(outfile);
+    fclose(locals);
+    fclose(anonlabels);
+    //remove(localsfilename);
+    //remove(anonymousfilename);
+}
+
+int main(int argc, char *argv[])
+{
+    struct timeval stop, start;
+
+    if(argc < 2){
+        printf("Usage: asm <file.s> [-d]\n");
         exit(1);
     }
+
+    if(!openfiles(argv[1])) return 0;
 
     debug_enabled = false;
     listing_enabled = false;
@@ -68,7 +87,6 @@ int main(int argc, char *argv[])
     initGlobalLabelTable();
     initLocalLabelTable();
     initAnonymousLabelTable();
-    outputbufferptr = outputbuffer;
 
     // Assemble input to output
     gettimeofday(&start, NULL);
@@ -77,12 +95,7 @@ int main(int argc, char *argv[])
     printf("Assembly took %lu us\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec);
 
     if(global_errors) printf("Error in input\n");
-    
-    // Cleanup
-    fclose(infile);
-    fclose(outfile);
-    fclose(locals);
-    fclose(anonlabels);
-    //remove(localsfilename);
+
+    closefiles();   
     return 0;
 }
