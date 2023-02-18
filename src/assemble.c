@@ -810,6 +810,7 @@ void emit_instruction(operandlist *list) {
     bool ddbeforeopcode; // determine position of displacement byte in case of DDCBdd/DDFDdd
 
     // Transform necessary prefix/opcode in output, according to given list and operands
+    output.suffix = getADLsuffix();
     output.prefix1 = 0;
     output.prefix2 = list->prefix;
     output.opcode = list->opcode;

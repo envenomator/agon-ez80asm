@@ -173,7 +173,7 @@ permittype_match permittype_matchlist[] = {
 };
 
 operandlist operands_adc[] = {
-    {OPTYPE_A, OPTYPE_INDIRECT_HL,  false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x8E, S_ANY},
+    {OPTYPE_A, OPTYPE_INDIRECT_HL,  false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x8E, S_SL},
     {OPTYPE_A, OPTYPE_IR,           true, TRANSFORM_NONE, TRANSFORM_IR, 0x00, 0x8C, S_NONE},
     {OPTYPE_A, OPTYPE_INDIRECT_IXYd,true, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0x8E, S_ANY},
     {OPTYPE_A, OPTYPE_N,            false, TRANSFORM_NONE, TRANSFORM_NONE, 0x00, 0xCE, S_NONE},
