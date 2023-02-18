@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define MAX_MNEMONIC_SIZE         10
+#define MAX_MNEMONIC_SIZE         8
 
 typedef enum { // permitted operand type
     OPTYPE_NONE,
@@ -133,6 +133,7 @@ typedef struct {
     bool                displacement_provided;
     bool                immediate_provided;
     uint32_t            immediate;
+    bool                wasLabel;
 } operand;
 
 typedef struct {
@@ -169,12 +170,6 @@ typedef struct {
     uint8_t             adl;                // the adl mode allowed in set of operands
 } operandlist;
 
-// An array-based index of this structure will act as a fast lookup table
-typedef struct {
-    permittype type;
-    bool (*match)(operand *);
-} permittype_match;
-
 enum {
     EZ80,
     ASSEMBLER
@@ -208,5 +203,12 @@ typedef struct {
 } instruction;
 
 instruction * instruction_table_lookup(char *name);
+
+// An array-based index of this structure will act as a fast lookup table
+typedef struct {
+    permittype type;
+    bool (*match)(operand *);
+} permittype_match;
+
 extern permittype_match permittype_matchlist[];
 #endif // INSTRUCTION_H

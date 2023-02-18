@@ -4,7 +4,6 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "hash.h"
 #include "instruction.h"
 #include "assemble.h"
 #include "utils.h"

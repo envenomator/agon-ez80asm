@@ -21,6 +21,7 @@ void empty_operand(operand *op) {
     op->displacement_provided = false;
     op->immediate = 0;
     op->immediate_provided = false;
+    op->wasLabel = false;
 }
 
 // parses the given string to the operand, or throws errors along the way
@@ -312,6 +313,7 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
             operand->immediate = lbl->address;
             operand->immediate_provided = true;
             //printf("Label found: %s, %u\n",lbl->name, lbl->address);
+            operand->wasLabel = true;
             return;
         }
         else {
@@ -320,6 +322,7 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                 // might be a lable that isn't defined yet. will see in pass 2
                 operand->immediate = 0;
                 operand->immediate_provided = true;
+                operand->wasLabel = true;
             }
             else error(message[ERROR_INVALIDREGISTER]); // pass 2, not a label, error
         }
@@ -779,7 +782,8 @@ void transform_instruction(operand *op, permittype type) {
         case TRANSFORM_REL:
             if(pass == 2) {
                 // label still potentially unknown in pass 1, so output the existing '0' in pass 1
-                rel = op->immediate - address - 2;
+                if(op->wasLabel) rel = op->immediate - address - 2;
+                else rel = op->immediate; // user asked for specific offset
                 if((rel > 127) || (rel < -128)) error(message[ERROR_RELATIVEJUMPTOOLARGE]);
                 op->immediate = ((int8_t)(rel & 0xFF));
                 op->immediate_provided = true;
