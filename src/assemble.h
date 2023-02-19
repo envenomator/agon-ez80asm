@@ -7,7 +7,6 @@
 #include "instruction.h"
 #include "label.h"
 
-#define LINEMAX         256
 #define START_ADDRESS   0x0
 #define FILLBYTE        0x00 // NOP
 

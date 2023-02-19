@@ -11,7 +11,7 @@ typedef struct {
 } tokentype;
 
 void remove_ext (char* myStr, char extSep, char pathSep);
-void strstripleft(const char *source_str, char *dest_str);
+void trimRight(char *str);
 void error(char* msg);
 void debugmsg(char *msg);
 bool isempty(const char *str);

@@ -49,6 +49,14 @@ void debugmsg(char *msg)
     }
 }
 
+void trimRight(char *str) {
+    while(*str) str++;
+    str--;
+    while(isspace(*str)) str--;
+    str++;
+    *str = 0;
+}
+
 void trimEdges(char *str) {
     uint8_t index = 0;
     char *target = str;

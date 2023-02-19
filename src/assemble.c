@@ -9,6 +9,7 @@
 #include "utils.h"
 #include "label.h"
 #include "str2num.h"
+#include "listing.h"
 
 void empty_operand(operand *op) {
     // defaults
@@ -884,7 +885,8 @@ void emit_instruction(operandlist *list) {
 
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
-        printf("%02x:",value);
+        //printf("%02x:",value);
+        listEmit8bit(value);
         fwrite(&value, sizeof(char), 1, outfile);
     }
     address++;
@@ -892,19 +894,16 @@ void emit_8bit(uint8_t value) {
 }
 
 void emit_16bit(uint16_t value) {
-    if(pass == 2) {
-        printf("%02x:%02x\n",value&0xFF, (value>>8)&0xFF);
-    }
-    address += 2;
-    totalsize += 2;
+    //printf("%02x:%02x\n",value&0xFF, (value>>8)&0xFF);
+    emit_8bit(value&0xFF);
+    emit_8bit((value>>8)&0xFF);
 }
 
 void emit_24bit(uint32_t value) {
-    if(pass == 2) {
-        printf("0x%02x-0x%02x-0x%02x\n", value&0xFF, (value>>8)&0xFF, (value>>16)&0xFF);
-    }
-    address += 3;
-    totalsize +=3;
+    //printf("0x%02x-0x%02x-0x%02x\n", value&0xFF, (value>>8)&0xFF, (value>>16)&0xFF);
+    emit_8bit(value&0xFF);
+    emit_8bit((value>>8)&0xFF);
+    emit_8bit((value>>16)&0xFF);
 }
 
 // return the value of a previously escaped character with backslash
@@ -1301,7 +1300,7 @@ bool assemble(FILE *infile, FILE *outfile){
         linenumber++;
     }
     writeLocalLabels(locals);
-    
+    linenumber--;
     if(global_errors) return false;
 
     printf("%d lines\n", linenumber);
@@ -1313,22 +1312,22 @@ bool assemble(FILE *infile, FILE *outfile){
     rewind(locals);
     rewind(anonlabels);
     pass_init(2);
+    listInit();
     readLocalLabels(locals);
     readAnonymousLabel();
     while (fgets(line, sizeof(line), infile)){
-        //printf("address: %08x\n",address);
-        //printf("input:   %s",line);
-        //printf("output:  ");
+        listStartLine(line);
         convertLower(line);
         parse(line);
         refreshlocalLabels();
-        printf("Line %d\n",linenumber);
+        //printf("Line %d\n",linenumber);
         process();
+        listEndLine();
         linenumber++;
 
-        printf("\n");
+        //printf("\n");
     }
-
+    linenumber--;
     return true;
 }
 

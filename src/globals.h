@@ -7,6 +7,7 @@
 #include "instruction.h"
 
 #define DBBUFFERSIZE 256
+#define LINEMAX         256
 
 typedef struct {
     instruction *current_instruction;

@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
     gettimeofday(&start, NULL);
     assemble(infile, outfile);
     gettimeofday(&stop, NULL);
-    printf("Assembly took %lu us\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec);
+    printf("\nAssembly took %lu us\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec);
 
     if(global_errors) printf("Error in input\n");
 

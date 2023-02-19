@@ -64,7 +64,7 @@ uint32_t str2dec(char *string) {
 
 // Transforms a binary/hexadecimal/decimal string to an uint32_t number
 // Valid strings are
-// BINARY:  0b..., ...b
+// BINARY:  0%..., ...b
 // HEX:     0x..., ...h, $...
 // DECIMAL ...
 uint32_t str2num(char *string) {
@@ -100,7 +100,7 @@ uint32_t str2num(char *string) {
                     case 'x':
                         return str2hex(ptr+1);
                         break;
-                    case 'b':
+                    case '%':
                         //printf("DEBUG: %s\n",ptr+1);
                         return str2bin(ptr+1);
                         break;
