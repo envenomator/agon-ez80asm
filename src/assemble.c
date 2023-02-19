@@ -1209,7 +1209,6 @@ void process(void){
                 if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
                     match = true;
                     if((debug_enabled) && pass == 1) printf("DEBUG - Line %d - match found on ^last^ filter list tuple\n", linenumber);
-                    //printf("Line %d - match found\n",linenumber);
                     emit_instruction(list);
                     break;
                 }
@@ -1220,14 +1219,13 @@ void process(void){
         }
         else handle_assembler_command();
     }
-    //printf("DEBUG - Address is now 0x%08x, totalsize is %d\n", address, totalsize);
     return;
 }
 
 void pass_init(uint8_t n) {
     pass = n;
     adlmode = true;
-    linenumber = 1;
+    linenumber = 0;
     address = START_ADDRESS;
     totalsize = 0;
 }
@@ -1240,15 +1238,15 @@ bool assemble(FILE *file_input, FILE *file_bin){
     printf("Pass 1...\n");
     pass_init(1);
     while (fgets(line, sizeof(line), file_input)){
+        linenumber++;
         convertLower(line);
         parse(line);
         process();
-        linenumber++;
     }
     writeLocalLabels();
     if(global_errors) return false;
 
-    printf("%d lines\n", linenumber-1);
+    printf("%d lines\n", linenumber);
     printf("%d labels\n", getGlobalLabelCount());
 
     // Pass 2
@@ -1261,13 +1259,13 @@ bool assemble(FILE *file_input, FILE *file_bin){
     readLocalLabels();
     readAnonymousLabel();
     while (fgets(line, sizeof(line), file_input)){
+        linenumber++;
         listStartLine(line);
         convertLower(line);
         parse(line);
         refreshlocalLabels();
         process();
         listEndLine();
-        linenumber++;
     }
     return true;
 }
