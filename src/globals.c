@@ -5,11 +5,10 @@
  * Global variables
  */
 bool debug_enabled;
-bool listing_enabled;
-FILE *infile;
-FILE *outfile;
-FILE *locals;
-FILE *anonlabels;
+FILE *file_input;
+FILE *file_bin;
+FILE *file_locals;
+FILE *file_anon;
 unsigned int linenumber;
 unsigned int pass;
 uint32_t address;
@@ -56,5 +55,7 @@ char *message[] = {
     "Wordsize larger than 16-bit while ADL set to 0",
     "Too many arguments",
     "Invalid list format",
-    "Error creating label"
+    "Error creating label",
+    "Label already defined",
+    "Maximum number of local labels reached"
 };

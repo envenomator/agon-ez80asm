@@ -62,12 +62,8 @@ void initLocalLabelTable(void) {
         localLabelTable[i].name = NULL;
     }
 }
-void clearLocalLabels(void) {
-    //int i;
 
-    //for(i = 0; i < localLabelCounter; i++) {
-    //    localLabelTable[i].name[0] = 0;
-    //}
+void clearLocalLabels(void) {
     localLabelBufferIndex = 0;
     localLabelCounter = 0;
 }
@@ -96,46 +92,46 @@ label * findLocalLabel(char *key){
     else return NULL;
 }
 
-void writeLocalLabels(FILE *fp) {
+void writeLocalLabels(void) {
     int i;
     uint16_t delta;
     // number of bytes in the string buffer
-    fwrite(&localLabelBufferIndex, 1, sizeof(localLabelBufferIndex), fp);
+    fwrite(&localLabelBufferIndex, 1, sizeof(localLabelBufferIndex), file_locals);
     // the actual bytes from the string buffer
-    if(localLabelBufferIndex) fwrite(localLabelBuffer, 1, localLabelBufferIndex, fp);
+    if(localLabelBufferIndex) fwrite(localLabelBuffer, 1, localLabelBufferIndex, file_locals);
     // the number of labels
-    fwrite(&localLabelCounter, 1, sizeof(localLabelCounter), fp);
+    fwrite(&localLabelCounter, 1, sizeof(localLabelCounter), file_locals);
     for(i = 0; i < localLabelCounter; i++) {
         delta = localLabelTable[i].name - localLabelBuffer;
-        fwrite(&delta, 1, sizeof(delta), fp);
-        fwrite(&localLabelTable[i].address, 1, sizeof(uint32_t), fp);
+        fwrite(&delta, 1, sizeof(delta), file_locals);
+        fwrite(&localLabelTable[i].address, 1, sizeof(uint32_t), file_locals);
     }
     //printf("LOCALS WRITTEN: %d\n", localLabelCounter);
 }
 
-void readLocalLabels(FILE *fp) {
+void readLocalLabels(void) {
     int i;
     uint16_t delta;
 
-    fread(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, fp);
-    if(localLabelBufferIndex) fread(&localLabelBuffer, localLabelBufferIndex, 1, fp);
-    fread(&localLabelCounter, sizeof(localLabelCounter), 1, fp);
+    fread(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, file_locals);
+    if(localLabelBufferIndex) fread(&localLabelBuffer, localLabelBufferIndex, 1, file_locals);
+    fread(&localLabelCounter, sizeof(localLabelCounter), 1, file_locals);
     for(i = 0; i < localLabelCounter; i++) {
-        fread(&delta, sizeof(delta), 1, fp);
-        fread(&localLabelTable[i].address, sizeof(uint32_t), 1, fp);
+        fread(&delta, sizeof(delta), 1, file_locals);
+        fread(&localLabelTable[i].address, sizeof(uint32_t), 1, file_locals);
         localLabelTable[i].name = localLabelBuffer + delta;
     }
     //printf("LOCALS READ: %d\n",localLabelCounter);
 }
 
 void writeAnonymousLabel(uint32_t address) {
-    fwrite(&address, 1, sizeof(address), anonlabels);
+    fwrite(&address, 1, sizeof(address), file_anon);
 }
 
 void readAnonymousLabel(void) {
     uint32_t address;
 
-    if(fread(&address, sizeof(address), 1, anonlabels)) {
+    if(fread(&address, sizeof(address), 1, file_anon)) {
         if(an_next.defined) {
             an_prev.address = an_next.address;
             an_prev.defined = true;
@@ -191,9 +187,9 @@ bool insertLocalLabel(char *labelname, uint32_t address) {
             localLabelCounter++;
             return true;
         }
-        else error("Maximum number of local labels reached");
+        else error(message[ERROR_MAXLOCALLABELS]);
     }
-    else error("Label already defined");
+    else error(message[ERROR_LABELDEFINED]);
     return false;
 }
 

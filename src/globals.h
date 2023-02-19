@@ -25,11 +25,12 @@ typedef struct {
 
 // Global variables
 extern bool debug_enabled;
-extern bool listing_enabled;
-extern FILE *infile;
-extern FILE *outfile;
-extern FILE *locals;
-extern FILE *anonlabels;
+
+extern FILE *file_input;
+extern FILE *file_bin;
+extern FILE *file_locals;
+extern FILE *file_anon;
+
 extern unsigned int linenumber;
 extern unsigned int pass;
 extern uint32_t address;
@@ -76,7 +77,9 @@ enum {
     ERROR_ADLWORDSIZE,
     ERROR_TOOMANYARGUMENTS,
     ERROR_LISTFORMAT,
-    ERROR_CREATINGLABEL
+    ERROR_CREATINGLABEL,
+    ERROR_LABELDEFINED,
+    ERROR_MAXLOCALLABELS
 };
 // Error messages
 extern char *message[];

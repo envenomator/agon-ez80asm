@@ -552,7 +552,7 @@ void definelabel(uint32_t num){
                 return;
             }
             //printf("Line %d Global label found - writing local labels\n", linenumber);
-            writeLocalLabels(locals);
+            writeLocalLabels(file_locals);
             clearLocalLabels();
         }
     }
@@ -564,7 +564,7 @@ void refreshlocalLabels(void) {
             if(currentline.label[0] != '@') {
                 //printf("Line %d Global label found - reading local labels\n", linenumber);
                 clearLocalLabels();
-                readLocalLabels(locals);
+                readLocalLabels(file_locals);
                 //printLocalLabels();
             }
         }
@@ -887,7 +887,7 @@ void emit_8bit(uint8_t value) {
     if(pass == 2) {
         //printf("%02x:",value);
         listEmit8bit(value);
-        fwrite(&value, sizeof(char), 1, outfile);
+        fwrite(&value, sizeof(char), 1, file_bin);
     }
     address++;
     totalsize++;
@@ -1285,49 +1285,43 @@ void pass_init(uint8_t n) {
     totalsize = 0;
 }
 
-bool assemble(FILE *infile, FILE *outfile){
+bool assemble(FILE *file_input, FILE *file_bin){
     char line[LINEMAX];
     global_errors = 0;
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\n");
     pass_init(1);
-    while (fgets(line, sizeof(line), infile)){
+    while (fgets(line, sizeof(line), file_input)){
         convertLower(line);
         parse(line);
         process();
-        if(listing_enabled) print_linelisting();
         linenumber++;
     }
-    writeLocalLabels(locals);
-    linenumber--;
+    writeLocalLabels();
     if(global_errors) return false;
 
-    printf("%d lines\n", linenumber);
+    printf("%d lines\n", linenumber-1);
     printf("%d labels\n", getGlobalLabelCount());
 
     // Pass 2
     printf("Pass 2...\n");
-    rewind(infile);
-    rewind(locals);
-    rewind(anonlabels);
+    rewind(file_input);
+    rewind(file_locals);
+    rewind(file_anon);
     pass_init(2);
     listInit();
-    readLocalLabels(locals);
+    readLocalLabels();
     readAnonymousLabel();
-    while (fgets(line, sizeof(line), infile)){
+    while (fgets(line, sizeof(line), file_input)){
         listStartLine(line);
         convertLower(line);
         parse(line);
         refreshlocalLabels();
-        //printf("Line %d\n",linenumber);
         process();
         listEndLine();
         linenumber++;
-
-        //printf("\n");
     }
-    linenumber--;
     return true;
 }
 
