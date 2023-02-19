@@ -25,11 +25,13 @@ typedef struct {
 
 // Global variables
 extern bool debug_enabled;
+extern bool show_list;
 
 extern FILE *file_input;
 extern FILE *file_bin;
 extern FILE *file_locals;
 extern FILE *file_anon;
+extern FILE *file_list;
 
 extern unsigned int linenumber;
 extern unsigned int pass;

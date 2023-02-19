@@ -5,10 +5,12 @@
  * Global variables
  */
 bool debug_enabled;
+
 FILE *file_input;
 FILE *file_bin;
 FILE *file_locals;
 FILE *file_anon;
+FILE *file_list;
 unsigned int linenumber;
 unsigned int pass;
 uint32_t address;
@@ -21,9 +23,6 @@ operand operand1;
 operand operand2;
 opcodesequence output;
 
-/*
- * Messages
- */
 char *message[] = {
     "Invalid register in operand",
     "Missing opening bracket in operand",

@@ -11,8 +11,10 @@ uint8_t _listObjects[256];
 uint8_t _listObjectCount;
 bool _listFirstline = true;
 
+char _listHeader[] = "PC      Output            Line   Source\n";
+
 void listInit(void) {
-    printf("PC      Output            Line   Source\n");
+    fprintf(file_list, "%s", _listHeader);
     _listFirstline = false;
     _listLine[0] = 0;
     _listObjectCount = 0;
@@ -35,14 +37,14 @@ void listEndLine(void) {
 
     objectnum = 0;
     for(lines = 0; lines < linemax; lines++) {
-        if(lines == 0) printf("%06x  ",_listAddress);
-        else printf("        ");
+        if(lines == 0) fprintf(file_list, "%06x  ",_listAddress);
+        else fprintf(file_list, "        ");
         for(i = 0; i < OBJECTS_PER_LINE; i++) {
-            if(objectnum < _listObjectCount) printf("%02x ",_listObjects[objectnum++]);
-            else printf("   ");
+            if(objectnum < _listObjectCount) fprintf(file_list, "%02x ",_listObjects[objectnum++]);
+            else fprintf(file_list, "   ");
         }
-        if(lines == 0) printf("%04d   %s\n",linenumber, _listLine);
-        else printf("\n");
+        if(lines == 0) fprintf(file_list, "%04d   %s\n",linenumber, _listLine);
+        else fprintf(file_list, "\n");
     }
 }
 

@@ -16,6 +16,7 @@
 char filename_bin[FILENAMEMAXLENGTH];
 char filename_locals[FILENAMEMAXLENGTH];
 char filename_anon[FILENAMEMAXLENGTH];
+char filename_list[FILENAMEMAXLENGTH];
 
 bool openFile(FILE **file, char *name, char *mode) {
     *file = fopen(name, mode);
@@ -31,6 +32,7 @@ void closeFiles() {
     if(file_bin) fclose(file_bin);
     if(file_locals) fclose(file_locals);
     if(file_anon) fclose(file_anon);
+    if(file_list) fclose(file_list);
     remove(filename_locals);
     remove(filename_anon);
 }
@@ -43,15 +45,17 @@ bool openfiles(char *basename) {
     remove_ext(filename_bin, '.', '/');
     strcpy(filename_locals, filename_bin);
     strcpy(filename_anon,filename_bin);
+    strcpy(filename_list,filename_bin);
     strcat(filename_bin, ".bin");
-    strcat(filename_locals, ".lbls");
-    strcat(filename_anon, ".anolbls");
+    strcat(filename_locals, ".locallabels");
+    strcat(filename_anon, ".anonlabels");
+    strcat(filename_list, ".lst");
 
     status = status && openFile(&file_input, basename, "r");
     status = status && openFile(&file_bin, filename_bin, "wb+");
     status = status && openFile(&file_locals, filename_locals, "wb+");
     status = status && openFile(&file_anon, filename_anon, "wb+");
-
+    status = status && openFile(&file_list, filename_list, "wb+");
     if(!status) closeFiles();
     return status;
 }
@@ -61,7 +65,7 @@ int main(int argc, char *argv[])
     struct timeval stop, start;
 
     if(argc < 2){
-        printf("Usage: asm <file.s> [-d]\n");
+        printf("Usage: asm <filename> [-d]\n");
         exit(1);
     }
 
@@ -79,9 +83,12 @@ int main(int argc, char *argv[])
     gettimeofday(&start, NULL);
     assemble(file_input, file_bin);
     gettimeofday(&stop, NULL);
+    if(global_errors) {
+        remove(filename_bin);
+        printf("Error in input\n");
+    }
+    else printf("%d bytes\n", totalsize);
     printf("\nAssembly took %lu us\n", (stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec);
-
-    if(global_errors) printf("Error in input\n");
 
     closeFiles();   
     return 0;

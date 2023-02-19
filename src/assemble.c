@@ -12,7 +12,6 @@
 #include "listing.h"
 
 void empty_operand(operand *op) {
-    // defaults
     op->position = 0;
     op->reg = R_NONE;
     op->reg_index = 0;
@@ -348,19 +347,6 @@ void convertLower(char *line) {
     }
 }
 
-// convert a token to a value, store it LSB first in *buffptr
-// return number of bytes written
-uint8_t storevalue(uint8_t type, char* buffptr, char *token) {
-    uint8_t size;
-    uint32_t number;
-
-    number = str2num(token);
-
-    *buffptr = (uint8_t)(number & 0xFF);
-    size = 1;
-    return size;
-}
-
 typedef enum {
     PS_START,
     PS_LABEL,
@@ -528,10 +514,6 @@ void parse(char *src) {
     }
 }
 
-void parseprint() {
-    printf("Line %03d - %s:%s.%s %s %s\n", linenumber, currentline.label, currentline.mnemonic, currentline.suffix, currentline.operand1, currentline.operand2);
-}
-
 void definelabel(uint32_t num){
     if(strlen(currentline.label)) {
         //printf("Inserting label %s, %08x\n",currentline.label, num);
@@ -632,12 +614,6 @@ uint8_t getADLsuffix(void) {
 void adl_action() {
     if(strcmp(currentline.operand1, "0") == 0) adlmode = false;
     if(strcmp(currentline.operand1, "1") == 0) adlmode = true;
-    if(pass == 1) {
-        if(debug_enabled) {
-            if(adlmode) printf("DEBUG - Line %d - ADLmode: 1\n", linenumber);
-            else printf("DEBUG - Line %d - ADLmode: 0\n", linenumber);
-        }
-    }
 }
 
 // get the number of bytes to emit from an immediate
@@ -656,7 +632,7 @@ uint8_t get_immediate_size(operand *op, uint8_t suffix) {
             if(adlmode) num = 3;
             else num = 2;
             break;
-        default: // This really shouldn't happen
+        default:
             error(message[ERROR_INVALIDMNEMONIC]);
             return 0;
     }
@@ -722,7 +698,6 @@ void prefix_ddfd_suffix(operandlist *op) {
 
         // prefix in either of these two cases
         if(prefix1) {
-            //printf("Prefix1\n");
             if(prefix2) {
                 // both prefixes set
                 if(operand1.indirect) {
@@ -735,24 +710,14 @@ void prefix_ddfd_suffix(operandlist *op) {
                 }
             }
             else {
-                // only prefix1 is set
-                //printf("only 1 - setting op1\n");
                 output.prefix1 = prefix1;
             }
         }
         else {
             if(prefix2) {
-                // only prefix2 is set
-                //printf("only 2 - setting op2\n");
                 output.prefix1 = prefix2;
             }
         }
-        /*
-        if(prefix1) output.prefix1 = prefix1;
-        else {
-            if(prefix2) output.prefix1 = prefix2;
-        }
-        */
     }
 }
 
@@ -1257,24 +1222,6 @@ void process(void){
     }
     //printf("DEBUG - Address is now 0x%08x, totalsize is %d\n", address, totalsize);
     return;
-}
-
-void print_linelisting(void) {
-    printf("Line       %04d\n", linenumber);
-    printf("Command: %s\n", currentline.mnemonic);
-    printf("Suffix: %s\n", currentline.suffix);
-    printf("Operand1:\n");
-    printf("Register:    %02x\n", operand1.reg);
-    printf("Indirect:    %02x\n", operand1.indirect);
-    printf("d:           %02x\n", operand1.displacement);
-    printf("Immediate: %04x\n", operand1.immediate);
-    printf("Operand2:\n");
-    printf("Register:    %02x\n", operand2.reg);
-    printf("Indirect:    %02x\n", operand2.indirect);
-    printf("d:           %02x\n", operand2.displacement);
-    printf("Immediate: %04x\n", operand2.immediate);
-    printf("\n\n");
-
 }
 
 void pass_init(uint8_t n) {
