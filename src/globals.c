@@ -5,7 +5,7 @@
  * Global variables
  */
 bool debug_enabled;
-
+bool lineNumberNeedsReset;
 FILE *file_input;
 FILE *file_bin;
 FILE *file_locals;

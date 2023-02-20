@@ -1152,6 +1152,30 @@ void handle_asm_org(void) {
     else error(message[ERROR_ADDRESSLOWER]);
 }
 
+void handle_asm_include(void) {
+    tokentype token;
+    filestackitem fsi;
+    if(currentline.next) {
+        get_token(&token, currentline.next);
+        if(token.start[0] == '\"') {
+            token.start[strlen(token.start)-1] = 0;
+            printf("Include: <<%s>>\n",token.start+1);
+            fsi.linenumber = linenumber;
+            fsi.fp = file_input;
+            filestackPush(&fsi);
+            file_input = fopen(token.start+1, "r");
+            if(file_input == NULL) {
+                filestackPop(&fsi);
+                error("Unable to open include file");
+            }
+            lineNumberNeedsReset = true;
+        }
+        else error(message[ERROR_STRINGFORMAT]);
+        if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+}
+
 void handle_assembler_command(void) {
     switch(currentline.current_instruction->asmtype) {
     case(ASM_ADL):
@@ -1177,6 +1201,9 @@ void handle_assembler_command(void) {
         break;
     case(ASM_EQU):
         handle_asm_equ();
+        break;
+    case(ASM_INCLUDE):
+        handle_asm_include();
         break;
     }
     return;
@@ -1224,7 +1251,6 @@ void process(void){
 }
 
 void pass_init(uint8_t n) {
-    filestackitem fsi;
     pass = n;
     adlmode = true;
     linenumber = 0;
@@ -1233,35 +1259,45 @@ void pass_init(uint8_t n) {
     
     // init the file stack and push the primary input file
     filestackInit();
-    fsi.address = address;
-    fsi.linenumber = linenumber;
-    fsi.fp = file_input;
-    filestackPush(&fsi);
 }
 
-bool assemble(FILE *file_input, FILE *file_bin){
+// Assembler directives may demand a late reset of the linenumber, after the listing has been done
+static inline void processDelayedLineNumberReset(void) {
+    if(lineNumberNeedsReset) {
+        lineNumberNeedsReset = false;
+        linenumber = 0;
+    }
+}
+
+bool assemble(FILE *fp, FILE *file_bin){
     char line[LINEMAX];
     global_errors = 0;
     filestackitem fsitem;
-    bool filesLeft;
+    bool incfiles;
 
+    file_input = fp;
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\n");
     pass_init(1);
-    filesLeft = filestackPop(&fsitem);
-    while(filesLeft) {
-        address = fsitem.address;
-        linenumber = fsitem.linenumber;
-        file_input = fsitem.fp;
+    incfiles = false;
+    do {
         while (fgets(line, sizeof(line), file_input)){
             linenumber++;
             convertLower(line);
             parse(line);
             process();
+            processDelayedLineNumberReset();
         }
-        filesLeft = filestackPop(&fsitem);
+        if(filestackCount()) {
+            fclose(file_input);
+            incfiles = filestackPop(&fsitem);
+            linenumber = fsitem.linenumber;
+            file_input = fsitem.fp;
+        }
+        else incfiles = false;
     }
+    while(incfiles);
     writeLocalLabels();
     if(global_errors) return false;
 
@@ -1277,11 +1313,8 @@ bool assemble(FILE *file_input, FILE *file_bin){
     listInit();
     readLocalLabels();
     readAnonymousLabel();
-    filesLeft = filestackPop(&fsitem);
-    while(filesLeft) {
-        address = fsitem.address;
-        linenumber = fsitem.linenumber;
-        file_input = fsitem.fp;
+    incfiles = false;
+    do {
         while (fgets(line, sizeof(line), file_input)){
             linenumber++;
             listStartLine(line);
@@ -1290,9 +1323,17 @@ bool assemble(FILE *file_input, FILE *file_bin){
             refreshlocalLabels();
             process();
             listEndLine();
+            processDelayedLineNumberReset();
         }
-        filesLeft = filestackPop(&fsitem);
+        if(filestackCount()) {
+            fclose(file_input);
+            incfiles = filestackPop(&fsitem);
+            linenumber = fsitem.linenumber;
+            file_input = fsitem.fp;
+        }
+        else incfiles = false;
     }
+    while(incfiles);
     return true;
 }
 

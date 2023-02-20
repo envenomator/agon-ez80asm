@@ -184,7 +184,8 @@ enum {
     ASM_DW,
     ASM_ASCII,
     ASM_ASCIIZ,
-    ASM_EQU
+    ASM_EQU,
+    ASM_INCLUDE
 };
 
 typedef enum {

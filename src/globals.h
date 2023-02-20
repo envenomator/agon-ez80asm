@@ -25,7 +25,7 @@ typedef struct {
 
 // Global variables
 extern bool debug_enabled;
-extern bool show_list;
+extern bool lineNumberNeedsReset;
 
 extern FILE *file_input;
 extern FILE *file_bin;

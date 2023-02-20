@@ -1,18 +1,13 @@
 PC      Output            Line   Source
 000000                    0001   .assume ADL=1
-000000                    0002   @@:
-000000  52 ed 7a          0003       adc.s hl, sp
-000003  40 c3 00 00       0004       jp.sis @b
-000007  3a 16 00 00       0005       ld a, (@f)
-00000b  74 65 73 74 20 31 0006   labela: asciiz "Test 1 2 3"
-        20 32 20 33 00    
-000016  cc bb aa          0007   @@: dw 0xaabbcc
-000019  ed 5b 16 00 00    0008       ld de, (@b)
-00001e  ed 7b 23 00 00    0009       ld sp, (@local1)
-000023                    0010   @local1:
-000023  c3 23 00 00       0011       jp @local1
-000027                    0012   labelb:
-000027                    0013   @local1:
-000027  0a 0a             0014       ds 2, 0ah
-000029  0a 0a 0a          0015       ds 3, 1010b
-00002c  c3 27 00 00       0016       jp @local1
+000000                    0002   .include "tests/include.inc"
+000000                    0001   ; dit is een include file
+000000                    0002   labela:
+000000                    0003   .include "tests/include2.inc"
+000000                    0001   ; include2
+000000  41                0002   ld b,c
+000001                    0003   ; end include2
+000001  78                0004       ld a,b
+000002                    0005   ; einde include file
+000002                    0003   ; start original
+000002  4a                0004       ld c,d

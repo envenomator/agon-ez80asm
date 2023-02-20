@@ -8,9 +8,9 @@
 #define FILESTACK_MAXFILES  16
 
 typedef struct {
-    uint32_t address;
     uint16_t linenumber;
     FILE *fp;
+    //bool closeonpop;
 } filestackitem;
 
 void filestackInit(void);
