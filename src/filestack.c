@@ -1,3 +1,4 @@
+#include <string.h>
 #include "filestack.h"
 #include "utils.h"
 
@@ -16,7 +17,7 @@ bool filestackPush(filestackitem *fs) {
     if(_filestackCount < FILESTACK_MAXFILES) {
         _filestack[_filestackCount].linenumber = fs->linenumber;
         _filestack[_filestackCount].fp = fs->fp;
-        //_filestack[_filestackCount].closeonpop = fs->closeonpop;
+        strcpy(_filestack[_filestackCount].filename,fs->filename);
         _filestackCount++;
         return true;
     }
@@ -27,10 +28,9 @@ bool filestackPush(filestackitem *fs) {
 bool filestackPop(filestackitem *fs) {
     if(_filestackCount) {
         _filestackCount--;
-        //if(_filestack[_filestackCount].closeonpop) fclose(file_input);
-        //fclose(file_input);
         fs->linenumber = _filestack[_filestackCount].linenumber;
         fs->fp = _filestack[_filestackCount].fp;
+        strcpy(fs->filename, _filestack[_filestackCount].filename);
         return true;
     }
     return false;

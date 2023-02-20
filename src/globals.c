@@ -6,6 +6,7 @@
  */
 bool debug_enabled;
 bool lineNumberNeedsReset;
+char currentInputFilename[FILENAMEMAXLENGTH];
 FILE *file_input;
 FILE *file_bin;
 FILE *file_locals;

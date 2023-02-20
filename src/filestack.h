@@ -5,12 +5,12 @@
 #include <stdbool.h>
 #include "globals.h"
 
-#define FILESTACK_MAXFILES  16
+#define FILESTACK_MAXFILES  4
 
 typedef struct {
     uint16_t linenumber;
     FILE *fp;
-    //bool closeonpop;
+    char filename[FILENAMEMAXLENGTH];
 } filestackitem;
 
 void filestackInit(void);

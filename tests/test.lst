@@ -2,8 +2,33 @@ PC      Output            Line   Source
 000000                    0001   .assume ADL=1
 000000                    0002   .org $40000
 040000                    0003   .include "tests/include.inc"
-040000                    0001   five:   equ 5
-040000                    0002   six:    equ 6
+040000                    0001   TERROR:			EQU     85H
+040000                    0002   LINE_:			EQU     86H
+040000                    0003   ELSE_:			EQU     8BH
+040000                    0004   THEN:			EQU     8CH
+040000                    0005   LINO:			EQU     8DH
+040000                    0006   FN:			EQU     A4H
+040000                    0007   TO:			EQU     B8H
+040000                    0008   REN:			EQU     CCH
+040000                    0009   DATA_:			EQU     DCH
+040000                    0010   DIM:			EQU     DEH
+040000                    0011   FOR:			EQU     E3H
+040000                    0012   GOSUB:			EQU     E4H
+040000                    0013   GOTO:			EQU     E5H
+040000                    0014   TIF:			EQU     E7H
+040000                    0015   LOCAL_:			EQU     EAH
+040000                    0016   NEXT:			EQU     EDH
+040000                    0017   ON_:			EQU     EEH
+040000                    0018   PROC:			EQU     F2H
+040000                    0019   REM:			EQU     F4H
+040000                    0020   REPEAT:			EQU     F5H
+040000                    0021   RESTOR:			EQU     F7H
+040000                    0022   TRACE:			EQU     FCH
+040000                    0023   UNTIL:			EQU     FDH
+040000                    0024   ;
+040000                    0025   TOKLO:			EQU     8FH
+040000                    0026   TOKHI:			EQU     93H
+040000                    0027   OFFSET:			EQU     TOKLO
 040000                    0004   ; start original
 040000                    0005   ten: equ 10
-040000  3e 0a             0006       ld a, ten
+040000  3e 8f             0006       ld a, OFFSET

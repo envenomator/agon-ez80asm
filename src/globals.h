@@ -8,6 +8,7 @@
 
 #define DBBUFFERSIZE 256
 #define LINEMAX         256
+#define FILENAMEMAXLENGTH 128
 
 typedef struct {
     instruction *current_instruction;
@@ -32,6 +33,8 @@ extern FILE *file_bin;
 extern FILE *file_locals;
 extern FILE *file_anon;
 extern FILE *file_list;
+
+extern char currentInputFilename[FILENAMEMAXLENGTH];
 
 extern unsigned int linenumber;
 extern unsigned int pass;

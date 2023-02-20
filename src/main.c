@@ -11,8 +11,6 @@
 #include <time.h>
 #include <sys/time.h>
 
-#define FILENAMEMAXLENGTH 128
-
 char filename_bin[FILENAMEMAXLENGTH];
 char filename_locals[FILENAMEMAXLENGTH];
 char filename_anon[FILENAMEMAXLENGTH];
@@ -81,7 +79,7 @@ int main(int argc, char *argv[])
 
     // Assemble input to output
     gettimeofday(&start, NULL);
-    assemble(file_input, file_bin);
+    assemble(file_input, argv[1]);
     gettimeofday(&stop, NULL);
     if(global_errors) {
         remove(filename_bin);

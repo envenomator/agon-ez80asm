@@ -3,4 +3,4 @@
 .include "tests/include.inc"
 ; start original
 ten: equ 10
-    ld a, ten 
+    ld a, OFFSET

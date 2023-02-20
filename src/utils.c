@@ -38,7 +38,7 @@ bool notempty(const char *str) {
 
 void error(char* msg)
 {
-    printf("Error in line %d - %s\n", linenumber, msg);
+    printf("\"%s\" - line %d - %s\n", currentInputFilename, linenumber, msg);
     global_errors++;
 }
 

@@ -1094,28 +1094,30 @@ void handle_asm_ascii(bool terminate) {
 }
 
 void handle_asm_equ(void) {
+    label *lbl;
     uint32_t value;
     tokentype token;
 
-    if(pass == 1) {
-        if(currentline.label[0]) {
-            if(currentline.label[0] != '@') {
-                if(currentline.next) {
-
-                    get_token(&token, currentline.next);
-                    if(token.start[0]) {
-                        value = str2num(token.start);
+    if(currentline.label[0]) {
+        if(currentline.label[0] != '@') {
+            if(currentline.next) {
+                get_token(&token, currentline.next);
+                if(token.start[0]) {
+                    if(pass == 1) {
+                        lbl = findLabel(token.start);
+                        if(lbl)value = lbl->address;
+                        else value = str2num(token.start);
                         definelabel(value);
-                        if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
                     }
-                    else error(message[ERROR_MISSINGOPERAND]);
+                    if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
                 }
                 else error(message[ERROR_MISSINGOPERAND]);
             }
-            else error(message[ERROR_INVALIDLABEL]);
+            else error(message[ERROR_MISSINGOPERAND]);
         }
-        else error(message[ERROR_MISSINGLABEL]);
+        else error(message[ERROR_INVALIDLABEL]);
     }
+    else error(message[ERROR_MISSINGLABEL]);
 }
 
 void handle_asm_adl(void) {
@@ -1165,8 +1167,10 @@ void handle_asm_include(void) {
             //printf("Include: <<%s>>\n",token.start+1);
             fsi.linenumber = linenumber;
             fsi.fp = file_input;
+            strcpy(fsi.filename, currentInputFilename);
             filestackPush(&fsi);
             file_input = fopen(token.start+1, "r");
+            strcpy(currentInputFilename, token.start+1);
             if(file_input == NULL) {
                 filestackPop(&fsi);
                 error(message[ERROR_INCLUDEFILE]);
@@ -1272,13 +1276,15 @@ static inline void processDelayedLineNumberReset(void) {
     }
 }
 
-bool assemble(FILE *fp, FILE *file_bin){
+bool assemble(FILE *fp, char *filename){
     char line[LINEMAX];
     global_errors = 0;
     filestackitem fsitem;
     bool incfiles;
 
     file_input = fp;
+    strcpy(currentInputFilename, filename);
+
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\n");
@@ -1296,6 +1302,7 @@ bool assemble(FILE *fp, FILE *file_bin){
             incfiles = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
             file_input = fsitem.fp;
+            strcpy(currentInputFilename, fsitem.filename);
         }
         else incfiles = false;
     }
@@ -1331,6 +1338,7 @@ bool assemble(FILE *fp, FILE *file_bin){
             incfiles = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
             file_input = fsitem.fp;
+            strcpy(currentInputFilename, fsitem.filename);
         }
         else incfiles = false;
     }
