@@ -1,4 +1,5 @@
 .assume ADL=1
-.org $40000
-DB	"RUN address <filename>\n\r", 0
-DB	"RUN address <filename>\n\r", 0
+    ld a,b
+test:
+test2: .equ test+2
+    ld a, test2

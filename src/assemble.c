@@ -339,6 +339,51 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
     }
 }
 
+bool parseCombinedLabel(uint32_t *value, char *token) {
+    label *lbl1;
+    label *lbl2;
+    uint32_t part2;
+    char op = 0;
+    char *s = token;
+
+    lbl1 = findLabel(token);
+    if(lbl1) { // single label found
+        *value = lbl1->address;
+        return true;
+    }
+
+    while(*s) {
+        if((*s == '+') || (*s == '-')) {
+            op = *s;
+            break;
+        }
+        s++;
+    }
+    *s = 0; // split or re-terminate
+
+    if((op != '+') && (op != '-')) {
+        if(pass == 1) *value = 0;
+        else *value = str2num(token);
+        return true; // future single label or value
+    }
+    s++;
+    printf("Part1: <<%s>>\n",token);
+    printf("Part2: <<%s>>\n",s);
+
+    lbl1 = findLabel(token);
+    lbl2 = findLabel(s);
+
+    if(lbl1) *value = lbl1->address;
+    else *value = str2num(token);
+    if(lbl2) part2 = lbl2->address;
+    else part2 = str2num(s);
+    printf("Part1: %ld\n",*value);
+    printf("Part2: %ld\n",part2);
+    if(op == '+') *value += part2;
+    if(op == '-') *value -= part2;
+    return true;
+}
+
 // converts everything to lower case, except comments
 void convertLower(char *line) {
     char *ptr = line;
@@ -1098,8 +1143,12 @@ void handle_asm_ascii(bool terminate) {
 
 void handle_asm_equ(void) {
     label *lbl;
-    uint32_t value;
+    uint32_t value = 0;
+    uint32_t value2 = 0;
     tokentype token;
+    tokentype val1,val2;
+
+    val2.terminator = 0;
 
     if(currentline.label[0]) {
         if(currentline.label[0] != '@') {
@@ -1107,9 +1156,26 @@ void handle_asm_equ(void) {
                 get_token(&token, currentline.next);
                 if(token.start[0]) {
                     if(pass == 1) {
-                        lbl = findLabel(token.start);
-                        if(lbl)value = lbl->address;
-                        else value = str2num(token.start);
+                        get_ValueToken(&val1, token.start);
+                        if(val1.start[0]) {
+                            printf("Part 1: <<%s>>\n",val1.start);
+                            lbl = findLabel(val1.start);
+                            if(lbl) value = lbl->address;
+                            else value = str2num(val1.start);
+                            printf("Val1 terminator: %x\n",val1.terminator);
+                            
+                            if(val1.terminator != 0) {
+                                get_ValueToken(&val2, val1.next);
+                                if(val2.start[0]) {
+                                    printf("Part 2: <<%s>>\n",val2.start);
+                                    lbl = findLabel(val2.start);
+                                    if(lbl) value2 = lbl->address;
+                                    else value2 = str2num(val2.start);
+                                }
+                            }
+                        }
+                        if(val1.terminator == '+') value += value2;
+                        if(val1.terminator == '-') value -= value2;
                         definelabel(value);
                     }
                     if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);

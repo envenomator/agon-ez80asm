@@ -1,13 +1,6 @@
 PC      Output            Line   Source
 000000                    0001   .assume ADL=1
-000000                    0002   .org $40000
-040000  72 75 6e 20 61 64 0003   DB	"RUN address <filename>\n\r", 0
-        64 72 65 73 73 20 
-        3c 66 69 6c 65 6e 
-        61 6d 65 3e 0a 0d 
-        00                
-040019  72 75 6e 20 61 64 0004   DB	"RUN address <filename>\n\r", 0
-        64 72 65 73 73 20 
-        3c 66 69 6c 65 6e 
-        61 6d 65 3e 0a 0d 
-        00                
+000000  78                0002       ld a,b
+000001                    0003   test:
+000001                    0004   test2: .equ test+2
+000001  3e 03             0005       ld a, test2

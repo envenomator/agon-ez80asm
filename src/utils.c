@@ -130,6 +130,10 @@ static inline bool isNonSpaceTerminator(char t) {
     return ((t == ',') || (t == ':') || (t == ';') || (t == '='));
 }
 
+static inline bool isValueTerminator(char t) {
+    return ((t == '+') || (t == '-'));
+}
+
 // split a 'command.suffix' token in two parts 
 void split_suffix(char *mnemonic, char *suffix, char *buffer) {
     bool cmd = true;
@@ -213,6 +217,69 @@ uint8_t get_token(tokentype *token, char *src) {
         if(*src == 0) token->terminator = 0;
         else {
             if(isNonSpaceTerminator(*src)) {
+                if(*src == ':') { // ':' can't have spaces before, so can't terminate here
+                    token->terminator = ' ';
+                    src--; // at a ':' after a few spaces
+                }
+                else token->terminator = *src;
+            }
+            else src--; // at a regular character
+        }
+    }
+    // remove trailing space
+    while(index--) {
+        target--;
+        if(isspace(*target) == 0) {
+            target++;
+            index++;
+            break;
+        }
+    }
+    *target = 0;
+    if(*src == 0) token->next = NULL;
+    else token->next = src+1;
+    return index;
+}
+
+// Splits src into value/label tokens based on +, - or 0
+uint8_t get_ValueToken(tokentype *token, char *src) {
+    char *target;
+    uint8_t index = 0;
+    bool terminated;
+
+    // remove leading space
+    while(*src) {
+        if(isspace(*src) != 0) src++;
+        else break;
+    }
+    if(*src == 0) { // empty string
+        token->terminator = 0;
+        token->start[0] = 0;
+        token->next = NULL;
+        return 0;
+    }
+    if(isValueTerminator(*src)) {
+        token->terminator = *src;
+        token->start[0] = 0;
+        token->next = src+1;
+        return 0;
+    }
+    // copy over the token itself, taking care of the character state within the token
+    target = token->start;
+    while(true) {
+        terminated = isValueTerminator(*src) | (*src == 0);
+        if(terminated) {
+            token->terminator = *src;
+            break;
+        }
+        *target++ = *src++;
+        index++;
+    }
+    if(*src == ' ') { // Are we terminated at a space between tokens, or still another terminator?
+        while(isspace(*src) != 0) src++;
+        if(*src == 0) token->terminator = 0;
+        else {
+            if(isValueTerminator(*src)) {
                 if(*src == ':') { // ':' can't have spaces before, so can't terminate here
                     token->terminator = ' ';
                     src--; // at a ':' after a few spaces
