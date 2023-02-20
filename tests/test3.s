@@ -1,2 +1,2 @@
 @local1: ld a,b
-    jp @local1
+    DB	"RUN address <filename>\n\r", 0

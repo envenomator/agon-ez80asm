@@ -123,7 +123,7 @@ typedef enum {
 // Returns:
 // number of bytes copied into token, excluding the 0 terminator
 static inline bool isTerminator(char t) {
-    return ((t == ' ') || (t == ',') || (t == ':') || (t == ';') || (t == '='));
+    return ((t == ' ') || (t == ',') || (t == ':') || (t == ';') || (t == '=') || (t == '\t'));
 }
 
 static inline bool isNonSpaceTerminator(char t) {

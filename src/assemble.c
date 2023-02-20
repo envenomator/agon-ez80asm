@@ -396,6 +396,7 @@ void parse(char *src) {
                         break;
                     case 0:
                     case ' ':
+                    case '\t':
                         if(x) state = PS_COMMAND;
                         else state = PS_DONE;
                         break;
@@ -414,6 +415,7 @@ void parse(char *src) {
                         break;
                     case 0:
                     case ' ':
+                    case '\t':
                         if(x) state = PS_COMMAND;
                         else state = PS_DONE;
                         if(pass == 2) advanceLocalLabel();
@@ -446,6 +448,7 @@ void parse(char *src) {
                         state = PS_COMMENT;
                         break;
                     case ' ':
+                    case '\t':
                         if(currentline.current_instruction->type == EZ80) {
                             x = get_token(&token,token.next);
                             state = PS_OP1;

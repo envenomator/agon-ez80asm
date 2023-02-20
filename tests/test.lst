@@ -1,6 +1,13 @@
 PC      Output            Line   Source
 000000                    0001   .assume ADL=1
 000000                    0002   .org $40000
-040000                    0003   @@:
-040000  78                0004       ld a,b
-040001  c3 00 00 04       0005       jp @p
+040000  72 75 6e 20 61 64 0003   DB	"RUN address <filename>\n\r", 0
+        64 72 65 73 73 20 
+        3c 66 69 6c 65 6e 
+        61 6d 65 3e 0a 0d 
+        00                
+040019  72 75 6e 20 61 64 0004   DB	"RUN address <filename>\n\r", 0
+        64 72 65 73 73 20 
+        3c 66 69 6c 65 6e 
+        61 6d 65 3e 0a 0d 
+        00                
