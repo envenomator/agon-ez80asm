@@ -1,7 +1,7 @@
 #include "filestack.h"
 #include "utils.h"
 
-filestacktype _filestack[FILESTACK_MAXFILES];
+filestackitem _filestack[FILESTACK_MAXFILES];
 uint8_t       _filestackCount;
 
 void filestackInit(void) {
@@ -12,9 +12,10 @@ uint8_t filestackCount(void) {
     return _filestackCount;
 }
 
-bool filestackPush(filestacktype *fs) {
+bool filestackPush(filestackitem *fs) {
     if(_filestackCount < FILESTACK_MAXFILES) {
         _filestack[_filestackCount].address = fs->address;
+        _filestack[_filestackCount].linenumber = fs->linenumber;
         _filestack[_filestackCount].fp = fs->fp;
         _filestackCount++;
         return true;
@@ -23,12 +24,13 @@ bool filestackPush(filestacktype *fs) {
     return false;
 }
 
-bool filestackPop(filestacktype *fs) {
+bool filestackPop(filestackitem *fs) {
     if(_filestackCount) {
-        fs->address = _filestack[_filestackCount].address;
-        fs->fp = _filestack[_filestackCount].fp;
         _filestackCount--;
+        fs->address = _filestack[_filestackCount].address;
+        fs->linenumber = _filestack[_filestackCount].linenumber;
+        fs->fp = _filestack[_filestackCount].fp;
         return true;
     }
-    else return false;
+    return false;
 }

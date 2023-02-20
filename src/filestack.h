@@ -9,12 +9,13 @@
 
 typedef struct {
     uint32_t address;
+    uint16_t linenumber;
     FILE *fp;
-} filestacktype;
+} filestackitem;
 
 void filestackInit(void);
 uint8_t filestackCount(void);
-bool filestackPush(filestacktype *fs);
-bool filestackPop(filestacktype *fs);
+bool filestackPush(filestackitem *fs);
+bool filestackPop(filestackitem *fs);
 
 #endif

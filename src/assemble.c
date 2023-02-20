@@ -10,6 +10,7 @@
 #include "label.h"
 #include "str2num.h"
 #include "listing.h"
+#include "filestack.h"
 
 void empty_operand(operand *op) {
     op->position = 0;
@@ -1223,25 +1224,43 @@ void process(void){
 }
 
 void pass_init(uint8_t n) {
+    filestackitem fsi;
     pass = n;
     adlmode = true;
     linenumber = 0;
     address = START_ADDRESS;
     totalsize = 0;
+    
+    // init the file stack and push the primary input file
+    filestackInit();
+    fsi.address = address;
+    fsi.linenumber = linenumber;
+    fsi.fp = file_input;
+    filestackPush(&fsi);
 }
 
 bool assemble(FILE *file_input, FILE *file_bin){
     char line[LINEMAX];
     global_errors = 0;
+    filestackitem fsitem;
+    bool filesLeft;
+
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\n");
     pass_init(1);
-    while (fgets(line, sizeof(line), file_input)){
-        linenumber++;
-        convertLower(line);
-        parse(line);
-        process();
+    filesLeft = filestackPop(&fsitem);
+    while(filesLeft) {
+        address = fsitem.address;
+        linenumber = fsitem.linenumber;
+        file_input = fsitem.fp;
+        while (fgets(line, sizeof(line), file_input)){
+            linenumber++;
+            convertLower(line);
+            parse(line);
+            process();
+        }
+        filesLeft = filestackPop(&fsitem);
     }
     writeLocalLabels();
     if(global_errors) return false;
@@ -1258,14 +1277,21 @@ bool assemble(FILE *file_input, FILE *file_bin){
     listInit();
     readLocalLabels();
     readAnonymousLabel();
-    while (fgets(line, sizeof(line), file_input)){
-        linenumber++;
-        listStartLine(line);
-        convertLower(line);
-        parse(line);
-        refreshlocalLabels();
-        process();
-        listEndLine();
+    filesLeft = filestackPop(&fsitem);
+    while(filesLeft) {
+        address = fsitem.address;
+        linenumber = fsitem.linenumber;
+        file_input = fsitem.fp;
+        while (fgets(line, sizeof(line), file_input)){
+            linenumber++;
+            listStartLine(line);
+            convertLower(line);
+            parse(line);
+            refreshlocalLabels();
+            process();
+            listEndLine();
+        }
+        filesLeft = filestackPop(&fsitem);
     }
     return true;
 }
