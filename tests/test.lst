@@ -1,13 +1,9 @@
 PC      Output            Line   Source
 000000                    0001   .assume ADL=1
-000000                    0002   .include "tests/include.inc"
-000000                    0001   ; dit is een include file
-000000                    0002   labela:
-000000                    0003   .include "tests/include2.inc"
-000000                    0001   ; include2
-000000  41                0002   ld b,c
-000001                    0003   ; end include2
-000001  78                0004       ld a,b
-000002                    0005   ; einde include file
-000002                    0003   ; start original
-000002  4a                0004       ld c,d
+000000                    0002   .org $40000
+040000                    0003   .include "tests/include.inc"
+040000                    0001   five:   equ 5
+040000                    0002   six:    equ 6
+040000                    0004   ; start original
+040000                    0005   ten: equ 10
+040000  3e 0a             0006       ld a, ten

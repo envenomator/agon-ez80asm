@@ -81,7 +81,8 @@ enum {
     ERROR_LISTFORMAT,
     ERROR_CREATINGLABEL,
     ERROR_LABELDEFINED,
-    ERROR_MAXLOCALLABELS
+    ERROR_MAXLOCALLABELS,
+    ERROR_INCLUDEFILE
 };
 // Error messages
 extern char *message[];

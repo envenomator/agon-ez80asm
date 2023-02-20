@@ -56,5 +56,6 @@ char *message[] = {
     "Invalid list format",
     "Error creating label",
     "Label already defined",
-    "Maximum number of local labels reached"
+    "Maximum number of local labels reached",
+    "Unable to open include file"
 };

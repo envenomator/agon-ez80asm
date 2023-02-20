@@ -1099,17 +1099,20 @@ void handle_asm_equ(void) {
 
     if(pass == 1) {
         if(currentline.label[0]) {
-            if(currentline.next) {
+            if(currentline.label[0] != '@') {
+                if(currentline.next) {
 
-                get_token(&token, currentline.next);
-                if(token.start[0]) {
-                    value = str2num(token.start);
-                    definelabel(value);
-                    if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+                    get_token(&token, currentline.next);
+                    if(token.start[0]) {
+                        value = str2num(token.start);
+                        definelabel(value);
+                        if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+                    }
+                    else error(message[ERROR_MISSINGOPERAND]);
                 }
                 else error(message[ERROR_MISSINGOPERAND]);
             }
-            else error(message[ERROR_MISSINGOPERAND]);
+            else error(message[ERROR_INVALIDLABEL]);
         }
         else error(message[ERROR_MISSINGLABEL]);
     }
@@ -1159,14 +1162,14 @@ void handle_asm_include(void) {
         get_token(&token, currentline.next);
         if(token.start[0] == '\"') {
             token.start[strlen(token.start)-1] = 0;
-            printf("Include: <<%s>>\n",token.start+1);
+            //printf("Include: <<%s>>\n",token.start+1);
             fsi.linenumber = linenumber;
             fsi.fp = file_input;
             filestackPush(&fsi);
             file_input = fopen(token.start+1, "r");
             if(file_input == NULL) {
                 filestackPop(&fsi);
-                error("Unable to open include file");
+                error(message[ERROR_INCLUDEFILE]);
             }
             lineNumberNeedsReset = true;
         }
@@ -1209,7 +1212,7 @@ void handle_assembler_command(void) {
     return;
 }
 
-void process(void){
+void processInstructions(void){
     operandlist *list;
     uint8_t listitem;
     bool match;
@@ -1250,8 +1253,8 @@ void process(void){
     return;
 }
 
-void pass_init(uint8_t n) {
-    pass = n;
+void passInitialize(uint8_t passnumber) {
+    pass = passnumber;
     adlmode = true;
     linenumber = 0;
     address = START_ADDRESS;
@@ -1279,14 +1282,13 @@ bool assemble(FILE *fp, FILE *file_bin){
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\n");
-    pass_init(1);
-    incfiles = false;
+    passInitialize(1);
     do {
         while (fgets(line, sizeof(line), file_input)){
             linenumber++;
             convertLower(line);
             parse(line);
-            process();
+            processInstructions();
             processDelayedLineNumberReset();
         }
         if(filestackCount()) {
@@ -1309,11 +1311,10 @@ bool assemble(FILE *fp, FILE *file_bin){
     rewind(file_input);
     rewind(file_locals);
     rewind(file_anon);
-    pass_init(2);
+    passInitialize(2);
     listInit();
     readLocalLabels();
     readAnonymousLabel();
-    incfiles = false;
     do {
         while (fgets(line, sizeof(line), file_input)){
             linenumber++;
@@ -1321,7 +1322,7 @@ bool assemble(FILE *fp, FILE *file_bin){
             convertLower(line);
             parse(line);
             refreshlocalLabels();
-            process();
+            processInstructions();
             listEndLine();
             processDelayedLineNumberReset();
         }
