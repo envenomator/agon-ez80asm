@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     struct timeval stop, start;
 
     if(argc < 2){
-        printf("Usage: asm <filename> [-d]\n");
+        printf("Usage: asm <filename> [-l]\n");
         exit(1);
     }
 
@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
 
     debug_enabled = false;
     if((argc == 3) && (strcmp(argv[2], "-d") == 0)) debug_enabled = true;
+    if((argc == 3) && (strcmp(argv[2], "-l") == 0)) consolelist_enabled = true;
 
     // Init tables
     initGlobalLabelTable();

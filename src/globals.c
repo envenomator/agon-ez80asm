@@ -5,6 +5,7 @@
  * Global variables
  */
 bool debug_enabled;
+bool consolelist_enabled;
 bool lineNumberNeedsReset;
 char currentInputFilename[FILENAMEMAXLENGTH];
 FILE *file_input;

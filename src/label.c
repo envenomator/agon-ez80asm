@@ -260,14 +260,14 @@ label * findGlobalLabel(char *name){
 label *findLabel(char *name) {
     if(name[0] == '@') {
         
-        if((name[1] == 'f') || (name[1] == 'F')) {
+        if(((name[1] == 'f') || (name[1] == 'n')) && name[2] == 0) {
             if(an_next.defined) {
                 an_return.address = an_next.address;
                 return &an_return;
             }
             else return NULL;
         }
-        if((name[1] == 'b') || (name[1] == 'B')) {
+        if(((name[1] == 'b') || (name[1] == 'p')) && name[2] == 0) {
             if(an_prev.defined) {
                 an_return.address = an_prev.address;
                 return &an_return;

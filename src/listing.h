@@ -5,9 +5,9 @@
 
 #define OBJECTS_PER_LINE 6
 
-void listInit(void);
+void listInit(bool output_console);
 void listStartLine(char *line);
-void listEndLine(void);
+void listEndLine(bool output_console);
 void listEmit8bit(uint8_t value);
 
 #endif // LISTING_H

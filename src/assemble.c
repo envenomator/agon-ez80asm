@@ -1319,7 +1319,7 @@ bool assemble(FILE *fp, char *filename){
     rewind(file_locals);
     rewind(file_anon);
     passInitialize(2);
-    listInit();
+    listInit(consolelist_enabled);
     readLocalLabels();
     readAnonymousLabel();
     do {
@@ -1330,7 +1330,7 @@ bool assemble(FILE *fp, char *filename){
             parse(line);
             refreshlocalLabels();
             processInstructions();
-            listEndLine();
+            listEndLine(consolelist_enabled);
             processDelayedLineNumberReset();
         }
         if(filestackCount()) {
