@@ -998,7 +998,7 @@ void handle_asm_db(void) {
             }
             if(token.terminator == ',') currentline.next = token.next;
             else {
-                if(token.terminator != 0) error(message[ERROR_LISTFORMAT]);
+                if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
                 currentline.next = NULL; 
             }
         }
@@ -1058,7 +1058,7 @@ void handle_asm_ds(void) {
                 if(notEmpty(token.start)) val = str2num(token.start,true);
                 else error(message[ERROR_MISSINGOPERAND]);
             }
-            else if(token.terminator != 0) error(message[ERROR_LISTFORMAT]);
+            else if((token.terminator != 0)  && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
             while(num--) emit_8bit(val);
         }
         else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
@@ -1080,7 +1080,7 @@ void handle_asm_ascii(bool terminate) {
             if(terminate) emit_8bit(0);
         }
         else error(message[ERROR_STRINGFORMAT]);
-        if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+        if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
     }
     else error(message[ERROR_MISSINGOPERAND]);
 }
@@ -1094,7 +1094,7 @@ void handle_asm_equ(void) {
             get_token(&token, currentline.next);
             if(notEmpty(token.start)) {
                 definelabel(getLabelValue(token.start));
-                if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+                if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
             }
             else error(message[ERROR_MISSINGOPERAND]);
         }
