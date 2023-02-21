@@ -935,7 +935,10 @@ void emit_quotedstring(char *str) {
                         emit_8bit('\"');
                         escaped = false;
                     }
-                    else return; // end of quoted string
+                    else {
+                        if(*(str+1) != 0) error(message[ERROR_STRINGFORMAT]);
+                        return; // end of quoted string
+                    }
                     break;
                 default:
                     emit_8bit(*str);

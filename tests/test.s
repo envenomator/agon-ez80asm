@@ -1,2 +1,2 @@
 .ASSUME adl=1
-fine: db 'X'+,86H
+fine: db "Test",0
