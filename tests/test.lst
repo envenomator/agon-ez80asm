@@ -1,0 +1,3 @@
+PC      Output            Line   Source
+000000  be                0001       cp (hl)
+000001  be                0002       cp a,(hl)

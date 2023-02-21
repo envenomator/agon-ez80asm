@@ -1,1 +1,2 @@
-    db 15,15;test
+    cp (hl)
+    cp a,(hl)
