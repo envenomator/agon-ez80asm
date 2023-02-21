@@ -1,3 +1,9 @@
 PC      Output            Line   Source
-000000  be                0001       cp (hl)
-000001  be                0002       cp a,(hl)
+000000  dd ac             0001       xor a, ixh
+000002  dd ad             0002       xor a, ixl
+000004  fd ac             0003       xor a, iyh
+000006  fd ad             0004       xor a, iyl
+000008  dd ac             0005       xor ixh
+00000a  dd ad             0006       xor ixl
+00000c  fd ac             0007       xor iyh
+00000e  fd ad             0008       xor iyl

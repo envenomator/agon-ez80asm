@@ -1,0 +1,82 @@
+PC      Output            Line   Source
+000000                    0001   .assume adl=1
+000000  cb 46             0002   	bit 0,(hl)
+000002  cb 4e             0003   	bit 1,(hl)
+000004  cb 56             0004   	bit 2,(hl)
+000006  cb 5e             0005   	bit 3,(hl)
+000008  cb 66             0006   	bit 4,(hl)
+00000a  cb 6e             0007   	bit 5,(hl)
+00000c  cb 76             0008   	bit 6,(hl)
+00000e  cb 7e             0009   	bit 7,(hl)
+000010  dd cb 05 46       0010   	bit 0,(ix+5)
+000014  dd cb 05 4e       0011   	bit 1,(ix+5)
+000018  dd cb 05 56       0012   	bit 2,(ix+5)
+00001c  dd cb 05 5e       0013   	bit 3,(ix+5)
+000020  dd cb 05 66       0014   	bit 4,(ix+5)
+000024  dd cb 05 6e       0015   	bit 5,(ix+5)
+000028  dd cb 05 76       0016   	bit 6,(ix+5)
+00002c  dd cb 05 7e       0017   	bit 7,(ix+5)
+000030  fd cb 05 46       0018   	bit 0,(iy+5)
+000034  fd cb 05 4e       0019   	bit 1,(iy+5)
+000038  fd cb 05 56       0020   	bit 2,(iy+5)
+00003c  fd cb 05 5e       0021   	bit 3,(iy+5)
+000040  fd cb 05 66       0022   	bit 4,(iy+5)
+000044  fd cb 05 6e       0023   	bit 5,(iy+5)
+000048  fd cb 05 76       0024   	bit 6,(iy+5)
+00004c  fd cb 05 7e       0025   	bit 7,(iy+5)
+000050  cb 47             0026   	bit 0,a
+000052  cb 4f             0027   	bit 1,a
+000054  cb 57             0028   	bit 2,a
+000056  cb 5f             0029   	bit 3,a
+000058  cb 67             0030   	bit 4,a
+00005a  cb 6f             0031   	bit 5,a
+00005c  cb 77             0032   	bit 6,a
+00005e  cb 7f             0033   	bit 7,a
+000060  cb 40             0034   	bit 0,b
+000062  cb 48             0035   	bit 1,b
+000064  cb 50             0036   	bit 2,b
+000066  cb 58             0037   	bit 3,b
+000068  cb 60             0038   	bit 4,b
+00006a  cb 68             0039   	bit 5,b
+00006c  cb 70             0040   	bit 6,b
+00006e  cb 78             0041   	bit 7,b
+000070  cb 41             0042   	bit 0,c
+000072  cb 49             0043   	bit 1,c
+000074  cb 51             0044   	bit 2,c
+000076  cb 59             0045   	bit 3,c
+000078  cb 61             0046   	bit 4,c
+00007a  cb 69             0047   	bit 5,c
+00007c  cb 71             0048   	bit 6,c
+00007e  cb 79             0049   	bit 7,c
+000080  cb 42             0050   	bit 0,d
+000082  cb 4a             0051   	bit 1,d
+000084  cb 52             0052   	bit 2,d
+000086  cb 5a             0053   	bit 3,d
+000088  cb 62             0054   	bit 4,d
+00008a  cb 6a             0055   	bit 5,d
+00008c  cb 72             0056   	bit 6,d
+00008e  cb 7a             0057   	bit 7,d
+000090  cb 43             0058   	bit 0,e
+000092  cb 4b             0059   	bit 1,e
+000094  cb 53             0060   	bit 2,e
+000096  cb 5b             0061   	bit 3,e
+000098  cb 63             0062   	bit 4,e
+00009a  cb 6b             0063   	bit 5,e
+00009c  cb 73             0064   	bit 6,e
+00009e  cb 7b             0065   	bit 7,e
+0000a0  cb 44             0066   	bit 0,h
+0000a2  cb 4c             0067   	bit 1,h
+0000a4  cb 54             0068   	bit 2,h
+0000a6  cb 5c             0069   	bit 3,h
+0000a8  cb 64             0070   	bit 4,h
+0000aa  cb 6c             0071   	bit 5,h
+0000ac  cb 74             0072   	bit 6,h
+0000ae  cb 7c             0073   	bit 7,h
+0000b0  cb 45             0074   	bit 0,l
+0000b2  cb 4d             0075   	bit 1,l
+0000b4  cb 55             0076   	bit 2,l
+0000b6  cb 5d             0077   	bit 3,l
+0000b8  cb 65             0078   	bit 4,l
+0000ba  cb 6d             0079   	bit 5,l
+0000bc  cb 75             0080   	bit 6,l
+0000be  cb 7d             0081   	bit 7,l

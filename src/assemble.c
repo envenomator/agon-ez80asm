@@ -459,11 +459,11 @@ void parseLine(char *src) {
                 strcpy(currentline.operand1,token.start);
                 switch(token.terminator) {
                     case ';':
-                        parse_operand(POS_SOURCE, currentline.operand1, &operand1);
+                        parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
                         state = PS_COMMENT;
                         break;
                     case 0:
-                        parse_operand(POS_SOURCE, currentline.operand1, &operand1);
+                        parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
                         state = PS_DONE;
                         break;
                     case ',':
