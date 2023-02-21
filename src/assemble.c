@@ -13,7 +13,6 @@
 #include "filestack.h"
  
 void empty_operand(operand *op) {
-    op->position = 0;
     op->reg = R_NONE;
     op->reg_index = 0;
     op->cc = false;
@@ -71,11 +70,10 @@ uint32_t getLabelValue(char *string) {
 
 // parses the given string to the operand, or throws errors along the way
 // will destruct parts of the original string during the process
-void parse_operand(operand_position pos, char *string, operand *operand) {
+void parse_operand(char *string, operand *operand) {
     char *ptr = string;
     uint8_t len = strlen(string);
 
-    operand->position = pos;
     // direct or indirect
     if(*ptr == '(') {
         operand->indirect = true;
@@ -459,15 +457,15 @@ void parseLine(char *src) {
                 strcpy(currentline.operand1,token.start);
                 switch(token.terminator) {
                     case ';':
-                        parse_operand(POS_SOURCE, currentline.operand1, &operand1);
+                        parse_operand(currentline.operand1, &operand1);
                         state = PS_COMMENT;
                         break;
                     case 0:
-                        parse_operand(POS_SOURCE, currentline.operand1, &operand1);
+                        parse_operand(currentline.operand1, &operand1);
                         state = PS_DONE;
                         break;
                     case ',':
-                        parse_operand(POS_SOURCE, currentline.operand1, &operand1);
+                        parse_operand(currentline.operand1, &operand1);
                         x = get_token(&token,token.next);
                         state = PS_OP2;
                         break;
@@ -480,11 +478,11 @@ void parseLine(char *src) {
                 strcpy(currentline.operand2,token.start);
                 switch(token.terminator) {
                     case ';':
-                    parse_operand(POS_DESTINATION, currentline.operand2, &operand2);
+                    parse_operand(currentline.operand2, &operand2);
                         state = PS_COMMENT;
                         break;
                     case 0:
-                    parse_operand(POS_DESTINATION, currentline.operand2, &operand2);
+                    parse_operand(currentline.operand2, &operand2);
                         state = PS_DONE;
                         break;
                     default:
@@ -719,14 +717,11 @@ void transform_instruction(operand *op, permittype type) {
     int32_t rel;
 
     switch(type) {
-        case TRANSFORM_IR:
-            if((op->reg == R_IXL) || (op->reg == R_IYL)) {
-                if(op->position == POS_DESTINATION) output.opcode |= 0x01; // bit 0
-                else output.opcode |= 0x08; // bit 3
-            }
+        case TRANSFORM_IR0:
+            if((op->reg == R_IXL) || (op->reg == R_IYL)) output.opcode |= 0x01;
             break;
-        case TRANSFORM_IRA:
-            if((op->reg == R_IXL) || (op->reg == R_IYL)) output.opcode |= 0x01; // bit 0
+        case TRANSFORM_IR3:
+            if((op->reg == R_IXL) || (op->reg == R_IYL)) output.opcode |= 0x08;
             break;
         case TRANSFORM_Z:
             output.opcode |= op->reg_index;

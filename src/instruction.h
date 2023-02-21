@@ -118,13 +118,7 @@ typedef enum {
 #define CODE_SIL    0x52
 #define CODE_LIL    0x5B
 
-typedef enum {
-    POS_SOURCE,
-    POS_DESTINATION
-} operand_position;
-
 typedef struct {
-    operand_position    position;
     cpuregister         reg;
     uint8_t             reg_index;
     bool                indirect;
@@ -153,12 +147,12 @@ typedef enum {
     TRANSFORM_Q,
     TRANSFORM_DDFD,
     TRANSFORM_CC,
-    TRANSFORM_IR,
+    TRANSFORM_IR0,
+    TRANSFORM_IR3,
     TRANSFORM_SELECT,
     TRANSFORM_N,            // only used by RST
     TRANSFORM_BIT,          // only used by RES/SET
     TRANSFORM_REL,          // only used by JR/DJNZ
-    TRANSFORM_IRA           // only used by mnemonics that SKIP the A register
 }opcodetransformtype;
 
 typedef struct {
