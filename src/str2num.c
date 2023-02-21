@@ -102,7 +102,7 @@ uint32_t str2num(char *string, bool errorhalt) {
                 }
                 break;
             case(FIND_PREFIX):
-                switch(*ptr) {
+                switch(tolower(*ptr)) {
                     case 'x':
                         result = str2hex(ptr+1);
                         if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
@@ -136,7 +136,7 @@ uint32_t str2num(char *string, bool errorhalt) {
                 }
                 break;
             case(LAST_ITEM):
-                switch(*ptr) {
+                switch(tolower(*ptr)) {
                     case 'b':
                         *ptr = 0; // terminate string
                         result = str2bin(start);

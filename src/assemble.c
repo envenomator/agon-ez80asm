@@ -72,9 +72,9 @@ uint32_t getLabelValue(char *string) {
 
     ptr = string;
     total = 0;
-    tmp = 0;
     operator = '+'; // previous operand in case of single value/label
     while(ptr) {
+        tmp = 0;
         get_ValueToken(&token, ptr);
         if(notEmpty(token.start)) {
             lbl = findLabel(token.start);
@@ -998,6 +998,7 @@ void handle_asm_db(void) {
                     case '\"':
                         emit_quotedstring(token.start);
                         break;
+                    /*
                     case '\'':
                         //emit_quotedvalue(token.start);
                         emit_8bit(getAsciiValue(token.start));
@@ -1007,6 +1008,13 @@ void handle_asm_db(void) {
                         if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
                         emit_8bit(operand1.immediate);
                         break;
+                    */
+                    default:
+                        operand1.immediate = getLabelValue(token.start);
+                        if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
+                        emit_8bit(operand1.immediate);
+                        break;
+                        
                 }
             }
             if(token.terminator == ',') currentline.next = token.next;
