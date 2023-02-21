@@ -773,7 +773,7 @@ instruction * instruction_table_lookup(char *key){
 
 	for (lim = sizeof(instructions)/sizeof(instruction); lim != 0; lim >>= 1) {
 		p = base + (lim >> 1);
-		cmp = strcmp(key,p->name);
+		cmp = strcasecmp(key,p->name);
 		if (cmp == 0)
 			return p;
 		if (cmp > 0) {

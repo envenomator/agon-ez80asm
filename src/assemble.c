@@ -32,6 +32,32 @@ void advanceLocalLabel(void) {
     }
 }
 
+// Get the ascii value from a single 'x' token.
+uint8_t getAsciiValue(char *string) {
+    uint8_t len = strlen(string);
+
+    if((len == 3) || (len == 4)) {
+        if(*string == '\'') {
+            if((len == 4) && (string[3] == '\'') && (string[1] == '\\')) {
+                switch(string[2]) {
+                    case 'n': return '\n';
+                    case 'r': return '\r';
+                    case 't': return '\t';
+                    case 'b': return '\b';
+                    case '\\': return '\\';
+                    case '\"': return '\"';
+                    case '\'': return '\'';
+                }
+            }
+            if((len == 3) && (string[2] == '\'')) {
+                return string[1];
+            }
+        }
+    }
+    error(message[ERROR_ASCIIFORMAT]);
+    return 0;
+}
+
 // Get the value from a sequence of 0-n labels and values, separated by +/- operators
 // Examples:
 // labela+5
@@ -54,8 +80,11 @@ uint32_t getLabelValue(char *string) {
             lbl = findLabel(token.start);
             if(lbl) tmp = lbl->address;
             else {
-                tmp = str2num(token.start, false);
-                if(err_str2num && (pass == 2)) error(message[ERROR_INVALIDLABEL]);
+                if(token.start[0] == '\'') tmp = getAsciiValue(token.start);
+                else {
+                    tmp = str2num(token.start, false);
+                    if(err_str2num && (pass == 2)) error(message[ERROR_INVALIDLABEL]);
+                }
             }
         }
         if(operator == '+') total += tmp;
@@ -337,15 +366,6 @@ void parse_operand(char *string, operand *operand) {
     }
 }
 
-// converts everything to lower case, except comments
-void convertLower(char *line) {
-    char *ptr = line;
-    while((*ptr) && (*ptr != ';')) {
-        *ptr = tolower(*ptr);
-        ptr++;
-    }
-}
-
 void parseLine(char *src) {
     uint8_t x;
     bool done;
@@ -415,6 +435,7 @@ void parseLine(char *src) {
                 break;
             case PS_COMMAND:
                 split_suffix(currentline.mnemonic, currentline.suffix, token.start);
+                
                 //printf("cmd: <<%s>> suffix <<%s>>\n", currentline.mnemonic,currentline.suffix);
                 currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
@@ -927,13 +948,6 @@ void emit_quotedstring(char *str) {
     else error(message[ERROR_STRINGFORMAT]);
 }
 
-void emit_quotedvalue(char *str) {
-    str++;
-    if(*(str+1) != '\'') error(message[ERROR_VALUEFORMAT]);
-    if(*str == '\'') emit_8bit(0);
-    else emit_8bit(*str);
-}
-
 void parse_asm_single_immediate(void) {
     tokentype token;
 
@@ -985,7 +999,8 @@ void handle_asm_db(void) {
                         emit_quotedstring(token.start);
                         break;
                     case '\'':
-                        emit_quotedvalue(token.start);
+                        //emit_quotedvalue(token.start);
+                        emit_8bit(getAsciiValue(token.start));
                         break;
                     default:
                         operand1.immediate = str2num(token.start,true);
@@ -1053,7 +1068,10 @@ void handle_asm_ds(void) {
 
             if(token.terminator == ',') {
                 get_token(&token, token.next);
-                if(notEmpty(token.start)) val = str2num(token.start,true);
+                if(notEmpty(token.start)) {
+                    if(token.start[0] == '\'') val = getAsciiValue(token.start);
+                    else val = str2num(token.start,true);
+                }
                 else error(message[ERROR_MISSINGOPERAND]);
             }
             else if((token.terminator != 0)  && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
@@ -1102,7 +1120,7 @@ void handle_asm_equ(void) {
 
 void handle_asm_adl(void) {
     parse_asm_keyval_pair();
-    if(strcmp(currentline.operand1, "adl") == 0) {
+    if(strcasecmp(currentline.operand1, "adl") == 0) {
         if((operand2.immediate == 0) || (operand2.immediate == 1)) {
             adlmode = operand2.immediate;
             //printf("Set ADL mode to %d\n",adlmode);
@@ -1272,7 +1290,6 @@ bool assemble(FILE *fp, char *filename){
     do {
         while (fgets(line, sizeof(line), file_input)){
             linenumber++;
-            convertLower(line);
             parseLine(line);
             processInstructions();
             processDelayedLineNumberReset();
@@ -1306,7 +1323,6 @@ bool assemble(FILE *fp, char *filename){
         while (fgets(line, sizeof(line), file_input)){
             linenumber++;
             listStartLine(line);
-            convertLower(line);
             parseLine(line);
             refreshlocalLabels();
             processInstructions();

@@ -60,5 +60,6 @@ char *message[] = {
     "Label already defined",
     "Maximum number of local labels reached",
     "Unable to open include file",
-    "Local label reference not allowed"
+    "Local label reference not allowed",
+    "Invalid ascii format"
 };

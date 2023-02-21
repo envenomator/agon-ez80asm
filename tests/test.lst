@@ -1,14 +1,6 @@
 PC      Output            Line   Source
-000000                    0001   .assume adl=1
-000000  dd bc             0002   	cp a,ixh
-000002  dd bd             0003   	cp a,ixl
-000004  fd bc             0004   	cp a,iyh
-000006  fd bd             0005   	cp a,iyl
-000008  dd bc             0006   	cp ixh
-00000a  dd bd             0007   	cp ixl
-00000c  fd bc             0008   	cp iyh
-00000e  fd bd             0009   	cp iyl
-000010  dd 25             0010       dec ixh
-000012  dd 2d             0011   	dec ixl
-000014  fd 25             0012   	dec iyh
-000016  fd 2d             0013   	dec iyl
+000000                    0001   .ASSUME adl=1
+000000  3e 0d             0002       ld a, '\r'
+000002  3e 43             0003       ld a, 'C'
+000004                    0004   fine: .equ 'c'
+000004  3e 63             0005       ld a,fine
