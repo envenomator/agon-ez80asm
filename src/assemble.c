@@ -117,17 +117,17 @@ void parse_operand(char *string, operand *operand) {
         if(string[len-1] == ')') error(message[ERROR_OPENINGBRACKET]);
     }
 
-    switch(*ptr++) {
+    switch(tolower(*ptr++)) {
         case 0: // empty operand
             break;
         case 'a':
-            switch(*ptr++) {
+            switch(tolower(*ptr++)) {
                 case 0:
                     operand->reg = R_A;
                     operand->reg_index = R_INDEX_A;
                     return;
                 case 'f':
-                    switch(*ptr++) {
+                    switch(tolower(*ptr++)) {
                         case 0:
                         case '\'':
                             operand->reg = R_AF;
@@ -143,13 +143,13 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'b':
-            switch(*ptr++) {
+            switch(tolower(*ptr++)) {
                 case 0:
                     operand->reg = R_B;
                     operand->reg_index = R_INDEX_B;
                     return;
                 case 'c':
-                    if(*ptr == 0) {
+                    if(tolower(*ptr == 0)) {
                         operand->reg = R_BC;
                         operand->reg_index = R_INDEX_BC;
                         return;
@@ -160,7 +160,7 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'c':
-            switch(*ptr++) {
+            switch(tolower(*ptr++)) {
                 case 0:
                     operand->reg = R_C;
                     operand->reg_index = R_INDEX_C;
@@ -172,13 +172,13 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'd':
-            switch(*ptr++) {
+            switch(tolower(*ptr++)) {
                 case 0:
                     operand->reg = R_D;
                     operand->reg_index = R_INDEX_D;
                     return;
                 case 'e':
-                    switch(*ptr++) {
+                    switch(tolower(*ptr++)) {
                         case 0:
                             operand->reg = R_DE;
                             operand->reg_index = R_INDEX_DE;
@@ -192,7 +192,7 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'e':
-            switch(*ptr++) {
+            switch(tolower(*ptr++)) {
                 case 0:
                     operand->reg = R_E;
                     operand->reg_index = R_INDEX_E;
@@ -202,13 +202,13 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'h':
-            switch(*ptr++) {
+            switch(tolower(*ptr++)) {
                 case 0:
                     operand->reg = R_H;
                     operand->reg_index = R_INDEX_H;
                     return;
                 case 'l':
-                    if(*ptr == 0) {
+                    if(tolower(*ptr == 0)) {
                         operand->reg = R_HL;
                         operand->reg_index = R_INDEX_HL;
                         return;
@@ -219,13 +219,13 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'i':
-            switch(*ptr++) {
+            switch(tolower(*ptr++)) {
                 case 0:
                     operand->reg = R_I;
                     operand->reg_index = R_INDEX_I;
                     return;
                 case 'x':
-                    switch(*ptr++) {
+                    switch(tolower(*ptr++)) {
                         case 0:
                             operand->reg = R_IX;
                             operand->reg_index = R_INDEX_IX;
@@ -251,7 +251,7 @@ void parse_operand(char *string, operand *operand) {
                     }
                     break;
                 case 'y':
-                    switch(*ptr++) {
+                    switch(tolower(*ptr++)) {
                         case 0:
                             operand->reg = R_IY;
                             operand->reg_index = R_INDEX_IY;
@@ -281,7 +281,7 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'l':
-            switch(*ptr++) {
+            switch(tolower(*ptr++)) {
                 case 0:
                     operand->reg = R_L;
                     operand->reg_index = R_INDEX_L;
@@ -291,7 +291,7 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'm':
-            if((*ptr == 'b') && ptr[1] == 0) {
+            if((tolower(*ptr) == 'b') && ptr[1] == 0) {
                 operand->reg = R_MB;
                 operand->reg_index = R_INDEX_MB;
                 return;
@@ -303,7 +303,7 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'n':
-            switch(*ptr++) {
+            switch(tolower(*ptr++)) {
                 case 'c':   // NC
                     operand->cc = true;
                     operand->cc_index = CC_INDEX_NC;
@@ -317,7 +317,7 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'p':
-            switch(*ptr++) {
+            switch(tolower(*ptr++)) {
                 case 0:
                     operand->cc = true;
                     operand->cc_index = CC_INDEX_P;
@@ -342,7 +342,7 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 's':
-            if((*ptr == 'p') && ptr[1] == 0) {
+            if((tolower(*ptr) == 'p') && ptr[1] == 0) {
                 operand->reg = R_SP;
                 operand->reg_index = R_INDEX_SP;
                 return;
@@ -570,7 +570,7 @@ uint8_t getADLsuffix(void) {
     if(notEmpty(currentline.suffix)) {
         switch(strlen(currentline.suffix)) {
             case 1: // .s or .l
-                switch(currentline.suffix[0]) {
+                switch(tolower(currentline.suffix[0])) {
                     case 's':
                         if(adlmode) return S_SIL;  // SIL
                         else return S_SIS;         // SIS
@@ -584,8 +584,8 @@ uint8_t getADLsuffix(void) {
                 }
                 break;
             case 2: // .is or .il
-                if(currentline.suffix[0] != 'i') break; // illegal suffix
-                switch(currentline.suffix[1]) {
+                if(tolower(currentline.suffix[0]) != 'i') break; // illegal suffix
+                switch(tolower(currentline.suffix[1])) {
                     case 's':
                         if(adlmode) return S_LIS;  // LIS
                         else return S_SIS;         // SIS
@@ -599,8 +599,8 @@ uint8_t getADLsuffix(void) {
                 }
                 break;
             case 3:
-                if(currentline.suffix[1] != 'i') break; // illegal suffix
-                switch(currentline.suffix[0]) {
+                if(tolower(currentline.suffix[1]) != 'i') break; // illegal suffix
+                switch(tolower(currentline.suffix[0])) {
                     case 's':
                         if(currentline.suffix[2] == 's') return S_SIS; // SIS
                         if(currentline.suffix[2] == 'l') return S_SIL; // SIL

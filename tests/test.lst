@@ -2,5 +2,5 @@ PC      Output            Line   Source
 000000                    0001   .ASSUME adl=1
 000000  3e 0d             0002       ld a, '\r'
 000002  3e 43             0003       ld a, 'C'
-000004                    0004   fine: .equ 'c'
-000004  3e 63             0005       ld a,fine
+000004                    0004   fine: .equ '\t'
+000004  3e 09             0005       ld A,fine
