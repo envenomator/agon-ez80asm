@@ -216,7 +216,7 @@ uint8_t get_token(tokentype *token, char *src) {
         *target++ = *src++;
         index++;
     }
-    if(*src == ' ') { // Are we terminated at a space between tokens, or still another terminator?
+    if(isspace(*src)) { // Are we terminated at a space between tokens, or still another terminator?
         while(isspace(*src) != 0) src++;
         if(*src == 0) token->terminator = 0;
         else {
@@ -279,7 +279,7 @@ uint8_t get_ValueToken(tokentype *token, char *src) {
         *target++ = *src++;
         index++;
     }
-    if(*src == ' ') { // Are we terminated at a space between tokens, or still another terminator?
+    if(isspace(*src)) { // Are we terminated at a space between tokens, or still another terminator?
         while(isspace(*src) != 0) src++;
         if(*src == 0) token->terminator = 0;
         else {

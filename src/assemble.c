@@ -33,7 +33,7 @@ void advanceLocalLabel(void) {
     }
 }
 
-// Get the value from a list of 0-n labels and values, separated by +/- operators
+// Get the value from a sequence of 0-n labels and values, separated by +/- operators
 // Examples:
 // labela+5
 // labelb-1
@@ -1031,7 +1031,7 @@ void handle_asm_dw(void) {
             }
             if(token.terminator == ',') currentline.next = token.next;
             else {
-                if(token.terminator != 0) error(message[ERROR_LISTFORMAT]);
+                if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
                 currentline.next = NULL; 
             }
         }
