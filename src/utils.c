@@ -3,6 +3,9 @@
 #include <ctype.h>
 #include "globals.h"
 #include "utils.h"
+#include "str2num.h"
+#include "label.h"
+#include "instruction.h"
 
 // return a base filename, stripping the given extension from it
 void remove_ext (char* myStr, char extSep, char pathSep) {
@@ -28,11 +31,11 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
 }
 
 
-bool isempty(const char *str){
+bool isEmpty(const char *str){
     return (str[0] == '\0');
 }
 
-bool notempty(const char *str) {
+bool notEmpty(const char *str) {
     return (str[0] != '\0');
 }
 
@@ -122,6 +125,7 @@ typedef enum {
 //
 // Returns:
 // number of bytes copied into token, excluding the 0 terminator
+
 static inline bool isTerminator(char t) {
     return ((t == ' ') || (t == ',') || (t == ':') || (t == ';') || (t == '=') || (t == '\t'));
 }

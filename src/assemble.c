@@ -11,7 +11,7 @@
 #include "str2num.h"
 #include "listing.h"
 #include "filestack.h"
-
+ 
 void empty_operand(operand *op) {
     op->position = 0;
     op->reg = R_NONE;
@@ -33,12 +33,47 @@ void advanceLocalLabel(void) {
     }
 }
 
+// Get the value from a list of 0-n labels and values, separated by +/- operators
+// Examples:
+// labela+5
+// labelb-1
+// labela+labelb+offset1-1
+// The string should not contain any spaces, needs to be a single token
+uint32_t getLabelValue(char *string) {
+    uint32_t total, tmp;
+    char operator, *ptr;
+    label *lbl;
+    tokentype token;
+
+    ptr = string;
+    total = 0;
+    tmp = 0;
+    operator = '+'; // previous operand in case of single value/label
+    while(ptr) {
+        get_ValueToken(&token, ptr);
+        if(notEmpty(token.start)) {
+            lbl = findLabel(token.start);
+            if(lbl) tmp = lbl->address;
+            else {
+                tmp = str2num(token.start, false);
+                if(err_str2num && (pass == 2)) error(message[ERROR_INVALIDLABEL]);
+            }
+        }
+        if(operator == '+') total += tmp;
+        if(operator == '-') total -= tmp;
+        operator = token.terminator;
+
+        if(operator) ptr = token.next;
+        else ptr = NULL;
+    }
+    return total;
+}
+
 // parses the given string to the operand, or throws errors along the way
 // will destruct parts of the original string during the process
 void parse_operand(operand_position pos, char *string, operand *operand) {
     char *ptr = string;
     uint8_t len = strlen(string);
-    label *lbl;
 
     operand->position = pos;
     // direct or indirect
@@ -179,8 +214,8 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                             if(isdigit(*ptr)) {
                                 operand->reg = R_IX;
                                 operand->displacement_provided = true;
-                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr);
-                                else operand->displacement = (int16_t) str2num(ptr);
+                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr,true);
+                                else operand->displacement = (int16_t) str2num(ptr,true);
                                 return;
                             }
                             break;
@@ -205,8 +240,8 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                             if(isdigit(*ptr)) {
                                 operand->reg = R_IY;
                                 operand->displacement_provided = true;
-                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr);
-                                else operand->displacement = (int16_t) str2num(ptr);
+                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr,true);
+                                else operand->displacement = (int16_t) str2num(ptr,true);
                                 return;
                             }
                             break;
@@ -293,95 +328,15 @@ void parse_operand(operand_position pos, char *string, operand *operand) {
                 return;
             }
             break;
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case '$':
-            operand->immediate = str2num(ptr-1);
-            operand->immediate_provided = true;
-            return;
         default:
             break;
     }
-    if(*string) { // not on empty lines
-        // check for hex string that ends with 'h'
-        if(string[strlen(string)-1] == 'h') {
-            operand->immediate = str2num(string);
-            operand->immediate_provided = true;
-            return;
-        }
-        if(operand->indirect) lbl = findLabel(string+1);
-        else lbl = findLabel(string);
-        if(lbl) {
-            operand->immediate = lbl->address;
-            operand->immediate_provided = true;
-            //printf("Label found: %s, %u\n",lbl->name, lbl->address);
-            operand->wasLabel = true;
-            return;
-        }
-        else {
-            //printf("Label not found\n");
-            if(pass == 1) {
-                // might be a lable that isn't defined yet. will see in pass 2
-                operand->immediate = 0;
-                operand->immediate_provided = true;
-                operand->wasLabel = true;
-            }
-            else error(message[ERROR_INVALIDLABEL]); // pass 2, not a label, error
-        }
+    if(*string) {
+        if(operand->indirect) operand->immediate = getLabelValue(string + 1);
+        else operand->immediate = getLabelValue(string);
+        operand->immediate_provided = true;
+        operand->wasLabel = true;
     }
-}
-
-bool parseCombinedLabel(uint32_t *value, char *token) {
-    label *lbl1;
-    label *lbl2;
-    uint32_t part2;
-    char op = 0;
-    char *s = token;
-
-    lbl1 = findLabel(token);
-    if(lbl1) { // single label found
-        *value = lbl1->address;
-        return true;
-    }
-
-    while(*s) {
-        if((*s == '+') || (*s == '-')) {
-            op = *s;
-            break;
-        }
-        s++;
-    }
-    *s = 0; // split or re-terminate
-
-    if((op != '+') && (op != '-')) {
-        if(pass == 1) *value = 0;
-        else *value = str2num(token);
-        return true; // future single label or value
-    }
-    s++;
-    printf("Part1: <<%s>>\n",token);
-    printf("Part2: <<%s>>\n",s);
-
-    lbl1 = findLabel(token);
-    lbl2 = findLabel(s);
-
-    if(lbl1) *value = lbl1->address;
-    else *value = str2num(token);
-    if(lbl2) part2 = lbl2->address;
-    else part2 = str2num(s);
-    printf("Part1: %ld\n",*value);
-    printf("Part2: %ld\n",part2);
-    if(op == '+') *value += part2;
-    if(op == '-') *value -= part2;
-    return true;
 }
 
 // converts everything to lower case, except comments
@@ -393,18 +348,7 @@ void convertLower(char *line) {
     }
 }
 
-typedef enum {
-    PS_START,
-    PS_LABEL,
-    PS_COMMAND,
-    PS_OP1,
-    PS_OP2,
-    PS_COMMENT,
-    PS_DONE,
-    PS_ERROR
-} parsestate;
-
-void parse(char *src) {
+void parseLine(char *src) {
     uint8_t x;
     bool done;
     uint8_t state;
@@ -591,7 +535,7 @@ void definelabel(uint32_t num){
 
 void refreshlocalLabels(void) {
     if(pass == 2) {
-        if(currentline.label[0]) {
+        if(notEmpty(currentline.label)) {
             if(currentline.label[0] != '@') {
                 //printf("Line %d Global label found - reading local labels\n", linenumber);
                 clearLocalLabels();
@@ -604,7 +548,7 @@ void refreshlocalLabels(void) {
 
 // return ADL prefix bitfield, or 0 if none present
 uint8_t getADLsuffix(void) {
-    if(currentline.suffix[0]) {
+    if(notEmpty(currentline.suffix)) {
         switch(strlen(currentline.suffix)) {
             case 1: // .s or .l
                 switch(currentline.suffix[0]) {
@@ -997,8 +941,8 @@ void parse_asm_single_immediate(void) {
 
     if(currentline.next) {
         get_token(&token, currentline.next);
-        if(token.start[0]) {
-            operand1.immediate = str2num(token.start);
+        if(notEmpty(token.start)) {
+            operand1.immediate = str2num(token.start,true);
             operand1.immediate_provided = true;
             if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
         }
@@ -1015,8 +959,8 @@ void parse_asm_keyval_pair(void) {
         strcpy(currentline.operand1, token.start);
         if(token.terminator == '=') {
             get_token(&token, token.next);
-            if(token.start[0]) {
-                operand2.immediate = str2num(token.start);
+            if(notEmpty(token.start)) {
+                operand2.immediate = str2num(token.start,true);
                 operand2.immediate_provided = true;
             }
             else error(message[ERROR_MISSINGOPERAND]);
@@ -1036,7 +980,7 @@ void handle_asm_db(void) {
     if(currentline.next) {
         while(currentline.next) {
             get_token(&token, currentline.next);
-            if(token.start[0]) {
+            if(notEmpty(token.start)) {
                 //printf("DEBUG db <<%s>>\n",token.start);
                 switch(token.start[0]) {
                     case '\"':
@@ -1046,7 +990,7 @@ void handle_asm_db(void) {
                         emit_quotedvalue(token.start);
                         break;
                     default:
-                        operand1.immediate = str2num(token.start);
+                        operand1.immediate = str2num(token.start,true);
                         if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
                         emit_8bit(operand1.immediate);
                         break;
@@ -1072,10 +1016,10 @@ void handle_asm_dw(void) {
     if(currentline.next) {
         while(currentline.next) {
             get_token(&token, currentline.next);
-            if(token.start[0]) {
+            if(notEmpty(token.start)) {
                 lbl = findLabel(token.start);
                 if(lbl) operand1.immediate = lbl->address;
-                else operand1.immediate = str2num(token.start);
+                else operand1.immediate = str2num(token.start,true);
                 
                 if(adlmode) {
                     emit_24bit(operand1.immediate);
@@ -1106,12 +1050,12 @@ void handle_asm_ds(void) {
     }
     if(currentline.next) {
         get_token(&token, currentline.next);
-        if(token.start[0]) {
-            num = str2num(token.start);
+        if(notEmpty(token.start)) {
+            num = str2num(token.start,true);
 
             if(token.terminator == ',') {
                 get_token(&token, token.next);
-                if(token.start[0]) val = str2num(token.start);
+                if(notEmpty(token.start)) val = str2num(token.start,true);
                 else error(message[ERROR_MISSINGOPERAND]);
             }
             else if(token.terminator != 0) error(message[ERROR_LISTFORMAT]);
@@ -1142,51 +1086,20 @@ void handle_asm_ascii(bool terminate) {
 }
 
 void handle_asm_equ(void) {
-    label *lbl;
-    uint32_t value = 0;
-    uint32_t value2 = 0;
     tokentype token;
-    tokentype val1,val2;
 
-    val2.terminator = 0;
-
-    if(currentline.label[0]) {
-        if(currentline.label[0] != '@') {
-            if(currentline.next) {
-                get_token(&token, currentline.next);
-                if(token.start[0]) {
-                    if(pass == 1) {
-                        get_ValueToken(&val1, token.start);
-                        if(val1.start[0]) {
-                            printf("Part 1: <<%s>>\n",val1.start);
-                            lbl = findLabel(val1.start);
-                            if(lbl) value = lbl->address;
-                            else value = str2num(val1.start);
-                            printf("Val1 terminator: %x\n",val1.terminator);
-                            
-                            if(val1.terminator != 0) {
-                                get_ValueToken(&val2, val1.next);
-                                if(val2.start[0]) {
-                                    printf("Part 2: <<%s>>\n",val2.start);
-                                    lbl = findLabel(val2.start);
-                                    if(lbl) value2 = lbl->address;
-                                    else value2 = str2num(val2.start);
-                                }
-                            }
-                        }
-                        if(val1.terminator == '+') value += value2;
-                        if(val1.terminator == '-') value -= value2;
-                        definelabel(value);
-                    }
-                    if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
-                }
-                else error(message[ERROR_MISSINGOPERAND]);
+    if(pass == 2) {
+        // Only define EQU labels AFTER all other labels have been defined, to allow forward-looking references
+        if(currentline.next) {
+            get_token(&token, currentline.next);
+            if(notEmpty(token.start)) {
+                definelabel(getLabelValue(token.start));
+                if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
             }
             else error(message[ERROR_MISSINGOPERAND]);
         }
-        else error(message[ERROR_INVALIDLABEL]);
+        else error(message[ERROR_MISSINGOPERAND]);
     }
-    else error(message[ERROR_MISSINGLABEL]);
 }
 
 void handle_asm_adl(void) {
@@ -1291,7 +1204,7 @@ void processInstructions(void){
     bool match;
 
     // return on empty lines
-    if((currentline.mnemonic[0]) == 0) {
+    if(isEmpty(currentline.mnemonic)) {
         // check if there is a single label on a line in during pass 1
         if(pass == 1) definelabel(address);
         return; // valid line, but empty
@@ -1362,7 +1275,7 @@ bool assemble(FILE *fp, char *filename){
         while (fgets(line, sizeof(line), file_input)){
             linenumber++;
             convertLower(line);
-            parse(line);
+            parseLine(line);
             processInstructions();
             processDelayedLineNumberReset();
         }
@@ -1396,7 +1309,7 @@ bool assemble(FILE *fp, char *filename){
             linenumber++;
             listStartLine(line);
             convertLower(line);
-            parse(line);
+            parseLine(line);
             refreshlocalLabels();
             processInstructions();
             listEndLine(consolelist_enabled);

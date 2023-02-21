@@ -30,7 +30,7 @@ char *message[] = {
     "Missing opening bracket in operand",
     "Missing closing bracket in operand",
     "Invalid number format",
-    "Invalid label definition",
+    "Invalid label reference",
     "Missing operand",
     "Invalid mnemonic",
     "Invalid operand",
@@ -59,5 +59,6 @@ char *message[] = {
     "Error creating label",
     "Label already defined",
     "Maximum number of local labels reached",
-    "Unable to open include file"
+    "Unable to open include file",
+    "Local label reference not allowed"
 };

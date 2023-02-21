@@ -1,6 +1,9 @@
 PC      Output            Line   Source
 000000                    0001   .assume ADL=1
 000000  78                0002       ld a,b
-000001                    0003   test:
-000001                    0004   test2: .equ test+2
-000001  3e 03             0005       ld a, test2
+000001  78                0003       ld a,b
+000002                    0004   test1:
+000002                    0005   test2:
+000002                    0006   @local:
+000002                    0007   test3: .equ test1+5
+000002  3e 09             0008       ld a, test3+2

@@ -34,4 +34,16 @@ enum {
     STATE_ASM_VALUE_CLOSEOUT,
 };
 
+
+typedef enum {
+    PS_START,
+    PS_LABEL,
+    PS_COMMAND,
+    PS_OP1,
+    PS_OP2,
+    PS_COMMENT,
+    PS_DONE,
+    PS_ERROR
+} parsestate;
+
 #endif // ASSEMBLE_H

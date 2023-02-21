@@ -2,6 +2,8 @@
 #include "globals.h"
 #include "utils.h"
 
+bool err_str2num;
+
 enum {
     BASESELECT,
     FIND_PREFIX,
@@ -19,7 +21,7 @@ uint32_t str2bin(char *string) {
 
     while(*string) {
         if((*string == '0') || (*string == '1')) {x = *string - '0';}
-        else error(message[ERROR_INVALIDNUMBER]);
+        else err_str2num = true;
         result = (result << 1) | x;
         string++;
     }
@@ -39,7 +41,7 @@ uint32_t str2hex(char *string) {
         else {
             c = c & 0xDF ; // toupper();
             if((c >= 'A') && (c <= 'F')) { x = c - 'A' + 10; }
-        else error(message[ERROR_INVALIDNUMBER]);
+        else err_str2num = true;
         }
         result = (result << 4) | x;
         string++;
@@ -55,7 +57,7 @@ uint32_t str2dec(char *string) {
 
     while(*string) {
         if((*string >= '0') && (*string <= '9')) { x = *string - '0'; }
-        else error(message[ERROR_INVALIDNUMBER]);
+        else err_str2num = true;
         result = ((result << 1) + (result << 3)) + x;
         string++;
     }
@@ -67,11 +69,13 @@ uint32_t str2dec(char *string) {
 // BINARY:  0%..., ...b
 // HEX:     0x..., ...h, $...
 // DECIMAL ...
-uint32_t str2num(char *string) {
+uint32_t str2num(char *string, bool errorhalt) {
     char *ptr = string;
     char *start = string;
     uint32_t result = 0;
     uint8_t state = BASESELECT;
+
+    err_str2num = false;
 
     while(1) {
         switch(state) {
@@ -81,7 +85,9 @@ uint32_t str2num(char *string) {
             case(BASESELECT):
                 switch(*ptr) {
                     case '$':
-                        return str2hex(ptr+1);
+                        result = str2hex(ptr+1);
+                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                        return result;
                         break;
                     case '0':
                         state = FIND_PREFIX;
@@ -98,11 +104,15 @@ uint32_t str2num(char *string) {
             case(FIND_PREFIX):
                 switch(*ptr) {
                     case 'x':
-                        return str2hex(ptr+1);
+                        result = str2hex(ptr+1);
+                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                        return result;
                         break;
                     case '%':
                         //printf("DEBUG: %s\n",ptr+1);
-                        return str2bin(ptr+1);
+                        result = str2bin(ptr+1);
+                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                        return result;
                         break;
                     case 'h':
                     case 0:
@@ -129,19 +139,28 @@ uint32_t str2num(char *string) {
                 switch(*ptr) {
                     case 'b':
                         *ptr = 0; // terminate string
-                        return str2bin(start);
+                        result = str2bin(start);
+                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                        return result;
                         break;
                     case 'h':
                         *ptr = 0; // terminate string
-                        return str2hex(start);
+                        result = str2hex(start);
+                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                        return result;
                         break;
                     default:
-                        if(isdigit(*ptr)) return str2dec(start);
+                        if(isdigit(*ptr)) {
+                            result = str2dec(start);
+                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                            return result;
+                        }
                         else state = ERROR;
                 }
                 break;
             case(ERROR):
-                error(message[ERROR_INVALIDNUMBER]);
+                err_str2num = true;
+                if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
                 state = DONE;
                 break;
         }

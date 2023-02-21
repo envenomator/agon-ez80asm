@@ -12,6 +12,10 @@
 // BINARY:  0b..., ...b
 // HEX:     0x..., ...h, $...
 // DECIMAL ...
-uint32_t str2num(char *string);
+//
+// option to NOT halt on errors, but just set the err_str2num status - just check if something is a valid number
+uint32_t str2num(char *string, bool errorhalt);
+
+extern bool err_str2num;
 
 #endif // STR2NUM_H
