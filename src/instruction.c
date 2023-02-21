@@ -198,7 +198,7 @@ operandlist operands_and[] = {
     {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xA0, S_NONE},
     // same set, without A register
     {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_S1L0},
-    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IR,     TRANSFORM_NONE, 0x00, 0xA4, S_NONE},
+    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IRA,    TRANSFORM_NONE, 0x00, 0xA4, S_NONE},
     {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_S1L0},
     {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE6, S_NONE},
     {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xA0, S_NONE},
@@ -223,7 +223,7 @@ operandlist operands_cp[]= {
     {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xB8, S_NONE},
     // same set, without A register
     {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xBE, S_S1L0},
-    {OPTYPE_IR,  OPTYPE_NONE,            true, TRANSFORM_IR,     TRANSFORM_NONE, 0x00, 0xBC, S_NONE},
+    {OPTYPE_IR,  OPTYPE_NONE,            true, TRANSFORM_IRA,    TRANSFORM_NONE, 0x00, 0xBC, S_NONE},
     {OPTYPE_INDIRECT_IXYd,  OPTYPE_NONE, true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xBE, S_S1L0},
     {OPTYPE_N,  OPTYPE_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xFE, S_NONE},
     {OPTYPE_R,  OPTYPE_NONE,            false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xB8, S_NONE},
@@ -446,7 +446,7 @@ operandlist operands_or[] = {
     {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xB0, S_NONE},
     // same set, without A register
     {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_S1L0},
-    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IR,     TRANSFORM_NONE, 0x00, 0xB4, S_NONE},
+    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IRA,    TRANSFORM_NONE, 0x00, 0xB4, S_NONE},
     {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_S1L0},
     {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF6, S_NONE},
     {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xB0, S_NONE},
@@ -620,7 +620,7 @@ operandlist operands_sub[] = {
     {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x90, S_NONE},
     // same set, without A register
     {OPTYPE_INDIRECT_HL, OPTYPE_NONE,    false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x96, S_S1L0},
-    {OPTYPE_IR, OPTYPE_NONE,              true, TRANSFORM_IR,     TRANSFORM_NONE, 0x00, 0x94, S_NONE},
+    {OPTYPE_IR, OPTYPE_NONE,              true, TRANSFORM_IRA,    TRANSFORM_NONE, 0x00, 0x94, S_NONE},
     {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,   true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x96, S_S1L0},
     {OPTYPE_N, OPTYPE_NONE,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xD6, S_NONE},
     {OPTYPE_R, OPTYPE_NONE,              false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0x90, S_NONE},
@@ -645,7 +645,7 @@ operandlist operands_xor[] = {
     {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xA8, S_NONE},
     // same set, without A register
     {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_S1L0},
-    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IR,     TRANSFORM_NONE, 0x00, 0xAC, S_NONE},
+    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IRA,    TRANSFORM_NONE, 0x00, 0xAC, S_NONE},
     {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_S1L0},
     {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xEE, S_NONE},
     {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xA8, S_NONE},

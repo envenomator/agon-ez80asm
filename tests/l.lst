@@ -1,0 +1,191 @@
+PC      Output            Line   Source
+000000                    0001   .assume adl=1
+000000  ed 57             0002   	ld a, i
+000002  dd 7e 05          0003   	ld a, (ix+5)
+000005  fd 7e 05          0004   	ld a, (iy+5)
+000008  ed 6e             0005   	ld a, mb
+00000a  3a cc bb aa       0006   	ld a, ($aabbcc)
+00000e  ed 5f             0007   	ld a, r
+000010  0a                0008   	ld a, (bc)
+000011  1a                0009   	ld a, (de)
+000012  7e                0010   	ld a, (hl)
+000013  ed d7             0011   	ld hl, i
+000015  ed 3f             0012   	ld (hl), ix
+000017  ed 3e             0013   	ld (hl), iy
+000019  36 05             0014   	ld (hl), 5
+00001b  77                0015   	ld (hl), a
+00001c  70                0016   	ld (hl), b
+00001d  71                0017   	ld (hl), c
+00001e  72                0018   	ld (hl), d
+00001f  73                0019   	ld (hl), e
+000020  74                0020   	ld (hl), h
+000021  75                0021   	ld (hl), l
+000022  ed 0f             0022   	ld (hl), bc
+000024  ed 1f             0023   	ld (hl), de
+000026  ed 2f             0024   	ld (hl), hl
+000028  ed c7             0025   	ld i, hl
+00002a  ed 47             0026   	ld i, a
+00002c  dd 64             0027   	ld ixh, ixh
+00002e  dd 65             0028   	ld ixh, ixl
+000030  dd 6c             0029   	ld ixl, ixh
+000032  dd 6d             0030   	ld ixl, ixl
+000034  fd 64             0031   	ld iyh, iyh
+000036  fd 65             0032   	ld iyh, iyl
+000038  fd 6c             0033   	ld iyl, iyh
+00003a  fd 6d             0034   	ld iyl, iyl
+00003c  dd 26 05          0035   	ld ixh, 5
+00003f  dd 2e 05          0036   	ld ixl, 5
+000042  fd 26 05          0037   	ld iyh, 5
+000045  fd 2e 05          0038   	ld iyl, 5
+000048  dd 67             0039   	ld ixh, a
+00004a  dd 60             0040   	ld ixh, b
+00004c  dd 61             0041   	ld ixh, c
+00004e  dd 62             0042   	ld ixh, d
+000050  dd 63             0043   	ld ixh, e
+000052  dd 6f             0044   	ld ixl, a
+000054  dd 68             0045   	ld ixl, b
+000056  dd 69             0046   	ld ixl, c
+000058  dd 6a             0047   	ld ixl, d
+00005a  dd 6b             0048   	ld ixl, e
+00005c  fd 67             0049   	ld iyh, a
+00005e  fd 60             0050   	ld iyh, b
+000060  fd 61             0051   	ld iyh, c
+000062  fd 62             0052   	ld iyh, d
+000064  fd 63             0053   	ld iyh, e
+000066  fd 6f             0054   	ld iyl, a
+000068  fd 68             0055   	ld iyl, b
+00006a  fd 69             0056   	ld iyl, c
+00006c  fd 6a             0057   	ld iyl, d
+00006e  fd 6b             0058   	ld iyl, e
+000070  ed 37             0059   	ld ix, (hl)
+000072  ed 31             0060   	ld iy, (hl)
+000074  dd 37 05          0061   	ld ix, (ix+5)
+000077  dd 31 05          0062   	ld iy, (ix+5)
+00007a  fd 31 05          0063   	ld ix, (iy+5)
+00007d  fd 37 05          0064   	ld iy, (iy+5)
+000080  dd 21 cc bb aa    0065   	ld ix, $aabbcc
+000085  fd 21 cc bb aa    0066   	ld iy, $aabbcc
+00008a  dd 2a cc bb aa    0067   	ld ix, ($aabbcc)
+00008f  fd 2a cc bb aa    0068   	ld iy, ($aabbcc)
+000094  dd 3f 05          0069   	ld (ix+5), ix
+000097  dd 3e 05          0070   	ld (ix+5), iy
+00009a  fd 3e 05          0071   	ld (iy+5), ix
+00009d  fd 3f 05          0072   	ld (iy+5), iy
+0000a0  dd 36 05 0a       0073   	ld (ix+5), 10
+0000a4  fd 36 05 0a       0074   	ld (iy+5), 10
+0000a8  dd 77 05          0075   	ld (ix+5), a
+0000ab  dd 70 05          0076   	ld (ix+5), b
+0000ae  dd 71 05          0077   	ld (ix+5), c
+0000b1  dd 72 05          0078   	ld (ix+5), d
+0000b4  dd 73 05          0079   	ld (ix+5), e
+0000b7  dd 74 05          0080   	ld (ix+5), h
+0000ba  dd 75 05          0081   	ld (ix+5), l
+0000bd  fd 77 05          0082   	ld (iy+5), a
+0000c0  fd 70 05          0083   	ld (iy+5), b
+0000c3  fd 71 05          0084   	ld (iy+5), c
+0000c6  fd 72 05          0085   	ld (iy+5), d
+0000c9  fd 73 05          0086   	ld (iy+5), e
+0000cc  fd 74 05          0087   	ld (iy+5), h
+0000cf  fd 75 05          0088   	ld (iy+5), l
+0000d2  dd 0f 05          0089   	ld (ix+5), bc
+0000d5  dd 1f 05          0090   	ld (ix+5), de
+0000d8  dd 2f 05          0091   	ld (ix+5), hl
+0000db  fd 0f 05          0092   	ld (iy+5), bc
+0000de  fd 1f 05          0093   	ld (iy+5), de
+0000e1  fd 2f 05          0094   	ld (iy+5), hl
+0000e4  ed 6d             0095   	ld mb, a
+0000e6  32 cc bb aa       0096   	ld ($aabbcc), a
+0000ea  dd 22 cc bb aa    0097   	ld ($aabbcc), ix
+0000ef  fd 22 cc bb aa    0098   	ld ($aabbcc), iy
+0000f4  ed 43 cc bb aa    0099   	ld ($aabbcc), bc
+0000f9  ed 53 cc bb aa    0100   	ld ($aabbcc), de
+0000fe  22 cc bb aa       0101   	ld ($aabbcc), hl
+000102  ed 73 cc bb aa    0102   	ld ($aabbcc), sp
+000107  ed 4f             0103   	ld r, a
+000109  7e                0104   	ld a, (hl)
+00010a  46                0105   	ld b, (hl)
+00010b  4e                0106   	ld c, (hl)
+00010c  56                0107   	ld d, (hl)
+00010d  5e                0108   	ld e, (hl)
+00010e  66                0109   	ld h, (hl)
+00010f  6e                0110   	ld l, (hl)
+000110  dd 7c             0111   	ld a, ixh
+000112  dd 7d             0112   	ld a, ixl
+000114  fd 7c             0113   	ld a, iyh
+000116  fd 7d             0114   	ld a, iyl
+000118  dd 44             0115   	ld b, ixh
+00011a  dd 45             0116   	ld b, ixl
+00011c  fd 44             0117   	ld b, iyh
+00011e  fd 45             0118   	ld b, iyl
+000120  dd 4c             0119   	ld c, ixh
+000122  dd 4d             0120   	ld c, ixl
+000124  fd 4c             0121   	ld c, iyh
+000126  fd 4d             0122   	ld c, iyl
+000128  dd 54             0123   	ld d, ixh
+00012a  dd 55             0124   	ld d, ixl
+00012c  fd 54             0125   	ld d, iyh
+00012e  fd 55             0126   	ld d, iyl
+000130  dd 5c             0127   	ld e, ixh
+000132  dd 5d             0128   	ld e, ixl
+000134  fd 5c             0129   	ld e, iyh
+000136  fd 5d             0130   	ld e, iyl
+000138  dd 7e 05          0131   	ld a, (ix+5)
+00013b  dd 46 05          0132   	ld b, (ix+5)
+00013e  dd 4e 05          0133   	ld c, (ix+5)
+000141  dd 56 05          0134   	ld d, (ix+5)
+000144  dd 5e 05          0135   	ld e, (ix+5)
+000147  dd 66 05          0136   	ld h, (ix+5)
+00014a  dd 6e 05          0137   	ld l, (ix+5)
+00014d  fd 7e 05          0138   	ld a, (iy+5)
+000150  fd 46 05          0139   	ld b, (iy+5)
+000153  fd 4e 05          0140   	ld c, (iy+5)
+000156  fd 56 05          0141   	ld d, (iy+5)
+000159  fd 5e 05          0142   	ld e, (iy+5)
+00015c  fd 66 05          0143   	ld h, (iy+5)
+00015f  fd 6e 05          0144   	ld l, (iy+5)
+000162  3e 05             0145   	ld a, 5
+000164  06 05             0146   	ld b, 5
+000166  0e 05             0147   	ld c, 5
+000168  16 05             0148   	ld d, 5
+00016a  1e 05             0149   	ld e, 5
+00016c  26 05             0150   	ld h, 5
+00016e  2e 05             0151   	ld l, 5
+000170  7f                0152   	ld a, a
+000171  ed 07             0153   	ld bc, (hl)
+000173  ed 17             0154   	ld de, (hl)
+000175  ed 27             0155   	ld hl, (hl)
+000177  dd 07 05          0156   	ld bc, (ix+5)
+00017a  dd 17 05          0157   	ld de, (ix+5)
+00017d  dd 27 05          0158   	ld hl, (ix+5)
+000180  fd 07 05          0159   	ld bc, (iy+5)
+000183  fd 17 05          0160   	ld de, (iy+5)
+000186  fd 27 05          0161   	ld hl, (iy+5)
+000189  01 cc bb aa       0162   	ld bc, $aabbcc
+00018d  11 cc bb aa       0163   	ld de, $aabbcc
+000191  21 cc bb aa       0164   	ld hl, $aabbcc
+000195  ed 4b cc bb aa    0165   	ld bc, ($aabbcc)
+00019a  ed 5b cc bb aa    0166   	ld de, ($aabbcc)
+00019f  2a cc bb aa       0167   	ld hl, ($aabbcc)
+0001a3  02                0168   	ld (bc), a
+0001a4  12                0169   	ld (de), a
+0001a5  77                0170   	ld (hl), a
+0001a6  f9                0171   	ld sp, hl
+0001a7  dd f9             0172   	ld sp, ix
+0001a9  fd f9             0173   	ld sp, iy
+0001ab  31 cc bb aa       0174   	ld sp, $aabbcc
+0001af  ed 7b cc bb aa    0175   	ld sp, ($aabbcc)
+0001b4  ed a8             0176   	ldd
+0001b6  ed b8             0177   	lddr
+0001b8  ed a0             0178   	ldi
+0001ba  ed b0             0179   	ldir
+0001bc  ed 32 05          0180   	lea ix, ix+5
+0001bf  ed 55 05          0181   	lea iy, ix+5
+0001c2  ed 54 05          0182   	lea ix, iy+5
+0001c5  ed 33 05          0183   	lea iy, iy+5
+0001c8  ed 02 05          0184   	lea bc, ix+5
+0001cb  ed 12 05          0185   	lea de, ix+5
+0001ce  ed 22 05          0186   	lea hl, ix+5
+0001d1  ed 03 05          0187   	lea bc, iy+5
+0001d4  ed 13 05          0188   	lea de, iy+5
+0001d7  ed 23 05          0189   	lea hl, iy+5
+0001da                    0190   

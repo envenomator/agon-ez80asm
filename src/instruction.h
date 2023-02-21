@@ -157,7 +157,8 @@ typedef enum {
     TRANSFORM_SELECT,
     TRANSFORM_N,            // only used by RST
     TRANSFORM_BIT,          // only used by RES/SET
-    TRANSFORM_REL           // only used by JR/DJNZ
+    TRANSFORM_REL,          // only used by JR/DJNZ
+    TRANSFORM_IRA           // only used by mnemonics that SKIP the A register
 }opcodetransformtype;
 
 typedef struct {

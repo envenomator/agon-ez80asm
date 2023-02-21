@@ -459,11 +459,11 @@ void parseLine(char *src) {
                 strcpy(currentline.operand1,token.start);
                 switch(token.terminator) {
                     case ';':
-                        parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
+                        parse_operand(POS_SOURCE, currentline.operand1, &operand1);
                         state = PS_COMMENT;
                         break;
                     case 0:
-                        parse_operand(POS_DESTINATION, currentline.operand1, &operand1);
+                        parse_operand(POS_SOURCE, currentline.operand1, &operand1);
                         state = PS_DONE;
                         break;
                     case ',':
@@ -724,6 +724,9 @@ void transform_instruction(operand *op, permittype type) {
                 if(op->position == POS_DESTINATION) output.opcode |= 0x01; // bit 0
                 else output.opcode |= 0x08; // bit 3
             }
+            break;
+        case TRANSFORM_IRA:
+            if((op->reg == R_IXL) || (op->reg == R_IYL)) output.opcode |= 0x01; // bit 0
             break;
         case TRANSFORM_Z:
             output.opcode |= op->reg_index;

@@ -1,8 +1,13 @@
-    xor a, ixh
-    xor a, ixl
-    xor a, iyh
-    xor a, iyl
-    xor ixh
-    xor ixl
-    xor iyh
-    xor iyl
+.assume adl=1
+	cp a,ixh
+	cp a,ixl
+	cp a,iyh
+	cp a,iyl
+	cp ixh
+	cp ixl
+	cp iyh
+	cp iyl
+    dec ixh
+	dec ixl
+	dec iyh
+	dec iyl
