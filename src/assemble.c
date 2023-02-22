@@ -370,7 +370,7 @@ void parseLine(char *src) {
     uint8_t x;
     bool done;
     uint8_t state;
-
+    uint8_t argcount = 0;
     tokentype token;
 
     // default current line items
@@ -393,130 +393,129 @@ void parseLine(char *src) {
     while(!done) {
         switch(state) {
             case PS_START:
-                x = get_token(&token, src);
-                switch(token.terminator) {
-                    case ':':
-                        state = PS_LABEL;
+                if((isspace(*src) == 0) && (*src != '.')) {
+                    getLineToken(&token, src, ':');
+                    switch(token.terminator) {
+                        case ':':
+                            state = PS_LABEL;
+                            break;
+                        case ';':
+                            state = PS_COMMENT;
+                            break;
+                        default:
+                            error(message[ERROR_INVALIDLABEL]);
+                            state = PS_ERROR;                        
+                            break;
+                    }
+                    break;
+                }
+                x = getLineToken(&token, src,' ');
+                if(x) state = PS_COMMAND;
+                else {
+                    if(token.terminator == 0) {
+                        state = PS_DONE;
                         break;
-                    case ';':
+                    }
+                    if(token.terminator == ';') {
                         state = PS_COMMENT;
                         break;
-                    case 0:
-                    case ' ':
-                    case '\t':
-                        if(x) state = PS_COMMAND;
-                        else state = PS_DONE;
-                        break;
-                    default:
-                        state = PS_ERROR;
-                        break;
+                    }
                 }
                 break;
             case PS_LABEL:
                 strcpy(currentline.label,token.start);
-                x = get_token(&token,token.next);
-                switch(token.terminator) {
-                    case ';':
-                        state = PS_COMMENT;
-                        if(pass == 2) advanceLocalLabel();
-                        break;
-                    case 0:
-                    case ' ':
-                    case '\t':
-                        if(x) state = PS_COMMAND;
-                        else state = PS_DONE;
-                        if(pass == 2) advanceLocalLabel();
-                        break;
-                    default:
-                        if(pass == 2) advanceLocalLabel();
-                        state = PS_ERROR;
-                        break;
-                }                
-                break;
-            case PS_COMMAND:
-                split_suffix(currentline.mnemonic, currentline.suffix, token.start);
-                
-                //printf("cmd: <<%s>> suffix <<%s>>\n", currentline.mnemonic,currentline.suffix);
-                currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
-                if(currentline.current_instruction == NULL) {
-                    // check if 'suffix' part is actually a assembly command
-                    currentline.current_instruction = instruction_table_lookup(currentline.suffix);
-                    if(currentline.current_instruction == NULL) {
-                        error(message[ERROR_INVALIDMNEMONIC]);
+                advanceLocalLabel();
+                x = getLineToken(&token, token.next, ' ');
+                if(x) state = PS_COMMAND;
+                else {
+                    if(token.terminator == 0) {
                         state = PS_DONE;
                         break;
                     }
-                    // instruction is an assembly command, copy it to mnemonic and clear out suffix part
-                    strcpy(currentline.mnemonic, currentline.suffix);
-                    currentline.suffix[0] = 0;
-                }
-                // resume parsing the original line
-                switch(token.terminator) {
-                    case ';':
+                    if(token.terminator == ';') {
                         state = PS_COMMENT;
                         break;
-                    case ' ':
-                    case '\t':
-                        if(currentline.current_instruction->type == EZ80) {
-                            x = get_token(&token,token.next);
-                            state = PS_OP1;
-                        }
-                        else {
-                            currentline.next = token.next;
-                            state = PS_DONE; // parse assembly later
-                        }
+                    }
+                }
+                break;
+            case PS_COMMAND:
+                if(token.start[0] == '.') { // assembly command
+                    currentline.current_instruction = instruction_table_lookup(token.start);
+                    if(currentline.current_instruction == NULL) {
+                        error(message[ERROR_INVALIDMNEMONIC]);
+                        state = PS_ERROR;
+                        break;
+                    }
+                    currentline.next = token.next;
+                    strcpy(currentline.mnemonic, token.start);
+                    state = PS_DONE;
+                    break;
+                }
+                split_suffix(currentline.mnemonic, currentline.suffix, token.start);
+                currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
+
+                if(currentline.current_instruction == NULL) {
+                    error(message[ERROR_INVALIDMNEMONIC]);
+                    state = PS_ERROR;
+                    break;
+                }
+                if(currentline.current_instruction->type == ASSEMBLER) {
+                    currentline.next = token.next;
+                    state = PS_DONE;
+                    break;
+                }
+                // EZ80 valid instruction
+                switch(token.terminator) {
+                    case ';':
+                        getLineToken(&token, token.next, 0);
+                        state = PS_COMMENT;
                         break;
                     case 0:
+                        currentline.next = NULL;
                         state = PS_DONE;
                         break;
                     default:
-                        state = PS_ERROR;
+                        getLineToken(&token, token.next, ',');
+                        state = PS_OP1;
                         break;
                 }                
                 break;
             case PS_OP1:
-                strcpy(currentline.operand1,token.start);
+                argcount++;
+                if(argcount == 1) {
+                    strcpy(currentline.operand1, token.start);
+                    parse_operand(currentline.operand1, &operand1);
+                }
+                else {
+                    strcpy(currentline.operand2, token.start);
+                    parse_operand(currentline.operand2, &operand2);
+                }
                 switch(token.terminator) {
                     case ';':
-                        parse_operand(currentline.operand1, &operand1);
+                        getLineToken(&token, token.next, 0);
                         state = PS_COMMENT;
                         break;
                     case 0:
-                        parse_operand(currentline.operand1, &operand1);
+                        currentline.next = NULL;
                         state = PS_DONE;
                         break;
                     case ',':
-                        parse_operand(currentline.operand1, &operand1);
-                        x = get_token(&token,token.next);
-                        state = PS_OP2;
+                        if(argcount == 2) {
+                            error(message[ERROR_TOOMANYARGUMENTS]);
+                            state = PS_ERROR;
+                            break;
+                        }
+                        getLineToken(&token, token.next, ',');
                         break;
-                    default:
-                        state = PS_ERROR;
-                        break;
-                }                
-                break;
-            case PS_OP2:
-                strcpy(currentline.operand2,token.start);
-                switch(token.terminator) {
-                    case ';':
-                    parse_operand(currentline.operand2, &operand2);
-                        state = PS_COMMENT;
-                        break;
-                    case 0:
-                    parse_operand(currentline.operand2, &operand2);
-                        state = PS_DONE;
-                        break;
-                    default:
-                        state = PS_ERROR;
-                        break;
-                }                
+                }
                 break;
             case PS_COMMENT:
-                strcpy(currentline.comment,token.next);
+                strcpy(currentline.comment,token.start);
                 state = PS_DONE;
                 break;
             case PS_ERROR:
-                printf("Error during parsing\n");
+                error(message[ERROR_PARSE]);
+                currentline.next = NULL;
                 state = PS_DONE;
                 break;
             case PS_DONE:

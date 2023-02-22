@@ -88,7 +88,8 @@ enum {
     ERROR_MAXLOCALLABELS,
     ERROR_INCLUDEFILE,
     ERROR_LOCALLABELSNOTALLOWED,
-    ERROR_ASCIIFORMAT
+    ERROR_ASCIIFORMAT,
+    ERROR_PARSE
 };
 // Error messages
 extern char *message[];

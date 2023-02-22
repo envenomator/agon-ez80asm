@@ -61,5 +61,6 @@ char *message[] = {
     "Maximum number of local labels reached",
     "Unable to open include file",
     "Local label reference not allowed",
-    "Invalid ascii format"
+    "Invalid ascii format",
+    "Parse error"
 };

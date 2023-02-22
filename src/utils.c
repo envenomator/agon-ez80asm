@@ -126,6 +126,7 @@ typedef enum {
 // Returns:
 // number of bytes copied into token, excluding the 0 terminator
 
+
 static inline bool isTerminator(char t) {
     return ((t == ' ') || (t == ',') || (t == ':') || (t == ';') || (t == '=') || (t == '\t'));
 }
@@ -137,6 +138,7 @@ static inline bool isNonSpaceTerminator(char t) {
 static inline bool isValueTerminator(char t) {
     return ((t == '+') || (t == '-'));
 }
+
 
 // split a 'command.suffix' token in two parts 
 void split_suffix(char *mnemonic, char *suffix, char *buffer) {
@@ -153,6 +155,120 @@ void split_suffix(char *mnemonic, char *suffix, char *buffer) {
     }
     *suffix = 0;
     *mnemonic = 0;
+}
+
+uint8_t getLineToken(tokentype *token, char *src, char terminator) {
+    char *target;
+    uint8_t index = 0;
+    bool escaped = false;
+    bool terminated;
+    tokenclass state;
+
+    // remove leading space
+    while(*src) {
+        if(isspace(*src) != 0) src++;
+        else break;
+    }
+    if(*src == 0) { // empty string
+        token->terminator = 0;
+        token->start[0] = 0;
+        token->length = 0;
+        token->next = NULL;
+        return 0;
+    }
+    // copy over the token itself, taking care of the character state within the token
+    state = TOKEN_REGULAR;
+    target = token->start;
+    while(true) {
+        terminated = false;
+        switch(state) {
+            case TOKEN_STRING:
+                switch(*src) {
+                    case '\\':
+                        escaped = !escaped;
+                        break;
+                    case '\"':
+                        if(!escaped) state = TOKEN_REGULAR;
+                        escaped = false;
+                        break;
+                    default:
+                        escaped = false;
+                        break;
+                }
+                break;
+            case TOKEN_BRACKET:
+                if(*src == ')') state = TOKEN_REGULAR;
+                break;
+            case TOKEN_REGULAR:
+                if(*src == '\"') state = TOKEN_STRING;
+                if(*src == '(') state = TOKEN_BRACKET;
+                terminated = ((*src == ';') || (*src == terminator));
+                break;            
+        }
+        terminated = terminated || (*src == 0);
+        if(terminated) {
+            token->terminator = *src;
+            break;
+        }
+        *target++ = *src++;
+        index++;
+    }
+    // remove trailing space
+    while(index) {
+        target--;
+        if(isspace(*target) == 0) {
+            target++;
+            break;
+        }
+        index--;
+    }
+    *target = 0;
+    if(*src == 0) token->next = NULL;
+    else token->next = src+1;
+    token->length = index;
+    return index;
+}
+
+uint8_t getOperatorToken(tokentype *token, char *src) {
+    char *target;
+    uint8_t index = 0;
+
+    // remove leading space
+    while(*src) {
+        if(isspace(*src) != 0) src++;
+        else break;
+    }
+    if(*src == 0) { // empty string
+        token->terminator = 0;
+        token->start[0] = 0;
+        token->length = 0;
+        token->next = NULL;
+        return 0;
+    }
+    // copy content
+    target = token->start;
+    while(true) {
+        if((*src == 0) || (*src == '+') || (*src == '-')) {
+            token->terminator = *src;
+            break;
+        }
+        *target++ = *src++;
+        index++;
+    }
+    // remove trailing space
+    while(index) {
+        target--;
+        if(isspace(*target) == 0) {
+            target++;
+            break;
+        }
+        index--;
+    }
+    *target = 0;
+    if(*src == 0) token->next = NULL;
+    else token->next = src+1;
+    token->length = index;
+    return index;
 }
 
 uint8_t get_token(tokentype *token, char *src) {
