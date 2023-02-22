@@ -1144,8 +1144,6 @@ void handle_asm_adl(void) {
 }
 
 void handle_asm_org(void) {
-    uint32_t i;
-    uint32_t size;
     uint32_t newaddress;
     
     parse_asm_single_immediate(); // get address from next token
@@ -1153,15 +1151,9 @@ void handle_asm_org(void) {
     if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE]); 
     //printf("DEBUG - setting address %08x, pass %d\n",newaddress, pass);
     if(newaddress >= address) {
-        size = newaddress-address;
         if(pass == 1) {
             // Output label at this address
             definelabel(address); // set address to current line
-        }
-        if(totalsize > 0) {
-            //printf("DEBUG - Output %d GAP bytes\n", size);
-            for(i = 0; i < (size); i++) emit_8bit(FILLBYTE);
-            totalsize += size;
         }
         address = newaddress;
     }

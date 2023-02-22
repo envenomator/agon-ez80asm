@@ -1,3 +1,6 @@
 PC      Output            Line   Source
-000000                    0001   labela: .equ $01
-000000  3e 04             0002       ld a, labela << 2
+000000                    0001   .org $40000
+040000                    0002   labela:
+040000  c3 00 80 00       0003       jp labela >> 3
+040004                    0004   .org $40100
+040100  78                0005       ld a,b
