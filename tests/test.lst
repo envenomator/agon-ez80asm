@@ -1,3 +1,4 @@
 PC      Output            Line   Source
-000000                    0001   
-000000                    0002   ;comment
+000000                    0001   .org $40000
+040000                    0002   .assume adl=0
+040000  49 7e             0003       ld.l a,(hl)

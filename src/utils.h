@@ -22,6 +22,5 @@ uint8_t getLineToken(tokentype *token, char *src, char terminator);
 uint8_t getOperatorToken(tokentype *token, char *src);
 
 uint8_t get_token(tokentype *token, char *src);
-uint8_t get_ValueToken(tokentype *token, char *src);
 
 #endif // UTILS_H

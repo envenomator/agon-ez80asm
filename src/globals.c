@@ -39,7 +39,7 @@ char *message[] = {
     "Range error in immediate",
     "Invalid suffix",
     "Value too large for 16-bits, truncation required",
-    "Illegal suffix for this mnemonic",
+    "Suffix not matching mnemonic / ADL mode",
     "Displacement range error",
     "String format error",
     "Invalid ADL mode",

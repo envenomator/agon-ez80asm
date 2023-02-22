@@ -653,12 +653,13 @@ operandlist operands_xor[] = {
 
 // this table needs to be sorted on name
 instruction instructions[] = {
+    {".assume",   ASSEMBLER, ASM_ADL, 0, NULL, ASM_ARG_KEYVAL},
+    {".org",   ASSEMBLER, ASM_ORG, 0, NULL, ASM_ARG_SINGLE},
     {"adc",   EZ80, 0, sizeof(operands_adc)/sizeof(operandlist), operands_adc},
     {"add",   EZ80, 0, sizeof(operands_add)/sizeof(operandlist), operands_add},
     {"and",   EZ80, 0, sizeof(operands_and)/sizeof(operandlist), operands_and},
     {"ascii",    ASSEMBLER, ASM_ASCII, 0, NULL, ASM_ARG_SINGLE},
     {"asciiz",    ASSEMBLER, ASM_ASCIIZ, 0, NULL, ASM_ARG_SINGLE},
-    {"assume",   ASSEMBLER, ASM_ADL, 0, NULL, ASM_ARG_KEYVAL},
     {"bit",   EZ80, 0, sizeof(operands_bit)/sizeof(operandlist), operands_bit},
     {"call",  EZ80, 0, sizeof(operands_call)/sizeof(operandlist), operands_call},
     {"ccf",   EZ80, 0, sizeof(operands_ccf)/sizeof(operandlist), operands_ccf},
@@ -714,7 +715,6 @@ instruction instructions[] = {
     {"neg",  EZ80, 0, sizeof(operands_neg)/sizeof(operandlist), operands_neg},
     {"nop",  EZ80, 0, sizeof(operands_nop)/sizeof(operandlist), operands_nop},
     {"or",  EZ80, 0, sizeof(operands_or)/sizeof(operandlist), operands_or},
-    {"org",   ASSEMBLER, ASM_ORG, 0, NULL, ASM_ARG_SINGLE},
     {"otd2r",  EZ80, 0, sizeof(operands_otd2r)/sizeof(operandlist), operands_otd2r},
     {"otdm",  EZ80, 0, sizeof(operands_otdm)/sizeof(operandlist), operands_otdm},
     {"otdmr",  EZ80, 0, sizeof(operands_otdmr)/sizeof(operandlist), operands_otdmr},

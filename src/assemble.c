@@ -75,7 +75,7 @@ uint32_t getLabelValue(char *string) {
     operator = '+'; // previous operand in case of single value/label
     while(ptr) {
         tmp = 0;
-        get_ValueToken(&token, ptr);
+        getOperatorToken(&token, ptr);
         if(notEmpty(token.start)) {
             lbl = findLabel(token.start);
             if(lbl) tmp = lbl->address;
@@ -954,7 +954,7 @@ void parse_asm_single_immediate(void) {
     tokentype token;
 
     if(currentline.next) {
-        get_token(&token, currentline.next);
+        getLineToken(&token, currentline.next,0);
         if(notEmpty(token.start)) {
             operand1.immediate = str2num(token.start,true);
             operand1.immediate_provided = true;
@@ -969,10 +969,10 @@ void parse_asm_keyval_pair(void) {
     tokentype token;
 
     if(currentline.next) {
-        get_token(&token, currentline.next);
+        getLineToken(&token, currentline.next, '=');
         strcpy(currentline.operand1, token.start);
         if(token.terminator == '=') {
-            get_token(&token, token.next);
+            getLineToken(&token, token.next, 0);
             if(notEmpty(token.start)) {
                 operand2.immediate = str2num(token.start,true);
                 operand2.immediate_provided = true;
@@ -993,7 +993,7 @@ void handle_asm_db(void) {
     }
     if(currentline.next) {
         while(currentline.next) {
-            get_token(&token, currentline.next);
+            getLineToken(&token, currentline.next, ',');
             if(notEmpty(token.start)) {
                 //printf("DEBUG db <<%s>>\n",token.start);
                 switch(token.start[0]) {
@@ -1038,7 +1038,7 @@ void handle_asm_dw(void) {
     }
     if(currentline.next) {
         while(currentline.next) {
-            get_token(&token, currentline.next);
+            getLineToken(&token, currentline.next, ',');
             if(notEmpty(token.start)) {
                 lbl = findLabel(token.start);
                 if(lbl) operand1.immediate = lbl->address;
@@ -1072,12 +1072,12 @@ void handle_asm_ds(void) {
         definelabel(address);
     }
     if(currentline.next) {
-        get_token(&token, currentline.next);
+        getLineToken(&token, currentline.next, ',');
         if(notEmpty(token.start)) {
             num = str2num(token.start,true);
 
             if(token.terminator == ',') {
-                get_token(&token, token.next);
+                getLineToken(&token, token.next, 0);
                 if(notEmpty(token.start)) {
                     if(token.start[0] == '\'') val = getAsciiValue(token.start);
                     else val = str2num(token.start,true);
@@ -1100,7 +1100,7 @@ void handle_asm_ascii(bool terminate) {
         definelabel(address);
     }
     if(currentline.next) {
-        get_token(&token, currentline.next);
+        getLineToken(&token, currentline.next, 0);
         if(token.start[0] == '\"') {
             emit_quotedstring(token.start);
             if(terminate) emit_8bit(0);
@@ -1117,7 +1117,7 @@ void handle_asm_equ(void) {
     if(pass == 2) {
         // Only define EQU labels AFTER all other labels have been defined, to allow forward-looking references
         if(currentline.next) {
-            get_token(&token, currentline.next);
+            getLineToken(&token, currentline.next, 0);
             if(notEmpty(token.start)) {
                 definelabel(getLabelValue(token.start));
                 if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
@@ -1169,7 +1169,7 @@ void handle_asm_include(void) {
     tokentype token;
     filestackitem fsi;
     if(currentline.next) {
-        get_token(&token, currentline.next);
+        getLineToken(&token, currentline.next, 0);
         if(token.start[0] == '\"') {
             token.start[strlen(token.start)-1] = 0;
             //printf("Include: <<%s>>\n",token.start+1);
