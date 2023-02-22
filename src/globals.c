@@ -37,6 +37,7 @@ char *message[] = {
     "Operand(s) not matching mnemonic",
     "Error in opcode transformation",
     "Range error in immediate",
+    "Value too large for 8-bits, truncation required",
     "Invalid suffix",
     "Value too large for 16-bits, truncation required",
     "Suffix not matching mnemonic / ADL mode",

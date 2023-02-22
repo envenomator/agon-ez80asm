@@ -15,8 +15,8 @@ enum {
 
 // transform a binary string to a uint32_t number
 // string must end with 0 and contain only valid characters (0..1)
-uint32_t str2bin(char *string) {
-    uint32_t result = 0;
+int32_t str2bin(char *string) {
+    int32_t result = 0;
     uint8_t x = 0;
 
     while(*string) {
@@ -30,8 +30,8 @@ uint32_t str2bin(char *string) {
 
 // transform a hex string to a uint32_t number
 // string must end with 0 and contain only valid characters (0..9,a..f,A..F)
-uint32_t str2hex(char *string) {
-    uint32_t result = 0;
+int32_t str2hex(char *string) {
+    int32_t result = 0;
     char c;
     uint8_t x = 0;
 
@@ -51,8 +51,8 @@ uint32_t str2hex(char *string) {
 
 // transform a hex string to a uint32_t number
 // string must end with 0 and contain only valid characters (0..9)
-uint32_t str2dec(char *string) {
-    uint32_t result = 0;
+int32_t str2dec(char *string) {
+    int32_t result = 0;
     uint8_t x = 0;
 
     while(*string) {
@@ -69,10 +69,10 @@ uint32_t str2dec(char *string) {
 // BINARY:  0%..., ...b
 // HEX:     0x..., ...h, $...
 // DECIMAL ...
-uint32_t str2num(char *string, bool errorhalt) {
+int32_t str2num(char *string, bool errorhalt) {
     char *ptr = string;
     char *start = string;
-    uint32_t result = 0;
+    int32_t result = 0;
     uint8_t state = BASESELECT;
 
     err_str2num = false;

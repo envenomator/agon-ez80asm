@@ -127,7 +127,7 @@ typedef struct {
     int16_t             displacement;           // larger, so we can check range
     bool                displacement_provided;
     bool                immediate_provided;
-    uint32_t            immediate;
+    int32_t            immediate;
     bool                wasLabel;
 } operand;
 

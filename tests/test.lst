@@ -1,2 +1,2 @@
-PC      Output            Line   Source
-000000  74 65 73 74 06    0001   labela: .db "test",5+1
+    1 00:0000 -  -  -  -  labela:
+    2 00:0000 3E FF -  -      ld a,256-1

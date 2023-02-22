@@ -104,7 +104,7 @@ void writeLocalLabels(void) {
     for(i = 0; i < localLabelCounter; i++) {
         delta = localLabelTable[i].name - localLabelBuffer;
         fwrite(&delta, 1, sizeof(delta), file_locals);
-        fwrite(&localLabelTable[i].address, 1, sizeof(uint32_t), file_locals);
+        fwrite(&localLabelTable[i].address, 1, sizeof(int32_t), file_locals);
     }
     //printf("LOCALS WRITTEN: %d\n", localLabelCounter);
 }
@@ -118,18 +118,18 @@ void readLocalLabels(void) {
     fread(&localLabelCounter, sizeof(localLabelCounter), 1, file_locals);
     for(i = 0; i < localLabelCounter; i++) {
         fread(&delta, sizeof(delta), 1, file_locals);
-        fread(&localLabelTable[i].address, sizeof(uint32_t), 1, file_locals);
+        fread(&localLabelTable[i].address, sizeof(int32_t), 1, file_locals);
         localLabelTable[i].name = localLabelBuffer + delta;
     }
     //printf("LOCALS READ: %d\n",localLabelCounter);
 }
 
-void writeAnonymousLabel(uint32_t address) {
+void writeAnonymousLabel(int32_t address) {
     fwrite(&address, 1, sizeof(address), file_anon);
 }
 
 void readAnonymousLabel(void) {
-    uint32_t address;
+    int32_t address;
 
     if(fread(&address, sizeof(address), 1, file_anon)) {
         if(an_next.defined) {
@@ -146,11 +146,11 @@ void readAnonymousLabel(void) {
     }
 }
 
-bool insertLocalLabel(char *labelname, uint32_t address) {
+bool insertLocalLabel(char *labelname, int32_t address) {
     int len,i;
     char *ptr;
     char *old_name;
-    uint32_t old_address;
+    int32_t old_address;
 
     if(labelname[1] == 0) {
         error(message[ERROR_INVALIDLABEL]);
@@ -193,7 +193,7 @@ bool insertLocalLabel(char *labelname, uint32_t address) {
     return false;
 }
 
-bool insertGlobalLabel(char *labelname, uint32_t address){
+bool insertGlobalLabel(char *labelname, int32_t address){
     int index,i,try,len;
     label *tmp;
 

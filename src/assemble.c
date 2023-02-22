@@ -64,8 +64,8 @@ uint8_t getAsciiValue(char *string) {
 // labelb-1
 // labela+labelb+offset1-1
 // The string should not contain any spaces, needs to be a single token
-uint32_t getLabelValue(char *string) {
-    uint32_t total, tmp;
+int32_t getLabelValue(char *string) {
+    int32_t total, tmp;
     char operator, *ptr;
     label *lbl;
     tokentype token;
@@ -525,7 +525,7 @@ void parseLine(char *src) {
     }
 }
 
-void definelabel(uint32_t num){
+void definelabel(int32_t num){
     if(strlen(currentline.label)) {
         //printf("Inserting label %s, %08x\n",currentline.label, num);
         if(currentline.label[0] == '@') {
@@ -812,8 +812,8 @@ void emit_instruction(operandlist *list) {
     if(pass == 1) {
         // issue any errors here
         if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
-            if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && (operand1.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
-            if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && (operand2.immediate > 0xFF)) error(message[WARNING_N_TOOLARGE]);
+            if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[WARNING_N_8BITRANGE]);
+            if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[WARNING_N_8BITRANGE]);
         }
         if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
         if((operand2.displacement_provided) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);

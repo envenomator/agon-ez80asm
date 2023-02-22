@@ -1,1 +1,2 @@
-labela: .db "test",5+1
+labela:
+    ld a,256-1

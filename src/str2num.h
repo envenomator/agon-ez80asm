@@ -14,7 +14,7 @@
 // DECIMAL ...
 //
 // option to NOT halt on errors, but just set the err_str2num status - just check if something is a valid number
-uint32_t str2num(char *string, bool errorhalt);
+int32_t str2num(char *string, bool errorhalt);
 
 extern bool err_str2num;
 
