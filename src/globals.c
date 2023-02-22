@@ -41,7 +41,7 @@ char *message[] = {
     "Invalid suffix",
     "Value too large for 16-bits, truncation required",
     "Suffix not matching mnemonic / ADL mode",
-    "Displacement range error",
+    "Index register offset exceeded",
     "String format error",
     "Invalid ADL mode",
     "Invalid assembler command",

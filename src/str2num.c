@@ -66,7 +66,7 @@ int32_t str2dec(char *string) {
 
 // Transforms a binary/hexadecimal/decimal string to an uint32_t number
 // Valid strings are
-// BINARY:  0%..., ...b
+// BINARY:  0%..., %..., ...b
 // HEX:     0x..., ...h, $...
 // DECIMAL ...
 int32_t str2num(char *string, bool errorhalt) {
@@ -87,6 +87,11 @@ int32_t str2num(char *string, bool errorhalt) {
                     case '$':
                         result = str2hex(ptr+1);
                         if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                        return result;
+                        break;
+                    case '%':
+                        result = str2bin(ptr+1);
+                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDBITNUMBER]);
                         return result;
                         break;
                     case '0':
