@@ -39,8 +39,8 @@ void listEndLine(bool console) {
     objectnum = 0;
     for(lines = 0; lines < linemax; lines++) {
         if(lines == 0) {
-            fprintf(file_list, "%06x  ",_listAddress);
-            if(console) printf("%06x  ",_listAddress);
+            fprintf(file_list, "%06X  ",_listAddress);
+            if(console) printf("%06X  ",_listAddress);
         }
         else {
             fprintf(file_list, "        ");
@@ -48,8 +48,8 @@ void listEndLine(bool console) {
         }
         for(i = 0; i < OBJECTS_PER_LINE; i++) {
             if(objectnum < _listObjectCount) {
-                fprintf(file_list, "%02x ",_listObjects[objectnum]);
-                if(console) printf("%02x ",_listObjects[objectnum]);
+                fprintf(file_list, "%02X ",_listObjects[objectnum]);
+                if(console) printf("%02X ",_listObjects[objectnum]);
                 objectnum++;
             }
             else {
