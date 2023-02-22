@@ -63,5 +63,6 @@ char *message[] = {
     "Unable to open include file",
     "Local label reference not allowed",
     "Invalid ascii format",
-    "Parse error"
+    "Parse error",
+    "Invalid operator"
 };

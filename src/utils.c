@@ -200,7 +200,14 @@ uint8_t getOperatorToken(tokentype *token, char *src) {
     // copy content
     target = token->start;
     while(true) {
-        if((*src == 0) || (*src == '+') || (*src == '-')) {
+        if((*src == 0) || (*src == '+') || (*src == '-') || (*src == '<') || (*src == '>')) {
+            if(((*src == '<') || (*src == '>'))) {
+                if((*(src+1) == *src)) src += 1;
+                else {
+                    token->terminator = '!'; // ERROR
+                    break;
+                }
+            }
             token->terminator = *src;
             break;
         }

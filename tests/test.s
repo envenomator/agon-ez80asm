@@ -1,2 +1,2 @@
-labela:
-    .db 0%1010
+labela: .equ $01
+    ld a, labela << 2

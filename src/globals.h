@@ -90,7 +90,8 @@ enum {
     ERROR_INCLUDEFILE,
     ERROR_LOCALLABELSNOTALLOWED,
     ERROR_ASCIIFORMAT,
-    ERROR_PARSE
+    ERROR_PARSE,
+    ERROR_OPERATOR
 };
 // Error messages
 extern char *message[];
