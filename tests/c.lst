@@ -1,31 +1,31 @@
 PC      Output            Line   Source
-000000  c4 cc bb aa       0001   call nz,$aabbcc
-000004  cc cc bb aa       0002   call z,$aabbcc
-000008  d4 cc bb aa       0003   call nc,$aabbcc
-00000c  dc cc bb aa       0004   call c,$aabbcc
-000010  e4 cc bb aa       0005   call po,$aabbcc
-000014  ec cc bb aa       0006   call pe,$aabbcc
-000018  f4 cc bb aa       0007   call p,$aabbcc
-00001c  fc cc bb aa       0008   call m,$aabbcc
-000020  cd cc bb aa       0009   call $aabbcc
-000024  3f                0010   ccf
-000025  be                0011   cp a,(hl)
-000026  dd bc             0012   cp a, ixh
-000028  dd bd             0013   cp a, ixl
-00002a  fd bc             0014   cp a, iyh
-00002c  fd bd             0015   cp a, iyl
-00002e  dd be 05          0016   cp a, (ix+5)
-000031  fd be 05          0017   cp a, (iy+5)
-000034  fe 05             0018   cp a, 5
-000036  bf                0019   cp a, a
-000037  b8                0020   cp a, b
-000038  b9                0021   cp a, c
-000039  ba                0022   cp a, d
-00003a  bb                0023   cp a, e
-00003b  bc                0024   cp a, h
-00003c  bd                0025   cp a, l
-00003d  ed a9             0026   cpd
-00003f  ed b9             0027   cpdr
-000041  ed a1             0028   cpi
-000043  ed b1             0029   cpir
-000045  2f                0030   cpl
+000000  c4 cc bb aa       0001    call nz,$aabbcc
+000004  cc cc bb aa       0002    call z,$aabbcc
+000008  d4 cc bb aa       0003    call nc,$aabbcc
+00000c  dc cc bb aa       0004    call c,$aabbcc
+000010  e4 cc bb aa       0005    call po,$aabbcc
+000014  ec cc bb aa       0006    call pe,$aabbcc
+000018  f4 cc bb aa       0007    call p,$aabbcc
+00001c  fc cc bb aa       0008    call m,$aabbcc
+000020  cd cc bb aa       0009    call $aabbcc
+000024  3f                0010    ccf
+000025  be                0011    cp a,(hl)
+000026  dd bc             0012    cp a, ixh
+000028  dd bd             0013    cp a, ixl
+00002a  fd bc             0014    cp a, iyh
+00002c  fd bd             0015    cp a, iyl
+00002e  dd be 05          0016    cp a, (ix+5)
+000031  fd be 05          0017    cp a, (iy+5)
+000034  fe 05             0018    cp a, 5
+000036  bf                0019    cp a, a
+000037  b8                0020    cp a, b
+000038  b9                0021    cp a, c
+000039  ba                0022    cp a, d
+00003a  bb                0023    cp a, e
+00003b  bc                0024    cp a, h
+00003c  bd                0025    cp a, l
+00003d  ed a9             0026    cpd
+00003f  ed b9             0027    cpdr
+000041  ed a1             0028    cpi
+000043  ed b1             0029    cpir
+000045  2f                0030    cpl

@@ -1,4 +1,2 @@
 PC      Output            Line   Source
-000000                    0001   .org $40000
-040000                    0002   .assume adl=0
-040000  49 7e             0003       ld.l a,(hl)
+000000  74 65 73 74 06    0001   labela: .db "test",5+1
