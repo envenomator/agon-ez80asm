@@ -1011,17 +1011,6 @@ void handle_asm_db(void) {
                     case '\"':
                         emit_quotedstring(token.start);
                         break;
-                    /*
-                    case '\'':
-                        //emit_quotedvalue(token.start);
-                        emit_8bit(getAsciiValue(token.start));
-                        break;
-                    default:
-                        operand1.immediate = str2num(token.start,true);
-                        if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
-                        emit_8bit(operand1.immediate);
-                        break;
-                    */
                     default:
                         operand1.immediate = getLabelValue(token.start);
                         if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
@@ -1071,25 +1060,6 @@ void handle_asm_dw(bool longword) {
         }
     }
     else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
-}
-
-void handle_asm_ascii(bool terminate) {
-    tokentype token;
-
-    if(pass == 1) {
-        // Output label at this address
-        definelabel(address);
-    }
-    if(currentline.next) {
-        getLineToken(&token, currentline.next, 0);
-        if(token.start[0] == '\"') {
-            emit_quotedstring(token.start);
-            if(terminate) emit_8bit(0);
-        }
-        else error(message[ERROR_STRINGFORMAT]);
-        if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
-    }
-    else error(message[ERROR_MISSINGOPERAND]);
 }
 
 void handle_asm_equ(void) {
@@ -1232,10 +1202,11 @@ void handle_assembler_command(void) {
         handle_asm_dw(true);
         break;
     case(ASM_ASCII):
-        handle_asm_ascii(false);
+        handle_asm_db();
         break;
     case(ASM_ASCIIZ):
-        handle_asm_ascii(true);
+        handle_asm_db();
+        emit_8bit(0);
         break;
     case(ASM_EQU):
         handle_asm_equ();
