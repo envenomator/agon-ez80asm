@@ -177,6 +177,7 @@ enum {
     ASM_DB,
     ASM_DS,
     ASM_DW,
+    ASM_DL,
     ASM_ASCII,
     ASM_ASCIIZ,
     ASM_EQU,

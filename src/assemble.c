@@ -1032,7 +1032,7 @@ void handle_asm_db(void) {
     else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
 }
 
-void handle_asm_dw(void) {
+void handle_asm_dw(bool longword) {
     label *lbl;
     tokentype token;
     if(pass == 1) {
@@ -1047,7 +1047,7 @@ void handle_asm_dw(void) {
                 if(lbl) operand1.immediate = lbl->address;
                 else operand1.immediate = str2num(token.start,true);
                 
-                if(adlmode) {
+                if(longword) {
                     emit_24bit(operand1.immediate);
                 }
                 else {
@@ -1201,7 +1201,10 @@ void handle_assembler_command(void) {
         handle_asm_ds();
         break;
     case(ASM_DW):
-        handle_asm_dw();
+        handle_asm_dw(false);
+        break;
+    case(ASM_DL):
+        handle_asm_dw(true);
         break;
     case(ASM_ASCII):
         handle_asm_ascii(false);

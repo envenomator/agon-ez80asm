@@ -1,6 +1,3 @@
 PC      Output            Line   Source
-000000                    0001   .org $40000
-040000                    0002   labela:
-040000  C3 00 80 00       0003       jp labela >> 3
-040004                    0004   .org $40100
-040100  78                0005       ld a,b
+000000                    0001       .assume adl=1
+000000  CC BB AA          0002       .dl $aabbcc
