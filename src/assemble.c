@@ -1192,20 +1192,23 @@ uint32_t delta;
     }
 
     parse_asm_single_immediate();
-    if((operand1.immediate & (operand1.immediate - 1)) == 0) {
-        alignment = operand1.immediate;
-        base = (~(operand1.immediate - 1) & address);
+    if(operand1.immediate > 0) {
+        if((operand1.immediate & (operand1.immediate - 1)) == 0) {
+            alignment = operand1.immediate;
+            base = (~(operand1.immediate - 1) & address);
 
-        if(address & (operand1.immediate -1)) base += alignment;
-        delta = base - address;
-        while(delta--) emit_8bit(FILLBYTE);
+            if(address & (operand1.immediate -1)) base += alignment;
+            delta = base - address;
+            while(delta--) emit_8bit(FILLBYTE);
 
-        address = base;
-        if(pass == 1) {
-            definelabel(address); // set address to current line
+            address = base;
+            if(pass == 1) {
+                definelabel(address); // set address to current line
+            }
         }
+        else error(message[ERROR_POWER2]); 
     }
-    else error(message[ERROR_POWER2]); 
+    else error(message[ERROR_INVALIDNUMBER]);
 }
 
 void handle_assembler_command(void) {
