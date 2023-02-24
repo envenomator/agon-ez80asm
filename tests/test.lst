@@ -1,6 +1,0 @@
-PC      Output            Line   Source
-000000                    0001       .assume adl=1
-000000  00 00 00 00 00 00 0002       ds 8,0
-        00 00             
-000008                    0003       align 4
-000008  78                0004       ld a,b
