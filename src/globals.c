@@ -64,5 +64,6 @@ char *message[] = {
     "Local label reference not allowed",
     "Invalid ascii format",
     "Parse error",
-    "Invalid operator"
+    "Invalid operator",
+    "Argument is not a power of 2"
 };

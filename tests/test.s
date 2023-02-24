@@ -1,2 +1,4 @@
     .assume adl=1
-    .asciz "Test",0
+    ds 8,0
+    align 16
+    ld a,b

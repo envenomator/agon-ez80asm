@@ -654,8 +654,9 @@ operandlist operands_xor[] = {
 
 // this table needs to be sorted on name
 instruction instructions[] = {
-    {".ascii",   ASSEMBLER, ASM_ASCII, 0, NULL, ASM_ARG_SINGLE},
-    {".asciz",  ASSEMBLER, ASM_ASCIIZ, 0, NULL, ASM_ARG_SINGLE},
+    {".align",   ASSEMBLER, ASM_ALIGN, 0, NULL, ASM_ARG_SINGLE},
+    {".ascii",   ASSEMBLER, ASM_ASCII, 0, NULL, ASM_ARG_LIST},
+    {".asciz",  ASSEMBLER, ASM_ASCIIZ, 0, NULL, ASM_ARG_LIST},
     {".assume",  ASSEMBLER, ASM_ADL, 0, NULL, ASM_ARG_KEYVAL},
     {".blkb",      ASSEMBLER, ASM_BLKB, 0, NULL, ASM_ARG_LIST},
     {".blkl",      ASSEMBLER, ASM_BLKL, 0, NULL, ASM_ARG_LIST},
@@ -673,9 +674,10 @@ instruction instructions[] = {
     {".org",     ASSEMBLER, ASM_ORG, 0, NULL, ASM_ARG_SINGLE},
     {"adc",      EZ80, 0, sizeof(operands_adc)/sizeof(operandlist), operands_adc},
     {"add",      EZ80, 0, sizeof(operands_add)/sizeof(operandlist), operands_add},
+    {"align",   ASSEMBLER, ASM_ALIGN, 0, NULL, ASM_ARG_SINGLE},
     {"and",      EZ80, 0, sizeof(operands_and)/sizeof(operandlist), operands_and},
-    {"ascii",    ASSEMBLER, ASM_ASCII, 0, NULL, ASM_ARG_SINGLE},
-    {"asciz",   ASSEMBLER, ASM_ASCIIZ, 0, NULL, ASM_ARG_SINGLE},
+    {"ascii",    ASSEMBLER, ASM_ASCII, 0, NULL, ASM_ARG_LIST},
+    {"asciz",   ASSEMBLER, ASM_ASCIIZ, 0, NULL, ASM_ARG_LIST},
     {"bit",      EZ80, 0, sizeof(operands_bit)/sizeof(operandlist), operands_bit},
     {"blkb",      ASSEMBLER, ASM_BLKB, 0, NULL, ASM_ARG_LIST},
     {"blkl",      ASSEMBLER, ASM_BLKL, 0, NULL, ASM_ARG_LIST},

@@ -172,6 +172,7 @@ enum {
 };
 
 enum {
+    ASM_ALIGN,
     ASM_ADL,
     ASM_ORG,
     ASM_DB,

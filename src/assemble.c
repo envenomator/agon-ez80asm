@@ -1181,6 +1181,33 @@ void handle_asm_blk(uint8_t width) {
     else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
 }
 
+void handle_asm_align(void) {
+uint32_t alignment;
+uint32_t base;
+uint32_t delta;
+
+    if(pass == 1) {
+        // Output label at this address
+        definelabel(address);
+    }
+
+    parse_asm_single_immediate();
+    if((operand1.immediate & (operand1.immediate - 1)) == 0) {
+        alignment = operand1.immediate;
+        base = (~(operand1.immediate - 1) & address);
+
+        if(address & (operand1.immediate -1)) base += alignment;
+        delta = base - address;
+        while(delta--) emit_8bit(FILLBYTE);
+
+        address = base;
+        if(pass == 1) {
+            definelabel(address); // set address to current line
+        }
+    }
+    else error(message[ERROR_POWER2]); 
+}
+
 void handle_assembler_command(void) {
     switch(currentline.current_instruction->asmtype) {
     case(ASM_ADL):
@@ -1225,6 +1252,9 @@ void handle_assembler_command(void) {
         break;
     case(ASM_BLKL):
         handle_asm_blk(4);
+        break;
+    case(ASM_ALIGN):
+        handle_asm_align();
         break;
     }
     return;

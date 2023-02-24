@@ -91,7 +91,8 @@ enum {
     ERROR_LOCALLABELSNOTALLOWED,
     ERROR_ASCIIFORMAT,
     ERROR_PARSE,
-    ERROR_OPERATOR
+    ERROR_OPERATOR,
+    ERROR_POWER2
 };
 // Error messages
 extern char *message[];
