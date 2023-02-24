@@ -181,7 +181,11 @@ enum {
     ASM_ASCII,
     ASM_ASCIIZ,
     ASM_EQU,
-    ASM_INCLUDE
+    ASM_INCLUDE,
+    ASM_BLKB,
+    ASM_BLKW,
+    ASM_BLKP,
+    ASM_BLKL
 };
 
 typedef enum {

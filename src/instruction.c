@@ -651,11 +651,16 @@ operandlist operands_xor[] = {
     {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xA8, S_NONE},
 };
 
+
 // this table needs to be sorted on name
 instruction instructions[] = {
     {".ascii",   ASSEMBLER, ASM_ASCII, 0, NULL, ASM_ARG_SINGLE},
     {".asciz",  ASSEMBLER, ASM_ASCIIZ, 0, NULL, ASM_ARG_SINGLE},
     {".assume",  ASSEMBLER, ASM_ADL, 0, NULL, ASM_ARG_KEYVAL},
+    {".blkb",      ASSEMBLER, ASM_BLKB, 0, NULL, ASM_ARG_LIST},
+    {".blkl",      ASSEMBLER, ASM_BLKL, 0, NULL, ASM_ARG_LIST},
+    {".blkp",      ASSEMBLER, ASM_BLKP, 0, NULL, ASM_ARG_LIST},
+    {".blkw",      ASSEMBLER, ASM_BLKW, 0, NULL, ASM_ARG_LIST},
     {".db",      ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
     {".defb",    ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
     {".defs",    ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
@@ -672,6 +677,10 @@ instruction instructions[] = {
     {"ascii",    ASSEMBLER, ASM_ASCII, 0, NULL, ASM_ARG_SINGLE},
     {"asciz",   ASSEMBLER, ASM_ASCIIZ, 0, NULL, ASM_ARG_SINGLE},
     {"bit",      EZ80, 0, sizeof(operands_bit)/sizeof(operandlist), operands_bit},
+    {"blkb",      ASSEMBLER, ASM_BLKB, 0, NULL, ASM_ARG_LIST},
+    {"blkl",      ASSEMBLER, ASM_BLKL, 0, NULL, ASM_ARG_LIST},
+    {"blkp",      ASSEMBLER, ASM_BLKP, 0, NULL, ASM_ARG_LIST},
+    {"blkw",      ASSEMBLER, ASM_BLKW, 0, NULL, ASM_ARG_LIST},
     {"call",     EZ80, 0, sizeof(operands_call)/sizeof(operandlist), operands_call},
     {"ccf",      EZ80, 0, sizeof(operands_ccf)/sizeof(operandlist), operands_ccf},
     {"cp",       EZ80, 0, sizeof(operands_cp)/sizeof(operandlist), operands_cp},

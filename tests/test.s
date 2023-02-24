@@ -1,2 +1,2 @@
     .assume adl=1
-    .dl $aabbcc
+    .ds 3,0x0a

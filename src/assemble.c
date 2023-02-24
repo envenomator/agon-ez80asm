@@ -885,6 +885,14 @@ void emit_24bit(uint32_t value) {
     emit_8bit((value>>16)&0xFF);
 }
 
+void emit_32bit(uint32_t value) {
+    //printf("0x%02x-0x%02x-0x%02x\n", value&0xFF, (value>>8)&0xFF, (value>>16)&0xFF);
+    emit_8bit(value&0xFF);
+    emit_8bit((value>>8)&0xFF);
+    emit_8bit((value>>16)&0xFF);
+    emit_8bit((value>>24)&0xFF);
+}
+
 // return the value of a previously escaped character with backslash
 uint8_t get_escaped_char(char n) {
     switch(n) {
@@ -1065,36 +1073,6 @@ void handle_asm_dw(bool longword) {
     else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
 }
 
-void handle_asm_ds(void) {
-    uint16_t num;
-    uint8_t val = 0;
-    tokentype token;
-
-    if(pass == 1) {
-        // Output label at this address
-        definelabel(address);
-    }
-    if(currentline.next) {
-        getLineToken(&token, currentline.next, ',');
-        if(notEmpty(token.start)) {
-            num = str2num(token.start,true);
-
-            if(token.terminator == ',') {
-                getLineToken(&token, token.next, 0);
-                if(notEmpty(token.start)) {
-                    if(token.start[0] == '\'') val = getAsciiValue(token.start);
-                    else val = str2num(token.start,true);
-                }
-                else error(message[ERROR_MISSINGOPERAND]);
-            }
-            else if((token.terminator != 0)  && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-            while(num--) emit_8bit(val);
-        }
-        else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
-    }
-    else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
-}
-
 void handle_asm_ascii(bool terminate) {
     tokentype token;
 
@@ -1186,6 +1164,53 @@ void handle_asm_include(void) {
     else error(message[ERROR_MISSINGOPERAND]);
 }
 
+
+void handle_asm_blk(uint8_t width) {
+    uint16_t num;
+    int32_t val = 0;
+    tokentype token;
+
+    if(pass == 1) {
+        // Output label at this address
+        definelabel(address);
+    }
+
+    if(currentline.next) {
+        getLineToken(&token, currentline.next, ',');
+        if(notEmpty(token.start)) {
+            num = str2num(token.start,true);
+
+            if(token.terminator == ',') {
+                getLineToken(&token, token.next, 0);
+                if(notEmpty(token.start)) {
+                    if(token.start[0] == '\'') val = getAsciiValue(token.start);
+                    else val = str2num(token.start,true);
+                }
+                else error(message[ERROR_MISSINGOPERAND]);
+            }
+            else if((token.terminator != 0)  && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+            while(num--) {
+                switch(width) {
+                    case 1:
+                        emit_8bit(val);
+                        break;
+                    case 2:
+                        emit_16bit(val);
+                        break;
+                    case 3:
+                        emit_24bit(val);
+                        break;
+                    case 4:
+                        emit_32bit(val);
+                        break;
+                }
+            }
+        }
+        else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+    }
+    else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+}
+
 void handle_assembler_command(void) {
     switch(currentline.current_instruction->asmtype) {
     case(ASM_ADL):
@@ -1198,7 +1223,7 @@ void handle_assembler_command(void) {
         handle_asm_db();
         break;
     case(ASM_DS):
-        handle_asm_ds();
+        handle_asm_blk(1);
         break;
     case(ASM_DW):
         handle_asm_dw(false);
@@ -1217,6 +1242,18 @@ void handle_assembler_command(void) {
         break;
     case(ASM_INCLUDE):
         handle_asm_include();
+        break;
+    case(ASM_BLKB):
+        handle_asm_blk(1);
+        break;
+    case(ASM_BLKW):
+        handle_asm_blk(2);
+        break;
+    case(ASM_BLKP):
+        handle_asm_blk(3);
+        break;
+    case(ASM_BLKL):
+        handle_asm_blk(4);
         break;
     }
     return;
