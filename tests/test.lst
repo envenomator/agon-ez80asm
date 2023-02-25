@@ -1,6 +1,3 @@
 PC      Output            Line   Source
 000000                    0001       .assume adl=1
-000000  3E 00             0002       ld a, b0
-000002  3E 00             0003       ld a, 0b
-000004  3E 01             0004       ld a, 1b
-000006  3E 0A             0005       ld a, 1010b
+000000  54 65 73 74       0002       db "Test"
