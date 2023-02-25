@@ -21,7 +21,7 @@ bool filestackPush(filestackitem *fs) {
         _filestackCount++;
         return true;
     }
-    else error("Maximum include files reached");
+    else error(message[ERROR_MAXINCLUDEFILES]);
     return false;
 }
 

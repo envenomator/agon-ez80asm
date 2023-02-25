@@ -386,7 +386,6 @@ void parseLine(char *src) {
     currentline.operand2[0] = 0;
     currentline.comment[0] = 0;
     currentline.size = 0;
-    currentline.buffer[0] = 0;
 
     empty_operand(&operand1);
     empty_operand(&operand2);
@@ -525,10 +524,8 @@ void parseLine(char *src) {
 
 void definelabel(int32_t num){
     if(strlen(currentline.label)) {
-        //printf("Inserting label %s, %08x\n",currentline.label, num);
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
-                //printf("Line %d - Writing anon label\n",linenumber);
                 writeAnonymousLabel(num);
                 return;
             }
@@ -542,7 +539,6 @@ void definelabel(int32_t num){
                 error(message[ERROR_CREATINGLABEL]);
                 return;
             }
-            //printf("Line %d Global label found - writing local labels\n", linenumber);
             writeLocalLabels(file_locals);
             clearLocalLabels();
         }
@@ -553,10 +549,8 @@ void refreshlocalLabels(void) {
     if(pass == 2) {
         if(notEmpty(currentline.label)) {
             if(currentline.label[0] != '@') {
-                //printf("Line %d Global label found - reading local labels\n", linenumber);
                 clearLocalLabels();
                 readLocalLabels(file_locals);
-                //printLocalLabels();
             }
         }
     }
@@ -710,11 +704,9 @@ void prefix_ddfd_suffix(operandlist *op) {
             if(prefix2) {
                 // both prefixes set
                 if(operand1.indirect) {
-                    printf("both - setting op1\n");
                     output.prefix1 = prefix1;
                 }
                 else {
-                    printf("both - Setting op2\n");
                     output.prefix1 = prefix2;
                 }
             }
@@ -859,7 +851,6 @@ void emit_instruction(operandlist *list) {
 
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
-        //printf("%02x:",value);
         listEmit8bit(value);
         fwrite(&value, sizeof(char), 1, file_bin);
     }
@@ -868,20 +859,17 @@ void emit_8bit(uint8_t value) {
 }
 
 void emit_16bit(uint16_t value) {
-    //printf("%02x:%02x\n",value&0xFF, (value>>8)&0xFF);
     emit_8bit(value&0xFF);
     emit_8bit((value>>8)&0xFF);
 }
 
 void emit_24bit(uint32_t value) {
-    //printf("0x%02x-0x%02x-0x%02x\n", value&0xFF, (value>>8)&0xFF, (value>>16)&0xFF);
     emit_8bit(value&0xFF);
     emit_8bit((value>>8)&0xFF);
     emit_8bit((value>>16)&0xFF);
 }
 
 void emit_32bit(uint32_t value) {
-    //printf("0x%02x-0x%02x-0x%02x\n", value&0xFF, (value>>8)&0xFF, (value>>16)&0xFF);
     emit_8bit(value&0xFF);
     emit_8bit((value>>8)&0xFF);
     emit_8bit((value>>16)&0xFF);
@@ -1001,7 +989,6 @@ void handle_asm_db(void) {
         while(currentline.next) {
             getLineToken(&token, currentline.next, ',');
             if(notEmpty(token.start)) {
-                //printf("DEBUG db <<%s>>\n",token.start);
                 switch(token.start[0]) {
                     case '\"':
                         emit_quotedstring(token.start);
@@ -1079,7 +1066,6 @@ void handle_asm_adl(void) {
     if(strcasecmp(currentline.operand1, "adl") == 0) {
         if((operand2.immediate == 0) || (operand2.immediate == 1)) {
             adlmode = operand2.immediate;
-            //printf("Set ADL mode to %d\n",adlmode);
         }
         else error(message[ERROR_INVALID_ADLMODE]);
     }
@@ -1092,7 +1078,6 @@ void handle_asm_org(void) {
     parse_asm_single_immediate(); // get address from next token
     newaddress = operand1.immediate;
     if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE]); 
-    //printf("DEBUG - setting address %08x, pass %d\n",newaddress, pass);
     if(newaddress >= address) {
         if(pass == 1) {
             // Output label at this address
@@ -1110,7 +1095,6 @@ void handle_asm_include(void) {
         getLineToken(&token, currentline.next, 0);
         if(token.start[0] == '\"') {
             token.start[strlen(token.start)-1] = 0;
-            //printf("Include: <<%s>>\n",token.start+1);
             fsi.linenumber = linenumber;
             fsi.fp = file_input;
             strcpy(fsi.filename, currentInputFilename);
@@ -1272,18 +1256,10 @@ void processInstructions(void){
         if(currentline.current_instruction->type == EZ80) {
             // process this mnemonic by applying the instruction list as a filter to the operand-set
             list = currentline.current_instruction->list;
-            if(debug_enabled && pass == 1) {
-                printf("DEBUG - Line %d - Mmemonic \'%s\'\n", linenumber, currentline.mnemonic);
-                printf("DEBUG - Line %d - regA %02x regB %02x\n", linenumber, operand1.reg, operand2.reg);
-                printf("DEBUG - Line %d - indirectA %02x\n", linenumber, operand1.indirect);
-                printf("DEBUG - Line %d - indirectB %02x\n", linenumber, operand2.indirect);
-            }
             match = false;
             for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
-                if(debug_enabled && pass == 1) printf("DEBUG - Line %d - %02x %02x %02x %02x %02x %02x %02x\n", linenumber, list->operandA, list->operandB, list->transformA, list->transformB, list->prefix, list->opcode, list->adl);
                 if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
                     match = true;
-                    if((debug_enabled) && pass == 1) printf("DEBUG - Line %d - match found on ^last^ filter list tuple\n", linenumber);
                     emit_instruction(list);
                     break;
                 }

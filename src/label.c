@@ -30,13 +30,6 @@ uint16_t getGlobalLabelCount(void) {
 uint16_t getLocalLabelCount(void) {
     return localLabelCounter;
 }
-void printLocalLabels(void) {
-    uint8_t i;
-    printf("Local label table:\n");
-    if(localLabelCounter == 0) printf("Empty\n");
-    for(i = 0; i < localLabelCounter; i++) printf("%s:%08x\n", localLabelTable[i].name, localLabelTable[i].address);
-}
-
 void initGlobalLabelTable(void) {
     int i;
 
@@ -220,20 +213,6 @@ bool insertGlobalLabel(char *labelname, int32_t address){
         } 
     }
     return false;
-}
-
-uint16_t globalLabelTable_count() {
-    return globalLabelCounter;
-}
-
-void print_globalLabelTable(){
-    int i;
-    printf("DEBUG - index\tname\taddress\n");
-    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
-        if(globalLabelTable[i] != NULL) {
-            printf("DEBUG - %i\t%s\t%u\n",i,globalLabelTable[i]->name,globalLabelTable[i]->address);
-        }
-    }
 }
 
 void print_bufferspace(){

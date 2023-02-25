@@ -7,12 +7,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-// Transforms a binary/hexadecimal/decimal string to an uint32_t number
-// Valid strings are
-// BINARY:  0b..., ...b
-// HEX:     0x..., ...h, $...
-// DECIMAL ...
-//
+// Transforms a binary/hexadecimal/decimal string to an int32_t number
 // option to NOT halt on errors, but just set the err_str2num status - just check if something is a valid number
 int32_t str2num(char *string, bool errorhalt);
 

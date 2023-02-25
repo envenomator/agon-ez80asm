@@ -65,5 +65,6 @@ char *message[] = {
     "Invalid ascii format",
     "Parse error",
     "Invalid operator",
-    "Argument is not a power of 2"
+    "Argument is not a power of 2",
+    "Maximum include files reached"
 };

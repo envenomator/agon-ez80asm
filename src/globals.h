@@ -19,7 +19,6 @@ typedef struct {
     char operand1[32];
     char operand2[32];
     char comment[128];
-    char buffer[DBBUFFERSIZE];
     uint16_t size;      // byte size of the assembler-command output in db/defb/dw/defw
 } tokenline;
 
@@ -92,7 +91,8 @@ enum {
     ERROR_ASCIIFORMAT,
     ERROR_PARSE,
     ERROR_OPERATOR,
-    ERROR_POWER2
+    ERROR_POWER2,
+    ERROR_MAXINCLUDEFILES
 };
 // Error messages
 extern char *message[];
