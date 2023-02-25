@@ -75,7 +75,7 @@ int findLocalLabelIndex(char *key) {
 
 	for (lim = localLabelCounter; lim != 0; lim >>= 1) {
 		p = base + (lim >> 1);
-		cmp = strcasecmp(key,localLabelTable[p].name);
+		cmp = strcmp(key,localLabelTable[p].name);
 		if (cmp == 0)
 			return p;
 		if (cmp > 0) {
@@ -170,7 +170,7 @@ bool insertLocalLabel(char *labelname, int32_t address) {
             strcpy(ptr, labelname);
 
             for(i = 0; i < localLabelCounter; i++) {
-                if(strcasecmp(labelname, localLabelTable[i].name) < 0) break;
+                if(strcmp(labelname, localLabelTable[i].name) < 0) break;
             }
             if(i < localLabelCounter) {
                 for(; i < localLabelCounter; i++ ) {
@@ -250,7 +250,7 @@ label * findGlobalLabel(char *name){
             return NULL;
         }
         if(globalLabelTable[try] != NULL &&
-            strncmp(globalLabelTable[try]->name,name,GLOBAL_LABEL_TABLE_SIZE) == 0){
+            strcmp(globalLabelTable[try]->name,name) == 0){
             return globalLabelTable[try];
         }
     }

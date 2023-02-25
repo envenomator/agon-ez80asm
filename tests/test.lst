@@ -1,3 +1,7 @@
 PC      Output            Line   Source
 000000                    0001       .assume adl=1
 000000  54 65 73 74       0002       db "Test"
+000004  3E 04             0003   @label :ld a, @label
+000006  3E 06             0004   @laBel: ld a, @laBel
+000008  3E 04             0005       ld a, @label
+00000A  3E 06             0006       ld a, @laBel
