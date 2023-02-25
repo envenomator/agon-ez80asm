@@ -1,3 +1,4 @@
+#include <string.h>
 #include "str2num.h"
 #include "globals.h"
 #include "utils.h"
@@ -85,14 +86,27 @@ int32_t str2num(char *string, bool errorhalt) {
             case(BASESELECT):
                 switch(*ptr) {
                     case '$':
-                        result = str2hex(ptr+1);
-                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                        return result;
+                    case '#':
+                        if(strlen(ptr+1)) {
+                            result = str2hex(ptr+1);
+                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                            return result;
+                        }
+                        else {
+                            state = ERROR;
+                            errorhalt = true;
+                        }
                         break;
                     case '%':
-                        result = str2bin(ptr+1);
-                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDBITNUMBER]);
-                        return result;
+                        if(strlen(ptr+1)) {
+                            result = str2bin(ptr+1);
+                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDBITNUMBER]);
+                            return result;
+                        }
+                        else {
+                            state = ERROR;
+                            errorhalt = true;
+                        }
                         break;
                     case '0':
                         state = FIND_PREFIX;
@@ -109,12 +123,17 @@ int32_t str2num(char *string, bool errorhalt) {
             case(FIND_PREFIX):
                 switch(tolower(*ptr)) {
                     case 'x':
-                        result = str2hex(ptr+1);
-                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                        return result;
+                        if(strlen(ptr+1)) {
+                            result = str2hex(ptr+1);
+                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                            return result;
+                        }
+                        else { // labels shouldn't begin with 0x, so halt always
+                            errorhalt = true;
+                            state = ERROR;
+                        }
                         break;
-                    case '%':
-                        //printf("DEBUG: %s\n",ptr+1);
+                    case 'b': // also takes care of 0b, which is 0
                         result = str2bin(ptr+1);
                         if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
                         return result;
@@ -144,15 +163,27 @@ int32_t str2num(char *string, bool errorhalt) {
                 switch(tolower(*ptr)) {
                     case 'b':
                         *ptr = 0; // terminate string
-                        result = str2bin(start);
-                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                        return result;
+                        if(strlen(start)) {
+                            result = str2bin(start);
+                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                            return result;
+                        }
+                        else {  // just a 'b' given as part of an operand, not a register
+                            state = ERROR;
+                            errorhalt = true;
+                        }
                         break;
                     case 'h':
                         *ptr = 0; // terminate string
-                        result = str2hex(start);
-                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                        return result;
+                        if(strlen(start)) {
+                            result = str2hex(start);
+                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+                            return result;
+                        }
+                        else {  // just a 'h' given as part of an operand, not a register
+                            state = ERROR;
+                            errorhalt = true;
+                        }
                         break;
                     default:
                         if(isdigit(*ptr)) {
