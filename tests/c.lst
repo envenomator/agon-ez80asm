@@ -1,30 +1,31 @@
-    1 00:0000 C4 CC BB AA  call nz,$aabbcc
-    2 00:0004 CC CC BB AA  call z,$aabbcc
-    3 00:0008 D4 CC BB AA  call nc,$aabbcc
-    4 00:000C DC CC BB AA  call c,$aabbcc
-    5 00:0010 E4 CC BB AA  call po,$aabbcc
-    6 00:0014 EC CC BB AA  call pe,$aabbcc
-    7 00:0018 F4 CC BB AA  call p,$aabbcc
-    8 00:001C FC CC BB AA  call m,$aabbcc
-    9 00:0020 CD CC BB AA  call $aabbcc
-   10 00:0024 3F -  -  -   ccf
-   11 00:0025 BE -  -  -   cp a,(hl)
-   12 00:0026 DD BC -  -   cp a, ixh
-   13 00:0028 DD BD -  -   cp a, ixl
-   14 00:002A FD BC -  -   cp a, iyh
-   15 00:002C FD BD -  -   cp a, iyl
-   16 00:002E DD BE 05 -   cp a, (ix+5)
-   17 00:0031 FD BE 05 -   cp a, (iy+5)
-   18 00:0034 FE 05 -  -   cp a, 5
-   19 00:0036 BF -  -  -   cp a, a
-   20 00:0037 B8 -  -  -   cp a, b
-   21 00:0038 B9 -  -  -   cp a, c
-   22 00:0039 BA -  -  -   cp a, d
-   23 00:003A BB -  -  -   cp a, e
-   24 00:003B BC -  -  -   cp a, h
-   25 00:003C BD -  -  -   cp a, l
-   26 00:003D ED A9 -  -   cpd
-   27 00:003F ED B9 -  -   cpdr
-   28 00:0041 ED A1 -  -   cpi
-   29 00:0043 ED B1 -  -   cpir
-   30 00:0045 2F -  -  -   cpl
+PC      Output            Line   Source
+000000  C4 CC BB AA       0001    call nz,$aabbcc
+000004  CC CC BB AA       0002    call z,$aabbcc
+000008  D4 CC BB AA       0003    call nc,$aabbcc
+00000C  DC CC BB AA       0004    call c,$aabbcc
+000010  E4 CC BB AA       0005    call po,$aabbcc
+000014  EC CC BB AA       0006    call pe,$aabbcc
+000018  F4 CC BB AA       0007    call p,$aabbcc
+00001C  FC CC BB AA       0008    call m,$aabbcc
+000020  CD CC BB AA       0009    call $aabbcc
+000024  3F                0010    ccf
+000025  BE                0011    cp a,(hl)
+000026  DD BC             0012    cp a, ixh
+000028  DD BD             0013    cp a, ixl
+00002A  FD BC             0014    cp a, iyh
+00002C  FD BD             0015    cp a, iyl
+00002E  DD BE 05          0016    cp a, (ix+5)
+000031  FD BE 05          0017    cp a, (iy+5)
+000034  FE 05             0018    cp a, 5
+000036  BF                0019    cp a, a
+000037  B8                0020    cp a, b
+000038  B9                0021    cp a, c
+000039  BA                0022    cp a, d
+00003A  BB                0023    cp a, e
+00003B  BC                0024    cp a, h
+00003C  BD                0025    cp a, l
+00003D  ED A9             0026    cpd
+00003F  ED B9             0027    cpdr
+000041  ED A1             0028    cpi
+000043  ED B1             0029    cpir
+000045  2F                0030    cpl

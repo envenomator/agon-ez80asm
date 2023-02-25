@@ -1,4 +1,4 @@
-.assume adl=1
+	.assume adl=1
 	adc a,(hl)
 	adc a,ixh
 	adc a,ixl

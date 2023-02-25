@@ -1,4 +1,4 @@
-.assume adl=1	
+	.assume adl=1	
 	ld a, i
 	ld a, (ix+5)
 	ld a, (iy+5)

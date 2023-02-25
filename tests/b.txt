@@ -1,4 +1,4 @@
-.assume adl=1
+	.assume adl=1
 	bit 0,(hl)
 	bit 1,(hl)
 	bit 2,(hl)

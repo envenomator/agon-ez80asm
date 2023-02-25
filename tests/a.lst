@@ -1,32 +1,32 @@
 PC      Output            Line   Source
-000000                    0001   .assume adl=1
-000000  8e                0002   	adc a,(hl)
-000001  dd 8c             0003   	adc a,ixh
-000003  dd 8d             0004   	adc a,ixl
-000005  fd 8c             0005   	adc a,iyh
-000007  fd 8d             0006   	adc a,iyl
-000009  dd 8e 05          0007   	adc a,(ix+5)
-00000c  fd 8e 05          0008   	adc a,(iy+5)
-00000f  ce 05             0009   	adc a,5
-000011  8f                0010   	adc a,a
+000000                    0001   	.assume adl=1
+000000  8E                0002   	adc a,(hl)
+000001  DD 8C             0003   	adc a,ixh
+000003  DD 8D             0004   	adc a,ixl
+000005  FD 8C             0005   	adc a,iyh
+000007  FD 8D             0006   	adc a,iyl
+000009  DD 8E 05          0007   	adc a,(ix+5)
+00000C  FD 8E 05          0008   	adc a,(iy+5)
+00000F  CE 05             0009   	adc a,5
+000011  8F                0010   	adc a,a
 000012  88                0011   	adc a,b
 000013  89                0012   	adc a,c
-000014  8a                0013   	adc a,d
-000015  8b                0014   	adc a,e
-000016  8c                0015   	adc a,h
-000017  8d                0016   	adc a,l
-000018  ed 4a             0017   	adc hl,bc
-00001a  ed 5a             0018   	adc hl,de
-00001c  ed 6a             0019   	adc hl,hl
-00001e  ed 7a             0020   	adc hl,sp
+000014  8A                0013   	adc a,d
+000015  8B                0014   	adc a,e
+000016  8C                0015   	adc a,h
+000017  8D                0016   	adc a,l
+000018  ED 4A             0017   	adc hl,bc
+00001A  ED 5A             0018   	adc hl,de
+00001C  ED 6A             0019   	adc hl,hl
+00001E  ED 7A             0020   	adc hl,sp
 000020  86                0021   	add a,(hl)
-000021  dd 84             0022   	add a,ixh
-000023  dd 85             0023   	add a,ixl
-000025  fd 84             0024   	add a,iyh
-000027  fd 85             0025   	add a,iyl
-000029  dd 86 05          0026   	add a,(ix+5)
-00002c  fd 86 05          0027   	add a,(iy+5)
-00002f  c6 05             0028   	add a,5
+000021  DD 84             0022   	add a,ixh
+000023  DD 85             0023   	add a,ixl
+000025  FD 84             0024   	add a,iyh
+000027  FD 85             0025   	add a,iyl
+000029  DD 86 05          0026   	add a,(ix+5)
+00002C  FD 86 05          0027   	add a,(iy+5)
+00002F  C6 05             0028   	add a,5
 000031  87                0029   	add a,a
 000032  80                0030   	add a,b
 000033  81                0031   	add a,c
@@ -36,28 +36,28 @@ PC      Output            Line   Source
 000037  85                0035   	add a,l
 000038  09                0036   	add hl,bc
 000039  19                0037   	add hl,de
-00003a  29                0038   	add hl,hl
-00003b  39                0039   	add hl,sp
-00003c  dd 09             0040   	add ix,bc
-00003e  dd 19             0041   	add ix,de
-000040  dd 29             0042   	add ix,ix
-000042  fd 09             0043   	add iy,bc
-000044  fd 19             0044   	add iy,de
-000046  fd 29             0045   	add iy,iy
-000048  dd 39             0046   	add ix,sp
-00004a  fd 39             0047   	add iy,sp
-00004c  a6                0048   	and a,(hl)
-00004d  dd a4             0049   	and a,ixh
-00004f  dd a5             0050   	and a,ixl
-000051  fd a4             0051   	and a,iyh
-000053  fd a5             0052   	and a,iyl
-000055  dd a6 05          0053   	and a,(ix+5)
-000058  fd a6 05          0054   	and a,(iy+5)
-00005b  e6 05             0055   	and a,5
-00005d  a7                0056   	and a,a
-00005e  a0                0057   	and a,b
-00005f  a1                0058   	and a,c
-000060  a2                0059   	and a,d
-000061  a3                0060   	and a,e
-000062  a4                0061   	and a,h
-000063  a5                0062   	and a,l
+00003A  29                0038   	add hl,hl
+00003B  39                0039   	add hl,sp
+00003C  DD 09             0040   	add ix,bc
+00003E  DD 19             0041   	add ix,de
+000040  DD 29             0042   	add ix,ix
+000042  FD 09             0043   	add iy,bc
+000044  FD 19             0044   	add iy,de
+000046  FD 29             0045   	add iy,iy
+000048  DD 39             0046   	add ix,sp
+00004A  FD 39             0047   	add iy,sp
+00004C  A6                0048   	and a,(hl)
+00004D  DD A4             0049   	and a,ixh
+00004F  DD A5             0050   	and a,ixl
+000051  FD A4             0051   	and a,iyh
+000053  FD A5             0052   	and a,iyl
+000055  DD A6 05          0053   	and a,(ix+5)
+000058  FD A6 05          0054   	and a,(iy+5)
+00005B  E6 05             0055   	and a,5
+00005D  A7                0056   	and a,a
+00005E  A0                0057   	and a,b
+00005F  A1                0058   	and a,c
+000060  A2                0059   	and a,d
+000061  A3                0060   	and a,e
+000062  A4                0061   	and a,h
+000063  A5                0062   	and a,l

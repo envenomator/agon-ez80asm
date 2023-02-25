@@ -1,2 +1,4 @@
-    .assume adl=1
-    db "Test"
+.assume adl=1
+.org $0010
+label: equ 0x100
+    ld a, 0xff

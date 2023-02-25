@@ -1,4 +1,4 @@
-.assume adl=1
+	.assume adl=1
 	jp nz, $aabbcc
 	jp z, $aabbcc
 	jp nc, $aabbcc

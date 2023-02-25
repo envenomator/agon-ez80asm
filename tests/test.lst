@@ -1,3 +1,5 @@
 PC      Output            Line   Source
-000000                    0001       .assume adl=1
-000000  54 65 73 74       0002       db "Test"
+000000                    0001   .assume adl=1
+000000                    0002   .org $0010
+000010                    0003   label: equ 0x100
+000010  3E FF             0004       ld a, 0xff
