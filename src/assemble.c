@@ -396,7 +396,7 @@ void parseLine(char *src) {
     while(!done) {
         switch(state) {
             case PS_START:
-                if((isspace(*src) == 0) && (*src != '.')) {
+                if((isspace(*src) == 0)) {
                     getLineToken(&token, src, ':');
                     switch(token.terminator) {
                         case ':':
@@ -442,21 +442,10 @@ void parseLine(char *src) {
                 }
                 break;
             case PS_COMMAND:
-                if(token.start[0] == '.') { // assembly command
-                    currentline.current_instruction = instruction_table_lookup(token.start);
-                    if(currentline.current_instruction == NULL) {
-                        error(message[ERROR_INVALIDMNEMONIC]);
-                        state = PS_ERROR;
-                        break;
-                    }
-                    currentline.next = token.next;
-                    strcpy(currentline.mnemonic, token.start);
-                    state = PS_DONE;
-                    break;
-                }
-                split_suffix(currentline.mnemonic, currentline.suffix, token.start);
-                currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
+                if(token.start[0] == '.') strcpy(currentline.mnemonic, token.start+1);
+                else split_suffix(currentline.mnemonic, currentline.suffix, token.start);
 
+                currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
                     error(message[ERROR_INVALIDMNEMONIC]);
                     state = PS_ERROR;
@@ -467,7 +456,13 @@ void parseLine(char *src) {
                     state = PS_DONE;
                     break;
                 }
-                // EZ80 valid instruction
+                if(token.start[0] == '.') {
+                    error(message[ERROR_INVALIDMNEMONIC]);
+                    currentline.mnemonic[0] = 0;
+                    state = PS_ERROR;                    
+                    break;
+                }
+                // Valid EZ80 instruction
                 switch(token.terminator) {
                     case ';':
                         getLineToken(&token, token.next, 0);
@@ -517,7 +512,7 @@ void parseLine(char *src) {
                 state = PS_DONE;
                 break;
             case PS_ERROR:
-                error(message[ERROR_PARSE]);
+                //error(message[ERROR_PARSE]);
                 currentline.next = NULL;
                 state = PS_DONE;
                 break;
@@ -1229,13 +1224,10 @@ void handle_assembler_command(void) {
     case(ASM_DW):
         handle_asm_dw(false);
         break;
-    case(ASM_DL):
+    case(ASM_DW24):
         handle_asm_dw(true);
         break;
-    case(ASM_ASCII):
-        handle_asm_db();
-        break;
-    case(ASM_ASCIIZ):
+    case(ASM_ASCIZ):
         handle_asm_db();
         emit_8bit(0);
         break;

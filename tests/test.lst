@@ -1,0 +1,3 @@
+PC      Output            Line   Source
+000000                    0001       .assume adl=1
+000000  54 65 73 74       0002       db "Test"

@@ -1,2 +1,2 @@
     .assume adl=1
-    dw "Test"
+    db "Test"
