@@ -19,4 +19,10 @@ void split_suffix(char *mnemonic, char *suffix, char *buffer);
 uint8_t getLineToken(tokentype *token, char *src, char terminator);
 uint8_t getOperatorToken(tokentype *token, char *src);
 
+bool openFile(FILE **file, char *name, char *mode);
+bool reOpenFile(uint8_t number, char *mode);
+void prepare_filenames(char *input_filename);
+void closeAllFiles();
+bool openfiles(void);
+
 #endif // UTILS_H

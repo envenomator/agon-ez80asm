@@ -1043,8 +1043,26 @@ void handle_asm_dw(bool longword) {
 }
 
 void handle_asm_equ(void) {
+    label *lbl;
     tokentype token;
 
+    if(currentline.next) {
+        getLineToken(&token, currentline.next, 0);
+        if(notEmpty(token.start)) {
+            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
+            if(pass == 1) definelabel(0);
+            if(pass == 2) {
+                lbl = findLabel(currentline.label);
+                if(lbl) lbl->address = getLabelValue(token.start);
+                else error(message[ERROR_MISSINGLABEL]);
+            }
+        }
+        else error(message[ERROR_MISSINGOPERAND]);
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+
+    //tokentype token;
+    /*
     if(pass == 2) {
         // Only define EQU labels AFTER all other labels have been defined, to allow forward-looking references
         if(currentline.next) {
@@ -1056,7 +1074,7 @@ void handle_asm_equ(void) {
             else error(message[ERROR_MISSINGOPERAND]);
         }
         else error(message[ERROR_MISSINGOPERAND]);
-    }
+    }*/
 }
 
 void handle_asm_adl(void) {
@@ -1328,9 +1346,12 @@ bool assemble(void){
 
     // Pass 2
     printf("Pass 2...\n");
-    rewind(filehandle[FILE_INPUT]);
+    //rewind(filehandle[FILE_INPUT]);
+    reOpenFile(FILE_INPUT, "r");
     rewind(filehandle[FILE_LOCAL_LABELS]);
+    //reOpenFile(FILE_LOCAL_LABELS, "r");
     rewind(filehandle[FILE_ANONYMOUS_LABELS]);
+    //reOpenFile(FILE_ANONYMOUS_LABELS, "r");
     passInitialize(2);
     listInit(consolelist_enabled);
     readLocalLabels();
