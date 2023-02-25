@@ -10,7 +10,7 @@
 #define START_ADDRESS   0x0
 #define FILLBYTE        0x00 // NOP
 
-bool assemble(FILE *infile, char *filename);
+bool assemble(void);
 void emit_8bit(uint8_t value);
 void emit_16bit(uint16_t value);
 void emit_24bit(uint32_t value);

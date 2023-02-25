@@ -11,10 +11,11 @@
 #include <time.h>
 #include <sys/time.h>
 
-char filename_bin[FILENAMEMAXLENGTH];
-char filename_locals[FILENAMEMAXLENGTH];
-char filename_anon[FILENAMEMAXLENGTH];
-char filename_list[FILENAMEMAXLENGTH];
+//char filename_bin[FILENAMEMAXLENGTH];
+//char filename_locals[FILENAMEMAXLENGTH];
+//char filename_anon[FILENAMEMAXLENGTH];
+//char filename_list[FILENAMEMAXLENGTH];
+
 
 bool openFile(FILE **file, char *name, char *mode) {
     *file = fopen(name, mode);
@@ -24,36 +25,39 @@ bool openFile(FILE **file, char *name, char *mode) {
     return false;
 }
 
-void closeFiles() {
-   // Cleanup
-    if(file_input) fclose(file_input);
-    if(file_bin) fclose(file_bin);
-    if(file_locals) fclose(file_locals);
-    if(file_anon) fclose(file_anon);
-    if(file_list) fclose(file_list);
-    remove(filename_locals);
-    remove(filename_anon);
+void prepare_filenames(char *input_filename) {
+    // prepare filenames
+    strcpy(filename[FILE_INPUT], input_filename);
+    strcpy(filename[FILE_OUTPUT], input_filename);
+    remove_ext(filename[FILE_OUTPUT], '.', '/');
+    strcpy(filename[FILE_LOCAL_LABELS], filename[FILE_OUTPUT]);
+    strcpy(filename[FILE_ANONYMOUS_LABELS],filename[FILE_OUTPUT]);
+    strcpy(filename[FILE_LISTING],filename[FILE_OUTPUT]);
+    strcat(filename[FILE_OUTPUT], ".bin");
+    strcat(filename[FILE_LOCAL_LABELS], ".locallabels");
+    strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlabels");
+    strcat(filename[FILE_LISTING], ".lst");
 }
 
-bool openfiles(char *basename) {
+void closeFiles() {
+   // Cleanup
+    if(filehandle[FILE_INPUT]) fclose(filehandle[FILE_INPUT]);
+    if(filehandle[FILE_OUTPUT]) fclose(filehandle[FILE_OUTPUT]);
+    if(filehandle[FILE_LOCAL_LABELS]) fclose(filehandle[FILE_LOCAL_LABELS]);
+    if(filehandle[FILE_ANONYMOUS_LABELS]) fclose(filehandle[FILE_ANONYMOUS_LABELS]);
+    if(filehandle[FILE_LISTING]) fclose(filehandle[FILE_LISTING]);
+    remove(filename[FILE_LOCAL_LABELS]);
+    remove(filename[FILE_ANONYMOUS_LABELS]);
+}
+
+bool openfiles(void) {
     bool status = true;
 
-    // prepare filenames
-    strcpy(filename_bin, basename);
-    remove_ext(filename_bin, '.', '/');
-    strcpy(filename_locals, filename_bin);
-    strcpy(filename_anon,filename_bin);
-    strcpy(filename_list,filename_bin);
-    strcat(filename_bin, ".bin");
-    strcat(filename_locals, ".locallabels");
-    strcat(filename_anon, ".anonlabels");
-    strcat(filename_list, ".lst");
-
-    status = status && openFile(&file_input, basename, "r");
-    status = status && openFile(&file_bin, filename_bin, "wb+");
-    status = status && openFile(&file_locals, filename_locals, "wb+");
-    status = status && openFile(&file_anon, filename_anon, "wb+");
-    status = status && openFile(&file_list, filename_list, "wb+");
+    status = status && openFile(&filehandle[FILE_INPUT], filename[FILE_INPUT], "r");
+    status = status && openFile(&filehandle[FILE_OUTPUT], filename[FILE_OUTPUT], "wb+");
+    status = status && openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], "wb+");
+    status = status && openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], "wb+");
+    status = status && openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], "wb+");
     if(!status) closeFiles();
     return status;
 }
@@ -67,7 +71,8 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    if(!openfiles(argv[1])) return 0;
+    prepare_filenames(argv[1]);
+    if(!openfiles()) return 0;
 
     debug_enabled = false;
     if((argc == 3) && (strcmp(argv[2], "-d") == 0)) debug_enabled = true;
@@ -80,10 +85,10 @@ int main(int argc, char *argv[])
 
     // Assemble input to output
     gettimeofday(&start, NULL);
-    assemble(file_input, argv[1]);
+    assemble();
     gettimeofday(&stop, NULL);
     if(global_errors) {
-        remove(filename_bin);
+        remove(filename[FILE_OUTPUT]);
         printf("Error in input\n");
     }
     else printf("%d bytes\n", totalsize);

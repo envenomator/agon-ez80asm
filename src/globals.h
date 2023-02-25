@@ -9,6 +9,15 @@
 #define DBBUFFERSIZE 256
 #define LINEMAX         256
 #define FILENAMEMAXLENGTH 128
+#define FILES               5
+
+enum {
+    FILE_INPUT,
+    FILE_OUTPUT,
+    FILE_LOCAL_LABELS,
+    FILE_ANONYMOUS_LABELS,
+    FILE_LISTING
+};
 
 typedef struct {
     instruction *current_instruction;
@@ -28,12 +37,9 @@ extern bool debug_enabled;
 extern bool consolelist_enabled;
 extern bool lineNumberNeedsReset;
 
-extern FILE *file_input;
-extern FILE *file_bin;
-extern FILE *file_locals;
-extern FILE *file_anon;
-extern FILE *file_list;
-
+extern char filename[FILES][FILENAMEMAXLENGTH];    // 0 - input, 1 - binary output, 2 - local labels, 3 - anonymous labels, 4 - listing
+extern FILE *filehandle[FILES];
+extern FILE *file_currentinput;
 extern char currentInputFilename[FILENAMEMAXLENGTH];
 
 extern unsigned int linenumber;

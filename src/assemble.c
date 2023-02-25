@@ -539,7 +539,7 @@ void definelabel(int32_t num){
                 error(message[ERROR_CREATINGLABEL]);
                 return;
             }
-            writeLocalLabels(file_locals);
+            writeLocalLabels(filehandle[FILE_LOCAL_LABELS]);
             clearLocalLabels();
         }
     }
@@ -550,7 +550,7 @@ void refreshlocalLabels(void) {
         if(notEmpty(currentline.label)) {
             if(currentline.label[0] != '@') {
                 clearLocalLabels();
-                readLocalLabels(file_locals);
+                readLocalLabels(filehandle[FILE_LOCAL_LABELS]);
             }
         }
     }
@@ -850,7 +850,7 @@ void emit_instruction(operandlist *list) {
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
         listEmit8bit(value);
-        fwrite(&value, sizeof(char), 1, file_bin);
+        fwrite(&value, sizeof(char), 1, filehandle[FILE_OUTPUT]);
     }
     address++;
     totalsize++;
@@ -1094,12 +1094,12 @@ void handle_asm_include(void) {
         if(token.start[0] == '\"') {
             token.start[strlen(token.start)-1] = 0;
             fsi.linenumber = linenumber;
-            fsi.fp = file_input;
+            fsi.fp = file_currentinput;
             strcpy(fsi.filename, currentInputFilename);
             filestackPush(&fsi);
-            file_input = fopen(token.start+1, "r");
+            file_currentinput = fopen(token.start+1, "r");
             strcpy(currentInputFilename, token.start+1);
-            if(file_input == NULL) {
+            if(file_currentinput == NULL) {
                 filestackPop(&fsi);
                 error(message[ERROR_INCLUDEFILE]);
             }
@@ -1290,31 +1290,31 @@ static inline void processDelayedLineNumberReset(void) {
     }
 }
 
-bool assemble(FILE *fp, char *filename){
+bool assemble(void){
     char line[LINEMAX];
     global_errors = 0;
     filestackitem fsitem;
     bool incfiles;
 
-    file_input = fp;
-    strcpy(currentInputFilename, filename);
+    file_currentinput = filehandle[FILE_INPUT];
+    strcpy(currentInputFilename, filename[FILE_INPUT]);
 
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\n");
     passInitialize(1);
     do {
-        while (fgets(line, sizeof(line), file_input)){
+        while (fgets(line, sizeof(line), file_currentinput)){
             linenumber++;
             parseLine(line);
             processInstructions();
             processDelayedLineNumberReset();
         }
         if(filestackCount()) {
-            fclose(file_input);
+            fclose(file_currentinput);
             incfiles = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
-            file_input = fsitem.fp;
+            file_currentinput = fsitem.fp;
             strcpy(currentInputFilename, fsitem.filename);
         }
         else incfiles = false;
@@ -1328,15 +1328,15 @@ bool assemble(FILE *fp, char *filename){
 
     // Pass 2
     printf("Pass 2...\n");
-    rewind(file_input);
-    rewind(file_locals);
-    rewind(file_anon);
+    rewind(filehandle[FILE_INPUT]);
+    rewind(filehandle[FILE_LOCAL_LABELS]);
+    rewind(filehandle[FILE_ANONYMOUS_LABELS]);
     passInitialize(2);
     listInit(consolelist_enabled);
     readLocalLabels();
     readAnonymousLabel();
     do {
-        while (fgets(line, sizeof(line), file_input)){
+        while (fgets(line, sizeof(line), file_currentinput)){
             linenumber++;
             listStartLine(line);
             parseLine(line);
@@ -1346,10 +1346,10 @@ bool assemble(FILE *fp, char *filename){
             processDelayedLineNumberReset();
         }
         if(filestackCount()) {
-            fclose(file_input);
+            fclose(file_currentinput);
             incfiles = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
-            file_input = fsitem.fp;
+            file_currentinput = fsitem.fp;
             strcpy(currentInputFilename, fsitem.filename);
         }
         else incfiles = false;
