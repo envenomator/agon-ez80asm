@@ -1060,21 +1060,6 @@ void handle_asm_equ(void) {
         else error(message[ERROR_MISSINGOPERAND]);
     }
     else error(message[ERROR_MISSINGOPERAND]);
-
-    //tokentype token;
-    /*
-    if(pass == 2) {
-        // Only define EQU labels AFTER all other labels have been defined, to allow forward-looking references
-        if(currentline.next) {
-            getLineToken(&token, currentline.next, 0);
-            if(notEmpty(token.start)) {
-                definelabel(getLabelValue(token.start));
-                if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
-            }
-            else error(message[ERROR_MISSINGOPERAND]);
-        }
-        else error(message[ERROR_MISSINGOPERAND]);
-    }*/
 }
 
 void handle_asm_adl(void) {
