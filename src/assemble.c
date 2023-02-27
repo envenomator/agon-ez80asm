@@ -850,7 +850,7 @@ void emit_instruction(operandlist *list) {
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
         listEmit8bit(value);
-        fwrite(&value, sizeof(char), 1, filehandle[FILE_OUTPUT]);
+        agon_fwrite(&value, sizeof(char), 1, FILE_OUTPUT);
     }
     address++;
     totalsize++;
@@ -1333,10 +1333,10 @@ bool assemble(void){
     printf("Pass 2...\n");
     //rewind(filehandle[FILE_INPUT]);
     reOpenFile(FILE_INPUT, "r");
-    rewind(filehandle[FILE_LOCAL_LABELS]);
-    //reOpenFile(FILE_LOCAL_LABELS, "r");
-    rewind(filehandle[FILE_ANONYMOUS_LABELS]);
-    //reOpenFile(FILE_ANONYMOUS_LABELS, "r");
+    //rewind(filehandle[FILE_LOCAL_LABELS]);
+    reOpenFile(FILE_LOCAL_LABELS, "r");
+    //rewind(filehandle[FILE_ANONYMOUS_LABELS]);
+    reOpenFile(FILE_ANONYMOUS_LABELS, "r");
     passInitialize(2);
     listInit(consolelist_enabled);
     readLocalLabels();

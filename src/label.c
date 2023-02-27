@@ -89,15 +89,15 @@ void writeLocalLabels(void) {
     int i;
     uint16_t delta;
     // number of bytes in the string buffer
-    fwrite(&localLabelBufferIndex, 1, sizeof(localLabelBufferIndex), filehandle[FILE_LOCAL_LABELS]);
+    agon_fwrite(&localLabelBufferIndex, 1, sizeof(localLabelBufferIndex), FILE_LOCAL_LABELS);
     // the actual bytes from the string buffer
-    if(localLabelBufferIndex) fwrite(localLabelBuffer, 1, localLabelBufferIndex, filehandle[FILE_LOCAL_LABELS]);
+    if(localLabelBufferIndex) agon_fwrite(localLabelBuffer, 1, localLabelBufferIndex, FILE_LOCAL_LABELS);
     // the number of labels
-    fwrite(&localLabelCounter, 1, sizeof(localLabelCounter), filehandle[FILE_LOCAL_LABELS]);
+    agon_fwrite(&localLabelCounter, 1, sizeof(localLabelCounter), FILE_LOCAL_LABELS);
     for(i = 0; i < localLabelCounter; i++) {
         delta = localLabelTable[i].name - localLabelBuffer;
-        fwrite(&delta, 1, sizeof(delta), filehandle[FILE_LOCAL_LABELS]);
-        fwrite(&localLabelTable[i].address, 1, sizeof(int32_t), filehandle[FILE_LOCAL_LABELS]);
+        agon_fwrite(&delta, 1, sizeof(delta), FILE_LOCAL_LABELS);
+        agon_fwrite(&localLabelTable[i].address, 1, sizeof(int32_t), FILE_LOCAL_LABELS);
     }
 }
 
@@ -105,24 +105,24 @@ void readLocalLabels(void) {
     int i;
     uint16_t delta;
 
-    fread(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, filehandle[FILE_LOCAL_LABELS]);
-    if(localLabelBufferIndex) fread(&localLabelBuffer, localLabelBufferIndex, 1, filehandle[FILE_LOCAL_LABELS]);
-    fread(&localLabelCounter, sizeof(localLabelCounter), 1, filehandle[FILE_LOCAL_LABELS]);
+    agon_fread(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
+    if(localLabelBufferIndex) agon_fread(&localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
+    agon_fread(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
     for(i = 0; i < localLabelCounter; i++) {
-        fread(&delta, sizeof(delta), 1, filehandle[FILE_LOCAL_LABELS]);
-        fread(&localLabelTable[i].address, sizeof(int32_t), 1, filehandle[FILE_LOCAL_LABELS]);
+        agon_fread(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
+        agon_fread(&localLabelTable[i].address, sizeof(int32_t), 1, FILE_LOCAL_LABELS);
         localLabelTable[i].name = localLabelBuffer + delta;
     }
 }
 
 void writeAnonymousLabel(int32_t address) {
-    fwrite(&address, 1, sizeof(address), filehandle[FILE_ANONYMOUS_LABELS]);
+    agon_fwrite(&address, 1, sizeof(address), FILE_ANONYMOUS_LABELS);
 }
 
 void readAnonymousLabel(void) {
     int32_t address;
 
-    if(fread(&address, sizeof(address), 1, filehandle[FILE_ANONYMOUS_LABELS])) {
+    if(agon_fread(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS)) {
         if(an_next.defined) {
             an_prev.address = an_next.address;
             an_prev.defined = true;
