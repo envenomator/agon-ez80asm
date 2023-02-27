@@ -41,7 +41,7 @@ bool notEmpty(const char *str) {
 
 void error(char* msg)
 {
-    printf("\"%s\" - line %d - %s\n", currentInputFilename, linenumber, msg);
+    printf("\"%s\" - line %d - %s\n", filename[FILE_CURRENT], linenumber, msg);
     global_errors++;
 }
 

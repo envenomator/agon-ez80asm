@@ -9,9 +9,10 @@
 #define DBBUFFERSIZE 256
 #define LINEMAX         256
 #define FILENAMEMAXLENGTH 128
-#define FILES               5
+#define FILES               5+1 // +current
 
 enum {
+    FILE_CURRENT,
     FILE_INPUT,
     FILE_OUTPUT,
     FILE_LOCAL_LABELS,
@@ -37,10 +38,10 @@ extern bool debug_enabled;
 extern bool consolelist_enabled;
 extern bool lineNumberNeedsReset;
 
-extern char filename[FILES][FILENAMEMAXLENGTH];    // 0 - input, 1 - binary output, 2 - local labels, 3 - anonymous labels, 4 - listing
+extern char filename[FILES][FILENAMEMAXLENGTH];    // 0 - current, 1 - input, 2 - binary output, 3 - local labels, 4 - anonymous labels, 5 - listing
 extern FILE *filehandle[FILES];
-extern FILE *file_currentinput;
-extern char currentInputFilename[FILENAMEMAXLENGTH];
+//extern FILE *file_currentinput;
+//extern char currentInputFilename[FILENAMEMAXLENGTH];
 
 extern unsigned int linenumber;
 extern unsigned int pass;

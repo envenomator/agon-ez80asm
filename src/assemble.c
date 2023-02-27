@@ -1097,12 +1097,12 @@ void handle_asm_include(void) {
         if(token.start[0] == '\"') {
             token.start[strlen(token.start)-1] = 0;
             fsi.linenumber = linenumber;
-            fsi.fp = file_currentinput;
-            strcpy(fsi.filename, currentInputFilename);
+            fsi.fp = filehandle[FILE_CURRENT];
+            strcpy(fsi.filename, filename[FILE_CURRENT]);
             filestackPush(&fsi);
-            file_currentinput = fopen(token.start+1, "r");
-            strcpy(currentInputFilename, token.start+1);
-            if(file_currentinput == NULL) {
+            filehandle[FILE_CURRENT] = fopen(token.start+1, "r");
+            strcpy(filename[FILE_CURRENT], token.start+1);
+            if(filehandle[FILE_CURRENT] == NULL) {
                 filestackPop(&fsi);
                 error(message[ERROR_INCLUDEFILE]);
             }
@@ -1299,26 +1299,26 @@ bool assemble(void){
     filestackitem fsitem;
     bool incfiles;
 
-    file_currentinput = filehandle[FILE_INPUT];
-    strcpy(currentInputFilename, filename[FILE_INPUT]);
+    filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
+    strcpy(filename[FILE_CURRENT], filename[FILE_INPUT]);
 
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\n");
     passInitialize(1);
     do {
-        while (fgets(line, sizeof(line), file_currentinput)){
+        while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
             linenumber++;
             parseLine(line);
             processInstructions();
             processDelayedLineNumberReset();
         }
         if(filestackCount()) {
-            fclose(file_currentinput);
+            fclose(filehandle[FILE_CURRENT]);
             incfiles = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
-            file_currentinput = fsitem.fp;
-            strcpy(currentInputFilename, fsitem.filename);
+            filehandle[FILE_CURRENT] = fsitem.fp;
+            strcpy(filename[FILE_CURRENT], fsitem.filename);
         }
         else incfiles = false;
     }
@@ -1342,7 +1342,7 @@ bool assemble(void){
     readLocalLabels();
     readAnonymousLabel();
     do {
-        while (fgets(line, sizeof(line), file_currentinput)){
+        while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
             linenumber++;
             listStartLine(line);
             parseLine(line);
@@ -1352,11 +1352,11 @@ bool assemble(void){
             processDelayedLineNumberReset();
         }
         if(filestackCount()) {
-            fclose(file_currentinput);
+            fclose(filehandle[FILE_CURRENT]);
             incfiles = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
-            file_currentinput = fsitem.fp;
-            strcpy(currentInputFilename, fsitem.filename);
+            filehandle[FILE_CURRENT] = fsitem.fp;
+            strcpy(filename[FILE_CURRENT], fsitem.filename);
         }
         else incfiles = false;
     }
