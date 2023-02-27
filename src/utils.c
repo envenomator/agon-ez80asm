@@ -261,6 +261,17 @@ char *agon_fgets(char *s, int size, uint8_t fileid) {
 	return (c == EOF && cs == s) ? NULL : s;
 }
 
+int agon_fputs(char *s, uint8_t fileid) {
+    int number = 0;
+
+    while(*s) {
+        if(putc(*s, filehandle[fileid]) == EOF) return EOF;
+        number++;
+        s++;
+    }
+    return number;
+}
+
 size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
     size_t n, s, result = 0;
 

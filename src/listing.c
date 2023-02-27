@@ -13,8 +13,11 @@ bool _listFirstline = true;
 
 char _listHeader[] = "PC      Output            Line   Source\n";
 
+char buffer[LINEMAX + 64];
+
 void listInit(bool console) {
-    fprintf(filehandle[FILE_ANONYMOUS_LABELS], "%s", _listHeader);
+    sprintf(buffer, "%s", _listHeader);
+    agon_fputs(buffer, FILE_LISTING);
     if(console) printf("%s", _listHeader);
     _listFirstline = false;
     _listLine[0] = 0;
@@ -39,31 +42,37 @@ void listEndLine(bool console) {
     objectnum = 0;
     for(lines = 0; lines < linemax; lines++) {
         if(lines == 0) {
-            fprintf(filehandle[FILE_ANONYMOUS_LABELS], "%06X  ",_listAddress);
-            if(console) printf("%06X  ",_listAddress);
+            sprintf(buffer, "%06X  ",_listAddress);
+            agon_fputs(buffer, FILE_LISTING);
+            if(console) printf("%s",buffer);
         }
         else {
-            fprintf(filehandle[FILE_ANONYMOUS_LABELS], "        ");
-            if(console) printf("        ");
+            sprintf(buffer, "        ");
+            agon_fputs(buffer, FILE_LISTING);
+            if(console) printf("%s",buffer);
         }
         for(i = 0; i < OBJECTS_PER_LINE; i++) {
             if(objectnum < _listObjectCount) {
-                fprintf(filehandle[FILE_ANONYMOUS_LABELS], "%02X ",_listObjects[objectnum]);
-                if(console) printf("%02X ",_listObjects[objectnum]);
+                sprintf(buffer, "%02X ",_listObjects[objectnum]);
+                agon_fputs(buffer, FILE_LISTING);
+                if(console) printf("%s",buffer);
                 objectnum++;
             }
             else {
-                fprintf(filehandle[FILE_ANONYMOUS_LABELS], "   ");
-                if(console) printf("   ");
+                sprintf(buffer, "   ");
+                agon_fputs(buffer, FILE_LISTING);
+                if(console) printf("%s",buffer);
             }
         }
         if(lines == 0) {
-            fprintf(filehandle[FILE_ANONYMOUS_LABELS], "%04d   %s\n",linenumber, _listLine);
-            if(console) printf("%04d   %s\n",linenumber, _listLine);
+            sprintf(buffer, "%04d   %s\n",linenumber, _listLine);
+            agon_fputs(buffer, FILE_LISTING);
+            if(console) printf("%s",buffer);
         }
         else {
-            fprintf(filehandle[FILE_ANONYMOUS_LABELS], "\n");
-            if(console) printf("\n");
+            sprintf(buffer, "\n");
+            agon_fputs(buffer, FILE_LISTING);
+            if(console) printf("%s",buffer);
         }
     }
 }
