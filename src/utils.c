@@ -247,3 +247,45 @@ bool openfiles(void) {
     if(!status) closeAllFiles();
     return status;
 }
+
+
+char *agon_fgets(char *s, int size, uint8_t fileid) {
+	int c;
+	char *cs;
+
+	cs = s;
+	while (--size > 0 && (c = getc(filehandle[fileid])) != EOF)
+		if ((*cs++ = c) == '\n')
+			break;
+	*cs = '\0';
+	return (c == EOF && cs == s) ? NULL : s;
+}
+
+size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
+    size_t n, s, result = 0;
+
+    for(n = 0; n < nmemb; n++) {
+        for(s = 0; s < size; s++) {
+            if(putc((*(char *)ptr),filehandle[fileid]) == EOF) return result;
+            ptr++;
+            result++;
+        }
+    }
+    return result;
+}
+
+size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
+    size_t n, s, result = 0;
+
+    for(n = 0; n < nmemb; n++) {
+        for(s = 0; s < size; s++) {
+            if((*(char *)ptr = getc(filehandle[fileid])) == EOF) {
+                *(char *)ptr = 0;
+                return result;
+            }
+            ptr++;
+            result++;
+        }
+    }
+    return result;
+}

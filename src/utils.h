@@ -25,4 +25,8 @@ void prepare_filenames(char *input_filename);
 void closeAllFiles();
 bool openfiles(void);
 
+char *agon_fgets(char *s, int size, uint8_t fileid);
+size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid);
+size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid);
+
 #endif // UTILS_H
