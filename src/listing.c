@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 #include "listing.h"
 #include "globals.h"
 #include "utils.h"

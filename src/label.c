@@ -140,6 +140,7 @@ void readAnonymousLabel(void) {
 
 bool insertLocalLabel(char *labelname, int32_t address) {
     int len,i;
+    int p;
     char *ptr;
     char *old_name;
     int32_t old_address;
@@ -148,7 +149,7 @@ bool insertLocalLabel(char *labelname, int32_t address) {
         error(message[ERROR_INVALIDLABEL]);
         return false;
     }
-    int p = findLocalLabelIndex(labelname);
+    p = findLocalLabelIndex(labelname);
 
     if(p >= LOCAL_LABEL_TABLE_SIZE) {
         if(localLabelCounter < LOCAL_LABEL_TABLE_SIZE) {

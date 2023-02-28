@@ -1,6 +1,5 @@
 #include "globals.h"
 #include <stdint.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include "stdint.h"
 
@@ -9,7 +8,7 @@
  */
 
 char filename[FILES][FILENAMEMAXLENGTH];
-FILE *filehandle[FILES];
+uint8_t filehandle[FILES];
 
 bool debug_enabled;
 bool consolelist_enabled;

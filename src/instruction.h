@@ -1,7 +1,6 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-#include <stdbool.h>
 #include <stdint.h>
 
 #define MAX_MNEMONIC_SIZE         8

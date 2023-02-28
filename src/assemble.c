@@ -12,7 +12,8 @@
 #include "listing.h"
 #include "filestack.h"
 #include "stdint.h"
- 
+#include "mos-interface.h"
+
 void empty_operand(operand *op) {
     op->reg = R_NONE;
     op->reg_index = 0;
@@ -540,7 +541,7 @@ void definelabel(int32_t num){
                 error(message[ERROR_CREATINGLABEL]);
                 return;
             }
-            writeLocalLabels(filehandle[FILE_LOCAL_LABELS]);
+            writeLocalLabels();
             clearLocalLabels();
         }
     }
@@ -551,7 +552,7 @@ void refreshlocalLabels(void) {
         if(notEmpty(currentline.label)) {
             if(currentline.label[0] != '@') {
                 clearLocalLabels();
-                readLocalLabels(filehandle[FILE_LOCAL_LABELS]);
+                readLocalLabels();
             }
         }
     }
@@ -813,7 +814,7 @@ void emit_instruction(operandlist *list) {
     // Specific checks
     if((list->operandA == OPTYPE_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
     if((list->operandA == OPTYPE_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE]);
-    if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0b1000111)) error(message[ERROR_ILLEGALRESTARTADDRESS]);
+    if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0x47)) error(message[ERROR_ILLEGALRESTARTADDRESS]);
 
     // prepare extra DD/FD suffix if needed
     prefix_ddfd_suffix(list);
@@ -1101,7 +1102,7 @@ void handle_asm_include(void) {
             fsi.fp = filehandle[FILE_CURRENT];
             strcpy(fsi.filename, filename[FILE_CURRENT]);
             filestackPush(&fsi);
-            filehandle[FILE_CURRENT] = fopen(token.start+1, "r");
+            filehandle[FILE_CURRENT] = mos_fopen(token.start+1, fa_read);
             strcpy(filename[FILE_CURRENT], token.start+1);
             if(filehandle[FILE_CURRENT] == NULL) {
                 filestackPop(&fsi);
@@ -1287,7 +1288,7 @@ void passInitialize(uint8_t passnumber) {
 }
 
 // Assembler directives may demand a late reset of the linenumber, after the listing has been done
-static inline void processDelayedLineNumberReset(void) {
+void processDelayedLineNumberReset(void) {
     if(lineNumberNeedsReset) {
         lineNumberNeedsReset = false;
         linenumber = 0;
@@ -1296,9 +1297,10 @@ static inline void processDelayedLineNumberReset(void) {
 
 bool assemble(void){
     char line[LINEMAX];
-    global_errors = 0;
     filestackitem fsitem;
     bool incfiles;
+
+    global_errors = 0;
 
     filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
     strcpy(filename[FILE_CURRENT], filename[FILE_INPUT]);
@@ -1315,7 +1317,7 @@ bool assemble(void){
             processDelayedLineNumberReset();
         }
         if(filestackCount()) {
-            fclose(filehandle[FILE_CURRENT]);
+            mos_fclose(filehandle[FILE_CURRENT]);
             incfiles = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
             filehandle[FILE_CURRENT] = fsitem.fp;
@@ -1333,11 +1335,11 @@ bool assemble(void){
     // Pass 2
     printf("Pass 2...\n");
     //rewind(filehandle[FILE_INPUT]);
-    reOpenFile(FILE_INPUT, "r");
+    reOpenFile(FILE_INPUT, fa_read);
     //rewind(filehandle[FILE_LOCAL_LABELS]);
-    reOpenFile(FILE_LOCAL_LABELS, "r");
+    reOpenFile(FILE_LOCAL_LABELS, fa_read);
     //rewind(filehandle[FILE_ANONYMOUS_LABELS]);
-    reOpenFile(FILE_ANONYMOUS_LABELS, "r");
+    reOpenFile(FILE_ANONYMOUS_LABELS, fa_read);
     passInitialize(2);
     listInit(consolelist_enabled);
     readLocalLabels();
@@ -1353,7 +1355,7 @@ bool assemble(void){
             processDelayedLineNumberReset();
         }
         if(filestackCount()) {
-            fclose(filehandle[FILE_CURRENT]);
+            mos_fclose(filehandle[FILE_CURRENT]);
             incfiles = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
             filehandle[FILE_CURRENT] = fsitem.fp;

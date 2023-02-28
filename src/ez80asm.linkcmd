@@ -1,0 +1,40 @@
+-FORMAT=OMF695,INTEL32
+-map -maxhexlen=64 -quiet -warnoverlap -xref -unresolved=fatal
+-sort NAME=ascending -warn -debug -NOigcase
+
+; SEARCHPATH="C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.4\lib"
+
+RANGE ROM $000000 : $01FFFF
+RANGE RAM $040000 : $0BFFFF
+RANGE EXTIO $000000 : $00FFFF
+RANGE INTIO $000000 : $0000FF
+
+CHANGE CODE = RAM
+CHANGE STRSECT = RAM
+CHANGE DATA = RAM 
+
+ORDER CODE,DATA
+
+DEFINE __low_bss = base of BSS
+DEFINE __len_bss = length of BSS
+
+ "ez80asm"= \
+ ".\init.obj", \
+ ".\main.obj", \
+ ".\vdp.obj", \
+ ".\mos-interface.obj", \
+ ".\assemble.obj", \
+ ".\filestack.obj", \
+ ".\globals.obj", \
+ ".\hash.obj", \
+ ".\instruction.obj", \
+ ".\label.obj", \
+ ".\listing.obj", \
+ ".\str2num.obj", \
+ ".\utils.obj", \
+ "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.4\lib\std\chelpD.lib", \
+ "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.4\lib\std\crtD.lib", \
+ "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.4\lib\std\crtSD.lib", \
+ "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.4\lib\std\nokernelD.lib", \
+ "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.4\lib\zilog\zsldevinitdummy.obj"
+

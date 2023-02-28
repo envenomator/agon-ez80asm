@@ -1,0 +1,714 @@
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED28-Feb-23     21:42:25     page:   1
+
+
+PC     Object              I  Line    Source 
+                           A     1    ; Zilog eZ80 ANSI C Compiler Release 3.4
+                           A     2    ; -nomodsect -optsize -noreduceopt -nopadbranch
+                           A     3    ; -peephole -globalopt -localcse -const=ROM 
+                           A     4    	FILE	"..\main.c"
+                           A     5    	.assume ADL=1
+                           A     6    .DEBUG "C"
+                           A     7    	SEGMENT CODE
+                           A     8    .BEGREC "fmt_type",19
+                           A     9    .DEFINE "status"
+                           A    10    .VALUE 0
+                           A    11    .CLASS 8
+                           A    12    .TYPE 12
+                           A    13    .ENDEF
+                           A    14    .DEFINE "flags"
+                           A    15    .VALUE 1
+                           A    16    .CLASS 8
+                           A    17    .TYPE 12
+                           A    18    .ENDEF
+                           A    19    .DEFINE "size"
+                           A    20    .VALUE 2
+                           A    21    .CLASS 8
+                           A    22    .TYPE 2
+                           A    23    .ENDEF
+                           A    24    .DEFINE "chr"
+                           A    25    .VALUE 3
+                           A    26    .CLASS 8
+                           A    27    .TYPE 2
+                           A    28    .ENDEF
+                           A    29    .DEFINE "type"
+                           A    30    .VALUE 4
+                           A    31    .CLASS 8
+                           A    32    .TYPE 2
+                           A    33    .ENDEF
+                           A    34    .DEFINE "field_width"
+                           A    35    .VALUE 5
+                           A    36    .CLASS 8
+                           A    37    .TYPE 2
+                           A    38    .ENDEF
+                           A    39    .DEFINE "precision"
+                           A    40    .VALUE 6
+                           A    41    .CLASS 8
+                           A    42    .TYPE 2
+                           A    43    .ENDEF
+                           A    44    .DEFINE "set_begin"
+                           A    45    .VALUE 7
+                           A    46    .CLASS 8
+                           A    47    .TYPE 34
+                           A    48    .ENDEF
+                           A    49    .DEFINE "set_end"
+                           A    50    .VALUE 10
+                           A    51    .CLASS 8
+                           A    52    .TYPE 34
+                           A    53    .ENDEF
+                           A    54    .DEFINE "pad_whole"
+                           A    55    .VALUE 13
+                           A    56    .CLASS 8
+                           A    57    .TYPE 12
+                           A    58    .ENDEF
+                           A    59    .DEFINE "pad_pre_fract"
+                           A    60    .VALUE 14
+                           A    61    .CLASS 8
+                           A    62    .TYPE 12
+                           A    63    .ENDEF
+                           A    64    .DEFINE "pad_post_fract"
+                           A    65    .VALUE 15
+                           A    66    .CLASS 8
+                           A    67    .TYPE 12
+                           A    68    .ENDEF
+                           A    69    .DEFINE "pad_at"
+                           A    70    .VALUE 16
+                           A    71    .CLASS 8
+                           A    72    .TYPE 34
+                           A    73    .ENDEF
+                           A    74    .ENDREC "fmt_type"
+                           A    75    .BEGREC "flt_info",12
+                           A    76    .DEFINE "flags"
+                           A    77    .VALUE 0
+                           A    78    .CLASS 8
+                           A    79    .TYPE 12
+                           A    80    .ENDEF
+                           A    81    .DEFINE "exp"
+                           A    82    .VALUE 1
+                           A    83    .CLASS 8
+                           A    84    .TYPE 2
+                           A    85    .ENDEF
+                           A    86    .DEFINE "digits"
+                           A    87    .VALUE 2
+                           A    88    .CLASS 8
+                           A    89    .DIM 10
+                           A    90    .TYPE 108
+                           A    91    .ENDEF
+                           A    92    .ENDREC "flt_info"
+                           A    93    .BEGREC "NONAME0",6
+                           A    94    .DEFINE "quot"
+                           A    95    .VALUE 0
+                           A    96    .CLASS 8
+                           A    97    .TYPE 4
+                           A    98    .ENDEF
+                           A    99    .DEFINE "rem"
+                           A   100    .VALUE 3
+                           A   101    .CLASS 8
+                           A   102    .TYPE 4
+                           A   103    .ENDEF
+                           A   104    .ENDREC "NONAME0"
+                           A   105    .BEGREC "NONAME1",8
+                           A   106    .DEFINE "quot"
+                           A   107    .VALUE 0
+                           A   108    .CLASS 8
+                           A   109    .TYPE 5
+                           A   110    .ENDEF
+                           A   111    .DEFINE "rem"
+                           A   112    .VALUE 4
+                           A   113    .CLASS 8
+                           A   114    .TYPE 5
+                           A   115    .ENDEF
+                           A   116    .ENDREC "NONAME1"
+                           A   117    .BEGREC "header",6
+                           A   118    .DEFINE "s"
+                           A   119    .VALUE 0
+                           A   120    .CLASS 11
+                           A   121    .TAG "NONAME2"
+                           A   122    .TYPE 8
+                           A   123    .ENDEF
+                           A   124    .DEFINE "x"
+                           A   125    .VALUE 0
+                           A   126    .CLASS 11
+                           A   127    .TYPE 2
+                           A   128    .ENDEF
+                           A   129    .ENDREC "header"
+                           A   130    .BEGREC "NONAME2",6
+                           A   131    .DEFINE "ptr"
+                           A   132    .VALUE 0
+                           A   133    .CLASS 8
+                           A   134    .TAG "header"
+                           A   135    .TYPE 40
+                           A   136    .ENDEF
+                           A   137    .DEFINE "size"
+                           A   138    .VALUE 3
+                           A   139    .CLASS 8
+                           A   140    .TYPE 14
+                           A   141    .ENDEF
+                           A   142    .ENDREC "NONAME2"
+                           A   143    .BEGREC "NONAME3",16
+                           A   144    .DEFINE "reg"
+                           A   145    .VALUE 0
+                           A   146    .CLASS 8
+                           A   147    .TYPE 4
+                           A   148    .ENDEF
+                           A   149    .DEFINE "reg_index"
+                           A   150    .VALUE 3
+                           A   151    .CLASS 8
+                           A   152    .TYPE 12
+                           A   153    .ENDEF
+                           A   154    .DEFINE "indirect"
+                           A   155    .VALUE 4
+                           A   156    .CLASS 8
+                           A   157    .TYPE 12
+                           A   158    .ENDEF
+                           A   159    .DEFINE "cc"
+                           A   160    .VALUE 5
+                           A   161    .CLASS 8
+                           A   162    .TYPE 12
+                           A   163    .ENDEF
+                           A   164    .DEFINE "cc_index"
+                           A   165    .VALUE 6
+                           A   166    .CLASS 8
+                           A   167    .TYPE 12
+                           A   168    .ENDEF
+                           A   169    .DEFINE "displacement"
+                           A   170    .VALUE 7
+                           A   171    .CLASS 8
+                           A   172    .TYPE 3
+                           A   173    .ENDEF
+                           A   174    .DEFINE "displacement_provided"
+                           A   175    .VALUE 9
+                           A   176    .CLASS 8
+                           A   177    .TYPE 12
+                           A   178    .ENDEF
+                           A   179    .DEFINE "immediate_provided"
+                           A   180    .VALUE 10
+                           A   181    .CLASS 8
+                           A   182    .TYPE 12
+                           A   183    .ENDEF
+                           A   184    .DEFINE "immediate"
+                           A   185    .VALUE 11
+                           A   186    .CLASS 8
+                           A   187    .TYPE 5
+                           A   188    .ENDEF
+                           A   189    .DEFINE "wasLabel"
+                           A   190    .VALUE 15
+                           A   191    .CLASS 8
+                           A   192    .TYPE 12
+                           A   193    .ENDEF
+                           A   194    .ENDREC "NONAME3"
+                           A   195    .BEGREC "NONAME4",4
+                           A   196    .DEFINE "suffix"
+                           A   197    .VALUE 0
+                           A   198    .CLASS 8
+                           A   199    .TYPE 12
+                           A   200    .ENDEF
+                           A   201    .DEFINE "prefix1"
+                           A   202    .VALUE 1
+                           A   203    .CLASS 8
+                           A   204    .TYPE 12
+                           A   205    .ENDEF
+                           A   206    .DEFINE "prefix2"
+                           A   207    .VALUE 2
+                           A   208    .CLASS 8
+                           A   209    .TYPE 12
+                           A   210    .ENDEF
+                           A   211    .DEFINE "opcode"
+                           A   212    .VALUE 3
+                           A   213    .CLASS 8
+                           A   214    .TYPE 12
+                           A   215    .ENDEF
+                           A   216    .ENDREC "NONAME4"
+                           A   217    .BEGREC "NONAME5",16
+                           A   218    .DEFINE "operandA"
+                           A   219    .VALUE 0
+                           A   220    .CLASS 8
+                           A   221    .TYPE 4
+                           A   222    .ENDEF
+                           A   223    .DEFINE "operandB"
+                           A   224    .VALUE 3
+                           A   225    .CLASS 8
+                           A   226    .TYPE 4
+                           A   227    .ENDEF
+                           A   228    .DEFINE "ddfdpermitted"
+                           A   229    .VALUE 6
+                           A   230    .CLASS 8
+                           A   231    .TYPE 12
+                           A   232    .ENDEF
+                           A   233    .DEFINE "transformA"
+                           A   234    .VALUE 7
+                           A   235    .CLASS 8
+                           A   236    .TYPE 4
+                           A   237    .ENDEF
+                           A   238    .DEFINE "transformB"
+                           A   239    .VALUE 10
+                           A   240    .CLASS 8
+                           A   241    .TYPE 4
+                           A   242    .ENDEF
+                           A   243    .DEFINE "prefix"
+                           A   244    .VALUE 13
+                           A   245    .CLASS 8
+                           A   246    .TYPE 12
+                           A   247    .ENDEF
+                           A   248    .DEFINE "opcode"
+                           A   249    .VALUE 14
+                           A   250    .CLASS 8
+                           A   251    .TYPE 12
+                           A   252    .ENDEF
+                           A   253    .DEFINE "adl"
+                           A   254    .VALUE 15
+                           A   255    .CLASS 8
+                           A   256    .TYPE 12
+                           A   257    .ENDEF
+                           A   258    .ENDREC "NONAME5"
+                           A   259    .BEGREC "NONAME6",17
+                           A   260    .DEFINE "name"
+                           A   261    .VALUE 0
+                           A   262    .CLASS 8
+                           A   263    .DIM 8
+                           A   264    .TYPE 98
+                           A   265    .ENDEF
+                           A   266    .DEFINE "type"
+                           A   267    .VALUE 8
+                           A   268    .CLASS 8
+                           A   269    .TYPE 12
+                           A   270    .ENDEF
+                           A   271    .DEFINE "asmtype"
+                           A   272    .VALUE 9
+                           A   273    .CLASS 8
+                           A   274    .TYPE 12
+                           A   275    .ENDEF
+                           A   276    .DEFINE "listnumber"
+                           A   277    .VALUE 10
+                           A   278    .CLASS 8
+                           A   279    .TYPE 12
+                           A   280    .ENDEF
+                           A   281    .DEFINE "list"
+                           A   282    .VALUE 11
+                           A   283    .CLASS 8
+                           A   284    .TAG "NONAME5"
+                           A   285    .TYPE 40
+                           A   286    .ENDEF
+                           A   287    .DEFINE "asmargument"
+                           A   288    .VALUE 14
+                           A   289    .CLASS 8
+                           A   290    .TYPE 4
+                           A   291    .ENDEF
+                           A   292    .ENDREC "NONAME6"
+                           A   293    .BEGREC "NONAME7",6
+                           A   294    .DEFINE "type"
+                           A   295    .VALUE 0
+                           A   296    .CLASS 8
+                           A   297    .TYPE 4
+                           A   298    .ENDEF
+                           A   299    .DEFINE "match"
+                           A   300    .VALUE 3
+                           A   301    .CLASS 8
+                           A   302    .TYPE 556
+                           A   303    .ENDEF
+                           A   304    .ENDREC "NONAME7"
+                           A   305    .BEGREC "NONAME8",264
+                           A   306    .DEFINE "current_instruction"
+                           A   307    .VALUE 0
+                           A   308    .CLASS 8
+                           A   309    .TAG "NONAME6"
+                           A   310    .TYPE 40
+                           A   311    .ENDEF
+                           A   312    .DEFINE "next"
+                           A   313    .VALUE 3
+                           A   314    .CLASS 8
+                           A   315    .TYPE 34
+                           A   316    .ENDEF
+                           A   317    .DEFINE "label"
+                           A   318    .VALUE 6
+                           A   319    .CLASS 8
+                           A   320    .DIM 32
+                           A   321    .TYPE 98
+                           A   322    .ENDEF
+                           A   323    .DEFINE "mnemonic"
+                           A   324    .VALUE 38
+                           A   325    .CLASS 8
+                           A   326    .DIM 16
+                           A   327    .TYPE 98
+                           A   328    .ENDEF
+                           A   329    .DEFINE "suffix"
+                           A   330    .VALUE 54
+                           A   331    .CLASS 8
+                           A   332    .DIM 16
+                           A   333    .TYPE 98
+                           A   334    .ENDEF
+                           A   335    .DEFINE "operand1"
+                           A   336    .VALUE 70
+                           A   337    .CLASS 8
+                           A   338    .DIM 32
+                           A   339    .TYPE 98
+                           A   340    .ENDEF
+                           A   341    .DEFINE "operand2"
+                           A   342    .VALUE 102
+                           A   343    .CLASS 8
+                           A   344    .DIM 32
+                           A   345    .TYPE 98
+                           A   346    .ENDEF
+                           A   347    .DEFINE "comment"
+                           A   348    .VALUE 134
+                           A   349    .CLASS 8
+                           A   350    .DIM 128
+                           A   351    .TYPE 98
+                           A   352    .ENDEF
+                           A   353    .DEFINE "size"
+                           A   354    .VALUE 262
+                           A   355    .CLASS 8
+                           A   356    .TYPE 13
+                           A   357    .ENDEF
+                           A   358    .ENDREC "NONAME8"
+                           A   359    .BEGREC "NONAME9",261
+                           A   360    .DEFINE "start"
+                           A   361    .VALUE 0
+                           A   362    .CLASS 8
+                           A   363    .DIM 256
+                           A   364    .TYPE 98
+                           A   365    .ENDEF
+                           A   366    .DEFINE "length"
+                           A   367    .VALUE 256
+                           A   368    .CLASS 8
+                           A   369    .TYPE 12
+                           A   370    .ENDEF
+                           A   371    .DEFINE "next"
+                           A   372    .VALUE 257
+                           A   373    .CLASS 8
+                           A   374    .TYPE 34
+                           A   375    .ENDEF
+                           A   376    .DEFINE "terminator"
+                           A   377    .VALUE 260
+                           A   378    .CLASS 8
+                           A   379    .TYPE 2
+                           A   380    .ENDEF
+                           A   381    .ENDREC "NONAME9"
+                           A   382    .BEGREC "NONAME10",7
+                           A   383    .DEFINE "name"
+                           A   384    .VALUE 0
+                           A   385    .CLASS 8
+                           A   386    .TYPE 34
+                           A   387    .ENDEF
+                           A   388    .DEFINE "address"
+                           A   389    .VALUE 3
+                           A   390    .CLASS 8
+                           A   391    .TYPE 5
+                           A   392    .ENDEF
+                           A   393    .ENDREC "NONAME10"
+                           A   394    .BEGREC "NONAME11",5
+                           A   395    .DEFINE "defined"
+                           A   396    .VALUE 0
+                           A   397    .CLASS 8
+                           A   398    .TYPE 12
+                           A   399    .ENDEF
+                           A   400    .DEFINE "address"
+                           A   401    .VALUE 1
+                           A   402    .CLASS 8
+                           A   403    .TYPE 5
+                           A   404    .ENDEF
+                           A   405    .ENDREC "NONAME11"
+                           A   406    ;    1	#include <stdio.h>
+                           A   407    ;    2	#include <stdlib.h>
+                           A   408    ;    3	#include <string.h>
+                           A   409    ;    4	#include <stdint.h>
+                           A   410    ;    5	#include "globals.h"
+                           A   411    ;    6	#include "utils.h"
+                           A   412    ;    7	#include "assemble.h"
+                           A   413    ;    8	#include "label.h"
+                           A   414    ;    9	#include "stdint.h"
+                           A   415    ;   10	
+                           A   416    ;   11	int main(int argc, char *argv[])
+                           A   417    ;   12	{
+0400DC                     A   418    _main:
+                           A   419    .DEFINE "_main"
+                           A   420    
+                           A   421    .VALUE _main
+                           A   422    
+                           A   423    .CLASS 2
+                           A   424    
+                           A   425    .TYPE 68
+                           A   426    
+                           A   427    .ENDEF
+                           A   428    
+                           A   429    .BEGFUNC "main",12,"_main"
+                           A   430    
+                           A   431    .LINE 12
+                           A   432    
+                           A   433    .DEFINE "argc"
+                           A   434    
+                           A   435    .CLASS 65
+                           A   436    
+                           A   437    .VALUE 6
+                           A   438    
+                           A   439    .TYPE 4
+                           A   440    
+                           A   441    .ENDEF
+                           A   442    
+                           A   443    .DEFINE "argv"
+                           A   444    
+                           A   445    .CLASS 65
+                           A   446    
+                           A   447    .VALUE 9
+                           A   448    
+                           A   449    .TYPE 290
+                           A   450    
+                           A   451    .ENDEF
+                           A   452    
+0400DC DDE5                A   453    	PUSH	IX
+0400DE DD210000 00         A   454    	LD	IX,0
+0400E3 DD39                A   455    	ADD	IX,SP
+0400E5 3B                  A   456    	DEC	SP
+                           A   457    ;   13	    if(argc < 2){
+                           A   458    .LINE 13
+                           A   459    
+0400E6 01020000            A   460    	LD	BC,2
+0400EA DD2706              A   461    	LD	HL,(IX+%6)
+0400ED B7                  A   462    	OR	A,A
+0400EE ED42                A   463    	SBC	HL,BC
+0400F0 CD 33 63 04         A   464    	CALL	__setflag
+0400F4 F2 12 01 04         A   465    	JP	P,L_1
+                           A   466    ;   14	        printf("Usage: asm <filename> [
+                           A   467    .LINE 14
+                           A   468    
+0400F8 01 B2 65 04         A   469    	LD	BC,___print_uputch
+0400FC ED43 49 8B 04       A   470    	LD	(___print_xputch),BC
+040101 01 CC 8B 04         A   471    	LD	BC,L__1
+040105 C5                  A   472    	PUSH	BC
+040106 CD 24 64 04         A   473    	CALL	___print_sendstring
+04010A C1                  A   474    	POP	BC
+                           A   475    ;   15	        return 0;
+                           A   476    .LINE 15
+                           A   477    
+04010B B7                  A   478    	OR	A,A
+04010C ED62                A   479    	SBC	HL,HL
+04010E C3 ED 01 04         A   480    	JR	L_13
+                           A   481    ;   16	    }
+040112                     A   482    L_1:
+                           A   483    .LINE 16
+                           A   484    
+                           A   485    ;   17	
+                           A   486    ;   18	    prepare_filenames(argv[1]);
+                           A   487    .LINE 18
+                           A   488    
+040112 DD3109              A   489    	LD	IY,(IX+%9)
+040115 ED2303              A   490    	LEA	HL,IY+%3
+040118 ED07                A   491    	LD	BC,(HL)
+04011A C5                  A   492    	PUSH	BC
+04011B CD A3 5D 04         A   493    	CALL	_prepare_filenames
+04011F C1                  A   494    	POP	BC
+                           A   495    ;   19	    if(!openfiles()) return 0;
+                           A   496    .LINE 19
+                           A   497    
+040120 CD 3A 5F 04         A   498    	CALL	_openfiles
+040124 B7                  A   499    	OR	A,A
+040125 20 07               A   500    	JR	NZ,L_3
+040127 B7                  A   501    	OR	A,A
+040128 ED62                A   502    	SBC	HL,HL
+04012A C3 ED 01 04         A   503    	JR	L_13
+04012E                     A   504    L_3:
+                           A   505    ;   20	
+                           A   506    ;   21	    debug_enabled = false;
+                           A   507    .LINE 21
+                           A   508    
+04012E AF                  A   509    	XOR	A,A
+04012F 32 F1 95 04         A   510    	LD	(_debug_enabled),A
+                           A   511    ;   22	    if((argc == 3) && (strcmp(argv[2], 
+                           A   512    .LINE 22
+                           A   513    
+040133 01030000            A   514    	LD	BC,3
+040137 DD2706              A   515    	LD	HL,(IX+%6)
+04013A B7                  A   516    	OR	A,A
+04013B ED42                A   517    	SBC	HL,BC
+04013D 28 04               A   518    	JR	Z,L__4
+04013F 3E01                A   519    	LD	A,%1
+040141 18 01               A   520    	JR	L__5
+040143                     A   521    L__4:
+040143 AF                  A   522    	XOR	A,A
+040144                     A   523    L__5:
+040144 DD77FF              A   524    	LD	(IX+%FFFFFFFF),A
+040147 B7                  A   525    	OR	A,A
+040148 20 20               A   526    	JR	NZ,L_8
+04014A 01 E8 8B 04         A   527    	LD	BC,L__7
+04014E C5                  A   528    	PUSH	BC
+04014F DD3109              A   529    	LD	IY,(IX+%9)
+040152 ED2306              A   530    	LEA	HL,IY+%6
+040155 ED07                A   531    	LD	BC,(HL)
+040157 C5                  A   532    	PUSH	BC
+040158 CD 8F 65 04         A   533    	CALL	_strcmp
+04015C C1                  A   534    	POP	BC
+04015D C1                  A   535    	POP	BC
+04015E CD F9 69 04         A   536    	CALL	__icmpzero
+040162 20 06               A   537    	JR	NZ,L_8
+040164 3E01                A   538    	LD	A,%1
+040166 32 F1 95 04         A   539    	LD	(_debug_enabled),A
+04016A                     A   540    L_8:
+                           A   541    ;   23	    if((argc == 3) && (strcmp(argv[2], 
+                           A   542    .LINE 23
+                           A   543    
+04016A DD7EFF              A   544    	LD	A,(IX+%FFFFFFFF)
+04016D B7                  A   545    	OR	A,A
+04016E 20 20               A   546    	JR	NZ,L_9
+040170 01 EB 8B 04         A   547    	LD	BC,L__10
+040174 C5                  A   548    	PUSH	BC
+040175 DD3109              A   549    	LD	IY,(IX+%9)
+040178 ED2306              A   550    	LEA	HL,IY+%6
+04017B ED07                A   551    	LD	BC,(HL)
+04017D C5                  A   552    	PUSH	BC
+04017E CD 8F 65 04         A   553    	CALL	_strcmp
+040182 C1                  A   554    	POP	BC
+040183 C1                  A   555    	POP	BC
+040184 CD F9 69 04         A   556    	CALL	__icmpzero
+040188 20 06               A   557    	JR	NZ,L_9
+04018A 3E01                A   558    	LD	A,%1
+04018C 32 F2 95 04         A   559    	LD	(_consolelist_enabled),A
+040190                     A   560    L_9:
+                           A   561    ;   24	
+                           A   562    ;   25	    // Init tables
+                           A   563    ;   26	    initGlobalLabelTable();
+                           A   564    .LINE 26
+                           A   565    
+040190 CD 41 44 04         A   566    	CALL	_initGlobalLabelTable
+                           A   567    ;   27	    initLocalLabelTable();
+                           A   568    .LINE 27
+                           A   569    
+040194 CD B7 44 04         A   570    	CALL	_initLocalLabelTable
+                           A   571    ;   28	    initAnonymousLabelTable();
+                           A   572    .LINE 28
+                           A   573    
+040198 CD 96 44 04         A   574    	CALL	_initAnonymousLabelTable
+                           A   575    ;   29	
+                           A   576    ;   30	    // Assemble input to output
+                           A   577    ;   31	    assemble();
+                           A   578    .LINE 31
+                           A   579    
+04019C CD 7B 36 04         A   580    	CALL	_assemble
+                           A   581    ;   32	    if(global_errors) {
+                           A   582    .LINE 32
+                           A   583    
+0401A0 2A 02 96 04         A   584    	LD	HL,(_global_errors)
+0401A4 CD 9F 6D 04         A   585    	CALL	__scmpzero
+0401A8 28 15               A   586    	JR	Z,L_11
+                           A   587    ;   33	        //remove(filename[FILE_OUTPUT])
+                           A   588    ;   34	        printf("Error in input\n");
+                           A   589    .LINE 34
+                           A   590    
+0401AA 01 B2 65 04         A   591    	LD	BC,___print_uputch
+0401AE ED43 49 8B 04       A   592    	LD	(___print_xputch),BC
+0401B3 01 EE 8B 04         A   593    	LD	BC,L__13
+0401B7 C5                  A   594    	PUSH	BC
+0401B8 CD 24 64 04         A   595    	CALL	___print_sendstring
+0401BC C1                  A   596    	POP	BC
+                           A   597    ;   35	    }
+                           A   598    ;   36	    else printf("%d bytes\n", totalsize
+                           A   599    .LINE 36
+                           A   600    
+0401BD 18 27               A   601    	JR	L_12
+0401BF                     A   602    L_11:
+0401BF 01 B2 65 04         A   603    	LD	BC,___print_uputch
+0401C3 ED43 49 8B 04       A   604    	LD	(___print_xputch),BC
+0401C8 3A 01 96 04         A   605    	LD	A,(_totalsize+3)
+0401CC 4F                  A   606    	LD	C,A
+0401CD 0600                A   607    	LD	B,%0
+0401CF C5                  A   608    	PUSH	BC
+0401D0 ED4B FE 95 04       A   609    	LD	BC,(_totalsize)
+0401D5 C5                  A   610    	PUSH	BC
+0401D6 CD 8C 66 04         A   611    	CALL	__u_itoa
+0401DA C1                  A   612    	POP	BC
+0401DB C1                  A   613    	POP	BC
+0401DC 01 FE 8B 04         A   614    	LD	BC,L__14
+0401E0 C5                  A   615    	PUSH	BC
+0401E1 CD 24 64 04         A   616    	CALL	___print_sendstring
+0401E5 C1                  A   617    	POP	BC
+0401E6                     A   618    L_12:
+                           A   619    ;   37	 
+                           A   620    ;   38	    closeAllFiles();   
+                           A   621    .LINE 38
+                           A   622    
+0401E6 CD 96 5E 04         A   623    	CALL	_closeAllFiles
+                           A   624    ;   39	    return 0;
+                           A   625    .LINE 39
+                           A   626    
+0401EA B7                  A   627    	OR	A,A
+0401EB ED62                A   628    	SBC	HL,HL
+0401ED                     A   629    L_13:
+                           A   630    .LINE 40
+                           A   631    
+0401ED DDF9                A   632    	LD	SP,IX
+0401EF DDE1                A   633    	POP	IX
+0401F1 C9                  A   634    	RET	
+                           A   635    
+                           A   636    
+                           A   637    ;**************************** _main ***********
+                           A   638    ;Name                         Addr/Register   S
+                           A   639    ;_closeAllFiles                      IMPORT  --
+                           A   640    ;_totalsize                          IMPORT    
+                           A   641    ;__u_itoa                            IMPORT  --
+                           A   642    ;_global_errors                      IMPORT    
+                           A   643    ;_assemble                           IMPORT  --
+                           A   644    ;_initAnonymousLabelTable            IMPORT  --
+                           A   645    ;_initLocalLabelTable                IMPORT  --
+                           A   646    ;_initGlobalLabelTable               IMPORT  --
+                           A   647    ;_consolelist_enabled                IMPORT    
+                           A   648    ;_strcmp                             IMPORT  --
+                           A   649    ;_debug_enabled                      IMPORT    
+                           A   650    ;_openfiles                          IMPORT  --
+                           A   651    ;_prepare_filenames                  IMPORT  --
+                           A   652    ;___print_sendstring                 IMPORT  --
+                           A   653    ;___print_xputch                     IMPORT    
+                           A   654    ;___print_uputch                     IMPORT  --
+                           A   655    ;G_0                                   IX-1    
+                           A   656    ;argv                                  IX+9    
+                           A   657    ;argc                                  IX+6    
+                           A   658    
+                           A   659    
+                           A   660    ; Stack Frame Size: 13 (bytes)
+                           A   661    ;       Spill Code: 0 (instruction)
+                           A   662    
+                           A   663    
+                           A   664    .ENDFUNC "main",40,"_main"
+                           A   665    	SEGMENT STRSECT
+048BCC                     A   666    L__1:
+048BCC 55736167 653A2061   A   667    	DB	"Usage: asm <filename> [-l]"
+048BD4 736D203C 66696C65 
+048BDC 6E616D65 3E205B2D 
+048BE4 6C5D 
+048BE6 0A00                A   668    	DB	10,0
+048BE8                     A   669    L__7:
+048BE8 2D64                A   670    	DB	"-d"
+048BEA 00                  A   671    	DB	0
+048BEB                     A   672    L__10:
+048BEB 2D6C                A   673    	DB	"-l"
+048BED 00                  A   674    	DB	0
+048BEE                     A   675    L__13:
+048BEE 4572726F 7220696E   A   676    	DB	"Error in input"
+048BF6 20696E70 7574 
+048BFC 0A00                A   677    	DB	10,0
+048BFE                     A   678    L__14:
+048BFE 20627974 6573       A   679    	DB	" bytes"
+048C04 0A00                A   680    	DB	10,0
+                           A   681    	XREF _assemble:ROM
+                           A   682    	XREF _initLocalLabelTable:ROM
+                           A   683    	XREF _initAnonymousLabelTable:ROM
+                           A   684    	XREF _initGlobalLabelTable:ROM
+                           A   685    	XREF _openfiles:ROM
+                           A   686    	XREF _closeAllFiles:ROM
+                           A   687    	XREF _prepare_filenames:ROM
+                           A   688    	XREF _global_errors:ROM
+                           A   689    	XREF _totalsize:ROM
+                           A   690    	XREF _consolelist_enabled:ROM
+                           A   691    	XREF _debug_enabled:ROM
+                           A   692    	XREF _strcmp:ROM
+                           A   693    	XREF __u_itoa:ROM
+                           A   694    	XREF ___print_sendstring:ROM
+                           A   695    	XREF ___print_xputch:ROM
+                           A   696    	XREF ___print_uputch:ROM
+                           A   697    	XREF __setflag:ROM
+                           A   698    	XREF __scmpzero:ROM
+                           A   699    	XREF __icmpzero:ROM
+                           A   700    	XDEF _main
+                           A   701    	END
+
+
+Errors: 0
+Warnings: 0
+Lines Assembled: 702

@@ -1,0 +1,138 @@
+; Zilog eZ80 ANSI C Compiler Release 3.4
+; -nomodsect -optsize -noreduceopt -nopadbranch -debug
+; -peephole -globalopt -localcse -const=ROM 
+	FILE	"..\hash.c"
+	.assume ADL=1
+.DEBUG "C"
+	SEGMENT CODE
+;    1	#include <string.h>
+;    2	#include "hash.h"
+;    3	#include "stdint.h"
+;    4	
+;    5	unsigned int hash(char *name, unsigned int size) {
+_hash:
+.DEFINE "_hash"
+
+.VALUE _hash
+
+.CLASS 2
+
+.TYPE 78
+
+.ENDEF
+
+.BEGFUNC "hash",5,"_hash"
+
+.LINE 5
+
+.DEFINE "name"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "size"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 14
+
+.ENDEF
+
+.DEFINE "p"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 44
+
+.ENDEF
+
+.DEFINE "h"
+
+.CLASS 65
+
+.VALUE -6
+
+.TYPE 14
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;    6	    unsigned int h;
+;    7	    unsigned char *p;
+;    8	
+;    9	    h = 7;
+.LINE 9
+
+	LD	BC,7
+	LD	(IX+%FFFFFFFA),BC
+;   10	    for(p = (unsigned char*)name; *p != '\0'; p++) 
+.LINE 10
+
+	LD	BC,(IX+%6)
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_3
+L_1:
+;   11	        h = 37 * h + *p;
+.LINE 11
+
+	LD	HL,(IX+%FFFFFFFA)
+	LD	A,%25
+	CALL	__imul_b
+	LD	BC,HL
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	UEXT	HL
+	LD	L,A
+	ADD	HL,BC
+	LD	(IX+%FFFFFFFA),HL
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+L_3:
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_1
+;   12	    return h % size;
+.LINE 12
+
+	LD	HL,(IX+%FFFFFFFA)
+	LD	BC,(IX+%9)
+	CALL	__iremu
+.LINE 13
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _hash ***************************
+;Name                         Addr/Register   Size   Type
+;h                                     IX-6      3   variable
+;p                                     IX-3      3   variable
+;size                                  IX+9      3   parameter
+;name                                  IX+6      3   parameter
+
+
+; Stack Frame Size: 18 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "hash",13,"_hash"
+	XREF __iremu:ROM
+	XREF __imul_b:ROM
+	XDEF _hash
+	END

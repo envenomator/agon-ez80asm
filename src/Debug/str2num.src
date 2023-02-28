@@ -1,0 +1,1850 @@
+; Zilog eZ80 ANSI C Compiler Release 3.4
+; -nomodsect -optsize -noreduceopt -nopadbranch -debug
+; -peephole -globalopt -localcse -const=ROM 
+	FILE	"..\str2num.c"
+	.assume ADL=1
+.DEBUG "C"
+	SEGMENT CODE
+.BEGREC "fmt_type",19
+.DEFINE "status"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "flags"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "size"
+.VALUE 2
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "chr"
+.VALUE 3
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "type"
+.VALUE 4
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "field_width"
+.VALUE 5
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "precision"
+.VALUE 6
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "set_begin"
+.VALUE 7
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "set_end"
+.VALUE 10
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "pad_whole"
+.VALUE 13
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_pre_fract"
+.VALUE 14
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_post_fract"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_at"
+.VALUE 16
+.CLASS 8
+.TYPE 34
+.ENDEF
+.ENDREC "fmt_type"
+.BEGREC "flt_info",12
+.DEFINE "flags"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "exp"
+.VALUE 1
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "digits"
+.VALUE 2
+.CLASS 8
+.DIM 10
+.TYPE 108
+.ENDEF
+.ENDREC "flt_info"
+.BEGREC "NONAME0",6
+.DEFINE "quot"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "rem"
+.VALUE 3
+.CLASS 8
+.TYPE 4
+.ENDEF
+.ENDREC "NONAME0"
+.BEGREC "NONAME1",8
+.DEFINE "quot"
+.VALUE 0
+.CLASS 8
+.TYPE 5
+.ENDEF
+.DEFINE "rem"
+.VALUE 4
+.CLASS 8
+.TYPE 5
+.ENDEF
+.ENDREC "NONAME1"
+.BEGREC "header",6
+.DEFINE "s"
+.VALUE 0
+.CLASS 11
+.TAG "NONAME2"
+.TYPE 8
+.ENDEF
+.DEFINE "x"
+.VALUE 0
+.CLASS 11
+.TYPE 2
+.ENDEF
+.ENDREC "header"
+.BEGREC "NONAME2",6
+.DEFINE "ptr"
+.VALUE 0
+.CLASS 8
+.TAG "header"
+.TYPE 40
+.ENDEF
+.DEFINE "size"
+.VALUE 3
+.CLASS 8
+.TYPE 14
+.ENDEF
+.ENDREC "NONAME2"
+.BEGREC "NONAME3",16
+.DEFINE "reg"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "reg_index"
+.VALUE 3
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "indirect"
+.VALUE 4
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "cc"
+.VALUE 5
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "cc_index"
+.VALUE 6
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "displacement"
+.VALUE 7
+.CLASS 8
+.TYPE 3
+.ENDEF
+.DEFINE "displacement_provided"
+.VALUE 9
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "immediate_provided"
+.VALUE 10
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "immediate"
+.VALUE 11
+.CLASS 8
+.TYPE 5
+.ENDEF
+.DEFINE "wasLabel"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME3"
+.BEGREC "NONAME4",4
+.DEFINE "suffix"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "prefix1"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "prefix2"
+.VALUE 2
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "opcode"
+.VALUE 3
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME4"
+.BEGREC "NONAME5",16
+.DEFINE "operandA"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "operandB"
+.VALUE 3
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "ddfdpermitted"
+.VALUE 6
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "transformA"
+.VALUE 7
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "transformB"
+.VALUE 10
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "prefix"
+.VALUE 13
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "opcode"
+.VALUE 14
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "adl"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME5"
+.BEGREC "NONAME6",17
+.DEFINE "name"
+.VALUE 0
+.CLASS 8
+.DIM 8
+.TYPE 98
+.ENDEF
+.DEFINE "type"
+.VALUE 8
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "asmtype"
+.VALUE 9
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "listnumber"
+.VALUE 10
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "list"
+.VALUE 11
+.CLASS 8
+.TAG "NONAME5"
+.TYPE 40
+.ENDEF
+.DEFINE "asmargument"
+.VALUE 14
+.CLASS 8
+.TYPE 4
+.ENDEF
+.ENDREC "NONAME6"
+.BEGREC "NONAME7",6
+.DEFINE "type"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "match"
+.VALUE 3
+.CLASS 8
+.TYPE 556
+.ENDEF
+.ENDREC "NONAME7"
+.BEGREC "NONAME8",264
+.DEFINE "current_instruction"
+.VALUE 0
+.CLASS 8
+.TAG "NONAME6"
+.TYPE 40
+.ENDEF
+.DEFINE "next"
+.VALUE 3
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "label"
+.VALUE 6
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "mnemonic"
+.VALUE 38
+.CLASS 8
+.DIM 16
+.TYPE 98
+.ENDEF
+.DEFINE "suffix"
+.VALUE 54
+.CLASS 8
+.DIM 16
+.TYPE 98
+.ENDEF
+.DEFINE "operand1"
+.VALUE 70
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "operand2"
+.VALUE 102
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "comment"
+.VALUE 134
+.CLASS 8
+.DIM 128
+.TYPE 98
+.ENDEF
+.DEFINE "size"
+.VALUE 262
+.CLASS 8
+.TYPE 13
+.ENDEF
+.ENDREC "NONAME8"
+.BEGREC "NONAME9",261
+.DEFINE "start"
+.VALUE 0
+.CLASS 8
+.DIM 256
+.TYPE 98
+.ENDEF
+.DEFINE "length"
+.VALUE 256
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "next"
+.VALUE 257
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "terminator"
+.VALUE 260
+.CLASS 8
+.TYPE 2
+.ENDEF
+.ENDREC "NONAME9"
+	SEGMENT BSS
+_err_str2num:
+	DS	1
+.DEFINE "err_str2num"
+.ALIAS "_err_str2num"
+.CLASS 83
+.VALUE _err_str2num
+.TYPE 12
+.ENDEF
+;    1	#include <string.h>
+;    2	#include "str2num.h"
+;    3	#include "globals.h"
+;    4	#include "utils.h"
+;    5	#include "stdint.h"
+;    6	
+;    7	bool err_str2num;
+	SEGMENT CODE
+;    8	
+;    9	enum {
+;   10	    BASESELECT,
+;   11	    FIND_PREFIX,
+;   12	    FIND_END,
+;   13	    LAST_ITEM,
+;   14	    DONE,
+;   15	    ERROR
+;   16	};
+;   17	
+;   18	// transform a binary string to a uint32_t number
+;   19	// string must end with 0 and contain only valid characters (0..1)
+;   20	int32_t str2bin(char *string) {
+_str2bin:
+.DEFINE "_str2bin"
+
+.VALUE _str2bin
+
+.CLASS 2
+
+.TYPE 69
+
+.ENDEF
+
+.BEGFUNC "str2bin",20,"_str2bin"
+
+.LINE 20
+
+.DEFINE "string"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "x"
+
+.CLASS 65
+
+.VALUE -1
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "result"
+
+.CLASS 65
+
+.VALUE -5
+
+.TYPE 5
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+	DEC	SP
+	DEC	SP
+;   21	    int32_t result = 0;
+.LINE 21
+
+	LD	BC,0
+	XOR	A,A
+	LD	(IX+%FFFFFFFB),BC
+	LD	(IX+%FFFFFFFE),A
+;   22	    uint8_t x = 0;
+.LINE 22
+
+	LD	(IX+%FFFFFFFF),%0
+;   23	
+;   24	    while(*string) {
+.LINE 24
+
+	JR	L_5
+L_6:
+;   25	        if((*string == '0') || (*string == '1')) {x = *string - '0';}
+.LINE 25
+
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,48
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_1
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,49
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_2
+L_1:
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	SUB	A,%30
+	LD	(IX+%FFFFFFFF),A
+;   26	        else err_str2num = true;
+.LINE 26
+
+	JR	L_3
+L_2:
+	LD	A,%1
+	LD	(_err_str2num),A
+L_3:
+;   27	        result = (result << 1) | x;
+.LINE 27
+
+	LD	BC,(IX+%FFFFFFFB)
+	LD	A,(IX+%FFFFFFFE)
+	LD	L,%1
+	CALL	__lshl
+	LD	(IX+%FFFFFFF8),BC
+	LD	E,A
+	UEXT	HL
+	LD	L,(IX+%FFFFFFFF)
+	LD	BC,HL
+	LD	A,H
+	LD	HL,(IX+%FFFFFFF8)
+	CALL	__lor
+	LD	(IX+%FFFFFFFB),HL
+	LD	(IX+%FFFFFFFE),E
+;   28	        string++;
+.LINE 28
+
+	LD	BC,(IX+%6)
+	INC	BC
+	LD	(IX+%6),BC
+;   29	    }
+L_5:
+.LINE 29
+
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_6
+;   30	    return result;
+.LINE 30
+
+	LD	HL,(IX+%FFFFFFFB)
+	LD	E,(IX+%FFFFFFFE)
+;   31	}
+.LINE 31
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _str2bin ***************************
+;Name                         Addr/Register   Size   Type
+;_err_str2num                        STATIC      1   variable
+;result                                IX-5      4   variable
+;x                                     IX-1      1   variable
+;string                                IX+6      3   parameter
+
+
+; Stack Frame Size: 17 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "str2bin",31,"_str2bin"
+;   32	
+;   33	// transform a hex string to a uint32_t number
+;   34	// string must end with 0 and contain only valid characters (0..9,a..f,A..F)
+;   35	int32_t str2hex(char *string) {
+_str2hex:
+.DEFINE "_str2hex"
+
+.VALUE _str2hex
+
+.CLASS 2
+
+.TYPE 69
+
+.ENDEF
+
+.BEGFUNC "str2hex",35,"_str2hex"
+
+.LINE 35
+
+.DEFINE "string"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "c"
+
+.CLASS 65
+
+.VALUE -1
+
+.TYPE 2
+
+.ENDEF
+
+.DEFINE "x"
+
+.CLASS 65
+
+.VALUE -2
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "result"
+
+.CLASS 65
+
+.VALUE -6
+
+.TYPE 5
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+	PUSH	BC
+;   36	    int32_t result = 0;
+.LINE 36
+
+	LD	BC,0
+	XOR	A,A
+	LD	(IX+%FFFFFFFA),BC
+	LD	(IX+%FFFFFFFD),A
+;   37	    char c;
+;   38	    uint8_t x = 0;
+.LINE 38
+
+	LD	(IX+%FFFFFFFE),%0
+;   39	
+;   40	    while(*string) {
+.LINE 40
+
+	JR	L_17
+L_18:
+;   41	        c = *string;
+.LINE 41
+
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	LD	(IX+%FFFFFFFF),A
+;   42	        if((c >= '0') && (c <= '9')) { x = c - '0'; }
+.LINE 42
+
+	CP	A,%30
+	JP	M,L_14
+	LD	A,%39
+	CP	A,(IX+%FFFFFFFF)
+	CALL	__setflag
+	JP	M,L_14
+	LD	A,(IX+%FFFFFFFF)
+	SUB	A,%30
+	LD	(IX+%FFFFFFFE),A
+;   43	        else {
+.LINE 43
+
+	JR	L_15
+L_14:
+;   44	            c = c & 0xDF ; // toupper();
+.LINE 44
+
+	LD	A,(IX+%FFFFFFFF)
+	RES	%5,A
+	LD	(IX+%FFFFFFFF),A
+;   45	            if((c >= 'A') && (c <= 'F')) { x = c - 'A' + 10; }
+.LINE 45
+
+	CP	A,%41
+	CALL	__setflag
+	JP	M,L_12
+	LD	A,%46
+	CP	A,(IX+%FFFFFFFF)
+	CALL	__setflag
+	JP	M,L_12
+	LD	A,(IX+%FFFFFFFF)
+	ADD	A,%FFFFFFC9
+	LD	(IX+%FFFFFFFE),A
+;   46	        else err_str2num = true;
+.LINE 46
+
+	JR	L_15
+L_12:
+	LD	A,%1
+	LD	(_err_str2num),A
+;   47	        }
+L_15:
+.LINE 47
+
+;   48	        result = (result << 4) | x;
+.LINE 48
+
+	LD	BC,(IX+%FFFFFFFA)
+	LD	A,(IX+%FFFFFFFD)
+	LD	L,%4
+	CALL	__lshl
+	LD	(IX+%FFFFFFF7),BC
+	LD	E,A
+	UEXT	HL
+	LD	L,(IX+%FFFFFFFE)
+	LD	BC,HL
+	LD	A,H
+	LD	HL,(IX+%FFFFFFF7)
+	CALL	__lor
+	LD	(IX+%FFFFFFFA),HL
+	LD	(IX+%FFFFFFFD),E
+;   49	        string++;
+.LINE 49
+
+	LD	BC,(IX+%6)
+	INC	BC
+	LD	(IX+%6),BC
+;   50	    }
+L_17:
+.LINE 50
+
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_18
+;   51	    return result;
+.LINE 51
+
+	LD	HL,(IX+%FFFFFFFA)
+	LD	E,(IX+%FFFFFFFD)
+;   52	}
+.LINE 52
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _str2hex ***************************
+;Name                         Addr/Register   Size   Type
+;_err_str2num                        STATIC      1   variable
+;result                                IX-6      4   variable
+;x                                     IX-2      1   variable
+;c                                     IX-1      1   variable
+;string                                IX+6      3   parameter
+
+
+; Stack Frame Size: 18 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "str2hex",52,"_str2hex"
+;   53	
+;   54	// transform a hex string to a uint32_t number
+;   55	// string must end with 0 and contain only valid characters (0..9)
+;   56	int32_t str2dec(char *string) {
+_str2dec:
+.DEFINE "_str2dec"
+
+.VALUE _str2dec
+
+.CLASS 2
+
+.TYPE 69
+
+.ENDEF
+
+.BEGFUNC "str2dec",56,"_str2dec"
+
+.LINE 56
+
+.DEFINE "string"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "x"
+
+.CLASS 65
+
+.VALUE -1
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "result"
+
+.CLASS 65
+
+.VALUE -5
+
+.TYPE 5
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+%FFFFFFF5
+	LD	SP,HL
+;   57	    int32_t result = 0;
+.LINE 57
+
+	LD	BC,0
+	XOR	A,A
+	LD	(IX+%FFFFFFFB),BC
+	LD	(IX+%FFFFFFFE),A
+;   58	    uint8_t x = 0;
+.LINE 58
+
+	LD	(IX+%FFFFFFFF),%0
+;   59	
+;   60	    while(*string) {
+.LINE 60
+
+	JR	L_26
+L_27:
+;   61	        if((*string >= '0') && (*string <= '9')) { x = *string - '0'; }
+.LINE 61
+
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,48
+	OR	A,A
+	SBC	HL,BC
+	JP	M,L_23
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,HL
+	LD	HL,57
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	M,L_23
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	SUB	A,%30
+	LD	(IX+%FFFFFFFF),A
+;   62	        else err_str2num = true;
+.LINE 62
+
+	JR	L_24
+L_23:
+	LD	A,%1
+	LD	(_err_str2num),A
+L_24:
+;   63	        result = ((result << 1) + (result << 3)) + x;
+.LINE 63
+
+	LD	BC,(IX+%FFFFFFFB)
+	LD	A,(IX+%FFFFFFFE)
+	LD	L,%1
+	CALL	__lshl
+	LD	(IX+%FFFFFFF5),BC
+	LD	E,A
+	LD	BC,(IX+%FFFFFFFB)
+	LD	A,(IX+%FFFFFFFE)
+	LD	L,%3
+	CALL	__lshl
+	LD	HL,(IX+%FFFFFFF5)
+	CALL	__ladd
+	LD	(IX+%FFFFFFF8),HL
+	UEXT	HL
+	LD	L,(IX+%FFFFFFFF)
+	LD	BC,HL
+	LD	A,H
+	LD	HL,(IX+%FFFFFFF8)
+	CALL	__ladd
+	LD	(IX+%FFFFFFFB),HL
+	LD	(IX+%FFFFFFFE),E
+;   64	        string++;
+.LINE 64
+
+	LD	BC,(IX+%6)
+	INC	BC
+	LD	(IX+%6),BC
+;   65	    }
+L_26:
+.LINE 65
+
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_27
+;   66	    return result;
+.LINE 66
+
+	LD	HL,(IX+%FFFFFFFB)
+	LD	E,(IX+%FFFFFFFE)
+;   67	}
+.LINE 67
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _str2dec ***************************
+;Name                         Addr/Register   Size   Type
+;_err_str2num                        STATIC      1   variable
+;result                                IX-5      4   variable
+;x                                     IX-1      1   variable
+;string                                IX+6      3   parameter
+
+
+; Stack Frame Size: 20 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "str2dec",67,"_str2dec"
+;   68	
+;   69	// Transforms a binary/hexadecimal/decimal string to an uint32_t number
+;   70	// Valid strings are
+;   71	// BINARY:  0%..., %..., ...b
+;   72	// HEX:     0x..., ...h, $...
+;   73	// DECIMAL ...
+;   74	int32_t str2num(char *string, bool errorhalt) {
+_str2num:
+.DEFINE "_str2num"
+
+.VALUE _str2num
+
+.CLASS 2
+
+.TYPE 69
+
+.ENDEF
+
+.BEGFUNC "str2num",74,"_str2num"
+
+.LINE 74
+
+.DEFINE "string"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "errorhalt"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "ptr"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "state"
+
+.CLASS 65
+
+.VALUE -4
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "result"
+
+.CLASS 65
+
+.VALUE -8
+
+.TYPE 5
+
+.ENDEF
+
+.DEFINE "start"
+
+.CLASS 65
+
+.VALUE -11
+
+.TYPE 34
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+%FFFFFFEC
+	LD	SP,HL
+;   75	    char *ptr = string;
+.LINE 75
+
+	LD	BC,(IX+%6)
+	LD	(IX+%FFFFFFFD),BC
+;   76	    char *start = string;
+.LINE 76
+
+	LD	BC,(IX+%6)
+	LD	(IX+%FFFFFFF5),BC
+;   77	    int32_t result = 0;
+.LINE 77
+
+	LD	BC,0
+	XOR	A,A
+	LD	(IX+%FFFFFFF8),BC
+	LD	(IX+%FFFFFFFB),A
+;   78	    uint8_t state = BASESELECT;
+.LINE 78
+
+	LD	(IX+%FFFFFFFC),%0
+;   79	
+;   80	    err_str2num = false;
+.LINE 80
+
+	XOR	A,A
+	LD	(_err_str2num),A
+;   81	
+;   82	    while(1) {
+L_106:
+.LINE 82
+
+;   83	        switch(state) {
+.LINE 83
+
+	LD	A,(IX+%FFFFFFFC)
+	UEXT	HL
+	LD	L,A
+	CALL	__seqcaseD
+	JP	(HL)
+L__14:
+	DW	6
+	DW	0
+	DB	0
+	DW24	L_31	
+
+	DW24	L_54	
+
+	DW24	L_72	
+
+	DW24	L_79	
+
+	DW24	L_30	
+
+	DW24	L_101	
+
+	DW24	L_106	
+
+;   84	            case(DONE):
+L_30:
+.LINE 84
+
+;   85	                return result;
+.LINE 85
+
+	OR	A,A
+	SBC	HL,HL
+	LD	E,%0
+	JR	L_107
+;   86	                break;
+;   87	            case(BASESELECT):
+L_31:
+.LINE 87
+
+;   88	                switch(*ptr) {
+.LINE 88
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	CALL	__case8D
+	JP	(HL)
+L__15:
+	DW	5
+	DB	0
+	DW24	L_49	
+
+	DB	35
+	DW24	L_33	
+
+	DB	36
+	DW24	L_32	
+
+	DB	37
+	DW24	L_40	
+
+	DB	48
+	DW24	L_47	
+
+	DW24	L_50	
+
+;   89	                    case '$':
+L_32:
+.LINE 89
+
+;   90	                    case '#':
+L_33:
+.LINE 90
+
+;   91	                        if(strlen(ptr+1)) {
+.LINE 91
+
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFF2),BC
+	PUSH	BC
+	CALL	_strlen
+	POP	BC
+	CALL	__icmpzero
+	JR	Z,L_38
+;   92	                            result = str2hex(ptr+1);
+.LINE 92
+
+	LD	BC,(IX+%FFFFFFF2)
+	PUSH	BC
+	CALL	_str2hex
+	POP	BC
+	LD	(IX+%FFFFFFF8),HL
+	LD	(IX+%FFFFFFFB),E
+;   93	                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+.LINE 93
+
+	LD	A,(_err_str2num)
+	OR	A,A
+	JR	Z,L_36
+	LD	A,(IX+%9)
+	OR	A,A
+	JR	Z,L_36
+	LD	HL,_message+9
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_error
+	POP	BC
+L_36:
+;   94	                            return result;
+.LINE 94
+
+	LD	HL,(IX+%FFFFFFF8)
+	LD	E,(IX+%FFFFFFFB)
+	JR	L_107
+;   95	                        }
+;   96	                        else {
+L_38:
+.LINE 96
+
+;   97	                            state = ERROR;
+.LINE 97
+
+	LD	(IX+%FFFFFFFC),%5
+;   98	                            errorhalt = true;
+.LINE 98
+
+	LD	(IX+%9),%1
+;   99	                        }
+;  100	                        break;
+.LINE 100
+
+	JR	L_106
+;  101	                    case '%':
+L_40:
+.LINE 101
+
+;  102	                        if(strlen(ptr+1)) {
+.LINE 102
+
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFEF),BC
+	PUSH	BC
+	CALL	_strlen
+	POP	BC
+	CALL	__icmpzero
+	JR	Z,L_45
+;  103	                            result = str2bin(ptr+1);
+.LINE 103
+
+	LD	BC,(IX+%FFFFFFEF)
+	PUSH	BC
+	CALL	_str2bin
+	POP	BC
+	LD	(IX+%FFFFFFF8),HL
+	LD	(IX+%FFFFFFFB),E
+;  104	                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDBITNUMBER]);
+.LINE 104
+
+	LD	A,(_err_str2num)
+	OR	A,A
+	JR	Z,L_43
+	LD	A,(IX+%9)
+	OR	A,A
+	JR	Z,L_43
+	LD	HL,_message+69
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_error
+	POP	BC
+L_43:
+;  105	                            return result;
+.LINE 105
+
+	LD	HL,(IX+%FFFFFFF8)
+	LD	E,(IX+%FFFFFFFB)
+	JR	L_107
+;  106	                        }
+;  107	                        else {
+L_45:
+.LINE 107
+
+;  108	                            state = ERROR;
+.LINE 108
+
+	LD	(IX+%FFFFFFFC),%5
+;  109	                            errorhalt = true;
+.LINE 109
+
+	LD	(IX+%9),%1
+;  110	                        }
+;  111	                        break;
+.LINE 111
+
+	JR	L_106
+;  112	                    case '0':
+L_47:
+.LINE 112
+
+;  113	                        state = FIND_PREFIX;
+.LINE 113
+
+	LD	(IX+%FFFFFFFC),%1
+;  114	                        ptr++;
+.LINE 114
+
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  115	                        break;
+.LINE 115
+
+	JR	L_106
+;  116	                    case 0: // empty string
+L_49:
+.LINE 116
+
+;  117	                        state = DONE;
+.LINE 117
+
+	LD	(IX+%FFFFFFFC),%4
+;  118	                        break;
+.LINE 118
+
+	JR	L_106
+;  119	                    default:
+L_50:
+.LINE 119
+
+;  120	                        if(isxdigit(*ptr)) state = FIND_END;
+.LINE 120
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	PUSH	HL
+	CALL	_isxdigit
+	POP	BC
+	CALL	__icmpzero
+	JR	Z,L_52
+	LD	(IX+%FFFFFFFC),%2
+;  121	                        else state = ERROR;
+.LINE 121
+
+	JR	L_106
+L_52:
+	LD	(IX+%FFFFFFFC),%5
+;  122	                }
+;  123	                break;
+.LINE 123
+
+	JR	L_106
+;  124	            case(FIND_PREFIX):
+L_54:
+.LINE 124
+
+;  125	                switch(tolower(*ptr)) {
+.LINE 125
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	PUSH	HL
+	CALL	_tolower
+	POP	BC
+	CALL	__case8D
+	JP	(HL)
+L__23:
+	DW	4
+	DB	0
+	DW24	L_67	
+
+	DB	98
+	DW24	L_62	
+
+	DB	104
+	DW24	L_66	
+
+	DB	120
+	DW24	L_55	
+
+	DW24	L_68	
+
+;  126	                    case 'x':
+L_55:
+.LINE 126
+
+;  127	                        if(strlen(ptr+1)) {
+.LINE 127
+
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFEC),BC
+	PUSH	BC
+	CALL	_strlen
+	POP	BC
+	CALL	__icmpzero
+	JR	Z,L_60
+;  128	                            result = str2hex(ptr+1);
+.LINE 128
+
+	LD	BC,(IX+%FFFFFFEC)
+	PUSH	BC
+	CALL	_str2hex
+	POP	BC
+	LD	(IX+%FFFFFFF8),HL
+	LD	(IX+%FFFFFFFB),E
+;  129	                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+.LINE 129
+
+	LD	A,(_err_str2num)
+	OR	A,A
+	JR	Z,L_58
+	LD	A,(IX+%9)
+	OR	A,A
+	JR	Z,L_58
+	LD	HL,_message+9
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_error
+	POP	BC
+L_58:
+;  130	                            return result;
+.LINE 130
+
+	LD	HL,(IX+%FFFFFFF8)
+	LD	E,(IX+%FFFFFFFB)
+	JR	L_107
+;  131	                        }
+;  132	                        else { // labels shouldn't begin with 0x, so halt always
+L_60:
+.LINE 132
+
+;  133	                            errorhalt = true;
+.LINE 133
+
+	LD	(IX+%9),%1
+;  134	                            state = ERROR;
+.LINE 134
+
+	LD	(IX+%FFFFFFFC),%5
+;  135	                        }
+;  136	                        break;
+.LINE 136
+
+	JR	L_106
+;  137	                    case 'b': // also takes care of 0b, which is 0
+L_62:
+.LINE 137
+
+;  138	                        result = str2bin(ptr+1);
+.LINE 138
+
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	PUSH	BC
+	CALL	_str2bin
+	POP	BC
+	LD	(IX+%FFFFFFF8),HL
+	LD	(IX+%FFFFFFFB),E
+;  139	                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+.LINE 139
+
+	LD	A,(_err_str2num)
+	OR	A,A
+	JR	Z,L_65
+	LD	A,(IX+%9)
+	OR	A,A
+	JR	Z,L_65
+	LD	HL,_message+9
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_error
+	POP	BC
+L_65:
+;  140	                        return result;
+.LINE 140
+
+	LD	HL,(IX+%FFFFFFF8)
+	LD	E,(IX+%FFFFFFFB)
+	JR	L_107
+;  141	                        break;
+;  142	                    case 'h':
+L_66:
+.LINE 142
+
+;  143	                    case 0:
+L_67:
+.LINE 143
+
+;  144	                        return 0; // special case 0h / 0
+.LINE 144
+
+	OR	A,A
+	SBC	HL,HL
+	LD	E,%0
+	JR	L_107
+;  145	                    default:
+L_68:
+.LINE 145
+
+;  146	                        if(isxdigit(*ptr)) {
+.LINE 146
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	PUSH	HL
+	CALL	_isxdigit
+	POP	BC
+	CALL	__icmpzero
+	JR	Z,L_70
+;  147	                            state = FIND_END;
+.LINE 147
+
+	LD	(IX+%FFFFFFFC),%2
+;  148	                            start = ptr;
+.LINE 148
+
+	LD	BC,(IX+%FFFFFFFD)
+	LD	(IX+%FFFFFFF5),BC
+;  149	                        }
+;  150	                        else state = ERROR;
+.LINE 150
+
+	JR	L_106
+L_70:
+	LD	(IX+%FFFFFFFC),%5
+;  151	                }
+;  152	                break;
+.LINE 152
+
+	JR	L_106
+;  153	            case(FIND_END):
+L_72:
+.LINE 153
+
+;  154	                switch(*ptr) {
+.LINE 154
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	CALL	__icmpzero
+	JR	NZ,L_74
+;  155	                    case 0:
+.LINE 155
+
+;  156	                        state = DONE; // empty string
+.LINE 156
+
+	LD	(IX+%FFFFFFFC),%4
+;  157	                        break;
+.LINE 157
+
+	JR	L_106
+;  158	                    default:
+L_74:
+.LINE 158
+
+;  159	                    if(ptr[1] == 0) state = LAST_ITEM;
+.LINE 159
+
+	LD	HL,(IX+%FFFFFFFD)
+	INC	HL
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_77
+	LD	(IX+%FFFFFFFC),%3
+;  160	                    else ptr++;
+.LINE 160
+
+	JR	L_106
+L_77:
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  161	                }
+;  162	                break;
+.LINE 162
+
+	JR	L_106
+;  163	            case(LAST_ITEM):
+L_79:
+.LINE 163
+
+;  164	                switch(tolower(*ptr)) {
+.LINE 164
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	PUSH	HL
+	CALL	_tolower
+	POP	BC
+	CALL	__case8D
+	JP	(HL)
+L__31:
+	DW	2
+	DB	98
+	DW24	L_80	
+
+	DB	104
+	DW24	L_87	
+
+	DW24	L_94	
+
+;  165	                    case 'b':
+L_80:
+.LINE 165
+
+;  166	                        *ptr = 0; // terminate string
+.LINE 166
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	(HL),%0
+;  167	                        if(strlen(start)) {
+.LINE 167
+
+	LD	BC,(IX+%FFFFFFF5)
+	PUSH	BC
+	CALL	_strlen
+	POP	BC
+	CALL	__icmpzero
+	JR	Z,L_85
+;  168	                            result = str2bin(start);
+.LINE 168
+
+	LD	BC,(IX+%FFFFFFF5)
+	PUSH	BC
+	CALL	_str2bin
+	POP	BC
+	LD	(IX+%FFFFFFF8),HL
+	LD	(IX+%FFFFFFFB),E
+;  169	                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+.LINE 169
+
+	LD	A,(_err_str2num)
+	OR	A,A
+	JR	Z,L_83
+	LD	A,(IX+%9)
+	OR	A,A
+	JR	Z,L_83
+	LD	HL,_message+9
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_error
+	POP	BC
+L_83:
+;  170	                            return result;
+.LINE 170
+
+	LD	HL,(IX+%FFFFFFF8)
+	LD	E,(IX+%FFFFFFFB)
+	JR	L_107
+;  171	                        }
+;  172	                        else {  // just a 'b' given as part of an operand, not a register
+L_85:
+.LINE 172
+
+;  173	                            state = ERROR;
+.LINE 173
+
+	LD	(IX+%FFFFFFFC),%5
+;  174	                            errorhalt = true;
+.LINE 174
+
+	LD	(IX+%9),%1
+;  175	                        }
+;  176	                        break;
+.LINE 176
+
+	JR	L_106
+;  177	                    case 'h':
+L_87:
+.LINE 177
+
+;  178	                        *ptr = 0; // terminate string
+.LINE 178
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	(HL),%0
+;  179	                        if(strlen(start)) {
+.LINE 179
+
+	LD	BC,(IX+%FFFFFFF5)
+	PUSH	BC
+	CALL	_strlen
+	POP	BC
+	CALL	__icmpzero
+	JR	Z,L_92
+;  180	                            result = str2hex(start);
+.LINE 180
+
+	LD	BC,(IX+%FFFFFFF5)
+	PUSH	BC
+	CALL	_str2hex
+	POP	BC
+	LD	(IX+%FFFFFFF8),HL
+	LD	(IX+%FFFFFFFB),E
+;  181	                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+.LINE 181
+
+	LD	A,(_err_str2num)
+	OR	A,A
+	JR	Z,L_90
+	LD	A,(IX+%9)
+	OR	A,A
+	JR	Z,L_90
+	LD	HL,_message+9
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_error
+	POP	BC
+L_90:
+;  182	                            return result;
+.LINE 182
+
+	LD	HL,(IX+%FFFFFFF8)
+	LD	E,(IX+%FFFFFFFB)
+	JR	L_107
+;  183	                        }
+;  184	                        else {  // just a 'h' given as part of an operand, not a register
+L_92:
+.LINE 184
+
+;  185	                            state = ERROR;
+.LINE 185
+
+	LD	(IX+%FFFFFFFC),%5
+;  186	                            errorhalt = true;
+.LINE 186
+
+	LD	(IX+%9),%1
+;  187	                        }
+;  188	                        break;
+.LINE 188
+
+	JR	L_106
+;  189	                    default:
+L_94:
+.LINE 189
+
+;  190	                        if(isdigit(*ptr)) {
+.LINE 190
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	PUSH	HL
+	CALL	_isdigit
+	POP	BC
+	CALL	__icmpzero
+	JR	Z,L_99
+;  191	                            result = str2dec(start);
+.LINE 191
+
+	LD	BC,(IX+%FFFFFFF5)
+	PUSH	BC
+	CALL	_str2dec
+	POP	BC
+	LD	(IX+%FFFFFFF8),HL
+	LD	(IX+%FFFFFFFB),E
+;  192	                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+.LINE 192
+
+	LD	A,(_err_str2num)
+	OR	A,A
+	JR	Z,L_97
+	LD	A,(IX+%9)
+	OR	A,A
+	JR	Z,L_97
+	LD	HL,_message+9
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_error
+	POP	BC
+L_97:
+;  193	                            return result;
+.LINE 193
+
+	LD	HL,(IX+%FFFFFFF8)
+	LD	E,(IX+%FFFFFFFB)
+	JR	L_107
+;  194	                        }
+;  195	                        else state = ERROR;
+L_99:
+.LINE 195
+
+	LD	(IX+%FFFFFFFC),%5
+;  196	                }
+;  197	                break;
+.LINE 197
+
+	JR	L_106
+;  198	            case(ERROR):
+L_101:
+.LINE 198
+
+;  199	                err_str2num = true;
+.LINE 199
+
+	LD	A,%1
+	LD	(_err_str2num),A
+;  200	                if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+.LINE 200
+
+	LD	A,(IX+%9)
+	OR	A,A
+	JR	Z,L_104
+	LD	HL,_message+9
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_error
+	POP	BC
+L_104:
+;  201	                state = DONE;
+.LINE 201
+
+	LD	(IX+%FFFFFFFC),%4
+;  202	                break;
+.LINE 202
+
+	JR	L_106
+;  203	        }
+;  204	    }
+L_107:
+.LINE 205
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _str2num ***************************
+;Name                         Addr/Register   Size   Type
+;_isdigit                            IMPORT  -----   function
+;_tolower                            IMPORT  -----   function
+;_isxdigit                           IMPORT  -----   function
+;_message                            IMPORT  unknown variable
+;_error                              IMPORT  -----   function
+;_strlen                             IMPORT  -----   function
+;_err_str2num                        STATIC      1   variable
+;G_2                                  IX-20      3   variable
+;G_1                                  IX-17      3   variable
+;G_0                                  IX-14      3   variable
+;start                                IX-11      3   variable
+;result                                IX-8      4   variable
+;state                                 IX-4      1   variable
+;ptr                                   IX-3      3   variable
+;errorhalt                             IX+9      1   parameter
+;string                                IX+6      3   parameter
+
+
+; Stack Frame Size: 32 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "str2num",205,"_str2num"
+	XREF _error:ROM
+	XREF _message:ROM
+	XREF _tolower:ROM
+	XREF _isxdigit:ROM
+	XREF _isdigit:ROM
+	XREF _strlen:ROM
+	XREF __ladd:ROM
+	XREF __lor:ROM
+	XREF __lshl:ROM
+	XREF __setflag:ROM
+	XREF __icmpzero:ROM
+	XREF __case8D:ROM
+	XREF __seqcaseD:ROM
+	XDEF _str2num
+	XDEF _str2dec
+	XDEF _str2hex
+	XDEF _str2bin
+	XDEF _err_str2num
+	END

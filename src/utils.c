@@ -7,6 +7,7 @@
 #include "label.h"
 #include "instruction.h"
 #include "stdint.h"
+#include "mos-interface.h"
 
 // return a base filename, stripping the given extension from it
 void remove_ext (char* myStr, char extSep, char pathSep) {
@@ -199,16 +200,16 @@ uint8_t getOperatorToken(tokentype *token, char *src) {
 }
 
 
-bool openFile(FILE **file, char *name, char *mode) {
-    *file = fopen(name, mode);
+bool openFile(uint8_t *file, char *name, uint8_t mode) {
+    *file = mos_fopen(name, mode);
 
     if(*file) return true;
     printf("Error opening \"%s\"\n", name);
     return false;
 }
 
-bool reOpenFile(uint8_t number, char *mode) {
-    if(filehandle[number]) fclose(filehandle[number]);
+bool reOpenFile(uint8_t number, uint8_t mode) {
+    if(filehandle[number]) mos_fclose(filehandle[number]);
     return openFile(&filehandle[number], filename[number], mode);
 }
 
@@ -228,23 +229,23 @@ void prepare_filenames(char *input_filename) {
 
 void closeAllFiles() {
    // Cleanup
-    if(filehandle[FILE_INPUT]) fclose(filehandle[FILE_INPUT]);
-    if(filehandle[FILE_OUTPUT]) fclose(filehandle[FILE_OUTPUT]);
-    if(filehandle[FILE_LOCAL_LABELS]) fclose(filehandle[FILE_LOCAL_LABELS]);
-    if(filehandle[FILE_ANONYMOUS_LABELS]) fclose(filehandle[FILE_ANONYMOUS_LABELS]);
-    if(filehandle[FILE_LISTING]) fclose(filehandle[FILE_LISTING]);
-    remove(filename[FILE_LOCAL_LABELS]);
-    remove(filename[FILE_ANONYMOUS_LABELS]);
+    if(filehandle[FILE_INPUT]) mos_fclose(filehandle[FILE_INPUT]);
+    if(filehandle[FILE_OUTPUT]) mos_fclose(filehandle[FILE_OUTPUT]);
+    if(filehandle[FILE_LOCAL_LABELS]) mos_fclose(filehandle[FILE_LOCAL_LABELS]);
+    if(filehandle[FILE_ANONYMOUS_LABELS]) mos_fclose(filehandle[FILE_ANONYMOUS_LABELS]);
+    if(filehandle[FILE_LISTING]) mos_fclose(filehandle[FILE_LISTING]);
+    //remove(filename[FILE_LOCAL_LABELS]);
+    //remove(filename[FILE_ANONYMOUS_LABELS]);
 }
 
 bool openfiles(void) {
     bool status = true;
 
-    status = status && openFile(&filehandle[FILE_INPUT], filename[FILE_INPUT], "r");
-    status = status && openFile(&filehandle[FILE_OUTPUT], filename[FILE_OUTPUT], "wb+");
-    status = status && openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], "wb+");
-    status = status && openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], "wb+");
-    status = status && openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], "wb+");
+    status = status && openFile(&filehandle[FILE_INPUT], filename[FILE_INPUT], fa_read);
+    status = status && openFile(&filehandle[FILE_OUTPUT], filename[FILE_OUTPUT], fa_write | fa_create_always);
+    status = status && openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], fa_write | fa_create_always);
+    status = status && openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], fa_write | fa_create_always);
+    status = status && openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], fa_write | fa_create_always);
     if(!status) closeAllFiles();
     return status;
 }
@@ -254,8 +255,9 @@ char *agon_fgets(char *s, int size, uint8_t fileid) {
 	int c;
 	char *cs;
 
+    c = 0;
 	cs = s;
-	while (--size > 0 && (c = getc(filehandle[fileid])) != EOF)
+	while (--size > 0 && (c = mos_fgetc(filehandle[fileid])) != EOF)
 		if ((*cs++ = c) == '\n')
 			break;
 	*cs = '\0';
@@ -264,9 +266,8 @@ char *agon_fgets(char *s, int size, uint8_t fileid) {
 
 int agon_fputs(char *s, uint8_t fileid) {
     int number = 0;
-
     while(*s) {
-        if(putc(*s, filehandle[fileid]) == EOF) return EOF;
+        mos_fputc(filehandle[fileid], *s);
         number++;
         s++;
     }
@@ -278,7 +279,7 @@ size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
 
     for(n = 0; n < nmemb; n++) {
         for(s = 0; s < size; s++) {
-            if(putc((*(char *)ptr),filehandle[fileid]) == EOF) return result;
+            mos_fputc(filehandle[fileid], (*(char *)ptr));
             ptr++;
             result++;
         }
@@ -291,7 +292,7 @@ size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
 
     for(n = 0; n < nmemb; n++) {
         for(s = 0; s < size; s++) {
-            if((*(char *)ptr = getc(filehandle[fileid])) == EOF) {
+            if((*(char *)ptr = mos_fgetc(filehandle[fileid])) == EOF) {
                 *(char *)ptr = 0;
                 return result;
             }
@@ -300,4 +301,16 @@ size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
         }
     }
     return result;
+}
+
+int strcasecmp (char *s1, char *s2) {
+  const unsigned char *p1 = (const unsigned char *) s1;
+  const unsigned char *p2 = (const unsigned char *) s2;
+  int result;
+  if (p1 == p2)
+    return 0;
+  while ((result = tolower(*p1) - tolower(*p2++)) == 0)
+    if (*p1++ == '\0')
+      break;
+  return result;
 }

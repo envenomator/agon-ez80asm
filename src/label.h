@@ -2,7 +2,6 @@
 #define LABEL_H
 
 #include <stdio.h>
-#include <stdbool.h>
 #include <stdint.h>
 
 #define GLOBAL_LABEL_BUFFERSIZE 131072
@@ -26,8 +25,8 @@ void initAnonymousLabelTable(void);
 bool insertGlobalLabel(char *labelname, int32_t address);
 bool insertLocalLabel(char *labelname, int32_t address);
 void clearLocalLabels(void);
-void writeLocalLabels();
-void readLocalLabels();
+void writeLocalLabels(void);
+void readLocalLabels(void);
 void writeAnonymousLabel(int32_t address);
 void readAnonymousLabel(void);
 label * findGlobalLabel(char *name);

@@ -1,0 +1,147 @@
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED28-Feb-23     21:42:25     page:   1
+
+
+PC     Object              I  Line    Source 
+                           A     1    ; Zilog eZ80 ANSI C Compiler Release 3.4
+                           A     2    ; -nomodsect -optsize -noreduceopt -nopadbranch
+                           A     3    ; -peephole -globalopt -localcse -const=ROM 
+                           A     4    	FILE	"..\hash.c"
+                           A     5    	.assume ADL=1
+                           A     6    .DEBUG "C"
+                           A     7    	SEGMENT CODE
+                           A     8    ;    1	#include <string.h>
+                           A     9    ;    2	#include "hash.h"
+                           A    10    ;    3	#include "stdint.h"
+                           A    11    ;    4	
+                           A    12    ;    5	unsigned int hash(char *name, unsigned 
+043A35                     A    13    _hash:
+                           A    14    .DEFINE "_hash"
+                           A    15    
+                           A    16    .VALUE _hash
+                           A    17    
+                           A    18    .CLASS 2
+                           A    19    
+                           A    20    .TYPE 78
+                           A    21    
+                           A    22    .ENDEF
+                           A    23    
+                           A    24    .BEGFUNC "hash",5,"_hash"
+                           A    25    
+                           A    26    .LINE 5
+                           A    27    
+                           A    28    .DEFINE "name"
+                           A    29    
+                           A    30    .CLASS 65
+                           A    31    
+                           A    32    .VALUE 6
+                           A    33    
+                           A    34    .TYPE 34
+                           A    35    
+                           A    36    .ENDEF
+                           A    37    
+                           A    38    .DEFINE "size"
+                           A    39    
+                           A    40    .CLASS 65
+                           A    41    
+                           A    42    .VALUE 9
+                           A    43    
+                           A    44    .TYPE 14
+                           A    45    
+                           A    46    .ENDEF
+                           A    47    
+                           A    48    .DEFINE "p"
+                           A    49    
+                           A    50    .CLASS 65
+                           A    51    
+                           A    52    .VALUE -3
+                           A    53    
+                           A    54    .TYPE 44
+                           A    55    
+                           A    56    .ENDEF
+                           A    57    
+                           A    58    .DEFINE "h"
+                           A    59    
+                           A    60    .CLASS 65
+                           A    61    
+                           A    62    .VALUE -6
+                           A    63    
+                           A    64    .TYPE 14
+                           A    65    
+                           A    66    .ENDEF
+                           A    67    
+043A35 DDE5                A    68    	PUSH	IX
+043A37 DD210000 00         A    69    	LD	IX,0
+043A3C DD39                A    70    	ADD	IX,SP
+043A3E C5                  A    71    	PUSH	BC
+043A3F C5                  A    72    	PUSH	BC
+                           A    73    ;    6	    unsigned int h;
+                           A    74    ;    7	    unsigned char *p;
+                           A    75    ;    8	
+                           A    76    ;    9	    h = 7;
+                           A    77    .LINE 9
+                           A    78    
+043A40 01070000            A    79    	LD	BC,7
+043A44 DD0FFA              A    80    	LD	(IX+%FFFFFFFA),BC
+                           A    81    ;   10	    for(p = (unsigned char*)name; *p !=
+                           A    82    .LINE 10
+                           A    83    
+043A47 DD0706              A    84    	LD	BC,(IX+%6)
+043A4A DD0FFD              A    85    	LD	(IX+%FFFFFFFD),BC
+043A4D 18 1E               A    86    	JR	L_3
+043A4F                     A    87    L_1:
+                           A    88    ;   11	        h = 37 * h + *p;
+                           A    89    .LINE 11
+                           A    90    
+043A4F DD27FA              A    91    	LD	HL,(IX+%FFFFFFFA)
+043A52 3E25                A    92    	LD	A,%25
+043A54 CD BF 6C 04         A    93    	CALL	__imul_b
+043A58 E5C1                A    94    	LD	BC,HL
+043A5A DD27FD              A    95    	LD	HL,(IX+%FFFFFFFD)
+043A5D 7E                  A    96    	LD	A,(HL)
+043A5E B7ED62              A    97    	UEXT	HL
+043A61 6F                  A    98    	LD	L,A
+043A62 09                  A    99    	ADD	HL,BC
+043A63 DD2FFA              A   100    	LD	(IX+%FFFFFFFA),HL
+043A66 DD07FD              A   101    	LD	BC,(IX+%FFFFFFFD)
+043A69 03                  A   102    	INC	BC
+043A6A DD0FFD              A   103    	LD	(IX+%FFFFFFFD),BC
+043A6D                     A   104    L_3:
+043A6D DD27FD              A   105    	LD	HL,(IX+%FFFFFFFD)
+043A70 7E                  A   106    	LD	A,(HL)
+043A71 B7                  A   107    	OR	A,A
+043A72 20 DB               A   108    	JR	NZ,L_1
+                           A   109    ;   12	    return h % size;
+                           A   110    .LINE 12
+                           A   111    
+043A74 DD27FA              A   112    	LD	HL,(IX+%FFFFFFFA)
+043A77 DD0709              A   113    	LD	BC,(IX+%9)
+043A7A CD 1B 64 04         A   114    	CALL	__iremu
+                           A   115    .LINE 13
+                           A   116    
+043A7E DDF9                A   117    	LD	SP,IX
+043A80 DDE1                A   118    	POP	IX
+043A82 C9                  A   119    	RET	
+                           A   120    
+                           A   121    
+                           A   122    ;**************************** _hash ***********
+                           A   123    ;Name                         Addr/Register   S
+                           A   124    ;h                                     IX-6    
+                           A   125    ;p                                     IX-3    
+                           A   126    ;size                                  IX+9    
+                           A   127    ;name                                  IX+6    
+                           A   128    
+                           A   129    
+                           A   130    ; Stack Frame Size: 18 (bytes)
+                           A   131    ;       Spill Code: 0 (instruction)
+                           A   132    
+                           A   133    
+                           A   134    .ENDFUNC "hash",13,"_hash"
+                           A   135    	XREF __iremu:ROM
+                           A   136    	XREF __imul_b:ROM
+                           A   137    	XDEF _hash
+                           A   138    	END
+
+
+Errors: 0
+Warnings: 0
+Lines Assembled: 139

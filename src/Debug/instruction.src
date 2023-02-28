@@ -1,0 +1,10189 @@
+; Zilog eZ80 ANSI C Compiler Release 3.4
+; -nomodsect -optsize -noreduceopt -nopadbranch -debug
+; -peephole -globalopt -localcse -const=ROM 
+	FILE	"..\instruction.c"
+	.assume ADL=1
+.DEBUG "C"
+	SEGMENT CODE
+.BEGREC "fmt_type",19
+.DEFINE "status"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "flags"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "size"
+.VALUE 2
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "chr"
+.VALUE 3
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "type"
+.VALUE 4
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "field_width"
+.VALUE 5
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "precision"
+.VALUE 6
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "set_begin"
+.VALUE 7
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "set_end"
+.VALUE 10
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "pad_whole"
+.VALUE 13
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_pre_fract"
+.VALUE 14
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_post_fract"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_at"
+.VALUE 16
+.CLASS 8
+.TYPE 34
+.ENDEF
+.ENDREC "fmt_type"
+.BEGREC "flt_info",12
+.DEFINE "flags"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "exp"
+.VALUE 1
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "digits"
+.VALUE 2
+.CLASS 8
+.DIM 10
+.TYPE 108
+.ENDEF
+.ENDREC "flt_info"
+.BEGREC "NONAME0",6
+.DEFINE "quot"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "rem"
+.VALUE 3
+.CLASS 8
+.TYPE 4
+.ENDEF
+.ENDREC "NONAME0"
+.BEGREC "NONAME1",8
+.DEFINE "quot"
+.VALUE 0
+.CLASS 8
+.TYPE 5
+.ENDEF
+.DEFINE "rem"
+.VALUE 4
+.CLASS 8
+.TYPE 5
+.ENDEF
+.ENDREC "NONAME1"
+.BEGREC "header",6
+.DEFINE "s"
+.VALUE 0
+.CLASS 11
+.TAG "NONAME2"
+.TYPE 8
+.ENDEF
+.DEFINE "x"
+.VALUE 0
+.CLASS 11
+.TYPE 2
+.ENDEF
+.ENDREC "header"
+.BEGREC "NONAME2",6
+.DEFINE "ptr"
+.VALUE 0
+.CLASS 8
+.TAG "header"
+.TYPE 40
+.ENDEF
+.DEFINE "size"
+.VALUE 3
+.CLASS 8
+.TYPE 14
+.ENDEF
+.ENDREC "NONAME2"
+.BEGREC "NONAME3",16
+.DEFINE "reg"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "reg_index"
+.VALUE 3
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "indirect"
+.VALUE 4
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "cc"
+.VALUE 5
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "cc_index"
+.VALUE 6
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "displacement"
+.VALUE 7
+.CLASS 8
+.TYPE 3
+.ENDEF
+.DEFINE "displacement_provided"
+.VALUE 9
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "immediate_provided"
+.VALUE 10
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "immediate"
+.VALUE 11
+.CLASS 8
+.TYPE 5
+.ENDEF
+.DEFINE "wasLabel"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME3"
+.BEGREC "NONAME4",4
+.DEFINE "suffix"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "prefix1"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "prefix2"
+.VALUE 2
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "opcode"
+.VALUE 3
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME4"
+.BEGREC "NONAME5",16
+.DEFINE "operandA"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "operandB"
+.VALUE 3
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "ddfdpermitted"
+.VALUE 6
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "transformA"
+.VALUE 7
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "transformB"
+.VALUE 10
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "prefix"
+.VALUE 13
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "opcode"
+.VALUE 14
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "adl"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME5"
+.BEGREC "NONAME6",17
+.DEFINE "name"
+.VALUE 0
+.CLASS 8
+.DIM 8
+.TYPE 98
+.ENDEF
+.DEFINE "type"
+.VALUE 8
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "asmtype"
+.VALUE 9
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "listnumber"
+.VALUE 10
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "list"
+.VALUE 11
+.CLASS 8
+.TAG "NONAME5"
+.TYPE 40
+.ENDEF
+.DEFINE "asmargument"
+.VALUE 14
+.CLASS 8
+.TYPE 4
+.ENDEF
+.ENDREC "NONAME6"
+.BEGREC "NONAME7",6
+.DEFINE "type"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "match"
+.VALUE 3
+.CLASS 8
+.TYPE 556
+.ENDEF
+.ENDREC "NONAME7"
+.BEGREC "NONAME8",7
+.DEFINE "name"
+.VALUE 0
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "address"
+.VALUE 3
+.CLASS 8
+.TYPE 5
+.ENDEF
+.ENDREC "NONAME8"
+.BEGREC "NONAME9",5
+.DEFINE "defined"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "address"
+.VALUE 1
+.CLASS 8
+.TYPE 5
+.ENDEF
+.ENDREC "NONAME9"
+.BEGREC "NONAME10",261
+.DEFINE "start"
+.VALUE 0
+.CLASS 8
+.DIM 256
+.TYPE 98
+.ENDEF
+.DEFINE "length"
+.VALUE 256
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "next"
+.VALUE 257
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "terminator"
+.VALUE 260
+.CLASS 8
+.TYPE 2
+.ENDEF
+.ENDREC "NONAME10"
+.BEGREC "NONAME11",264
+.DEFINE "current_instruction"
+.VALUE 0
+.CLASS 8
+.TAG "NONAME6"
+.TYPE 40
+.ENDEF
+.DEFINE "next"
+.VALUE 3
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "label"
+.VALUE 6
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "mnemonic"
+.VALUE 38
+.CLASS 8
+.DIM 16
+.TYPE 98
+.ENDEF
+.DEFINE "suffix"
+.VALUE 54
+.CLASS 8
+.DIM 16
+.TYPE 98
+.ENDEF
+.DEFINE "operand1"
+.VALUE 70
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "operand2"
+.VALUE 102
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "comment"
+.VALUE 134
+.CLASS 8
+.DIM 128
+.TYPE 98
+.ENDEF
+.DEFINE "size"
+.VALUE 262
+.CLASS 8
+.TYPE 13
+.ENDEF
+.ENDREC "NONAME11"
+;    1	#include <stdio.h>
+;    2	#include <string.h>
+;    3	#include <ctype.h>
+;    4	#include <stdlib.h>
+;    5	
+;    6	#include "instruction.h"
+;    7	#include "assemble.h"
+;    8	#include "utils.h"
+;    9	#include "globals.h"
+;   10	#include "stdint.h"
+;   11	
+;   12	bool none_match(operand *op) {
+_none_match:
+.DEFINE "_none_match"
+
+.VALUE _none_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "none_match",12,"_none_match"
+
+.LINE 12
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;   13	    return ((op->reg == R_NONE) && (op->immediate_provided == false) & !(op->cc));
+.LINE 13
+
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	CALL	__icmpzero
+	JR	NZ,L_6
+	LD	IY,(IX+%6)
+	LD	A,(IY+%5)
+	OR	A,A
+	JR	NZ,L_1
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_2
+L_1:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_2:
+	LD	IY,(IX+%6)
+	LD	A,(IY+%A)
+	OR	A,A
+	JR	NZ,L__3
+	LD	B,%1
+	JR	L__4
+L__3:
+	LD	B,%0
+L__4:
+	LD	A,B
+	SEXT	HL
+	LD	L,B
+	LD	BC,(IX+%FFFFFFFD)
+	CALL	__iand
+	CALL	__icmpzero
+	JR	Z,L_6
+;   14	}
+.LINE 14
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_7
+L_6:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_7:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _none_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp8                                 IX-6      3   variable
+;temp3                                 IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "none_match",14,"_none_match"
+;   15	bool cc_match(operand *op) {
+_cc_match:
+.DEFINE "_cc_match"
+
+.VALUE _cc_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "cc_match",15,"_cc_match"
+
+.LINE 15
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   16	    return op->cc;
+.LINE 16
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%5)
+;   17	}
+.LINE 17
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _cc_match ***************************
+;Name                         Addr/Register   Size   Type
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "cc_match",17,"_cc_match"
+;   18	bool ir_match(operand *op) {
+_ir_match:
+.DEFINE "_ir_match"
+
+.VALUE _ir_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "ir_match",18,"_ir_match"
+
+.LINE 18
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;   19	    return ((op->reg >= R_IXH) && (op->reg <= R_IYL) && !(op->indirect));
+.LINE 19
+
+	LD	IY,(IX+%6)
+	LD	BC,(IY+%0)
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,15
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JP	M,L_14
+	LD	BC,(IX+%FFFFFFFD)
+	LD	HL,18
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	M,L_14
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_14
+;   20	}
+.LINE 20
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_15
+L_14:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_15:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _ir_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp16                                IX-6      3   variable
+;G_0                                   IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "ir_match",20,"_ir_match"
+;   21	bool ixy_match(operand *op) {
+_ixy_match:
+.DEFINE "_ixy_match"
+
+.VALUE _ixy_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "ixy_match",21,"_ixy_match"
+
+.LINE 21
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;   22	    return (((op->reg == R_IX) || (op->reg == R_IY)) && !(op->indirect)  && !(op->displacement_provided));
+.LINE 22
+
+	LD	IY,(IX+%6)
+	LD	BC,(IY+%0)
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,13
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_19
+	LD	BC,14
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_22
+L_19:
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_22
+	LD	IY,(IX+%6)
+	LD	A,(IY+%9)
+	OR	A,A
+	JR	NZ,L_22
+;   23	}
+.LINE 23
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_23
+L_22:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_23:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _ixy_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp24                                IX-6      3   variable
+;G_1                                   IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "ixy_match",23,"_ixy_match"
+;   24	bool ixyd_match(operand *op) {
+_ixyd_match:
+.DEFINE "_ixyd_match"
+
+.VALUE _ixyd_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "ixyd_match",24,"_ixyd_match"
+
+.LINE 24
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;   25	    return (((op->reg == R_IX) || (op->reg == R_IY)) && !(op->indirect) && (op->displacement_provided));
+.LINE 25
+
+	LD	IY,(IX+%6)
+	LD	BC,(IY+%0)
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,13
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_27
+	LD	BC,14
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_30
+L_27:
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_30
+	LD	IY,(IX+%6)
+	LD	A,(IY+%9)
+	OR	A,A
+	JR	Z,L_30
+;   26	}
+.LINE 26
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_31
+L_30:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_31:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _ixyd_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp32                                IX-6      3   variable
+;G_2                                   IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "ixyd_match",26,"_ixyd_match"
+;   27	bool indirect_ixyd_match(operand *op) {
+_indirect_ixyd_match:
+.DEFINE "_indirect_ixyd_match"
+
+.VALUE _indirect_ixyd_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_ixyd_match",27,"_indirect_ixyd_match"
+
+.LINE 27
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;   28	    return (((op->reg == R_IX) || (op->reg == R_IY)) && op->indirect);
+.LINE 28
+
+	LD	IY,(IX+%6)
+	LD	BC,(IY+%0)
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,13
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_35
+	LD	BC,14
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_37
+L_35:
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_37
+;   29	}
+.LINE 29
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_38
+L_37:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_38:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_ixyd_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp39                                IX-6      3   variable
+;G_3                                   IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_ixyd_match",29,"_indirect_ixyd_match"
+;   30	bool mmn_match(operand *op) {
+_mmn_match:
+.DEFINE "_mmn_match"
+
+.VALUE _mmn_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "mmn_match",30,"_mmn_match"
+
+.LINE 30
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   31	    return (!(op->indirect) && (op->immediate_provided));
+.LINE 31
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_43
+	LD	IY,(IX+%6)
+	LD	A,(IY+%A)
+	OR	A,A
+	JR	Z,L_43
+;   32	}
+.LINE 32
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_44
+L_43:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_44:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _mmn_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp45                                IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "mmn_match",32,"_mmn_match"
+;   33	bool indirect_mmn_match(operand *op) {
+_indirect_mmn_match:
+.DEFINE "_indirect_mmn_match"
+
+.VALUE _indirect_mmn_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_mmn_match",33,"_indirect_mmn_match"
+
+.LINE 33
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   34	    return ((op->indirect) && (op->immediate_provided));
+.LINE 34
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_49
+	LD	IY,(IX+%6)
+	LD	A,(IY+%A)
+	OR	A,A
+	JR	Z,L_49
+;   35	}
+.LINE 35
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_50
+L_49:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_50:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_mmn_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp51                                IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_mmn_match",35,"_indirect_mmn_match"
+;   36	bool n_match(operand *op) {
+_n_match:
+.DEFINE "_n_match"
+
+.VALUE _n_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "n_match",36,"_n_match"
+
+.LINE 36
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   37	    return (!(op->indirect) && (op->immediate_provided));
+.LINE 37
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_55
+	LD	IY,(IX+%6)
+	LD	A,(IY+%A)
+	OR	A,A
+	JR	Z,L_55
+;   38	}
+.LINE 38
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_56
+L_55:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_56:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _n_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp57                                IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "n_match",38,"_n_match"
+;   39	bool a_match(operand *op) {
+_a_match:
+.DEFINE "_a_match"
+
+.VALUE _a_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "a_match",39,"_a_match"
+
+.LINE 39
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   40	    return(op->reg == R_A);
+.LINE 40
+
+	LD	BC,1
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L__36
+	LD	A,%1
+	JR	L__37
+L__36:
+	XOR	A,A
+L__37:
+;   41	}
+.LINE 41
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _a_match ***************************
+;Name                         Addr/Register   Size   Type
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "a_match",41,"_a_match"
+;   42	bool hl_match(operand *op) {
+_hl_match:
+.DEFINE "_hl_match"
+
+.VALUE _hl_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "hl_match",42,"_hl_match"
+
+.LINE 42
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   43	    return((op->reg == R_HL) && !(op->indirect));
+.LINE 43
+
+	LD	BC,10
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_62
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_62
+;   44	}
+.LINE 44
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_63
+L_62:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_63:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _hl_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp64                                IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "hl_match",44,"_hl_match"
+;   45	bool indirect_hl_match(operand *op) {
+_indirect_hl_match:
+.DEFINE "_indirect_hl_match"
+
+.VALUE _indirect_hl_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_hl_match",45,"_indirect_hl_match"
+
+.LINE 45
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   46	    return((op->reg == R_HL) && (op->indirect));
+.LINE 46
+
+	LD	BC,10
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_68
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_68
+;   47	}
+.LINE 47
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_69
+L_68:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_69:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_hl_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp70                                IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_hl_match",47,"_indirect_hl_match"
+;   48	bool rr_match(operand *op) {
+_rr_match:
+.DEFINE "_rr_match"
+
+.VALUE _rr_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "rr_match",48,"_rr_match"
+
+.LINE 48
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;   49	    return((op->reg >= R_BC) && (op->reg <= R_HL) && !(op->indirect));
+.LINE 49
+
+	LD	IY,(IX+%6)
+	LD	BC,(IY+%0)
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,8
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JP	M,L_75
+	LD	BC,(IX+%FFFFFFFD)
+	LD	HL,10
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	M,L_75
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_75
+;   50	}
+.LINE 50
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_76
+L_75:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_76:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _rr_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp77                                IX-6      3   variable
+;G_4                                   IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "rr_match",50,"_rr_match"
+;   51	bool indirect_rr_match(operand *op) {
+_indirect_rr_match:
+.DEFINE "_indirect_rr_match"
+
+.VALUE _indirect_rr_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_rr_match",51,"_indirect_rr_match"
+
+.LINE 51
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;   52	    return((op->reg >= R_BC) && (op->reg <= R_HL) && (op->indirect));
+.LINE 52
+
+	LD	IY,(IX+%6)
+	LD	BC,(IY+%0)
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,8
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JP	M,L_82
+	LD	BC,(IX+%FFFFFFFD)
+	LD	HL,10
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	M,L_82
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_82
+;   53	}
+.LINE 53
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_83
+L_82:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_83:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_rr_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp84                                IX-6      3   variable
+;G_5                                   IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_rr_match",53,"_indirect_rr_match"
+;   54	bool rxy_match(operand *op) {
+_rxy_match:
+.DEFINE "_rxy_match"
+
+.VALUE _rxy_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "rxy_match",54,"_rxy_match"
+
+.LINE 54
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;   55	    return(!(op->indirect) && ((op->reg == R_BC) || (op->reg == R_DE) || (op->reg == R_IX) || (op->reg == R_IY)));
+.LINE 55
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_91
+	LD	IY,(IX+%6)
+	LD	BC,(IY+%0)
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,8
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_90
+	LD	BC,9
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_90
+	LD	BC,13
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_90
+	LD	BC,14
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_91
+L_90:
+;   56	}
+.LINE 56
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_92
+L_91:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_92:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _rxy_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp93                                IX-6      3   variable
+;G_6                                   IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "rxy_match",56,"_rxy_match"
+;   57	bool sp_match(operand *op) {
+_sp_match:
+.DEFINE "_sp_match"
+
+.VALUE _sp_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "sp_match",57,"_sp_match"
+
+.LINE 57
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   58	    return(!(op->indirect) && (op->reg == R_SP));
+.LINE 58
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_97
+	LD	BC,11
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_97
+;   59	}
+.LINE 59
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_98
+L_97:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_98:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _sp_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp99                                IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "sp_match",59,"_sp_match"
+;   60	bool indirect_sp_match(operand *op) {
+_indirect_sp_match:
+.DEFINE "_indirect_sp_match"
+
+.VALUE _indirect_sp_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_sp_match",60,"_indirect_sp_match"
+
+.LINE 60
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   61	    return((op->indirect) && (op->reg == R_SP));
+.LINE 61
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_103
+	LD	BC,11
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_103
+;   62	}
+.LINE 62
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_104
+L_103:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_104:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_sp_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp105                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_sp_match",62,"_indirect_sp_match"
+;   63	bool r_match(operand *op) {
+_r_match:
+.DEFINE "_r_match"
+
+.VALUE _r_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "r_match",63,"_r_match"
+
+.LINE 63
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;   64	    return((op->reg >= R_A) && (op->reg <= R_L));
+.LINE 64
+
+	LD	IY,(IX+%6)
+	LD	BC,(IY+%0)
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,1
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JP	M,L_109
+	LD	BC,(IX+%FFFFFFFD)
+	LD	HL,7
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	M,L_109
+;   65	}
+.LINE 65
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_110
+L_109:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_110:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _r_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp111                               IX-6      3   variable
+;G_9                                   IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "r_match",65,"_r_match"
+;   66	bool reg_r_match(operand *op) {
+_reg_r_match:
+.DEFINE "_reg_r_match"
+
+.VALUE _reg_r_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "reg_r_match",66,"_reg_r_match"
+
+.LINE 66
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   67	    return(op->reg == R_R);
+.LINE 67
+
+	LD	BC,19
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L__69
+	LD	A,%1
+	JR	L__70
+L__69:
+	XOR	A,A
+L__70:
+;   68	}
+.LINE 68
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _reg_r_match ***************************
+;Name                         Addr/Register   Size   Type
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "reg_r_match",68,"_reg_r_match"
+;   69	bool mb_match(operand *op) {
+_mb_match:
+.DEFINE "_mb_match"
+
+.VALUE _mb_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "mb_match",69,"_mb_match"
+
+.LINE 69
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   70	    return(op->reg == R_MB);
+.LINE 70
+
+	LD	BC,20
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L__73
+	LD	A,%1
+	JR	L__74
+L__73:
+	XOR	A,A
+L__74:
+;   71	}
+.LINE 71
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _mb_match ***************************
+;Name                         Addr/Register   Size   Type
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "mb_match",71,"_mb_match"
+;   72	bool i_match(operand *op) {
+_i_match:
+.DEFINE "_i_match"
+
+.VALUE _i_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "i_match",72,"_i_match"
+
+.LINE 72
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   73	    return(op->reg == R_I);
+.LINE 73
+
+	LD	BC,21
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L__77
+	LD	A,%1
+	JR	L__78
+L__77:
+	XOR	A,A
+L__78:
+;   74	}
+.LINE 74
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _i_match ***************************
+;Name                         Addr/Register   Size   Type
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "i_match",74,"_i_match"
+;   75	bool b_match(operand *op) {
+_b_match:
+.DEFINE "_b_match"
+
+.VALUE _b_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "b_match",75,"_b_match"
+
+.LINE 75
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   76	    return (!(op->indirect) && (op->immediate_provided));
+.LINE 76
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_118
+	LD	IY,(IX+%6)
+	LD	A,(IY+%A)
+	OR	A,A
+	JR	Z,L_118
+;   77	}
+.LINE 77
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_119
+L_118:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_119:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _b_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp120                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "b_match",77,"_b_match"
+;   78	bool af_match(operand *op) {
+_af_match:
+.DEFINE "_af_match"
+
+.VALUE _af_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "af_match",78,"_af_match"
+
+.LINE 78
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   79	    return(op->reg == R_AF);
+.LINE 79
+
+	LD	BC,12
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L__84
+	LD	A,%1
+	JR	L__85
+L__84:
+	XOR	A,A
+L__85:
+;   80	}
+.LINE 80
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _af_match ***************************
+;Name                         Addr/Register   Size   Type
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "af_match",80,"_af_match"
+;   81	bool de_match(operand *op) {
+_de_match:
+.DEFINE "_de_match"
+
+.VALUE _de_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "de_match",81,"_de_match"
+
+.LINE 81
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   82	    return(op->reg == R_DE);
+.LINE 82
+
+	LD	BC,9
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L__88
+	LD	A,%1
+	JR	L__89
+L__88:
+	XOR	A,A
+L__89:
+;   83	}
+.LINE 83
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _de_match ***************************
+;Name                         Addr/Register   Size   Type
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "de_match",83,"_de_match"
+;   84	bool nselect_match(operand *op) {
+_nselect_match:
+.DEFINE "_nselect_match"
+
+.VALUE _nselect_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "nselect_match",84,"_nselect_match"
+
+.LINE 84
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   85	    return (!(op->indirect) && (op->immediate_provided));
+.LINE 85
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_126
+	LD	IY,(IX+%6)
+	LD	A,(IY+%A)
+	OR	A,A
+	JR	Z,L_126
+;   86	}
+.LINE 86
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_127
+L_126:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_127:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _nselect_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp128                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "nselect_match",86,"_nselect_match"
+;   87	bool indirect_n_match(operand *op) {
+_indirect_n_match:
+.DEFINE "_indirect_n_match"
+
+.VALUE _indirect_n_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_n_match",87,"_indirect_n_match"
+
+.LINE 87
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   88	    return ((op->indirect) && (op->immediate_provided));
+.LINE 88
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_132
+	LD	IY,(IX+%6)
+	LD	A,(IY+%A)
+	OR	A,A
+	JR	Z,L_132
+;   89	}
+.LINE 89
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_133
+L_132:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_133:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_n_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp134                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_n_match",89,"_indirect_n_match"
+;   90	bool indirect_bc_match(operand *op) {
+_indirect_bc_match:
+.DEFINE "_indirect_bc_match"
+
+.VALUE _indirect_bc_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_bc_match",90,"_indirect_bc_match"
+
+.LINE 90
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   91	    return((op->indirect) && (op->reg == R_BC));
+.LINE 91
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_138
+	LD	BC,8
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_138
+;   92	}
+.LINE 92
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_139
+L_138:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_139:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_bc_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp140                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_bc_match",92,"_indirect_bc_match"
+;   93	bool indirect_c_match(operand *op) {
+_indirect_c_match:
+.DEFINE "_indirect_c_match"
+
+.VALUE _indirect_c_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_c_match",93,"_indirect_c_match"
+
+.LINE 93
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   94	    return((op->indirect) && (op->reg == R_C));
+.LINE 94
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_144
+	LD	BC,3
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_144
+;   95	}
+.LINE 95
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_145
+L_144:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_145:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_c_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp146                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_c_match",95,"_indirect_c_match"
+;   96	bool indirect_ixy_match(operand *op) {
+_indirect_ixy_match:
+.DEFINE "_indirect_ixy_match"
+
+.VALUE _indirect_ixy_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_ixy_match",96,"_indirect_ixy_match"
+
+.LINE 96
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;   97	    return (((op->reg == R_IX) || (op->reg == R_IY)) && (op->indirect)  && !(op->displacement_provided));
+.LINE 97
+
+	LD	IY,(IX+%6)
+	LD	BC,(IY+%0)
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,13
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_149
+	LD	BC,14
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_152
+L_149:
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_152
+	LD	IY,(IX+%6)
+	LD	A,(IY+%9)
+	OR	A,A
+	JR	NZ,L_152
+;   98	}
+.LINE 98
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_153
+L_152:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_153:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_ixy_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp154                               IX-6      3   variable
+;G_10                                  IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_ixy_match",98,"_indirect_ixy_match"
+;   99	bool cca_match(operand *op) {
+_cca_match:
+.DEFINE "_cca_match"
+
+.VALUE _cca_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "cca_match",99,"_cca_match"
+
+.LINE 99
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	DEC	SP
+;  100	    return ((op->cc) && 
+.LINE 100
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%5)
+	OR	A,A
+	JR	Z,L_161
+;  101	            ((op->cc_index == CC_INDEX_NZ) ||
+.LINE 101
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%6)
+	LD	(IX+%FFFFFFFF),A
+	OR	A,A
+	JR	Z,L_160
+;  102	             (op->cc_index == CC_INDEX_Z) ||
+.LINE 102
+
+	LD	A,(IX+%FFFFFFFF)
+	CP	A,%1
+	JR	Z,L_160
+;  103	             (op->cc_index == CC_INDEX_NC) ||
+.LINE 103
+
+	LD	A,(IX+%FFFFFFFF)
+	CP	A,%2
+	JR	Z,L_160
+;  104	             (op->cc_index == CC_INDEX_C)));
+.LINE 104
+
+	LD	A,(IX+%FFFFFFFF)
+	CP	A,%3
+	JR	NZ,L_161
+L_160:
+;  105	}
+.LINE 105
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFC),BC
+	JR	L_162
+L_161:
+	LD	BC,0
+	LD	(IX+%FFFFFFFC),BC
+L_162:
+	LD	A,(IX+%FFFFFFFC)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _cca_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp163                               IX-4      3   variable
+;G_11                                  IX-1      1   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 13 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "cca_match",105,"_cca_match"
+;  106	bool indirect_de_match(operand *op) {
+_indirect_de_match:
+.DEFINE "_indirect_de_match"
+
+.VALUE _indirect_de_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_de_match",106,"_indirect_de_match"
+
+.LINE 106
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;  107	    return((op->indirect) && (op->reg == R_DE));
+.LINE 107
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_167
+	LD	BC,9
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_167
+;  108	}
+.LINE 108
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_168
+L_167:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_168:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_de_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp169                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_de_match",108,"_indirect_de_match"
+;  109	bool ix_match(operand *op) {
+_ix_match:
+.DEFINE "_ix_match"
+
+.VALUE _ix_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "ix_match",109,"_ix_match"
+
+.LINE 109
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;  110	    return(!(op->indirect) && (op->reg == R_IX));
+.LINE 110
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_173
+	LD	BC,13
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_173
+;  111	}
+.LINE 111
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_174
+L_173:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_174:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _ix_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp175                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "ix_match",111,"_ix_match"
+;  112	bool iy_match(operand *op) {
+_iy_match:
+.DEFINE "_iy_match"
+
+.VALUE _iy_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "iy_match",112,"_iy_match"
+
+.LINE 112
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;  113	    return(!(op->indirect) && (op->reg == R_IY));
+.LINE 113
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_179
+	LD	BC,14
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_179
+;  114	}
+.LINE 114
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_180
+L_179:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_180:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _iy_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp181                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "iy_match",114,"_iy_match"
+;  115	bool ixd_match(operand *op) {
+_ixd_match:
+.DEFINE "_ixd_match"
+
+.VALUE _ixd_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "ixd_match",115,"_ixd_match"
+
+.LINE 115
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;  116	    return(!(op->indirect) && (op->reg == R_IX));
+.LINE 116
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_185
+	LD	BC,13
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_185
+;  117	}
+.LINE 117
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_186
+L_185:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_186:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _ixd_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp187                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "ixd_match",117,"_ixd_match"
+;  118	bool iyd_match(operand *op) {
+_iyd_match:
+.DEFINE "_iyd_match"
+
+.VALUE _iyd_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "iyd_match",118,"_iyd_match"
+
+.LINE 118
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;  119	    return(!(op->indirect) && (op->reg == R_IY));
+.LINE 119
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	NZ,L_191
+	LD	BC,14
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_191
+;  120	}
+.LINE 120
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_192
+L_191:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_192:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _iyd_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp193                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "iyd_match",120,"_iyd_match"
+;  121	bool indirect_ixd_match(operand *op) {
+_indirect_ixd_match:
+.DEFINE "_indirect_ixd_match"
+
+.VALUE _indirect_ixd_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_ixd_match",121,"_indirect_ixd_match"
+
+.LINE 121
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;  122	    return((op->indirect) && (op->reg == R_IX));
+.LINE 122
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_197
+	LD	BC,13
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_197
+;  123	}
+.LINE 123
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_198
+L_197:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_198:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_ixd_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp199                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_ixd_match",123,"_indirect_ixd_match"
+;  124	bool indirect_iyd_match(operand *op) {
+_indirect_iyd_match:
+.DEFINE "_indirect_iyd_match"
+
+.VALUE _indirect_iyd_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "indirect_iyd_match",124,"_indirect_iyd_match"
+
+.LINE 124
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;  125	    return((op->indirect) && (op->reg == R_IY));
+.LINE 125
+
+	LD	IY,(IX+%6)
+	LD	A,(IY+%4)
+	OR	A,A
+	JR	Z,L_203
+	LD	BC,14
+	LD	IY,(IX+%6)
+	LD	HL,(IY+%0)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_203
+;  126	}
+.LINE 126
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_204
+L_203:
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+L_204:
+	LD	A,(IX+%FFFFFFFD)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _indirect_iyd_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp205                               IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "indirect_iyd_match",126,"_indirect_iyd_match"
+;  127	bool raeonly_match(operand *op) {
+_raeonly_match:
+.DEFINE "_raeonly_match"
+
+.VALUE _raeonly_match
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "raeonly_match",127,"_raeonly_match"
+
+.LINE 127
+
+.DEFINE "op"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME3"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;  128	    return((op->reg >= R_A) && (op->reg <= R_E));
+.LINE 128
+
+	LD	IY,(IX+%6)
+	LD	BC,(IY+%0)
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,1
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JP	M,L_209
+	LD	BC,(IX+%FFFFFFFD)
+	LD	HL,5
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	M,L_209
+;  129	}
+.LINE 129
+
+	LD	BC,1
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_210
+L_209:
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+L_210:
+	LD	A,(IX+%FFFFFFFA)
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _raeonly_match ***************************
+;Name                         Addr/Register   Size   Type
+;temp211                               IX-6      3   variable
+;G_14                                  IX-3      3   variable
+;op                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "raeonly_match",129,"_raeonly_match"
+	SEGMENT DATA
+_permittype_matchlist:
+	DW	0
+	DB	0
+	DW24	_none_match
+	DW	1
+	DB	0
+	DW24	_cc_match
+	DW	2
+	DB	0
+	DW24	_ir_match
+	DW	3
+	DB	0
+	DW24	_ixy_match
+	DW	4
+	DB	0
+	DW24	_ixyd_match
+	DW	5
+	DB	0
+	DW24	_indirect_ixyd_match
+	DW	6
+	DB	0
+	DW24	_mmn_match
+	DW	7
+	DB	0
+	DW24	_indirect_mmn_match
+	DW	8
+	DB	0
+	DW24	_n_match
+	DW	9
+	DB	0
+	DW24	_a_match
+	DW	10
+	DB	0
+	DW24	_hl_match
+	DW	11
+	DB	0
+	DW24	_indirect_hl_match
+	DW	12
+	DB	0
+	DW24	_rr_match
+	DW	13
+	DB	0
+	DW24	_indirect_rr_match
+	DW	14
+	DB	0
+	DW24	_rxy_match
+	DW	15
+	DB	0
+	DW24	_sp_match
+	DW	16
+	DB	0
+	DW24	_indirect_sp_match
+	DW	17
+	DB	0
+	DW24	_r_match
+	DW	18
+	DB	0
+	DW24	_reg_r_match
+	DW	19
+	DB	0
+	DW24	_mb_match
+	DW	20
+	DB	0
+	DW24	_i_match
+	DW	21
+	DB	0
+	DW24	_b_match
+	DW	22
+	DB	0
+	DW24	_af_match
+	DW	23
+	DB	0
+	DW24	_de_match
+	DW	24
+	DB	0
+	DW24	_nselect_match
+	DW	25
+	DB	0
+	DW24	_indirect_n_match
+	DW	26
+	DB	0
+	DW24	_indirect_bc_match
+	DW	27
+	DB	0
+	DW24	_indirect_c_match
+	DW	28
+	DB	0
+	DW24	_indirect_ixy_match
+	DW	29
+	DB	0
+	DW24	_cca_match
+	DW	30
+	DB	0
+	DW24	_indirect_de_match
+	DW	31
+	DB	0
+	DW24	_ix_match
+	DW	32
+	DB	0
+	DW24	_iy_match
+	DW	33
+	DB	0
+	DW24	_ixd_match
+	DW	34
+	DB	0
+	DW24	_iyd_match
+	DW	35
+	DB	0
+	DW24	_indirect_ixd_match
+	DW	36
+	DB	0
+	DW24	_indirect_iyd_match
+	DW	37
+	DB	0
+	DW24	_raeonly_match
+.DEFINE "permittype_matchlist"
+.ALIAS "_permittype_matchlist"
+.CLASS 69
+.VALUE _permittype_matchlist
+.DIM 38
+.TAG "NONAME7"
+.TYPE 104
+.ENDEF
+_operands_adc:
+	DW	9
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	142
+	DB	6
+	DW	9
+	DB	0
+	DW	2
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DB	140
+	DB	0
+	DW	9
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	142
+	DB	6
+	DW	9
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	206
+	DB	0
+	DW	9
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	136
+	DB	0
+	DW	10
+	DB	0
+	DW	12
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	4
+	DB	0
+	DB	237
+	DB	74
+	DB	6
+	DW	10
+	DB	0
+	DW	15
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	122
+	DB	6
+.DEFINE "operands_adc"
+.ALIAS "_operands_adc"
+.CLASS 69
+.VALUE _operands_adc
+.DIM 7
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_add:
+	DW	9
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	134
+	DB	6
+	DW	9
+	DB	0
+	DW	2
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DB	132
+	DB	0
+	DW	9
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	134
+	DB	6
+	DW	9
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	198
+	DB	0
+	DW	9
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	128
+	DB	0
+	DW	10
+	DB	0
+	DW	12
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	4
+	DB	0
+	DB	0
+	DB	9
+	DB	6
+	DW	10
+	DB	0
+	DW	15
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	57
+	DB	6
+	DW	3
+	DB	0
+	DW	14
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	4
+	DB	0
+	DB	0
+	DB	9
+	DB	6
+	DW	3
+	DB	0
+	DW	15
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	57
+	DB	6
+.DEFINE "operands_add"
+.ALIAS "_operands_add"
+.CLASS 69
+.VALUE _operands_add
+.DIM 9
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_and:
+	DW	9
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	166
+	DB	6
+	DW	9
+	DB	0
+	DW	2
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DB	164
+	DB	0
+	DW	9
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	166
+	DB	6
+	DW	9
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	230
+	DB	0
+	DW	9
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	160
+	DB	0
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	166
+	DB	6
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	164
+	DB	0
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	166
+	DB	6
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	230
+	DB	0
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	160
+	DB	0
+.DEFINE "operands_and"
+.ALIAS "_operands_and"
+.CLASS 69
+.VALUE _operands_and
+.DIM 10
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_bit:
+	DW	21
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	70
+	DB	6
+	DW	21
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	70
+	DB	6
+	DW	21
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	3
+	DB	0
+	DB	203
+	DB	64
+	DB	0
+.DEFINE "operands_bit"
+.ALIAS "_operands_bit"
+.CLASS 69
+.VALUE _operands_bit
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_call:
+	DW	1
+	DB	0
+	DW	6
+	DB	0
+	DB	0
+	DW	7
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	196
+	DB	255
+	DW	6
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	205
+	DB	255
+.DEFINE "operands_call"
+.ALIAS "_operands_call"
+.CLASS 69
+.VALUE _operands_call
+.DIM 2
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ccf:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	63
+	DB	0
+.DEFINE "operands_ccf"
+.ALIAS "_operands_ccf"
+.CLASS 69
+.VALUE _operands_ccf
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_cp:
+	DW	9
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	190
+	DB	6
+	DW	9
+	DB	0
+	DW	2
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DB	188
+	DB	0
+	DW	9
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	190
+	DB	6
+	DW	9
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	254
+	DB	0
+	DW	9
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	184
+	DB	0
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	190
+	DB	6
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	188
+	DB	0
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	190
+	DB	6
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	254
+	DB	0
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	184
+	DB	0
+.DEFINE "operands_cp"
+.ALIAS "_operands_cp"
+.CLASS 69
+.VALUE _operands_cp
+.DIM 10
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_cpd:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	169
+	DB	6
+.DEFINE "operands_cpd"
+.ALIAS "_operands_cpd"
+.CLASS 69
+.VALUE _operands_cpd
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_cpdr:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	185
+	DB	6
+.DEFINE "operands_cpdr"
+.ALIAS "_operands_cpdr"
+.CLASS 69
+.VALUE _operands_cpdr
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_cpi:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	161
+	DB	6
+.DEFINE "operands_cpi"
+.ALIAS "_operands_cpi"
+.CLASS 69
+.VALUE _operands_cpi
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_cpir:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	177
+	DB	6
+.DEFINE "operands_cpir"
+.ALIAS "_operands_cpir"
+.CLASS 69
+.VALUE _operands_cpir
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_cpl:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	47
+	DB	0
+.DEFINE "operands_cpl"
+.ALIAS "_operands_cpl"
+.CLASS 69
+.VALUE _operands_cpl
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_daa:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	39
+	DB	0
+.DEFINE "operands_daa"
+.ALIAS "_operands_daa"
+.CLASS 69
+.VALUE _operands_daa
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_dec:
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	53
+	DB	6
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	9
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	37
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	43
+	DB	6
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	53
+	DB	6
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	5
+	DB	0
+	DW	12
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	11
+	DB	6
+	DW	15
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	59
+	DB	6
+.DEFINE "operands_dec"
+.ALIAS "_operands_dec"
+.CLASS 69
+.VALUE _operands_dec
+.DIM 7
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_di:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	243
+	DB	0
+.DEFINE "operands_di"
+.ALIAS "_operands_di"
+.CLASS 69
+.VALUE _operands_di
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_djnz:
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	13
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	16
+	DB	0
+.DEFINE "operands_djnz"
+.ALIAS "_operands_djnz"
+.CLASS 69
+.VALUE _operands_djnz
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ei:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	251
+	DB	0
+.DEFINE "operands_ei"
+.ALIAS "_operands_ei"
+.CLASS 69
+.VALUE _operands_ei
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ex:
+	DW	22
+	DB	0
+	DW	22
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	8
+	DB	0
+	DW	23
+	DB	0
+	DW	10
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	235
+	DB	0
+	DW	16
+	DB	0
+	DW	10
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	227
+	DB	6
+	DW	16
+	DB	0
+	DW	3
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	227
+	DB	6
+.DEFINE "operands_ex"
+.ALIAS "_operands_ex"
+.CLASS 69
+.VALUE _operands_ex
+.DIM 4
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_exx:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	217
+	DB	0
+.DEFINE "operands_exx"
+.ALIAS "_operands_exx"
+.CLASS 69
+.VALUE _operands_exx
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_halt:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	118
+	DB	0
+.DEFINE "operands_halt"
+.ALIAS "_operands_halt"
+.CLASS 69
+.VALUE _operands_halt
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_im:
+	DW	24
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	10
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	70
+	DB	0
+.DEFINE "operands_im"
+.ALIAS "_operands_im"
+.CLASS 69
+.VALUE _operands_im
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_in:
+	DW	9
+	DB	0
+	DW	25
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	219
+	DB	0
+	DW	17
+	DB	0
+	DW	26
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	64
+	DB	0
+	DW	17
+	DB	0
+	DW	27
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	64
+	DB	0
+.DEFINE "operands_in"
+.ALIAS "_operands_in"
+.CLASS 69
+.VALUE _operands_in
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_in0:
+	DW	17
+	DB	0
+	DW	25
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	0
+	DB	0
+.DEFINE "operands_in0"
+.ALIAS "_operands_in0"
+.CLASS 69
+.VALUE _operands_in0
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_inc:
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	52
+	DB	6
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	9
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	36
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	35
+	DB	6
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	52
+	DB	6
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	4
+	DB	0
+	DW	12
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	3
+	DB	6
+	DW	15
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	51
+	DB	6
+.DEFINE "operands_inc"
+.ALIAS "_operands_inc"
+.CLASS 69
+.VALUE _operands_inc
+.DIM 7
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ind:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	170
+	DB	6
+.DEFINE "operands_ind"
+.ALIAS "_operands_ind"
+.CLASS 69
+.VALUE _operands_ind
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ind2:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	140
+	DB	6
+.DEFINE "operands_ind2"
+.ALIAS "_operands_ind2"
+.CLASS 69
+.VALUE _operands_ind2
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ind2r:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	156
+	DB	6
+.DEFINE "operands_ind2r"
+.ALIAS "_operands_ind2r"
+.CLASS 69
+.VALUE _operands_ind2r
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_indm:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	138
+	DB	6
+.DEFINE "operands_indm"
+.ALIAS "_operands_indm"
+.CLASS 69
+.VALUE _operands_indm
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_indmr:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	154
+	DB	6
+.DEFINE "operands_indmr"
+.ALIAS "_operands_indmr"
+.CLASS 69
+.VALUE _operands_indmr
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_indr:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	186
+	DB	6
+.DEFINE "operands_indr"
+.ALIAS "_operands_indr"
+.CLASS 69
+.VALUE _operands_indr
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_indrx:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	202
+	DB	6
+.DEFINE "operands_indrx"
+.ALIAS "_operands_indrx"
+.CLASS 69
+.VALUE _operands_indrx
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ini:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	162
+	DB	6
+.DEFINE "operands_ini"
+.ALIAS "_operands_ini"
+.CLASS 69
+.VALUE _operands_ini
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ini2:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	132
+	DB	6
+.DEFINE "operands_ini2"
+.ALIAS "_operands_ini2"
+.CLASS 69
+.VALUE _operands_ini2
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ini2r:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	148
+	DB	6
+.DEFINE "operands_ini2r"
+.ALIAS "_operands_ini2r"
+.CLASS 69
+.VALUE _operands_ini2r
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_inim:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	130
+	DB	6
+.DEFINE "operands_inim"
+.ALIAS "_operands_inim"
+.CLASS 69
+.VALUE _operands_inim
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_inimr:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	146
+	DB	6
+.DEFINE "operands_inimr"
+.ALIAS "_operands_inimr"
+.CLASS 69
+.VALUE _operands_inimr
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_inir:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	178
+	DB	6
+.DEFINE "operands_inir"
+.ALIAS "_operands_inir"
+.CLASS 69
+.VALUE _operands_inir
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_inirx:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	194
+	DB	6
+.DEFINE "operands_inirx"
+.ALIAS "_operands_inirx"
+.CLASS 69
+.VALUE _operands_inirx
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_jp:
+	DW	1
+	DB	0
+	DW	6
+	DB	0
+	DB	0
+	DW	7
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	194
+	DB	9
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	233
+	DB	6
+	DW	28
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	233
+	DB	9
+	DW	6
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	195
+	DB	9
+.DEFINE "operands_jp"
+.ALIAS "_operands_jp"
+.CLASS 69
+.VALUE _operands_jp
+.DIM 4
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_jr:
+	DW	29
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	7
+	DB	0
+	DW	13
+	DB	0
+	DB	0
+	DB	32
+	DB	0
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	13
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	24
+	DB	0
+.DEFINE "operands_jr"
+.ALIAS "_operands_jr"
+.CLASS 69
+.VALUE _operands_jr
+.DIM 2
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ld:
+	DW	9
+	DB	0
+	DW	20
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	87
+	DB	0
+	DW	9
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	126
+	DB	6
+	DW	9
+	DB	0
+	DW	19
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	110
+	DB	0
+	DW	9
+	DB	0
+	DW	7
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	58
+	DB	9
+	DW	9
+	DB	0
+	DW	18
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	95
+	DB	0
+	DW	9
+	DB	0
+	DW	26
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	10
+	DB	6
+	DW	9
+	DB	0
+	DW	30
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	26
+	DB	6
+	DW	9
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	126
+	DB	6
+	DW	10
+	DB	0
+	DW	20
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	215
+	DB	0
+	DW	11
+	DB	0
+	DW	31
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	63
+	DB	6
+	DW	11
+	DB	0
+	DW	32
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	62
+	DB	6
+	DW	11
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	54
+	DB	6
+	DW	11
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	112
+	DB	6
+	DW	11
+	DB	0
+	DW	12
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	4
+	DB	0
+	DB	237
+	DB	15
+	DB	6
+	DW	20
+	DB	0
+	DW	10
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	199
+	DB	0
+	DW	20
+	DB	0
+	DW	9
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	71
+	DB	0
+	DW	2
+	DB	0
+	DW	2
+	DB	0
+	DB	1
+	DW	9
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DB	100
+	DB	0
+	DW	2
+	DB	0
+	DW	8
+	DB	0
+	DB	1
+	DW	9
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	38
+	DB	0
+	DW	2
+	DB	0
+	DW	37
+	DB	0
+	DB	1
+	DW	9
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	96
+	DB	0
+	DW	31
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	55
+	DB	6
+	DW	32
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	49
+	DB	6
+	DW	31
+	DB	0
+	DW	35
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	55
+	DB	6
+	DW	32
+	DB	0
+	DW	36
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	55
+	DB	6
+	DW	31
+	DB	0
+	DW	36
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	49
+	DB	6
+	DW	32
+	DB	0
+	DW	35
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	49
+	DB	6
+	DW	3
+	DB	0
+	DW	6
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	33
+	DB	9
+	DW	3
+	DB	0
+	DW	7
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	42
+	DB	9
+	DW	35
+	DB	0
+	DW	31
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	63
+	DB	6
+	DW	36
+	DB	0
+	DW	32
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	63
+	DB	6
+	DW	35
+	DB	0
+	DW	32
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	62
+	DB	6
+	DW	36
+	DB	0
+	DW	31
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	62
+	DB	6
+	DW	5
+	DB	0
+	DW	8
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	54
+	DB	6
+	DW	5
+	DB	0
+	DW	17
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	112
+	DB	6
+	DW	5
+	DB	0
+	DW	12
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	4
+	DB	0
+	DB	0
+	DB	15
+	DB	6
+	DW	19
+	DB	0
+	DW	9
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	109
+	DB	0
+	DW	7
+	DB	0
+	DW	9
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	50
+	DB	9
+	DW	7
+	DB	0
+	DW	3
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	34
+	DB	9
+	DW	7
+	DB	0
+	DW	10
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	34
+	DB	9
+	DW	7
+	DB	0
+	DW	12
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	4
+	DB	0
+	DB	237
+	DB	67
+	DB	9
+	DW	7
+	DB	0
+	DW	15
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	115
+	DB	9
+	DW	18
+	DB	0
+	DW	9
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	79
+	DB	0
+	DW	17
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	70
+	DB	6
+	DW	37
+	DB	0
+	DW	2
+	DB	0
+	DB	1
+	DW	2
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DB	68
+	DB	0
+	DW	17
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	70
+	DB	6
+	DW	17
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	6
+	DB	0
+	DW	17
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	64
+	DB	0
+	DW	12
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	7
+	DB	6
+	DW	12
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	7
+	DB	6
+	DW	12
+	DB	0
+	DW	6
+	DB	0
+	DB	1
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	1
+	DB	9
+	DW	10
+	DB	0
+	DW	7
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	42
+	DB	9
+	DW	12
+	DB	0
+	DW	7
+	DB	0
+	DB	0
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	75
+	DB	9
+	DW	11
+	DB	0
+	DW	9
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	119
+	DB	6
+	DW	13
+	DB	0
+	DW	9
+	DB	0
+	DB	0
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	2
+	DB	6
+	DW	15
+	DB	0
+	DW	10
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	249
+	DB	6
+	DW	15
+	DB	0
+	DW	3
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	249
+	DB	6
+	DW	15
+	DB	0
+	DW	6
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	49
+	DB	9
+	DW	15
+	DB	0
+	DW	7
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	123
+	DB	9
+.DEFINE "operands_ld"
+.ALIAS "_operands_ld"
+.CLASS 69
+.VALUE _operands_ld
+.DIM 57
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ldd:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	168
+	DB	6
+.DEFINE "operands_ldd"
+.ALIAS "_operands_ldd"
+.CLASS 69
+.VALUE _operands_ldd
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_lddr:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	184
+	DB	6
+.DEFINE "operands_lddr"
+.ALIAS "_operands_lddr"
+.CLASS 69
+.VALUE _operands_lddr
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ldi:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	160
+	DB	6
+.DEFINE "operands_ldi"
+.ALIAS "_operands_ldi"
+.CLASS 69
+.VALUE _operands_ldi
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ldir:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	176
+	DB	6
+.DEFINE "operands_ldir"
+.ALIAS "_operands_ldir"
+.CLASS 69
+.VALUE _operands_ldir
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_lea:
+	DW	31
+	DB	0
+	DW	33
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	50
+	DB	6
+	DW	32
+	DB	0
+	DW	33
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	85
+	DB	6
+	DW	31
+	DB	0
+	DW	34
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	84
+	DB	6
+	DW	32
+	DB	0
+	DW	34
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	51
+	DB	6
+	DW	12
+	DB	0
+	DW	33
+	DB	0
+	DB	0
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	2
+	DB	6
+	DW	12
+	DB	0
+	DW	34
+	DB	0
+	DB	0
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	3
+	DB	6
+.DEFINE "operands_lea"
+.ALIAS "_operands_lea"
+.CLASS 69
+.VALUE _operands_lea
+.DIM 6
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_mlt:
+	DW	12
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	76
+	DB	0
+	DW	15
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	124
+	DB	6
+.DEFINE "operands_mlt"
+.ALIAS "_operands_mlt"
+.CLASS 69
+.VALUE _operands_mlt
+.DIM 2
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_neg:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	68
+	DB	0
+.DEFINE "operands_neg"
+.ALIAS "_operands_neg"
+.CLASS 69
+.VALUE _operands_neg
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_nop:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+.DEFINE "operands_nop"
+.ALIAS "_operands_nop"
+.CLASS 69
+.VALUE _operands_nop
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_or:
+	DW	9
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	182
+	DB	6
+	DW	9
+	DB	0
+	DW	2
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DB	180
+	DB	0
+	DW	9
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	182
+	DB	6
+	DW	9
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	246
+	DB	0
+	DW	9
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	176
+	DB	0
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	182
+	DB	6
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	180
+	DB	0
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	182
+	DB	6
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	246
+	DB	0
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	176
+	DB	0
+.DEFINE "operands_or"
+.ALIAS "_operands_or"
+.CLASS 69
+.VALUE _operands_or
+.DIM 10
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_otd2r:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	188
+	DB	6
+.DEFINE "operands_otd2r"
+.ALIAS "_operands_otd2r"
+.CLASS 69
+.VALUE _operands_otd2r
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_otdm:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	139
+	DB	6
+.DEFINE "operands_otdm"
+.ALIAS "_operands_otdm"
+.CLASS 69
+.VALUE _operands_otdm
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_otdmr:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	155
+	DB	6
+.DEFINE "operands_otdmr"
+.ALIAS "_operands_otdmr"
+.CLASS 69
+.VALUE _operands_otdmr
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_otdr:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	187
+	DB	6
+.DEFINE "operands_otdr"
+.ALIAS "_operands_otdr"
+.CLASS 69
+.VALUE _operands_otdr
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_otdrx:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	203
+	DB	6
+.DEFINE "operands_otdrx"
+.ALIAS "_operands_otdrx"
+.CLASS 69
+.VALUE _operands_otdrx
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_oti2r:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	180
+	DB	6
+.DEFINE "operands_oti2r"
+.ALIAS "_operands_oti2r"
+.CLASS 69
+.VALUE _operands_oti2r
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_otim:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	131
+	DB	6
+.DEFINE "operands_otim"
+.ALIAS "_operands_otim"
+.CLASS 69
+.VALUE _operands_otim
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_otimr:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	147
+	DB	6
+.DEFINE "operands_otimr"
+.ALIAS "_operands_otimr"
+.CLASS 69
+.VALUE _operands_otimr
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_otir:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	179
+	DB	6
+.DEFINE "operands_otir"
+.ALIAS "_operands_otir"
+.CLASS 69
+.VALUE _operands_otir
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_otirx:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	195
+	DB	6
+.DEFINE "operands_otirx"
+.ALIAS "_operands_otirx"
+.CLASS 69
+.VALUE _operands_otirx
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_out:
+	DW	26
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	2
+	DB	0
+	DB	237
+	DB	65
+	DB	0
+	DW	27
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	2
+	DB	0
+	DB	237
+	DB	65
+	DB	0
+	DW	25
+	DB	0
+	DW	9
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	211
+	DB	0
+.DEFINE "operands_out"
+.ALIAS "_operands_out"
+.CLASS 69
+.VALUE _operands_out
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_out0:
+	DW	25
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	2
+	DB	0
+	DB	237
+	DB	1
+	DB	0
+.DEFINE "operands_out0"
+.ALIAS "_operands_out0"
+.CLASS 69
+.VALUE _operands_out0
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_outd:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	171
+	DB	6
+.DEFINE "operands_outd"
+.ALIAS "_operands_outd"
+.CLASS 69
+.VALUE _operands_outd
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_outd2:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	172
+	DB	6
+.DEFINE "operands_outd2"
+.ALIAS "_operands_outd2"
+.CLASS 69
+.VALUE _operands_outd2
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_outi:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	163
+	DB	6
+.DEFINE "operands_outi"
+.ALIAS "_operands_outi"
+.CLASS 69
+.VALUE _operands_outi
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_outi2:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	164
+	DB	6
+.DEFINE "operands_outi2"
+.ALIAS "_operands_outi2"
+.CLASS 69
+.VALUE _operands_outi2
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_pea:
+	DW	33
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	101
+	DB	6
+	DW	34
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	102
+	DB	6
+.DEFINE "operands_pea"
+.ALIAS "_operands_pea"
+.CLASS 69
+.VALUE _operands_pea
+.DIM 2
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_pop:
+	DW	22
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	241
+	DB	6
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	225
+	DB	6
+	DW	12
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	193
+	DB	6
+.DEFINE "operands_pop"
+.ALIAS "_operands_pop"
+.CLASS 69
+.VALUE _operands_pop
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_push:
+	DW	22
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	245
+	DB	6
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	229
+	DB	6
+	DW	12
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	4
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	197
+	DB	6
+.DEFINE "operands_push"
+.ALIAS "_operands_push"
+.CLASS 69
+.VALUE _operands_push
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_res:
+	DW	21
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	134
+	DB	6
+	DW	21
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	134
+	DB	6
+	DW	21
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	12
+	DB	0
+	DW	3
+	DB	0
+	DB	203
+	DB	128
+	DB	0
+.DEFINE "operands_res"
+.ALIAS "_operands_res"
+.CLASS 69
+.VALUE _operands_res
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_ret:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	201
+	DB	10
+	DW	1
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	7
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	192
+	DB	10
+.DEFINE "operands_ret"
+.ALIAS "_operands_ret"
+.CLASS 69
+.VALUE _operands_ret
+.DIM 2
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_reti:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	77
+	DB	10
+.DEFINE "operands_reti"
+.ALIAS "_operands_reti"
+.CLASS 69
+.VALUE _operands_reti
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_retn:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	69
+	DB	10
+.DEFINE "operands_retn"
+.ALIAS "_operands_retn"
+.CLASS 69
+.VALUE _operands_retn
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rl:
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	22
+	DB	6
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	22
+	DB	6
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	16
+	DB	0
+.DEFINE "operands_rl"
+.ALIAS "_operands_rl"
+.CLASS 69
+.VALUE _operands_rl
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rla:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	23
+	DB	0
+.DEFINE "operands_rla"
+.ALIAS "_operands_rla"
+.CLASS 69
+.VALUE _operands_rla
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rlc:
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	6
+	DB	6
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	6
+	DB	6
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	0
+	DB	0
+.DEFINE "operands_rlc"
+.ALIAS "_operands_rlc"
+.CLASS 69
+.VALUE _operands_rlc
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rlca:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	7
+	DB	0
+.DEFINE "operands_rlca"
+.ALIAS "_operands_rlca"
+.CLASS 69
+.VALUE _operands_rlca
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rld:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	111
+	DB	0
+.DEFINE "operands_rld"
+.ALIAS "_operands_rld"
+.CLASS 69
+.VALUE _operands_rld
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rr:
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	30
+	DB	6
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	30
+	DB	6
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	24
+	DB	0
+.DEFINE "operands_rr"
+.ALIAS "_operands_rr"
+.CLASS 69
+.VALUE _operands_rr
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rra:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	31
+	DB	0
+.DEFINE "operands_rra"
+.ALIAS "_operands_rra"
+.CLASS 69
+.VALUE _operands_rra
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rrc:
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	14
+	DB	6
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	14
+	DB	6
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	8
+	DB	0
+.DEFINE "operands_rrc"
+.ALIAS "_operands_rrc"
+.CLASS 69
+.VALUE _operands_rrc
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rrca:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	15
+	DB	0
+.DEFINE "operands_rrca"
+.ALIAS "_operands_rrca"
+.CLASS 69
+.VALUE _operands_rrca
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rrd:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	103
+	DB	0
+.DEFINE "operands_rrd"
+.ALIAS "_operands_rrd"
+.CLASS 69
+.VALUE _operands_rrd
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rsmix:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	126
+	DB	0
+.DEFINE "operands_rsmix"
+.ALIAS "_operands_rsmix"
+.CLASS 69
+.VALUE _operands_rsmix
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_rst:
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	199
+	DB	6
+.DEFINE "operands_rst"
+.ALIAS "_operands_rst"
+.CLASS 69
+.VALUE _operands_rst
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_sbc:
+	DW	9
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	158
+	DB	6
+	DW	9
+	DB	0
+	DW	2
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DB	156
+	DB	0
+	DW	9
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	158
+	DB	6
+	DW	9
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	222
+	DB	0
+	DW	9
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	152
+	DB	0
+	DW	10
+	DB	0
+	DW	12
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	4
+	DB	0
+	DB	237
+	DB	66
+	DB	6
+	DW	10
+	DB	0
+	DW	15
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	114
+	DB	6
+.DEFINE "operands_sbc"
+.ALIAS "_operands_sbc"
+.CLASS 69
+.VALUE _operands_sbc
+.DIM 7
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_scf:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	55
+	DB	0
+.DEFINE "operands_scf"
+.ALIAS "_operands_scf"
+.CLASS 69
+.VALUE _operands_scf
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_set:
+	DW	21
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	198
+	DB	6
+	DW	21
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	198
+	DB	6
+	DW	21
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	12
+	DB	0
+	DW	3
+	DB	0
+	DB	203
+	DB	192
+	DB	0
+.DEFINE "operands_set"
+.ALIAS "_operands_set"
+.CLASS 69
+.VALUE _operands_set
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_sla:
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	38
+	DB	6
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	38
+	DB	6
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	32
+	DB	0
+.DEFINE "operands_sla"
+.ALIAS "_operands_sla"
+.CLASS 69
+.VALUE _operands_sla
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_slp:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	118
+	DB	0
+.DEFINE "operands_slp"
+.ALIAS "_operands_slp"
+.CLASS 69
+.VALUE _operands_slp
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_sra:
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	46
+	DB	6
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	46
+	DB	6
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	40
+	DB	0
+.DEFINE "operands_sra"
+.ALIAS "_operands_sra"
+.CLASS 69
+.VALUE _operands_sra
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_srl:
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	62
+	DB	6
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	62
+	DB	6
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	203
+	DB	56
+	DB	0
+.DEFINE "operands_srl"
+.ALIAS "_operands_srl"
+.CLASS 69
+.VALUE _operands_srl
+.DIM 3
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_stmix:
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	125
+	DB	0
+.DEFINE "operands_stmix"
+.ALIAS "_operands_stmix"
+.CLASS 69
+.VALUE _operands_stmix
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_sub:
+	DW	9
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	150
+	DB	6
+	DW	9
+	DB	0
+	DW	2
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DB	148
+	DB	0
+	DW	9
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	150
+	DB	6
+	DW	9
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	214
+	DB	0
+	DW	9
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	144
+	DB	0
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	150
+	DB	6
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	148
+	DB	0
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	150
+	DB	6
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	214
+	DB	0
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	144
+	DB	0
+.DEFINE "operands_sub"
+.ALIAS "_operands_sub"
+.CLASS 69
+.VALUE _operands_sub
+.DIM 10
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_tst:
+	DW	9
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	52
+	DB	6
+	DW	9
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	100
+	DB	0
+	DW	9
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	2
+	DB	0
+	DB	237
+	DB	4
+	DB	0
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	52
+	DB	6
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	100
+	DB	0
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	4
+	DB	0
+.DEFINE "operands_tst"
+.ALIAS "_operands_tst"
+.CLASS 69
+.VALUE _operands_tst
+.DIM 6
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_tstio:
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	237
+	DB	116
+	DB	0
+.DEFINE "operands_tstio"
+.ALIAS "_operands_tstio"
+.CLASS 69
+.VALUE _operands_tstio
+.DIM 1
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_operands_xor:
+	DW	9
+	DB	0
+	DW	11
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	174
+	DB	6
+	DW	9
+	DB	0
+	DW	2
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DB	172
+	DB	0
+	DW	9
+	DB	0
+	DW	5
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	174
+	DB	6
+	DW	9
+	DB	0
+	DW	8
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	238
+	DB	0
+	DW	9
+	DB	0
+	DW	17
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	3
+	DB	0
+	DB	0
+	DB	168
+	DB	0
+	DW	11
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	174
+	DB	6
+	DW	2
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	172
+	DB	0
+	DW	5
+	DB	0
+	DW	0
+	DB	0
+	DB	1
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	174
+	DB	6
+	DW	8
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	0
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	238
+	DB	0
+	DW	17
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DW	3
+	DB	0
+	DW	0
+	DB	0
+	DB	0
+	DB	168
+	DB	0
+.DEFINE "operands_xor"
+.ALIAS "_operands_xor"
+.CLASS 69
+.VALUE _operands_xor
+.DIM 10
+.TAG "NONAME5"
+.TYPE 104
+.ENDEF
+_instructions:
+	DB	97
+	DB	100
+	DB	99
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	7
+	DW24	_operands_adc
+	DW	0
+	DB	0
+	DB	97
+	DB	100
+	DB	100
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	9
+	DW24	_operands_add
+	DW	0
+	DB	0
+	DB	97
+	DB	108
+	DB	105
+	DB	103
+	DB	110
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	0
+	DB	0
+	DW24	0
+	DW	1
+	DB	0
+	DB	97
+	DB	110
+	DB	100
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	10
+	DW24	_operands_and
+	DW	0
+	DB	0
+	DB	97
+	DB	115
+	DB	99
+	DB	105
+	DB	105
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	3
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	97
+	DB	115
+	DB	99
+	DB	105
+	DB	122
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	7
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	97
+	DB	115
+	DB	115
+	DB	117
+	DB	109
+	DB	101
+	DB	0
+	DB	0
+	DB	1
+	DB	1
+	DB	0
+	DW24	0
+	DW	3
+	DB	0
+	DB	98
+	DB	105
+	DB	116
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_bit
+	DW	0
+	DB	0
+	DB	98
+	DB	108
+	DB	107
+	DB	98
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	10
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	98
+	DB	108
+	DB	107
+	DB	108
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	13
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	98
+	DB	108
+	DB	107
+	DB	112
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	12
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	98
+	DB	108
+	DB	107
+	DB	119
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	11
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	98
+	DB	121
+	DB	116
+	DB	101
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	3
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	99
+	DB	97
+	DB	108
+	DB	108
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	2
+	DW24	_operands_call
+	DW	0
+	DB	0
+	DB	99
+	DB	99
+	DB	102
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ccf
+	DW	0
+	DB	0
+	DB	99
+	DB	112
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	10
+	DW24	_operands_cp
+	DW	0
+	DB	0
+	DB	99
+	DB	112
+	DB	100
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_cpd
+	DW	0
+	DB	0
+	DB	99
+	DB	112
+	DB	100
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_cpdr
+	DW	0
+	DB	0
+	DB	99
+	DB	112
+	DB	105
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_cpi
+	DW	0
+	DB	0
+	DB	99
+	DB	112
+	DB	105
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_cpir
+	DW	0
+	DB	0
+	DB	99
+	DB	112
+	DB	108
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_cpl
+	DW	0
+	DB	0
+	DB	100
+	DB	97
+	DB	97
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_daa
+	DW	0
+	DB	0
+	DB	100
+	DB	98
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	3
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	100
+	DB	101
+	DB	99
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	7
+	DW24	_operands_dec
+	DW	0
+	DB	0
+	DB	100
+	DB	101
+	DB	102
+	DB	98
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	3
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	100
+	DB	101
+	DB	102
+	DB	115
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	4
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	100
+	DB	101
+	DB	102
+	DB	119
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	5
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	100
+	DB	105
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_di
+	DW	0
+	DB	0
+	DB	100
+	DB	106
+	DB	110
+	DB	122
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_djnz
+	DW	0
+	DB	0
+	DB	100
+	DB	119
+	DB	50
+	DB	52
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	6
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	100
+	DB	115
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	4
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	100
+	DB	119
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	5
+	DB	0
+	DW24	0
+	DW	2
+	DB	0
+	DB	101
+	DB	105
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ei
+	DW	0
+	DB	0
+	DB	101
+	DB	113
+	DB	117
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	8
+	DB	0
+	DW24	0
+	DW	1
+	DB	0
+	DB	101
+	DB	120
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	4
+	DW24	_operands_ex
+	DW	0
+	DB	0
+	DB	101
+	DB	120
+	DB	120
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_exx
+	DW	0
+	DB	0
+	DB	104
+	DB	97
+	DB	108
+	DB	116
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_halt
+	DW	0
+	DB	0
+	DB	105
+	DB	109
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_im
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_in
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	48
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_in0
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	99
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	7
+	DW24	_operands_inc
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	99
+	DB	108
+	DB	117
+	DB	100
+	DB	101
+	DB	0
+	DB	1
+	DB	9
+	DB	0
+	DW24	0
+	DW	1
+	DB	0
+	DB	105
+	DB	110
+	DB	100
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ind
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	100
+	DB	50
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ind2
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	100
+	DB	50
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ind2r
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	100
+	DB	109
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_indm
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	100
+	DB	109
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_indmr
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	100
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_indr
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	100
+	DB	114
+	DB	120
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_indrx
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	105
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ini
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	105
+	DB	50
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ini2
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	105
+	DB	50
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ini2r
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	105
+	DB	109
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_inim
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	105
+	DB	109
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_inimr
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	105
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_inir
+	DW	0
+	DB	0
+	DB	105
+	DB	110
+	DB	105
+	DB	114
+	DB	120
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_inirx
+	DW	0
+	DB	0
+	DB	106
+	DB	112
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	4
+	DW24	_operands_jp
+	DW	0
+	DB	0
+	DB	106
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	2
+	DW24	_operands_jr
+	DW	0
+	DB	0
+	DB	108
+	DB	100
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	57
+	DW24	_operands_ld
+	DW	0
+	DB	0
+	DB	108
+	DB	100
+	DB	100
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ldd
+	DW	0
+	DB	0
+	DB	108
+	DB	100
+	DB	100
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_lddr
+	DW	0
+	DB	0
+	DB	108
+	DB	100
+	DB	105
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ldi
+	DW	0
+	DB	0
+	DB	108
+	DB	100
+	DB	105
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_ldir
+	DW	0
+	DB	0
+	DB	108
+	DB	101
+	DB	97
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	6
+	DW24	_operands_lea
+	DW	0
+	DB	0
+	DB	109
+	DB	108
+	DB	116
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	2
+	DW24	_operands_mlt
+	DW	0
+	DB	0
+	DB	110
+	DB	101
+	DB	103
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_neg
+	DW	0
+	DB	0
+	DB	110
+	DB	111
+	DB	112
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_nop
+	DW	0
+	DB	0
+	DB	111
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	10
+	DW24	_operands_or
+	DW	0
+	DB	0
+	DB	111
+	DB	114
+	DB	103
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DB	2
+	DB	0
+	DW24	0
+	DW	1
+	DB	0
+	DB	111
+	DB	116
+	DB	100
+	DB	50
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_otd2r
+	DW	0
+	DB	0
+	DB	111
+	DB	116
+	DB	100
+	DB	109
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_otdm
+	DW	0
+	DB	0
+	DB	111
+	DB	116
+	DB	100
+	DB	109
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_otdmr
+	DW	0
+	DB	0
+	DB	111
+	DB	116
+	DB	100
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_otdr
+	DW	0
+	DB	0
+	DB	111
+	DB	116
+	DB	100
+	DB	114
+	DB	120
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_otdrx
+	DW	0
+	DB	0
+	DB	111
+	DB	116
+	DB	105
+	DB	50
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_oti2r
+	DW	0
+	DB	0
+	DB	111
+	DB	116
+	DB	105
+	DB	109
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_otim
+	DW	0
+	DB	0
+	DB	111
+	DB	116
+	DB	105
+	DB	109
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_otimr
+	DW	0
+	DB	0
+	DB	111
+	DB	116
+	DB	105
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_otir
+	DW	0
+	DB	0
+	DB	111
+	DB	116
+	DB	105
+	DB	114
+	DB	120
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_otirx
+	DW	0
+	DB	0
+	DB	111
+	DB	117
+	DB	116
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_out
+	DW	0
+	DB	0
+	DB	111
+	DB	117
+	DB	116
+	DB	48
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_out0
+	DW	0
+	DB	0
+	DB	111
+	DB	117
+	DB	116
+	DB	100
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_outd
+	DW	0
+	DB	0
+	DB	111
+	DB	117
+	DB	116
+	DB	100
+	DB	50
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_outd2
+	DW	0
+	DB	0
+	DB	111
+	DB	117
+	DB	116
+	DB	105
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_outi
+	DW	0
+	DB	0
+	DB	111
+	DB	117
+	DB	116
+	DB	105
+	DB	50
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_outi2
+	DW	0
+	DB	0
+	DB	112
+	DB	101
+	DB	97
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	2
+	DW24	_operands_pea
+	DW	0
+	DB	0
+	DB	112
+	DB	111
+	DB	112
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_pop
+	DW	0
+	DB	0
+	DB	112
+	DB	117
+	DB	115
+	DB	104
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_push
+	DW	0
+	DB	0
+	DB	114
+	DB	101
+	DB	115
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_res
+	DW	0
+	DB	0
+	DB	114
+	DB	101
+	DB	116
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	2
+	DW24	_operands_ret
+	DW	0
+	DB	0
+	DB	114
+	DB	101
+	DB	116
+	DB	105
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_reti
+	DW	0
+	DB	0
+	DB	114
+	DB	101
+	DB	116
+	DB	110
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_retn
+	DW	0
+	DB	0
+	DB	114
+	DB	108
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_rl
+	DW	0
+	DB	0
+	DB	114
+	DB	108
+	DB	97
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_rla
+	DW	0
+	DB	0
+	DB	114
+	DB	108
+	DB	99
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_rlc
+	DW	0
+	DB	0
+	DB	114
+	DB	108
+	DB	99
+	DB	97
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_rlca
+	DW	0
+	DB	0
+	DB	114
+	DB	108
+	DB	100
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_rld
+	DW	0
+	DB	0
+	DB	114
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_rr
+	DW	0
+	DB	0
+	DB	114
+	DB	114
+	DB	97
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_rra
+	DW	0
+	DB	0
+	DB	114
+	DB	114
+	DB	99
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_rrc
+	DW	0
+	DB	0
+	DB	114
+	DB	114
+	DB	99
+	DB	97
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_rrca
+	DW	0
+	DB	0
+	DB	114
+	DB	114
+	DB	100
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_rrd
+	DW	0
+	DB	0
+	DB	114
+	DB	115
+	DB	109
+	DB	105
+	DB	120
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_rsmix
+	DW	0
+	DB	0
+	DB	114
+	DB	115
+	DB	116
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_rst
+	DW	0
+	DB	0
+	DB	115
+	DB	98
+	DB	99
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	7
+	DW24	_operands_sbc
+	DW	0
+	DB	0
+	DB	115
+	DB	99
+	DB	102
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_scf
+	DW	0
+	DB	0
+	DB	115
+	DB	101
+	DB	116
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_set
+	DW	0
+	DB	0
+	DB	115
+	DB	108
+	DB	97
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_sla
+	DW	0
+	DB	0
+	DB	115
+	DB	108
+	DB	112
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_slp
+	DW	0
+	DB	0
+	DB	115
+	DB	114
+	DB	97
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_sra
+	DW	0
+	DB	0
+	DB	115
+	DB	114
+	DB	108
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	3
+	DW24	_operands_srl
+	DW	0
+	DB	0
+	DB	115
+	DB	116
+	DB	109
+	DB	105
+	DB	120
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_stmix
+	DW	0
+	DB	0
+	DB	115
+	DB	117
+	DB	98
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	10
+	DW24	_operands_sub
+	DW	0
+	DB	0
+	DB	116
+	DB	115
+	DB	116
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	6
+	DW24	_operands_tst
+	DW	0
+	DB	0
+	DB	116
+	DB	115
+	DB	116
+	DB	105
+	DB	111
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	1
+	DW24	_operands_tstio
+	DW	0
+	DB	0
+	DB	120
+	DB	111
+	DB	114
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	0
+	DB	10
+	DW24	_operands_xor
+	DW	0
+	DB	0
+.DEFINE "instructions"
+.ALIAS "_instructions"
+.CLASS 69
+.VALUE _instructions
+.DIM 116
+.TAG "NONAME6"
+.TYPE 104
+.ENDEF
+;  130	
+;  131	// table with fast access to functions that perform matching to an specific permittype
+;  132	permittype_match permittype_matchlist[] = {
+;  133	    {OPTYPE_NONE,           none_match},
+;  134	    {OPTYPE_CC,             cc_match},
+;  135	    {OPTYPE_IR,             ir_match},
+;  136	    {OPTYPE_IXY,            ixy_match},
+;  137	    {OPTYPE_IXYd,           ixyd_match},
+;  138	    {OPTYPE_INDIRECT_IXYd,  indirect_ixyd_match},
+;  139	    {OPTYPE_MMN,            mmn_match},
+;  140	    {OPTYPE_INDIRECT_MMN,   indirect_mmn_match},
+;  141	    {OPTYPE_N,              n_match},
+;  142	    {OPTYPE_A,              a_match},
+;  143	    {OPTYPE_HL,             hl_match},
+;  144	    {OPTYPE_INDIRECT_HL,    indirect_hl_match},
+;  145	    {OPTYPE_RR,             rr_match},
+;  146	    {OPTYPE_INDIRECT_RR,    indirect_rr_match},
+;  147	    {OPTYPE_RXY,            rxy_match},
+;  148	    {OPTYPE_SP,             sp_match},
+;  149	    {OPTYPE_INDIRECT_SP,    indirect_sp_match},
+;  150	    {OPTYPE_R,              r_match},
+;  151	    {OPTYPE_REG_R,          reg_r_match},
+;  152	    {OPTYPE_MB,             mb_match},
+;  153	    {OPTYPE_I,              i_match},
+;  154	    {OPTYPE_BIT,            b_match},
+;  155	    {OPTYPE_AF,             af_match},
+;  156	    {OPTYPE_DE,             de_match},
+;  157	    {OPTYPE_NSELECT,        nselect_match},
+;  158	    {OPTYPE_INDIRECT_N,     indirect_n_match},
+;  159	    {OPTYPE_INDIRECT_BC,    indirect_bc_match},
+;  160	    {OPTYPE_INDIRECT_C,     indirect_c_match},
+;  161	    {OPTYPE_INDIRECT_IXY,   indirect_ixy_match},
+;  162	    {OPTYPE_CCA,            cca_match},
+;  163	    {OPTYPE_INDIRECT_DE,    indirect_de_match},
+;  164	    {OPTYPE_IX,             ix_match},
+;  165	    {OPTYPE_IY,             iy_match},
+;  166	    {OPTYPE_IXd,            ixd_match},
+;  167	    {OPTYPE_IYd,            iyd_match},
+;  168	    {OPTYPE_INDIRECT_IXd,   indirect_ixd_match},
+;  169	    {OPTYPE_INDIRECT_IYd,   indirect_iyd_match},
+;  170	    {OPTYPE_R_AEONLY,       raeonly_match}
+;  171	};
+;  172	
+;  173	operandlist operands_adc[] = {
+;  174	    {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x8E, S_S1L0},
+;  175	    {OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x8C, S_NONE},
+;  176	    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x8E, S_S1L0},
+;  177	    {OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xCE, S_NONE},
+;  178	    {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x88, S_NONE},
+;  179	    {OPTYPE_HL, OPTYPE_RR,              false, TRANSFORM_NONE,   TRANSFORM_P,    0xED, 0x4A, S_S1L0},
+;  180	    {OPTYPE_HL, OPTYPE_SP,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7A, S_S1L0},
+;  181	};
+;  182	operandlist operands_add[] = {
+;  183	    {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x86, S_S1L0},
+;  184	    {OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x84, S_NONE},
+;  185	    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x86, S_S1L0},
+;  186	    {OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xC6, S_NONE},
+;  187	    {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x80, S_NONE},
+;  188	    {OPTYPE_HL, OPTYPE_RR,              false, TRANSFORM_NONE,   TRANSFORM_P,    0x00, 0x09, S_S1L0},
+;  189	    {OPTYPE_HL, OPTYPE_SP,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x39, S_S1L0},
+;  190	    {OPTYPE_IXY, OPTYPE_RXY,             true, TRANSFORM_NONE,   TRANSFORM_P,    0x00, 0x09, S_S1L0},
+;  191	    {OPTYPE_IXY, OPTYPE_SP,              true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x39, S_S1L0},
+;  192	};
+;  193	operandlist operands_and[] = {
+;  194	    {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_S1L0},
+;  195	    {OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xA4, S_NONE},
+;  196	    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_S1L0},
+;  197	    {OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE6, S_NONE},
+;  198	    {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xA0, S_NONE},
+;  199	    // same set, without A register
+;  200	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_S1L0},
+;  201	    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0xA4, S_NONE},
+;  202	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_S1L0},
+;  203	    {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE6, S_NONE},
+;  204	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xA0, S_NONE},
+;  205	};
+;  206	operandlist operands_bit[] = {
+;  207	    {OPTYPE_BIT, OPTYPE_INDIRECT_HL,    false, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0x46, S_S1L0},
+;  208	    {OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,   true, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0x46, S_S1L0},
+;  209	    {OPTYPE_BIT, OPTYPE_R,              false, TRANSFORM_Y,      TRANSFORM_Z,    0xCB, 0x40, S_NONE},
+;  210	};
+;  211	operandlist operands_call[] = {
+;  212	    {OPTYPE_CC, OPTYPE_MMN,             false, TRANSFORM_CC,     TRANSFORM_NONE, 0x00, 0xC4, S_ANY},
+;  213	    {OPTYPE_MMN, OPTYPE_NONE,           false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xCD, S_ANY},
+;  214	};
+;  215	operandlist operands_ccf[]= {
+;  216	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3F, S_NONE},
+;  217	};
+;  218	operandlist operands_cp[]= {
+;  219	    {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xBE, S_S1L0},
+;  220	    {OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xBC, S_NONE},
+;  221	    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xBE, S_S1L0},
+;  222	    {OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xFE, S_NONE},
+;  223	    {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xB8, S_NONE},
+;  224	    // same set, without A register
+;  225	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xBE, S_S1L0},
+;  226	    {OPTYPE_IR,  OPTYPE_NONE,            true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0xBC, S_NONE},
+;  227	    {OPTYPE_INDIRECT_IXYd,  OPTYPE_NONE, true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xBE, S_S1L0},
+;  228	    {OPTYPE_N,  OPTYPE_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xFE, S_NONE},
+;  229	    {OPTYPE_R,  OPTYPE_NONE,            false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xB8, S_NONE},
+;  230	
+;  231	};
+;  232	operandlist operands_cpd[]= {
+;  233	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA9, S_S1L0},
+;  234	};
+;  235	operandlist operands_cpdr[]= {
+;  236	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB9, S_S1L0},
+;  237	};
+;  238	operandlist operands_cpi[]= {
+;  239	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA1, S_S1L0},
+;  240	};
+;  241	operandlist operands_cpir[]= {
+;  242	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB1, S_S1L0},
+;  243	};
+;  244	operandlist operands_cpl[]= {
+;  245	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x2F, S_NONE},
+;  246	};
+;  247	operandlist operands_daa[]= {
+;  248	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x27, S_NONE},
+;  249	};
+;  250	operandlist operands_dec[]= {
+;  251	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x35, S_S1L0}, 
+;  252	    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IR3,     TRANSFORM_NONE,0x00, 0x25, S_NONE}, 
+;  253	    {OPTYPE_IXY, OPTYPE_NONE,            true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x2B, S_S1L0}, 
+;  254	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x35, S_S1L0}, 
+;  255	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Y,      TRANSFORM_NONE, 0x00, 0x05, S_NONE}, 
+;  256	    {OPTYPE_RR, OPTYPE_NONE,            false, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0x0B, S_S1L0}, 
+;  257	    {OPTYPE_SP, OPTYPE_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3B, S_S1L0}, 
+;  258	};
+;  259	operandlist operands_di[]= {
+;  260	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF3, S_NONE},
+;  261	};
+;  262	operandlist operands_djnz[]= {
+;  263	    {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_REL,    TRANSFORM_NONE, 0x00, 0x10, S_NONE},
+;  264	};
+;  265	operandlist operands_ei[]= {
+;  266	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xFB, S_NONE},
+;  267	};
+;  268	operandlist operands_ex[]= {
+;  269	    {OPTYPE_AF, OPTYPE_AF,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x08, S_NONE},
+;  270	    {OPTYPE_DE, OPTYPE_HL,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xEB, S_NONE},
+;  271	    {OPTYPE_INDIRECT_SP, OPTYPE_HL,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE3, S_S1L0},
+;  272	    {OPTYPE_INDIRECT_SP, OPTYPE_IXY,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE3, S_S1L0},
+;  273	};
+;  274	operandlist operands_exx[]= {
+;  275	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xD9, S_NONE},
+;  276	};
+;  277	operandlist operands_halt[]= {
+;  278	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x76, S_NONE},
+;  279	};
+;  280	operandlist operands_im[]= {
+;  281	    {OPTYPE_NSELECT, OPTYPE_NONE,       false, TRANSFORM_SELECT, TRANSFORM_NONE, 0xED, 0x46, S_NONE}, 
+;  282	};
+;  283	operandlist operands_in[]= {
+;  284	    {OPTYPE_A, OPTYPE_INDIRECT_N,       false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xDB, S_NONE}, 
+;  285	    {OPTYPE_R, OPTYPE_INDIRECT_BC,      false, TRANSFORM_Y,      TRANSFORM_NONE, 0xED, 0x40, S_NONE}, 
+;  286	    {OPTYPE_R, OPTYPE_INDIRECT_C,       false, TRANSFORM_Y,      TRANSFORM_NONE, 0xED, 0x40, S_NONE}, 
+;  287	};
+;  288	operandlist operands_in0[]= {
+;  289	    {OPTYPE_R, OPTYPE_INDIRECT_N,       false, TRANSFORM_Y,      TRANSFORM_NONE, 0xED, 0x00, S_NONE}, 
+;  290	};
+;  291	operandlist operands_inc[]= {
+;  292	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x34, S_S1L0}, 
+;  293	    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IR3,     TRANSFORM_NONE,0x00, 0x24, S_NONE}, 
+;  294	    {OPTYPE_IXY, OPTYPE_NONE,            true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x23, S_S1L0}, 
+;  295	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x34, S_S1L0}, 
+;  296	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Y,      TRANSFORM_NONE, 0x00, 0x04, S_NONE}, 
+;  297	    {OPTYPE_RR, OPTYPE_NONE,            false, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0x03, S_S1L0}, 
+;  298	    {OPTYPE_SP, OPTYPE_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x33, S_S1L0}, 
+;  299	};
+;  300	operandlist operands_ind[]= {
+;  301	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xAA, S_S1L0}, 
+;  302	};
+;  303	operandlist operands_ind2[]= {
+;  304	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x8C, S_S1L0}, 
+;  305	};
+;  306	operandlist operands_ind2r[]= {
+;  307	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x9C, S_S1L0}, 
+;  308	};
+;  309	operandlist operands_indm[]= {
+;  310	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x8A, S_S1L0}, 
+;  311	};
+;  312	operandlist operands_indmr[]= {
+;  313	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x9A, S_S1L0}, 
+;  314	};
+;  315	operandlist operands_indr[]= {
+;  316	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xBA, S_S1L0}, 
+;  317	};
+;  318	operandlist operands_indrx[]= {
+;  319	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xCA, S_S1L0}, 
+;  320	};
+;  321	operandlist operands_ini[]= {
+;  322	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA2, S_S1L0}, 
+;  323	};
+;  324	operandlist operands_ini2[]= {
+;  325	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x84, S_S1L0}, 
+;  326	};
+;  327	operandlist operands_ini2r[]= {
+;  328	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x94, S_S1L0}, 
+;  329	};
+;  330	operandlist operands_inim[]= {
+;  331	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x82, S_S1L0}, 
+;  332	};
+;  333	operandlist operands_inimr[]= {
+;  334	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x92, S_S1L0}, 
+;  335	};
+;  336	operandlist operands_inir[]= {
+;  337	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB2, S_S1L0}, 
+;  338	};
+;  339	operandlist operands_inirx[]= {
+;  340	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xC2, S_S1L0}, 
+;  341	};
+;  342	operandlist operands_jp[] = {
+;  343	    {OPTYPE_CC, OPTYPE_MMN,             false, TRANSFORM_CC,     TRANSFORM_NONE, 0x00, 0xC2, S_SISLIL},
+;  344	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE9, S_S1L0},
+;  345	    {OPTYPE_INDIRECT_IXY, OPTYPE_NONE,   true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE9, S_SISLIL},
+;  346	    {OPTYPE_MMN, OPTYPE_NONE,           false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xC3, S_SISLIL},
+;  347	};
+;  348	operandlist operands_jr[]= {
+;  349	    {OPTYPE_CCA, OPTYPE_N,              false, TRANSFORM_CC,     TRANSFORM_REL,  0x00, 0x20, S_NONE},
+;  350	    {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_REL,    TRANSFORM_NONE, 0x00, 0x18, S_NONE},
+;  351	};
+;  352	operandlist operands_ld[] = {
+;  353	    {OPTYPE_A, OPTYPE_I,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x57, S_NONE}, 
+;  354	    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x7E, S_S1L0},
+;  355	    {OPTYPE_A, OPTYPE_MB,               false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x6E, S_NONE}, 
+;  356	    {OPTYPE_A, OPTYPE_INDIRECT_MMN,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3A, S_SISLIL}, 
+;  357	    {OPTYPE_A, OPTYPE_REG_R,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x5F, S_NONE},
+;  358	    {OPTYPE_A, OPTYPE_INDIRECT_BC,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x0A, S_S1L0},  
+;  359	    {OPTYPE_A, OPTYPE_INDIRECT_DE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x1A, S_S1L0},  
+;  360	    {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x7E, S_S1L0},  
+;  361	    {OPTYPE_HL, OPTYPE_I,               false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xD7, S_NONE}, 
+;  362	    {OPTYPE_INDIRECT_HL, OPTYPE_IX,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x3F, S_S1L0},  
+;  363	    {OPTYPE_INDIRECT_HL, OPTYPE_IY,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x3E, S_S1L0},  
+;  364	    {OPTYPE_INDIRECT_HL, OPTYPE_N,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x36, S_S1L0},  
+;  365	    {OPTYPE_INDIRECT_HL, OPTYPE_R,      false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x70, S_S1L0},  
+;  366	    {OPTYPE_INDIRECT_HL, OPTYPE_RR,     false, TRANSFORM_NONE,   TRANSFORM_P,    0xED, 0x0F, S_S1L0}, 
+;  367	    {OPTYPE_I, OPTYPE_HL,               false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xC7, S_NONE},  
+;  368	    {OPTYPE_I, OPTYPE_A,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x47, S_NONE},  
+;  369	    {OPTYPE_IR, OPTYPE_IR,               true, TRANSFORM_IR3,     TRANSFORM_IR0, 0x00, 0x64, S_NONE}, 
+;  370	    {OPTYPE_IR, OPTYPE_N,                true, TRANSFORM_IR3,     TRANSFORM_NONE,0x00, 0x26, S_NONE}, 
+;  371	    {OPTYPE_IR, OPTYPE_R_AEONLY,         true, TRANSFORM_IR3,     TRANSFORM_Z,   0x00, 0x60, S_NONE}, 
+;  372	    {OPTYPE_IX, OPTYPE_INDIRECT_HL,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x37, S_S1L0}, 
+;  373	    {OPTYPE_IY, OPTYPE_INDIRECT_HL,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x31, S_S1L0}, 
+;  374	    {OPTYPE_IX, OPTYPE_INDIRECT_IXd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x37, S_S1L0}, 
+;  375	    {OPTYPE_IY, OPTYPE_INDIRECT_IYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x37, S_S1L0}, 
+;  376	    {OPTYPE_IX, OPTYPE_INDIRECT_IYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x31, S_S1L0}, 
+;  377	    {OPTYPE_IY, OPTYPE_INDIRECT_IXd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x31, S_S1L0}, 
+;  378	    {OPTYPE_IXY, OPTYPE_MMN,             true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x21, S_SISLIL},  
+;  379	    {OPTYPE_IXY, OPTYPE_INDIRECT_MMN,    true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x2A, S_SISLIL},  
+;  380	    {OPTYPE_INDIRECT_IXd, OPTYPE_IX,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3F, S_S1L0},
+;  381	    {OPTYPE_INDIRECT_IYd, OPTYPE_IY,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3F, S_S1L0},
+;  382	    {OPTYPE_INDIRECT_IXd, OPTYPE_IY,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3E, S_S1L0},
+;  383	    {OPTYPE_INDIRECT_IYd, OPTYPE_IX,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3E, S_S1L0},
+;  384	    {OPTYPE_INDIRECT_IXYd, OPTYPE_N,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x36, S_S1L0},  
+;  385	    {OPTYPE_INDIRECT_IXYd, OPTYPE_R,     true, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x70, S_S1L0},  
+;  386	    {OPTYPE_INDIRECT_IXYd, OPTYPE_RR,    true, TRANSFORM_NONE,   TRANSFORM_P,    0x00, 0x0F, S_S1L0},  
+;  387	    {OPTYPE_MB, OPTYPE_A,               false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x6D, S_NONE}, 
+;  388	    {OPTYPE_INDIRECT_MMN, OPTYPE_A,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x32, S_SISLIL},
+;  389	    {OPTYPE_INDIRECT_MMN, OPTYPE_IXY,    true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x22, S_SISLIL}, 
+;  390	    {OPTYPE_INDIRECT_MMN, OPTYPE_HL,    false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x22, S_SISLIL},
+;  391	    {OPTYPE_INDIRECT_MMN, OPTYPE_RR,    false, TRANSFORM_NONE,   TRANSFORM_P,    0xED, 0x43, S_SISLIL},
+;  392	    {OPTYPE_INDIRECT_MMN, OPTYPE_SP,    false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x73, S_SISLIL},
+;  393	    {OPTYPE_REG_R, OPTYPE_A,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x4F, S_NONE},
+;  394	    {OPTYPE_R, OPTYPE_INDIRECT_HL,      false, TRANSFORM_Y,      TRANSFORM_NONE, 0x00, 0x46, S_S1L0},
+;  395	    {OPTYPE_R_AEONLY, OPTYPE_IR,         true, TRANSFORM_Y,      TRANSFORM_IR0,  0x00, 0x44, S_NONE},
+;  396	    {OPTYPE_R, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_Y,      TRANSFORM_NONE, 0x00, 0x46, S_S1L0},
+;  397	    {OPTYPE_R, OPTYPE_N,                false, TRANSFORM_Y,      TRANSFORM_NONE, 0x00, 0x06, S_NONE},
+;  398	    {OPTYPE_R, OPTYPE_R,                false, TRANSFORM_Y,      TRANSFORM_Z,    0x00, 0x40, S_NONE}, 
+;  399	    {OPTYPE_RR, OPTYPE_INDIRECT_HL,     false, TRANSFORM_P,      TRANSFORM_NONE, 0xED, 0x07, S_S1L0},
+;  400	    {OPTYPE_RR, OPTYPE_INDIRECT_IXYd,    true, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0x07, S_S1L0},
+;  401	    {OPTYPE_RR, OPTYPE_MMN,              true, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0x01, S_SISLIL},
+;  402	    {OPTYPE_HL, OPTYPE_INDIRECT_MMN,    false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x2A, S_SISLIL},
+;  403	    {OPTYPE_RR, OPTYPE_INDIRECT_MMN,    false, TRANSFORM_P,      TRANSFORM_NONE, 0xED, 0x4B, S_SISLIL},
+;  404	    {OPTYPE_INDIRECT_HL, OPTYPE_A,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x77, S_S1L0},
+;  405	    {OPTYPE_INDIRECT_RR, OPTYPE_A,      false, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0x02, S_S1L0},
+;  406	    {OPTYPE_SP, OPTYPE_HL,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF9, S_S1L0},
+;  407	    {OPTYPE_SP, OPTYPE_IXY,              true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF9, S_S1L0},
+;  408	    {OPTYPE_SP, OPTYPE_MMN,              true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x31, S_SISLIL},
+;  409	    {OPTYPE_SP, OPTYPE_INDIRECT_MMN,    false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7B, S_SISLIL},
+;  410	};
+;  411	operandlist operands_ldd[] = {
+;  412	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA8, S_S1L0},
+;  413	};
+;  414	operandlist operands_lddr[] = {
+;  415	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB8, S_S1L0},
+;  416	};
+;  417	operandlist operands_ldi[] = {
+;  418	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA0, S_S1L0},
+;  419	};
+;  420	operandlist operands_ldir[] = {
+;  421	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB0, S_S1L0},
+;  422	};
+;  423	operandlist operands_lea[] = {
+;  424	    {OPTYPE_IX, OPTYPE_IXd,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x32, S_S1L0},
+;  425	    {OPTYPE_IY, OPTYPE_IXd,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x55, S_S1L0},
+;  426	    {OPTYPE_IX, OPTYPE_IYd,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x54, S_S1L0},
+;  427	    {OPTYPE_IY, OPTYPE_IYd,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x33, S_S1L0},
+;  428	    {OPTYPE_RR, OPTYPE_IXd,             false, TRANSFORM_P,      TRANSFORM_NONE, 0xED, 0x02, S_S1L0},
+;  429	    {OPTYPE_RR, OPTYPE_IYd,             false, TRANSFORM_P,      TRANSFORM_NONE, 0xED, 0x03, S_S1L0},
+;  430	};
+;  431	operandlist operands_mlt[] = {
+;  432	    {OPTYPE_RR, OPTYPE_NONE,            false, TRANSFORM_P,      TRANSFORM_NONE, 0xED, 0x4C, S_NONE},
+;  433	    {OPTYPE_SP, OPTYPE_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7C, S_S1L0},
+;  434	};
+;  435	operandlist operands_neg[] = {
+;  436	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x44, S_NONE},
+;  437	};
+;  438	operandlist operands_nop[] = {
+;  439	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x00, S_NONE},
+;  440	};
+;  441	operandlist operands_or[] = {
+;  442	    {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_S1L0},
+;  443	    {OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xB4, S_NONE},
+;  444	    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_S1L0},
+;  445	    {OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF6, S_NONE},
+;  446	    {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xB0, S_NONE},
+;  447	    // same set, without A register
+;  448	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_S1L0},
+;  449	    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0xB4, S_NONE},
+;  450	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_S1L0},
+;  451	    {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF6, S_NONE},
+;  452	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xB0, S_NONE},
+;  453	};
+;  454	operandlist operands_otd2r[] = {
+;  455	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xBC, S_S1L0},
+;  456	};
+;  457	operandlist operands_otdm[] = {
+;  458	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x8B, S_S1L0},
+;  459	};
+;  460	operandlist operands_otdmr[] = {
+;  461	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x9B, S_S1L0},
+;  462	};
+;  463	operandlist operands_otdr[] = {
+;  464	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xBB, S_S1L0},
+;  465	};
+;  466	operandlist operands_otdrx[] = {
+;  467	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xCB, S_S1L0},
+;  468	};
+;  469	operandlist operands_oti2r[] = {
+;  470	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB4, S_S1L0},
+;  471	};
+;  472	operandlist operands_otim[] = {
+;  473	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x83, S_S1L0},
+;  474	};
+;  475	operandlist operands_otimr[] = {
+;  476	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x93, S_S1L0},
+;  477	};
+;  478	operandlist operands_otir[] = {
+;  479	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB3, S_S1L0},
+;  480	};
+;  481	operandlist operands_otirx[] = {
+;  482	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xC3, S_S1L0},
+;  483	};
+;  484	operandlist operands_out[] = {
+;  485	    {OPTYPE_INDIRECT_BC, OPTYPE_R,      false, TRANSFORM_NONE,   TRANSFORM_Y,    0xED, 0x41, S_NONE},
+;  486	    {OPTYPE_INDIRECT_C, OPTYPE_R,       false, TRANSFORM_NONE,   TRANSFORM_Y,    0xED, 0x41, S_NONE},
+;  487	    {OPTYPE_INDIRECT_N, OPTYPE_A,       false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xD3, S_NONE},
+;  488	}; 
+;  489	operandlist operands_out0[] = {
+;  490	    {OPTYPE_INDIRECT_N, OPTYPE_R,       false, TRANSFORM_NONE,   TRANSFORM_Y,    0xED, 0x01, S_NONE},
+;  491	};
+;  492	operandlist operands_outd[] = {
+;  493	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xAB, S_S1L0},
+;  494	};
+;  495	operandlist operands_outd2[] = {
+;  496	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xAC, S_S1L0},
+;  497	};
+;  498	operandlist operands_outi[] = {
+;  499	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA3, S_S1L0},
+;  500	};
+;  501	operandlist operands_outi2[] = {
+;  502	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA4, S_S1L0},
+;  503	};
+;  504	operandlist operands_pea[] = {
+;  505	    {OPTYPE_IXd, OPTYPE_NONE,           false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x65, S_S1L0},
+;  506	    {OPTYPE_IYd, OPTYPE_NONE,           false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x66, S_S1L0},
+;  507	};
+;  508	operandlist operands_pop[] = {
+;  509	    {OPTYPE_AF, OPTYPE_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF1, S_S1L0},
+;  510	    {OPTYPE_IXY, OPTYPE_NONE,            true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE1, S_S1L0},
+;  511	    {OPTYPE_RR, OPTYPE_NONE,            false, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0xC1, S_S1L0},
+;  512	};
+;  513	operandlist operands_push[] = {
+;  514	    {OPTYPE_AF, OPTYPE_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF5, S_S1L0},
+;  515	    {OPTYPE_IXY, OPTYPE_NONE,            true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE5, S_S1L0},
+;  516	    {OPTYPE_RR, OPTYPE_NONE,            false, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0xC5, S_S1L0},
+;  517	};
+;  518	operandlist operands_res[] = {
+;  519	    {OPTYPE_BIT, OPTYPE_INDIRECT_HL,    false, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0x86, S_S1L0},
+;  520	    {OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,   true, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0x86, S_S1L0},
+;  521	    {OPTYPE_BIT, OPTYPE_R,              false, TRANSFORM_BIT,    TRANSFORM_Z,    0xCB, 0x80, S_NONE},
+;  522	};
+;  523	operandlist operands_ret[] = {
+;  524	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xC9, S_LIL | S_LIS},
+;  525	    {OPTYPE_CC, OPTYPE_NONE,            false, TRANSFORM_CC,     TRANSFORM_NONE, 0x00, 0xC0, S_LIL | S_LIS},
+;  526	};
+;  527	operandlist operands_reti[] = {
+;  528	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x4D, S_LIL | S_LIS},
+;  529	};
+;  530	operandlist operands_retn[] = {
+;  531	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x45, S_LIL | S_LIS},
+;  532	};
+;  533	operandlist operands_rl[] = {
+;  534	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x16, S_S1L0},
+;  535	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x16, S_S1L0},
+;  536	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x10, S_NONE},
+;  537	};
+;  538	operandlist operands_rla[] = {
+;  539	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x17, S_NONE},
+;  540	};
+;  541	operandlist operands_rlc[] = {
+;  542	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x06, S_S1L0},
+;  543	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x06, S_S1L0},
+;  544	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,     TRANSFORM_NONE,  0xCB, 0x00, S_NONE},
+;  545	};
+;  546	operandlist operands_rlca[] = {
+;  547	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x07, S_NONE},
+;  548	};
+;  549	operandlist operands_rld[] = {
+;  550	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x6F, S_NONE},
+;  551	};
+;  552	operandlist operands_rr[] = {
+;  553	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x1E, S_S1L0},
+;  554	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x1E, S_S1L0},
+;  555	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x18, S_NONE},
+;  556	};
+;  557	operandlist operands_rra[] = {
+;  558	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x1F, S_NONE},
+;  559	};
+;  560	operandlist operands_rrc[] = {
+;  561	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x0E, S_S1L0},
+;  562	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x0E, S_S1L0},
+;  563	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x08, S_NONE},
+;  564	};
+;  565	operandlist operands_rrca[] = {
+;  566	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x0F, S_NONE},
+;  567	};
+;  568	operandlist operands_rrd[] = {
+;  569	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x67, S_NONE},
+;  570	};
+;  571	operandlist operands_rsmix[] = {
+;  572	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7E, S_NONE},
+;  573	};
+;  574	operandlist operands_rst[] = {
+;  575	    {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_N,      TRANSFORM_NONE, 0x00, 0xC7, S_S1L0},
+;  576	};
+;  577	operandlist operands_sbc[] = {
+;  578	    {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x9E, S_S1L0},
+;  579	    {OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x9C, S_NONE},
+;  580	    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x9E, S_S1L0},
+;  581	    {OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xDE, S_NONE},
+;  582	    {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x98, S_NONE},
+;  583	    {OPTYPE_HL, OPTYPE_RR,              false, TRANSFORM_NONE,   TRANSFORM_P,    0xED, 0x42, S_S1L0},
+;  584	    {OPTYPE_HL, OPTYPE_SP,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x72, S_S1L0},
+;  585	};
+;  586	operandlist operands_scf[] = {
+;  587	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x37, S_NONE},
+;  588	};
+;  589	operandlist operands_set[] = {
+;  590	    {OPTYPE_BIT, OPTYPE_INDIRECT_HL,    false, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0xC6, S_S1L0},
+;  591	    {OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,   true, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0xC6, S_S1L0},
+;  592	    {OPTYPE_BIT, OPTYPE_R,              false, TRANSFORM_BIT,    TRANSFORM_Z,    0xCB, 0xC0, S_NONE},
+;  593	};
+;  594	operandlist operands_sla[] = {
+;  595	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x26, S_S1L0},
+;  596	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x26, S_S1L0},
+;  597	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x20, S_NONE},
+;  598	};
+;  599	operandlist operands_slp[] = {
+;  600	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x76, S_NONE},
+;  601	};
+;  602	operandlist operands_sra[] = {
+;  603	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x2E, S_S1L0},
+;  604	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x2E, S_S1L0},
+;  605	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x28, S_NONE},
+;  606	};
+;  607	operandlist operands_srl[] = {
+;  608	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x3E, S_S1L0},
+;  609	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x3E, S_S1L0},
+;  610	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x38, S_NONE},
+;  611	};
+;  612	operandlist operands_stmix[] = {
+;  613	    {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7D, S_NONE},
+;  614	};
+;  615	operandlist operands_sub[] = {
+;  616	    {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x96, S_S1L0},
+;  617	    {OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x94, S_NONE},
+;  618	    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x96, S_S1L0},
+;  619	    {OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xD6, S_NONE},
+;  620	    {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x90, S_NONE},
+;  621	    // same set, without A register
+;  622	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,    false, TRANSFORM_NONE,   TRANSFORM_NONE,0x00, 0x96, S_S1L0},
+;  623	    {OPTYPE_IR, OPTYPE_NONE,              true, TRANSFORM_IR0,    TRANSFORM_NONE,0x00, 0x94, S_NONE},
+;  624	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,   true, TRANSFORM_NONE,   TRANSFORM_NONE,0x00, 0x96, S_S1L0},
+;  625	    {OPTYPE_N, OPTYPE_NONE,              false, TRANSFORM_NONE,   TRANSFORM_NONE,0x00, 0xD6, S_NONE},
+;  626	    {OPTYPE_R, OPTYPE_NONE,              false, TRANSFORM_Z,      TRANSFORM_NONE,0x00, 0x90, S_NONE},
+;  627	};
+;  628	operandlist operands_tst[] = {
+;  629	    {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x34, S_S1L0},
+;  630	    {OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x64, S_NONE},
+;  631	    {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Y,    0xED, 0x04, S_NONE},
+;  632	    // same set, without A register
+;  633	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x34, S_S1L0},
+;  634	    {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x64, S_NONE},
+;  635	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Y,      TRANSFORM_NONE, 0xED, 0x04, S_NONE},
+;  636	};
+;  637	operandlist operands_tstio[] = {
+;  638	    {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x74, S_NONE},
+;  639	};
+;  640	operandlist operands_xor[] = {
+;  641	    {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_S1L0},
+;  642	    {OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xAC, S_NONE},
+;  643	    {OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_S1L0},
+;  644	    {OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xEE, S_NONE},
+;  645	    {OPTYPE_A, OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xA8, S_NONE},
+;  646	    // same set, without A register
+;  647	    {OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_S1L0},
+;  648	    {OPTYPE_IR, OPTYPE_NONE,             true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0xAC, S_NONE},
+;  649	    {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_S1L0},
+;  650	    {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xEE, S_NONE},
+;  651	    {OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xA8, S_NONE},
+;  652	};
+;  653	
+;  654	
+;  655	// this table needs to be sorted on name
+;  656	instruction instructions[] = {
+	SEGMENT CODE
+;  657	    {"adc",      EZ80, 0, sizeof(operands_adc)/sizeof(operandlist), operands_adc},
+;  658	    {"add",      EZ80, 0, sizeof(operands_add)/sizeof(operandlist), operands_add},
+;  659	    {"align",    ASSEMBLER, ASM_ALIGN, 0, NULL, ASM_ARG_SINGLE},
+;  660	    {"and",      EZ80, 0, sizeof(operands_and)/sizeof(operandlist), operands_and},
+;  661	    {"ascii",    ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
+;  662	    {"asciz",    ASSEMBLER, ASM_ASCIZ, 0, NULL, ASM_ARG_LIST},
+;  663	    {"assume",   ASSEMBLER, ASM_ADL, 0, NULL, ASM_ARG_KEYVAL},
+;  664	    {"bit",      EZ80, 0, sizeof(operands_bit)/sizeof(operandlist), operands_bit},
+;  665	    {"blkb",     ASSEMBLER, ASM_BLKB, 0, NULL, ASM_ARG_LIST},
+;  666	    {"blkl",     ASSEMBLER, ASM_BLKL, 0, NULL, ASM_ARG_LIST},
+;  667	    {"blkp",     ASSEMBLER, ASM_BLKP, 0, NULL, ASM_ARG_LIST},
+;  668	    {"blkw",     ASSEMBLER, ASM_BLKW, 0, NULL, ASM_ARG_LIST},
+;  669	    {"byte",     ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
+;  670	    {"call",     EZ80, 0, sizeof(operands_call)/sizeof(operandlist), operands_call},
+;  671	    {"ccf",      EZ80, 0, sizeof(operands_ccf)/sizeof(operandlist), operands_ccf},
+;  672	    {"cp",       EZ80, 0, sizeof(operands_cp)/sizeof(operandlist), operands_cp},
+;  673	    {"cpd",      EZ80, 0, sizeof(operands_cpd)/sizeof(operandlist), operands_cpd},
+;  674	    {"cpdr",     EZ80, 0, sizeof(operands_cpdr)/sizeof(operandlist), operands_cpdr},
+;  675	    {"cpi",      EZ80, 0, sizeof(operands_cpi)/sizeof(operandlist), operands_cpi},
+;  676	    {"cpir",     EZ80, 0, sizeof(operands_cpir)/sizeof(operandlist), operands_cpir},
+;  677	    {"cpl",      EZ80, 0, sizeof(operands_cpl)/sizeof(operandlist), operands_cpl},
+;  678	    {"daa",      EZ80, 0, sizeof(operands_daa)/sizeof(operandlist), operands_daa},
+;  679	    {"db",       ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
+;  680	    {"dec",      EZ80, 0, sizeof(operands_dec)/sizeof(operandlist), operands_dec},
+;  681	    {"defb",     ASSEMBLER, ASM_DB, 0, NULL, ASM_ARG_LIST},
+;  682	    {"defs",     ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
+;  683	    {"defw",     ASSEMBLER, ASM_DW, 0, NULL, ASM_ARG_LIST},
+;  684	    {"di",       EZ80, 0, sizeof(operands_di)/sizeof(operandlist), operands_di},
+;  685	    {"djnz",     EZ80, 0, sizeof(operands_djnz)/sizeof(operandlist), operands_djnz},
+;  686	    {"dw24",     ASSEMBLER, ASM_DW24, 0, NULL, ASM_ARG_LIST},
+;  687	    {"ds",       ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
+;  688	    {"dw",       ASSEMBLER, ASM_DW, 0, NULL, ASM_ARG_LIST},
+;  689	    {"ei",       EZ80, 0, sizeof(operands_ei)/sizeof(operandlist), operands_ei},
+;  690	    {"equ",      ASSEMBLER, ASM_EQU, 0, NULL, ASM_ARG_SINGLE},
+;  691	    {"ex",       EZ80, 0, sizeof(operands_ex)/sizeof(operandlist), operands_ex},
+;  692	    {"exx",      EZ80, 0, sizeof(operands_exx)/sizeof(operandlist), operands_exx},
+;  693	    {"halt",     EZ80, 0, sizeof(operands_halt)/sizeof(operandlist), operands_halt},
+;  694	    {"im",       EZ80, 0, sizeof(operands_im)/sizeof(operandlist), operands_im},
+;  695	    {"in",       EZ80, 0, sizeof(operands_in)/sizeof(operandlist), operands_in},
+;  696	    {"in0",      EZ80, 0, sizeof(operands_in0)/sizeof(operandlist), operands_in0},
+;  697	    {"inc",      EZ80, 0, sizeof(operands_inc)/sizeof(operandlist), operands_inc},
+;  698	    {"include",  ASSEMBLER, ASM_INCLUDE, 0, NULL, ASM_ARG_SINGLE},
+;  699	    {"ind",      EZ80, 0, sizeof(operands_ind)/sizeof(operandlist), operands_ind},
+;  700	    {"ind2",     EZ80, 0, sizeof(operands_ind2)/sizeof(operandlist), operands_ind2},
+;  701	    {"ind2r",    EZ80, 0, sizeof(operands_ind2r)/sizeof(operandlist), operands_ind2r},
+;  702	    {"indm",     EZ80, 0, sizeof(operands_indm)/sizeof(operandlist), operands_indm},
+;  703	    {"indmr",    EZ80, 0, sizeof(operands_indmr)/sizeof(operandlist), operands_indmr},
+;  704	    {"indr",     EZ80, 0, sizeof(operands_indr)/sizeof(operandlist), operands_indr},
+;  705	    {"indrx",    EZ80, 0, sizeof(operands_indrx)/sizeof(operandlist), operands_indrx},
+;  706	    {"ini",      EZ80, 0, sizeof(operands_ini)/sizeof(operandlist), operands_ini},
+;  707	    {"ini2",     EZ80, 0, sizeof(operands_ini2)/sizeof(operandlist), operands_ini2},
+;  708	    {"ini2r",    EZ80, 0, sizeof(operands_ini2r)/sizeof(operandlist), operands_ini2r},
+;  709	    {"inim",     EZ80, 0, sizeof(operands_inim)/sizeof(operandlist), operands_inim},
+;  710	    {"inimr",    EZ80, 0, sizeof(operands_inimr)/sizeof(operandlist), operands_inimr},
+;  711	    {"inir",     EZ80, 0, sizeof(operands_inir)/sizeof(operandlist), operands_inir},
+;  712	    {"inirx",    EZ80, 0, sizeof(operands_inirx)/sizeof(operandlist), operands_inirx},
+;  713	    {"jp",       EZ80, 0, sizeof(operands_jp)/sizeof(operandlist), operands_jp},
+;  714	    {"jr",       EZ80, 0, sizeof(operands_jr)/sizeof(operandlist), operands_jr},
+;  715	    {"ld",       EZ80, 0, sizeof(operands_ld)/sizeof(operandlist), operands_ld},
+;  716	    {"ldd",      EZ80, 0, sizeof(operands_ldd)/sizeof(operandlist), operands_ldd},
+;  717	    {"lddr",     EZ80, 0, sizeof(operands_lddr)/sizeof(operandlist), operands_lddr},
+;  718	    {"ldi",      EZ80, 0, sizeof(operands_ldi)/sizeof(operandlist), operands_ldi},
+;  719	    {"ldir",     EZ80, 0, sizeof(operands_ldir)/sizeof(operandlist), operands_ldir},
+;  720	    {"lea",      EZ80, 0, sizeof(operands_lea)/sizeof(operandlist), operands_lea},
+;  721	    {"mlt",      EZ80, 0, sizeof(operands_mlt)/sizeof(operandlist), operands_mlt},
+;  722	    {"neg",      EZ80, 0, sizeof(operands_neg)/sizeof(operandlist), operands_neg},
+;  723	    {"nop",      EZ80, 0, sizeof(operands_nop)/sizeof(operandlist), operands_nop},
+;  724	    {"or",       EZ80, 0, sizeof(operands_or)/sizeof(operandlist), operands_or},
+;  725	    {"org",     ASSEMBLER, ASM_ORG, 0, NULL, ASM_ARG_SINGLE},
+;  726	    {"otd2r",    EZ80, 0, sizeof(operands_otd2r)/sizeof(operandlist), operands_otd2r},
+;  727	    {"otdm",     EZ80, 0, sizeof(operands_otdm)/sizeof(operandlist), operands_otdm},
+;  728	    {"otdmr",    EZ80, 0, sizeof(operands_otdmr)/sizeof(operandlist), operands_otdmr},
+;  729	    {"otdr",     EZ80, 0, sizeof(operands_otdr)/sizeof(operandlist), operands_otdr},
+;  730	    {"otdrx",    EZ80, 0, sizeof(operands_otdrx)/sizeof(operandlist), operands_otdrx},
+;  731	    {"oti2r",    EZ80, 0, sizeof(operands_oti2r)/sizeof(operandlist), operands_oti2r},
+;  732	    {"otim",     EZ80, 0, sizeof(operands_otim)/sizeof(operandlist), operands_otim},
+;  733	    {"otimr",    EZ80, 0, sizeof(operands_otimr)/sizeof(operandlist), operands_otimr},
+;  734	    {"otir",     EZ80, 0, sizeof(operands_otir)/sizeof(operandlist), operands_otir},
+;  735	    {"otirx",    EZ80, 0, sizeof(operands_otirx)/sizeof(operandlist), operands_otirx},
+;  736	    {"out",      EZ80, 0, sizeof(operands_out)/sizeof(operandlist), operands_out},
+;  737	    {"out0",     EZ80, 0, sizeof(operands_out0)/sizeof(operandlist), operands_out0},
+;  738	    {"outd",     EZ80, 0, sizeof(operands_outd)/sizeof(operandlist), operands_outd},
+;  739	    {"outd2",    EZ80, 0, sizeof(operands_outd2)/sizeof(operandlist), operands_outd2},
+;  740	    {"outi",     EZ80, 0, sizeof(operands_outi)/sizeof(operandlist), operands_outi},
+;  741	    {"outi2",    EZ80, 0, sizeof(operands_outi2)/sizeof(operandlist), operands_outi2},
+;  742	    {"pea",      EZ80, 0, sizeof(operands_pea)/sizeof(operandlist), operands_pea},
+;  743	    {"pop",      EZ80, 0, sizeof(operands_pop)/sizeof(operandlist), operands_pop},
+;  744	    {"push",     EZ80, 0, sizeof(operands_push)/sizeof(operandlist), operands_push},
+;  745	    {"res",      EZ80, 0, sizeof(operands_res)/sizeof(operandlist), operands_res},
+;  746	    {"ret",      EZ80, 0, sizeof(operands_ret)/sizeof(operandlist), operands_ret},
+;  747	    {"reti",     EZ80, 0, sizeof(operands_reti)/sizeof(operandlist), operands_reti},
+;  748	    {"retn",     EZ80, 0, sizeof(operands_retn)/sizeof(operandlist), operands_retn},
+;  749	    {"rl",       EZ80, 0, sizeof(operands_rl)/sizeof(operandlist), operands_rl},
+;  750	    {"rla",      EZ80, 0, sizeof(operands_rla)/sizeof(operandlist), operands_rla},
+;  751	    {"rlc",      EZ80, 0, sizeof(operands_rlc)/sizeof(operandlist), operands_rlc},
+;  752	    {"rlca",     EZ80, 0, sizeof(operands_rlca)/sizeof(operandlist), operands_rlca},
+;  753	    {"rld",      EZ80, 0, sizeof(operands_rld)/sizeof(operandlist), operands_rld},
+;  754	    {"rr",       EZ80, 0, sizeof(operands_rr)/sizeof(operandlist), operands_rr},
+;  755	    {"rra",      EZ80, 0, sizeof(operands_rra)/sizeof(operandlist), operands_rra},
+;  756	    {"rrc",      EZ80, 0, sizeof(operands_rrc)/sizeof(operandlist), operands_rrc},
+;  757	    {"rrca",     EZ80, 0, sizeof(operands_rrca)/sizeof(operandlist), operands_rrca},
+;  758	    {"rrd",      EZ80, 0, sizeof(operands_rrd)/sizeof(operandlist), operands_rrd},
+;  759	    {"rsmix",    EZ80, 0, sizeof(operands_rsmix)/sizeof(operandlist), operands_rsmix},
+;  760	    {"rst",      EZ80, 0, sizeof(operands_rst)/sizeof(operandlist), operands_rst},
+;  761	    {"sbc",      EZ80, 0, sizeof(operands_sbc)/sizeof(operandlist), operands_sbc},
+;  762	    {"scf",      EZ80, 0, sizeof(operands_scf)/sizeof(operandlist), operands_scf},
+;  763	    {"set",      EZ80, 0, sizeof(operands_set)/sizeof(operandlist), operands_set},
+;  764	    {"sla",      EZ80, 0, sizeof(operands_sla)/sizeof(operandlist), operands_sla},
+;  765	    {"slp",      EZ80, 0, sizeof(operands_slp)/sizeof(operandlist), operands_slp},
+;  766	    {"sra",      EZ80, 0, sizeof(operands_sra)/sizeof(operandlist), operands_sra},
+;  767	    {"srl",      EZ80, 0, sizeof(operands_srl)/sizeof(operandlist), operands_srl},
+;  768	    {"stmix",    EZ80, 0, sizeof(operands_stmix)/sizeof(operandlist), operands_stmix},
+;  769	    {"sub",      EZ80, 0, sizeof(operands_sub)/sizeof(operandlist), operands_sub},
+;  770	    {"tst",      EZ80, 0, sizeof(operands_tst)/sizeof(operandlist), operands_tst},
+;  771	    {"tstio",    EZ80, 0, sizeof(operands_tstio)/sizeof(operandlist), operands_tstio},
+;  772	    {"xor",      EZ80, 0, sizeof(operands_xor)/sizeof(operandlist), operands_xor}
+;  773	};
+;  774	
+;  775	// Binary search of instruction table
+;  776	// Requires a pre-sorted table
+;  777	instruction * instruction_table_lookup(char *key){
+_instruction_table_lookup:
+.DEFINE "_instruction_table_lookup"
+
+.VALUE _instruction_table_lookup
+
+.CLASS 2
+
+.TAG "NONAME6"
+
+.TYPE 328
+
+.ENDEF
+
+.BEGFUNC "instruction_table_lookup",777,"_instruction_table_lookup"
+
+.LINE 777
+
+.DEFINE "key"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "lim"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 4
+
+.ENDEF
+
+.DEFINE "p"
+
+.CLASS 65
+
+.VALUE -6
+
+.TAG "NONAME6"
+
+.TYPE 40
+
+.ENDEF
+
+.DEFINE "cmp"
+
+.CLASS 65
+
+.VALUE -9
+
+.TYPE 4
+
+.ENDEF
+
+.DEFINE "base"
+
+.CLASS 65
+
+.VALUE -12
+
+.TAG "NONAME6"
+
+.TYPE 40
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+%FFFFFFF4
+	LD	SP,HL
+;  778		instruction *base = instructions;
+.LINE 778
+
+	LD	BC,_instructions
+	LD	(IX+%FFFFFFF4),BC
+;  779		int lim, cmp;
+;  780		instruction *p;
+;  781	
+;  782		for (lim = sizeof(instructions)/sizeof(instruction); lim != 0; lim >>= 1) {
+.LINE 782
+
+	LD	BC,116
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_219
+L_217:
+;  783			p = base + (lim >> 1);
+.LINE 783
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,%1
+	CALL	__ishrs_b
+	LD	A,%11
+	CALL	__imul_b
+	LD	BC,(IX+%FFFFFFF4)
+	ADD	HL,BC
+	LD	(IX+%FFFFFFFA),HL
+;  784			cmp = strcasecmp(key,p->name);
+.LINE 784
+
+	LD	IY,(IX+%FFFFFFFA)
+	PEA	IY+%0
+	LD	BC,(IX+%6)
+	PUSH	BC
+	CALL	_strcasecmp
+	POP	BC
+	POP	BC
+	LD	(IX+%FFFFFFF7),HL
+;  785			if (cmp == 0)
+.LINE 785
+
+	CALL	__icmpzero
+	JR	NZ,L_216
+;  786				return p;
+.LINE 786
+
+	LD	HL,(IX+%FFFFFFFA)
+	JR	L_221
+L_216:
+;  787			if (cmp > 0) {
+.LINE 787
+
+	LD	BC,(IX+%FFFFFFF7)
+	OR	A,A
+	SBC	HL,HL
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	P,L_218
+;  788				base = p + 1;
+.LINE 788
+
+	LD	IY,(IX+%FFFFFFFA)
+	LEA	IY,IY+%11
+	LD	(IX+%FFFFFFF4),IY
+;  789				lim--;
+.LINE 789
+
+	LD	BC,(IX+%FFFFFFFD)
+	DEC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  790			}
+;  791		}
+L_218:
+.LINE 791
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,%1
+	CALL	__ishrs_b
+	LD	(IX+%FFFFFFFD),HL
+L_219:
+	LD	HL,(IX+%FFFFFFFD)
+	CALL	__icmpzero
+	JR	NZ,L_217
+;  792		return (NULL);
+.LINE 792
+
+	OR	A,A
+	SBC	HL,HL
+;  793	}
+L_221:
+.LINE 793
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _instruction_table_lookup ***************************
+;Name                         Addr/Register   Size   Type
+;_strcasecmp                         IMPORT  -----   function
+;_instructions                       STATIC   1972   variable
+;base                                 IX-12      3   variable
+;cmp                                   IX-9      3   variable
+;p                                     IX-6      3   variable
+;lim                                   IX-3      3   variable
+;key                                   IX+6      3   parameter
+
+
+; Stack Frame Size: 21 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "instruction_table_lookup",793,"_instruction_table_lookup"
+	XREF _strcasecmp:ROM
+	XREF __iand:ROM
+	XREF __setflag:ROM
+	XREF __icmpzero:ROM
+	XREF __imul_b:ROM
+	XREF __ishrs_b:ROM
+	XDEF _instruction_table_lookup
+	XDEF _instructions
+	XDEF _operands_xor
+	XDEF _operands_tstio
+	XDEF _operands_tst
+	XDEF _operands_sub
+	XDEF _operands_stmix
+	XDEF _operands_srl
+	XDEF _operands_sra
+	XDEF _operands_slp
+	XDEF _operands_sla
+	XDEF _operands_set
+	XDEF _operands_scf
+	XDEF _operands_sbc
+	XDEF _operands_rst
+	XDEF _operands_rsmix
+	XDEF _operands_rrd
+	XDEF _operands_rrca
+	XDEF _operands_rrc
+	XDEF _operands_rra
+	XDEF _operands_rr
+	XDEF _operands_rld
+	XDEF _operands_rlca
+	XDEF _operands_rlc
+	XDEF _operands_rla
+	XDEF _operands_rl
+	XDEF _operands_retn
+	XDEF _operands_reti
+	XDEF _operands_ret
+	XDEF _operands_res
+	XDEF _operands_push
+	XDEF _operands_pop
+	XDEF _operands_pea
+	XDEF _operands_outi2
+	XDEF _operands_outi
+	XDEF _operands_outd2
+	XDEF _operands_outd
+	XDEF _operands_out0
+	XDEF _operands_out
+	XDEF _operands_otirx
+	XDEF _operands_otir
+	XDEF _operands_otimr
+	XDEF _operands_otim
+	XDEF _operands_oti2r
+	XDEF _operands_otdrx
+	XDEF _operands_otdr
+	XDEF _operands_otdmr
+	XDEF _operands_otdm
+	XDEF _operands_otd2r
+	XDEF _operands_or
+	XDEF _operands_nop
+	XDEF _operands_neg
+	XDEF _operands_mlt
+	XDEF _operands_lea
+	XDEF _operands_ldir
+	XDEF _operands_ldi
+	XDEF _operands_lddr
+	XDEF _operands_ldd
+	XDEF _operands_ld
+	XDEF _operands_jr
+	XDEF _operands_jp
+	XDEF _operands_inirx
+	XDEF _operands_inir
+	XDEF _operands_inimr
+	XDEF _operands_inim
+	XDEF _operands_ini2r
+	XDEF _operands_ini2
+	XDEF _operands_ini
+	XDEF _operands_indrx
+	XDEF _operands_indr
+	XDEF _operands_indmr
+	XDEF _operands_indm
+	XDEF _operands_ind2r
+	XDEF _operands_ind2
+	XDEF _operands_ind
+	XDEF _operands_inc
+	XDEF _operands_in0
+	XDEF _operands_in
+	XDEF _operands_im
+	XDEF _operands_halt
+	XDEF _operands_exx
+	XDEF _operands_ex
+	XDEF _operands_ei
+	XDEF _operands_djnz
+	XDEF _operands_di
+	XDEF _operands_dec
+	XDEF _operands_daa
+	XDEF _operands_cpl
+	XDEF _operands_cpir
+	XDEF _operands_cpi
+	XDEF _operands_cpdr
+	XDEF _operands_cpd
+	XDEF _operands_cp
+	XDEF _operands_ccf
+	XDEF _operands_call
+	XDEF _operands_bit
+	XDEF _operands_and
+	XDEF _operands_add
+	XDEF _operands_adc
+	XDEF _permittype_matchlist
+	XDEF _raeonly_match
+	XDEF _indirect_iyd_match
+	XDEF _indirect_ixd_match
+	XDEF _iyd_match
+	XDEF _ixd_match
+	XDEF _iy_match
+	XDEF _ix_match
+	XDEF _indirect_de_match
+	XDEF _cca_match
+	XDEF _indirect_ixy_match
+	XDEF _indirect_c_match
+	XDEF _indirect_bc_match
+	XDEF _indirect_n_match
+	XDEF _nselect_match
+	XDEF _de_match
+	XDEF _af_match
+	XDEF _b_match
+	XDEF _i_match
+	XDEF _mb_match
+	XDEF _reg_r_match
+	XDEF _r_match
+	XDEF _indirect_sp_match
+	XDEF _sp_match
+	XDEF _rxy_match
+	XDEF _indirect_rr_match
+	XDEF _rr_match
+	XDEF _indirect_hl_match
+	XDEF _hl_match
+	XDEF _a_match
+	XDEF _n_match
+	XDEF _indirect_mmn_match
+	XDEF _mmn_match
+	XDEF _indirect_ixyd_match
+	XDEF _ixyd_match
+	XDEF _ixy_match
+	XDEF _ir_match
+	XDEF _cc_match
+	XDEF _none_match
+	END

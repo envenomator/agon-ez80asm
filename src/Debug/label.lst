@@ -1,0 +1,3045 @@
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED28-Feb-23     21:42:25     page:   1
+
+
+PC     Object              I  Line    Source 
+                           A     1    ; Zilog eZ80 ANSI C Compiler Release 3.4
+                           A     2    ; -nomodsect -optsize -noreduceopt -nopadbranch
+                           A     3    ; -peephole -globalopt -localcse -const=ROM 
+                           A     4    	FILE	"..\label.c"
+                           A     5    	.assume ADL=1
+                           A     6    .DEBUG "C"
+                           A     7    	SEGMENT CODE
+                           A     8    .BEGREC "fmt_type",19
+                           A     9    .DEFINE "status"
+                           A    10    .VALUE 0
+                           A    11    .CLASS 8
+                           A    12    .TYPE 12
+                           A    13    .ENDEF
+                           A    14    .DEFINE "flags"
+                           A    15    .VALUE 1
+                           A    16    .CLASS 8
+                           A    17    .TYPE 12
+                           A    18    .ENDEF
+                           A    19    .DEFINE "size"
+                           A    20    .VALUE 2
+                           A    21    .CLASS 8
+                           A    22    .TYPE 2
+                           A    23    .ENDEF
+                           A    24    .DEFINE "chr"
+                           A    25    .VALUE 3
+                           A    26    .CLASS 8
+                           A    27    .TYPE 2
+                           A    28    .ENDEF
+                           A    29    .DEFINE "type"
+                           A    30    .VALUE 4
+                           A    31    .CLASS 8
+                           A    32    .TYPE 2
+                           A    33    .ENDEF
+                           A    34    .DEFINE "field_width"
+                           A    35    .VALUE 5
+                           A    36    .CLASS 8
+                           A    37    .TYPE 2
+                           A    38    .ENDEF
+                           A    39    .DEFINE "precision"
+                           A    40    .VALUE 6
+                           A    41    .CLASS 8
+                           A    42    .TYPE 2
+                           A    43    .ENDEF
+                           A    44    .DEFINE "set_begin"
+                           A    45    .VALUE 7
+                           A    46    .CLASS 8
+                           A    47    .TYPE 34
+                           A    48    .ENDEF
+                           A    49    .DEFINE "set_end"
+                           A    50    .VALUE 10
+                           A    51    .CLASS 8
+                           A    52    .TYPE 34
+                           A    53    .ENDEF
+                           A    54    .DEFINE "pad_whole"
+                           A    55    .VALUE 13
+                           A    56    .CLASS 8
+                           A    57    .TYPE 12
+                           A    58    .ENDEF
+                           A    59    .DEFINE "pad_pre_fract"
+                           A    60    .VALUE 14
+                           A    61    .CLASS 8
+                           A    62    .TYPE 12
+                           A    63    .ENDEF
+                           A    64    .DEFINE "pad_post_fract"
+                           A    65    .VALUE 15
+                           A    66    .CLASS 8
+                           A    67    .TYPE 12
+                           A    68    .ENDEF
+                           A    69    .DEFINE "pad_at"
+                           A    70    .VALUE 16
+                           A    71    .CLASS 8
+                           A    72    .TYPE 34
+                           A    73    .ENDEF
+                           A    74    .ENDREC "fmt_type"
+                           A    75    .BEGREC "flt_info",12
+                           A    76    .DEFINE "flags"
+                           A    77    .VALUE 0
+                           A    78    .CLASS 8
+                           A    79    .TYPE 12
+                           A    80    .ENDEF
+                           A    81    .DEFINE "exp"
+                           A    82    .VALUE 1
+                           A    83    .CLASS 8
+                           A    84    .TYPE 2
+                           A    85    .ENDEF
+                           A    86    .DEFINE "digits"
+                           A    87    .VALUE 2
+                           A    88    .CLASS 8
+                           A    89    .DIM 10
+                           A    90    .TYPE 108
+                           A    91    .ENDEF
+                           A    92    .ENDREC "flt_info"
+                           A    93    .BEGREC "NONAME0",7
+                           A    94    .DEFINE "name"
+                           A    95    .VALUE 0
+                           A    96    .CLASS 8
+                           A    97    .TYPE 34
+                           A    98    .ENDEF
+                           A    99    .DEFINE "address"
+                           A   100    .VALUE 3
+                           A   101    .CLASS 8
+                           A   102    .TYPE 5
+                           A   103    .ENDEF
+                           A   104    .ENDREC "NONAME0"
+                           A   105    .BEGREC "NONAME1",5
+                           A   106    .DEFINE "defined"
+                           A   107    .VALUE 0
+                           A   108    .CLASS 8
+                           A   109    .TYPE 12
+                           A   110    .ENDEF
+                           A   111    .DEFINE "address"
+                           A   112    .VALUE 1
+                           A   113    .CLASS 8
+                           A   114    .TYPE 5
+                           A   115    .ENDEF
+                           A   116    .ENDREC "NONAME1"
+                           A   117    .BEGREC "NONAME2",6
+                           A   118    .DEFINE "quot"
+                           A   119    .VALUE 0
+                           A   120    .CLASS 8
+                           A   121    .TYPE 4
+                           A   122    .ENDEF
+                           A   123    .DEFINE "rem"
+                           A   124    .VALUE 3
+                           A   125    .CLASS 8
+                           A   126    .TYPE 4
+                           A   127    .ENDEF
+                           A   128    .ENDREC "NONAME2"
+                           A   129    .BEGREC "NONAME3",8
+                           A   130    .DEFINE "quot"
+                           A   131    .VALUE 0
+                           A   132    .CLASS 8
+                           A   133    .TYPE 5
+                           A   134    .ENDEF
+                           A   135    .DEFINE "rem"
+                           A   136    .VALUE 4
+                           A   137    .CLASS 8
+                           A   138    .TYPE 5
+                           A   139    .ENDEF
+                           A   140    .ENDREC "NONAME3"
+                           A   141    .BEGREC "header",6
+                           A   142    .DEFINE "s"
+                           A   143    .VALUE 0
+                           A   144    .CLASS 11
+                           A   145    .TAG "NONAME4"
+                           A   146    .TYPE 8
+                           A   147    .ENDEF
+                           A   148    .DEFINE "x"
+                           A   149    .VALUE 0
+                           A   150    .CLASS 11
+                           A   151    .TYPE 2
+                           A   152    .ENDEF
+                           A   153    .ENDREC "header"
+                           A   154    .BEGREC "NONAME4",6
+                           A   155    .DEFINE "ptr"
+                           A   156    .VALUE 0
+                           A   157    .CLASS 8
+                           A   158    .TAG "header"
+                           A   159    .TYPE 40
+                           A   160    .ENDEF
+                           A   161    .DEFINE "size"
+                           A   162    .VALUE 3
+                           A   163    .CLASS 8
+                           A   164    .TYPE 14
+                           A   165    .ENDEF
+                           A   166    .ENDREC "NONAME4"
+                           A   167    .BEGREC "NONAME5",261
+                           A   168    .DEFINE "start"
+                           A   169    .VALUE 0
+                           A   170    .CLASS 8
+                           A   171    .DIM 256
+                           A   172    .TYPE 98
+                           A   173    .ENDEF
+                           A   174    .DEFINE "length"
+                           A   175    .VALUE 256
+                           A   176    .CLASS 8
+                           A   177    .TYPE 12
+                           A   178    .ENDEF
+                           A   179    .DEFINE "next"
+                           A   180    .VALUE 257
+                           A   181    .CLASS 8
+                           A   182    .TYPE 34
+                           A   183    .ENDEF
+                           A   184    .DEFINE "terminator"
+                           A   185    .VALUE 260
+                           A   186    .CLASS 8
+                           A   187    .TYPE 2
+                           A   188    .ENDEF
+                           A   189    .ENDREC "NONAME5"
+                           A   190    .BEGREC "NONAME6",16
+                           A   191    .DEFINE "reg"
+                           A   192    .VALUE 0
+                           A   193    .CLASS 8
+                           A   194    .TYPE 4
+                           A   195    .ENDEF
+                           A   196    .DEFINE "reg_index"
+                           A   197    .VALUE 3
+                           A   198    .CLASS 8
+                           A   199    .TYPE 12
+                           A   200    .ENDEF
+                           A   201    .DEFINE "indirect"
+                           A   202    .VALUE 4
+                           A   203    .CLASS 8
+                           A   204    .TYPE 12
+                           A   205    .ENDEF
+                           A   206    .DEFINE "cc"
+                           A   207    .VALUE 5
+                           A   208    .CLASS 8
+                           A   209    .TYPE 12
+                           A   210    .ENDEF
+                           A   211    .DEFINE "cc_index"
+                           A   212    .VALUE 6
+                           A   213    .CLASS 8
+                           A   214    .TYPE 12
+                           A   215    .ENDEF
+                           A   216    .DEFINE "displacement"
+                           A   217    .VALUE 7
+                           A   218    .CLASS 8
+                           A   219    .TYPE 3
+                           A   220    .ENDEF
+                           A   221    .DEFINE "displacement_provided"
+                           A   222    .VALUE 9
+                           A   223    .CLASS 8
+                           A   224    .TYPE 12
+                           A   225    .ENDEF
+                           A   226    .DEFINE "immediate_provided"
+                           A   227    .VALUE 10
+                           A   228    .CLASS 8
+                           A   229    .TYPE 12
+                           A   230    .ENDEF
+                           A   231    .DEFINE "immediate"
+                           A   232    .VALUE 11
+                           A   233    .CLASS 8
+                           A   234    .TYPE 5
+                           A   235    .ENDEF
+                           A   236    .DEFINE "wasLabel"
+                           A   237    .VALUE 15
+                           A   238    .CLASS 8
+                           A   239    .TYPE 12
+                           A   240    .ENDEF
+                           A   241    .ENDREC "NONAME6"
+                           A   242    .BEGREC "NONAME7",4
+                           A   243    .DEFINE "suffix"
+                           A   244    .VALUE 0
+                           A   245    .CLASS 8
+                           A   246    .TYPE 12
+                           A   247    .ENDEF
+                           A   248    .DEFINE "prefix1"
+                           A   249    .VALUE 1
+                           A   250    .CLASS 8
+                           A   251    .TYPE 12
+                           A   252    .ENDEF
+                           A   253    .DEFINE "prefix2"
+                           A   254    .VALUE 2
+                           A   255    .CLASS 8
+                           A   256    .TYPE 12
+                           A   257    .ENDEF
+                           A   258    .DEFINE "opcode"
+                           A   259    .VALUE 3
+                           A   260    .CLASS 8
+                           A   261    .TYPE 12
+                           A   262    .ENDEF
+                           A   263    .ENDREC "NONAME7"
+                           A   264    .BEGREC "NONAME8",16
+                           A   265    .DEFINE "operandA"
+                           A   266    .VALUE 0
+                           A   267    .CLASS 8
+                           A   268    .TYPE 4
+                           A   269    .ENDEF
+                           A   270    .DEFINE "operandB"
+                           A   271    .VALUE 3
+                           A   272    .CLASS 8
+                           A   273    .TYPE 4
+                           A   274    .ENDEF
+                           A   275    .DEFINE "ddfdpermitted"
+                           A   276    .VALUE 6
+                           A   277    .CLASS 8
+                           A   278    .TYPE 12
+                           A   279    .ENDEF
+                           A   280    .DEFINE "transformA"
+                           A   281    .VALUE 7
+                           A   282    .CLASS 8
+                           A   283    .TYPE 4
+                           A   284    .ENDEF
+                           A   285    .DEFINE "transformB"
+                           A   286    .VALUE 10
+                           A   287    .CLASS 8
+                           A   288    .TYPE 4
+                           A   289    .ENDEF
+                           A   290    .DEFINE "prefix"
+                           A   291    .VALUE 13
+                           A   292    .CLASS 8
+                           A   293    .TYPE 12
+                           A   294    .ENDEF
+                           A   295    .DEFINE "opcode"
+                           A   296    .VALUE 14
+                           A   297    .CLASS 8
+                           A   298    .TYPE 12
+                           A   299    .ENDEF
+                           A   300    .DEFINE "adl"
+                           A   301    .VALUE 15
+                           A   302    .CLASS 8
+                           A   303    .TYPE 12
+                           A   304    .ENDEF
+                           A   305    .ENDREC "NONAME8"
+                           A   306    .BEGREC "NONAME9",17
+                           A   307    .DEFINE "name"
+                           A   308    .VALUE 0
+                           A   309    .CLASS 8
+                           A   310    .DIM 8
+                           A   311    .TYPE 98
+                           A   312    .ENDEF
+                           A   313    .DEFINE "type"
+                           A   314    .VALUE 8
+                           A   315    .CLASS 8
+                           A   316    .TYPE 12
+                           A   317    .ENDEF
+                           A   318    .DEFINE "asmtype"
+                           A   319    .VALUE 9
+                           A   320    .CLASS 8
+                           A   321    .TYPE 12
+                           A   322    .ENDEF
+                           A   323    .DEFINE "listnumber"
+                           A   324    .VALUE 10
+                           A   325    .CLASS 8
+                           A   326    .TYPE 12
+                           A   327    .ENDEF
+                           A   328    .DEFINE "list"
+                           A   329    .VALUE 11
+                           A   330    .CLASS 8
+                           A   331    .TAG "NONAME8"
+                           A   332    .TYPE 40
+                           A   333    .ENDEF
+                           A   334    .DEFINE "asmargument"
+                           A   335    .VALUE 14
+                           A   336    .CLASS 8
+                           A   337    .TYPE 4
+                           A   338    .ENDEF
+                           A   339    .ENDREC "NONAME9"
+                           A   340    .BEGREC "NONAME10",6
+                           A   341    .DEFINE "type"
+                           A   342    .VALUE 0
+                           A   343    .CLASS 8
+                           A   344    .TYPE 4
+                           A   345    .ENDEF
+                           A   346    .DEFINE "match"
+                           A   347    .VALUE 3
+                           A   348    .CLASS 8
+                           A   349    .TYPE 556
+                           A   350    .ENDEF
+                           A   351    .ENDREC "NONAME10"
+                           A   352    .BEGREC "NONAME11",264
+                           A   353    .DEFINE "current_instruction"
+                           A   354    .VALUE 0
+                           A   355    .CLASS 8
+                           A   356    .TAG "NONAME9"
+                           A   357    .TYPE 40
+                           A   358    .ENDEF
+                           A   359    .DEFINE "next"
+                           A   360    .VALUE 3
+                           A   361    .CLASS 8
+                           A   362    .TYPE 34
+                           A   363    .ENDEF
+                           A   364    .DEFINE "label"
+                           A   365    .VALUE 6
+                           A   366    .CLASS 8
+                           A   367    .DIM 32
+                           A   368    .TYPE 98
+                           A   369    .ENDEF
+                           A   370    .DEFINE "mnemonic"
+                           A   371    .VALUE 38
+                           A   372    .CLASS 8
+                           A   373    .DIM 16
+                           A   374    .TYPE 98
+                           A   375    .ENDEF
+                           A   376    .DEFINE "suffix"
+                           A   377    .VALUE 54
+                           A   378    .CLASS 8
+                           A   379    .DIM 16
+                           A   380    .TYPE 98
+                           A   381    .ENDEF
+                           A   382    .DEFINE "operand1"
+                           A   383    .VALUE 70
+                           A   384    .CLASS 8
+                           A   385    .DIM 32
+                           A   386    .TYPE 98
+                           A   387    .ENDEF
+                           A   388    .DEFINE "operand2"
+                           A   389    .VALUE 102
+                           A   390    .CLASS 8
+                           A   391    .DIM 32
+                           A   392    .TYPE 98
+                           A   393    .ENDEF
+                           A   394    .DEFINE "comment"
+                           A   395    .VALUE 134
+                           A   396    .CLASS 8
+                           A   397    .DIM 128
+                           A   398    .TYPE 98
+                           A   399    .ENDEF
+                           A   400    .DEFINE "size"
+                           A   401    .VALUE 262
+                           A   402    .CLASS 8
+                           A   403    .TYPE 13
+                           A   404    .ENDEF
+                           A   405    .ENDREC "NONAME11"
+                           A   406    	SEGMENT BSS
+049731                     A   407    _an_prev:
+049731                     A   408    	DS	5
+                           A   409    .DEFINE "an_prev"
+                           A   410    .ALIAS "_an_prev"
+                           A   411    .CLASS 83
+                           A   412    .VALUE _an_prev
+                           A   413    .TAG "NONAME1"
+                           A   414    .TYPE 8
+                           A   415    .ENDEF
+049736                     A   416    _an_next:
+049736                     A   417    	DS	5
+                           A   418    .DEFINE "an_next"
+                           A   419    .ALIAS "_an_next"
+                           A   420    .CLASS 83
+                           A   421    .VALUE _an_next
+                           A   422    .TAG "NONAME1"
+                           A   423    .TYPE 8
+                           A   424    .ENDEF
+04973B                     A   425    _an_return:
+04973B                     A   426    	DS	7
+                           A   427    .DEFINE "an_return"
+                           A   428    .ALIAS "_an_return"
+                           A   429    .CLASS 83
+                           A   430    .VALUE _an_return
+                           A   431    .TAG "NONAME0"
+                           A   432    .TYPE 8
+                           A   433    .ENDEF
+049742                     A   434    _globalLabelBuffer:
+049742                     A   435    	DS	131072
+                           A   436    .DEFINE "globalLabelBuffer"
+                           A   437    .ALIAS "_globalLabelBuffer"
+                           A   438    .CLASS 83
+                           A   439    .VALUE _globalLabelBuffer
+                           A   440    .DIM 131072
+                           A   441    .TYPE 98
+                           A   442    .ENDEF
+069742                     A   443    _localLabelBuffer:
+069742                     A   444    	DS	65536
+                           A   445    .DEFINE "localLabelBuffer"
+                           A   446    .ALIAS "_localLabelBuffer"
+                           A   447    .CLASS 83
+                           A   448    .VALUE _localLabelBuffer
+                           A   449    .DIM 65536
+                           A   450    .TYPE 98
+                           A   451    .ENDEF
+079742                     A   452    _globalLabelBufferIndex:
+079742                     A   453    	DS	2*1
+                           A   454    .DEFINE "globalLabelBufferIndex"
+                           A   455    .ALIAS "_globalLabelBufferIndex"
+                           A   456    .CLASS 83
+                           A   457    .VALUE _globalLabelBufferIndex
+                           A   458    .TYPE 13
+                           A   459    .ENDEF
+079744                     A   460    _localLabelBufferIndex:
+079744                     A   461    	DS	2*1
+                           A   462    .DEFINE "localLabelBufferIndex"
+                           A   463    .ALIAS "_localLabelBufferIndex"
+                           A   464    .CLASS 83
+                           A   465    .VALUE _localLabelBufferIndex
+                           A   466    .TYPE 13
+                           A   467    .ENDEF
+079746                     A   468    _globalLabelTable:
+079746                     A   469    	DS	24576
+                           A   470    .DEFINE "globalLabelTable"
+                           A   471    .ALIAS "_globalLabelTable"
+                           A   472    .CLASS 83
+                           A   473    .VALUE _globalLabelTable
+                           A   474    .DIM 8192
+                           A   475    .TAG "NONAME0"
+                           A   476    .TYPE 360
+                           A   477    .ENDEF
+07F746                     A   478    _globalLabelCounter:
+07F746                     A   479    	DS	2*1
+                           A   480    .DEFINE "globalLabelCounter"
+                           A   481    .ALIAS "_globalLabelCounter"
+                           A   482    .CLASS 83
+                           A   483    .VALUE _globalLabelCounter
+                           A   484    .TYPE 13
+                           A   485    .ENDEF
+07F748                     A   486    _localLabelTable:
+07F748                     A   487    	DS	448
+                           A   488    .DEFINE "localLabelTable"
+                           A   489    .ALIAS "_localLabelTable"
+                           A   490    .CLASS 83
+                           A   491    .VALUE _localLabelTable
+                           A   492    .DIM 64
+                           A   493    .TAG "NONAME0"
+                           A   494    .TYPE 104
+                           A   495    .ENDEF
+07F908                     A   496    _localLabelCounter:
+07F908                     A   497    	DS	2*1
+                           A   498    .DEFINE "localLabelCounter"
+                           A   499    .ALIAS "_localLabelCounter"
+                           A   500    .CLASS 83
+                           A   501    .VALUE _localLabelCounter
+                           A   502    .TYPE 13
+                           A   503    .ENDEF
+                           A   504    ;    1	#include <stdint.h>
+                           A   505    ;    2	#include <stdio.h>
+                           A   506    ;    3	#include <string.h>
+                           A   507    ;    4	#include "label.h"
+                           A   508    ;    5	#include "hash.h"
+                           A   509    ;    6	#include "str2num.h"
+                           A   510    ;    7	#include "utils.h"
+                           A   511    ;    8	#include "globals.h"
+                           A   512    ;    9	#include "stdint.h"
+                           A   513    ;   10	
+                           A   514    ;   11	// memory for anonymous labels
+                           A   515    ;   12	anonymouslabeltype an_prev;
+                           A   516    ;   13	anonymouslabeltype an_next;
+                           A   517    ;   14	label an_return;
+                           A   518    ;   15	
+                           A   519    ;   16	// memory buffer for sequentially stori
+                           A   520    ;   17	char globalLabelBuffer[GLOBAL_LABEL_BUF
+                           A   521    ;   18	char localLabelBuffer[LOCAL_LABEL_BUFFE
+                           A   522    ;   19	uint16_t globalLabelBufferIndex;
+                           A   523    ;   20	uint16_t localLabelBufferIndex;
+                           A   524    ;   21	
+                           A   525    ;   22	// tables
+                           A   526    ;   23	label* globalLabelTable[GLOBAL_LABEL_TA
+                           A   527    ;   24	uint16_t globalLabelCounter;
+                           A   528    ;   25	label localLabelTable[LOCAL_LABEL_TABLE
+                           A   529    ;   26	uint16_t localLabelCounter;
+                           A   530    	SEGMENT CODE
+                           A   531    ;   27	
+                           A   532    ;   28	uint16_t getGlobalLabelCount(void) {
+04441D                     A   533    _getGlobalLabelCount:
+                           A   534    .DEFINE "_getGlobalLabelCount"
+                           A   535    
+                           A   536    .VALUE _getGlobalLabelCount
+                           A   537    
+                           A   538    .CLASS 2
+                           A   539    
+                           A   540    .TYPE 77
+                           A   541    
+                           A   542    .ENDEF
+                           A   543    
+                           A   544    .BEGFUNC "getGlobalLabelCount",28,"_getGlobalLa
+                           A   545    
+04441D DDE5                A   546    	PUSH	IX
+04441F DD210000 00         A   547    	LD	IX,0
+044424 DD39                A   548    	ADD	IX,SP
+                           A   549    ;   29	    return globalLabelCounter;
+                           A   550    .LINE 29
+                           A   551    
+044426 2A 46 F7 07         A   552    	LD	HL,(_globalLabelCounter)
+                           A   553    ;   30	}
+                           A   554    .LINE 30
+                           A   555    
+04442A DDF9                A   556    	LD	SP,IX
+04442C DDE1                A   557    	POP	IX
+04442E C9                  A   558    	RET	
+                           A   559    
+                           A   560    
+                           A   561    ;**************************** _getGlobalLabelCo
+                           A   562    ;Name                         Addr/Register   S
+                           A   563    ;_globalLabelCounter                 STATIC    
+                           A   564    
+                           A   565    
+                           A   566    ; Stack Frame Size: 6 (bytes)
+                           A   567    ;       Spill Code: 0 (instruction)
+                           A   568    
+                           A   569    
+                           A   570    .ENDFUNC "getGlobalLabelCount",30,"_getGlobalLa
+                           A   571    ;   31	uint16_t getLocalLabelCount(void) {
+04442F                     A   572    _getLocalLabelCount:
+                           A   573    .DEFINE "_getLocalLabelCount"
+                           A   574    
+                           A   575    .VALUE _getLocalLabelCount
+                           A   576    
+                           A   577    .CLASS 2
+                           A   578    
+                           A   579    .TYPE 77
+                           A   580    
+                           A   581    .ENDEF
+                           A   582    
+                           A   583    .BEGFUNC "getLocalLabelCount",31,"_getLocalLabe
+                           A   584    
+04442F DDE5                A   585    	PUSH	IX
+044431 DD210000 00         A   586    	LD	IX,0
+044436 DD39                A   587    	ADD	IX,SP
+                           A   588    ;   32	    return localLabelCounter;
+                           A   589    .LINE 32
+                           A   590    
+044438 2A 08 F9 07         A   591    	LD	HL,(_localLabelCounter)
+                           A   592    ;   33	}
+                           A   593    .LINE 33
+                           A   594    
+04443C DDF9                A   595    	LD	SP,IX
+04443E DDE1                A   596    	POP	IX
+044440 C9                  A   597    	RET	
+                           A   598    
+                           A   599    
+                           A   600    ;**************************** _getLocalLabelCou
+                           A   601    ;Name                         Addr/Register   S
+                           A   602    ;_localLabelCounter                  STATIC    
+                           A   603    
+                           A   604    
+                           A   605    ; Stack Frame Size: 6 (bytes)
+                           A   606    ;       Spill Code: 0 (instruction)
+                           A   607    
+                           A   608    
+                           A   609    .ENDFUNC "getLocalLabelCount",33,"_getLocalLabe
+                           A   610    ;   34	void initGlobalLabelTable(void) {
+044441                     A   611    _initGlobalLabelTable:
+                           A   612    .DEFINE "_initGlobalLabelTable"
+                           A   613    
+                           A   614    .VALUE _initGlobalLabelTable
+                           A   615    
+                           A   616    .CLASS 2
+                           A   617    
+                           A   618    .TYPE 65
+                           A   619    
+                           A   620    .ENDEF
+                           A   621    
+                           A   622    .BEGFUNC "initGlobalLabelTable",34,"_initGlobal
+                           A   623    
+                           A   624    .LINE 34
+                           A   625    
+                           A   626    .DEFINE "i"
+                           A   627    
+                           A   628    .CLASS 65
+                           A   629    
+                           A   630    .VALUE -3
+                           A   631    
+                           A   632    .TYPE 4
+                           A   633    
+                           A   634    .ENDEF
+                           A   635    
+044441 DDE5                A   636    	PUSH	IX
+044443 DD210000 00         A   637    	LD	IX,0
+044448 DD39                A   638    	ADD	IX,SP
+04444A C5                  A   639    	PUSH	BC
+                           A   640    ;   35	    int i;
+                           A   641    ;   36	
+                           A   642    ;   37	    globalLabelBufferIndex = 0;
+                           A   643    .LINE 37
+                           A   644    
+04444B 21 42 97 07         A   645    	LD	HL,_globalLabelBufferIndex
+04444F 3600                A   646    	LD	(HL),%0
+044451 23                  A   647    	INC	HL
+044452 3600                A   648    	LD	(HL),%0
+                           A   649    ;   38	    globalLabelCounter = 0;
+                           A   650    .LINE 38
+                           A   651    
+044454 21 46 F7 07         A   652    	LD	HL,_globalLabelCounter
+044458 3600                A   653    	LD	(HL),%0
+04445A 23                  A   654    	INC	HL
+04445B 3600                A   655    	LD	(HL),%0
+                           A   656    ;   39	    for(i = 0; i < GLOBAL_LABEL_TABLE_S
+                           A   657    .LINE 39
+                           A   658    
+04445D 01000000            A   659    	LD	BC,0
+044461 DD0FFD              A   660    	LD	(IX+%FFFFFFFD),BC
+044464 18 19               A   661    	JR	L_5
+044466                     A   662    L_3:
+                           A   663    ;   40	        globalLabelTable[i] = NULL;
+                           A   664    .LINE 40
+                           A   665    
+044466 DD27FD              A   666    	LD	HL,(IX+%FFFFFFFD)
+044469 E5C1                A   667    	LD	BC,HL
+04446B 29                  A   668    	ADD	HL,HL
+04446C 09                  A   669    	ADD	HL,BC
+04446D 01 46 97 07         A   670    	LD	BC,_globalLabelTable
+044471 09                  A   671    	ADD	HL,BC
+044472 01000000            A   672    	LD	BC,0
+044476 ED0F                A   673    	LD	(HL),BC
+044478 DD07FD              A   674    	LD	BC,(IX+%FFFFFFFD)
+04447B 03                  A   675    	INC	BC
+04447C DD0FFD              A   676    	LD	(IX+%FFFFFFFD),BC
+                           A   677    ;   41	    }
+04447F                     A   678    L_5:
+                           A   679    .LINE 41
+                           A   680    
+04447F 01002000            A   681    	LD	BC,8192
+044483 DD27FD              A   682    	LD	HL,(IX+%FFFFFFFD)
+044486 B7                  A   683    	OR	A,A
+044487 ED42                A   684    	SBC	HL,BC
+044489 CD 33 63 04         A   685    	CALL	__setflag
+04448D FA 66 44 04         A   686    	JP	M,L_3
+                           A   687    ;   42	}
+                           A   688    .LINE 42
+                           A   689    
+044491 DDF9                A   690    	LD	SP,IX
+044493 DDE1                A   691    	POP	IX
+044495 C9                  A   692    	RET	
+                           A   693    
+                           A   694    
+                           A   695    ;**************************** _initGlobalLabelT
+                           A   696    ;Name                         Addr/Register   S
+                           A   697    ;_globalLabelTable                   STATIC  24
+                           A   698    ;_globalLabelCounter                 STATIC    
+                           A   699    ;_globalLabelBufferIndex             STATIC    
+                           A   700    ;i                                     IX-3    
+                           A   701    
+                           A   702    
+                           A   703    ; Stack Frame Size: 9 (bytes)
+                           A   704    ;       Spill Code: 0 (instruction)
+                           A   705    
+                           A   706    
+                           A   707    .ENDFUNC "initGlobalLabelTable",42,"_initGlobal
+                           A   708    ;   43	
+                           A   709    ;   44	void initAnonymousLabelTable(void) {
+044496                     A   710    _initAnonymousLabelTable:
+                           A   711    .DEFINE "_initAnonymousLabelTable"
+                           A   712    
+                           A   713    .VALUE _initAnonymousLabelTable
+                           A   714    
+                           A   715    .CLASS 2
+                           A   716    
+                           A   717    .TYPE 65
+                           A   718    
+                           A   719    .ENDEF
+                           A   720    
+                           A   721    .BEGFUNC "initAnonymousLabelTable",44,"_initAno
+                           A   722    
+044496 DDE5                A   723    	PUSH	IX
+044498 DD210000 00         A   724    	LD	IX,0
+04449D DD39                A   725    	ADD	IX,SP
+                           A   726    ;   45	    an_prev.defined = false;
+                           A   727    .LINE 45
+                           A   728    
+04449F AF                  A   729    	XOR	A,A
+0444A0 32 31 97 04         A   730    	LD	(_an_prev),A
+                           A   731    ;   46	    an_next.defined = false;
+                           A   732    .LINE 46
+                           A   733    
+0444A4 AF                  A   734    	XOR	A,A
+0444A5 32 36 97 04         A   735    	LD	(_an_next),A
+                           A   736    ;   47	    an_return.name = NULL;
+                           A   737    .LINE 47
+                           A   738    
+0444A9 01000000            A   739    	LD	BC,0
+0444AD ED43 3B 97 04       A   740    	LD	(_an_return),BC
+                           A   741    ;   48	}
+                           A   742    .LINE 48
+                           A   743    
+0444B2 DDF9                A   744    	LD	SP,IX
+0444B4 DDE1                A   745    	POP	IX
+0444B6 C9                  A   746    	RET	
+                           A   747    
+                           A   748    
+                           A   749    ;**************************** _initAnonymousLab
+                           A   750    ;Name                         Addr/Register   S
+                           A   751    ;_an_return                          STATIC    
+                           A   752    ;_an_next                            STATIC    
+                           A   753    ;_an_prev                            STATIC    
+                           A   754    
+                           A   755    
+                           A   756    ; Stack Frame Size: 6 (bytes)
+                           A   757    ;       Spill Code: 0 (instruction)
+                           A   758    
+                           A   759    
+                           A   760    .ENDFUNC "initAnonymousLabelTable",48,"_initAno
+                           A   761    ;   49	
+                           A   762    ;   50	void initLocalLabelTable(void) {
+0444B7                     A   763    _initLocalLabelTable:
+                           A   764    .DEFINE "_initLocalLabelTable"
+                           A   765    
+                           A   766    .VALUE _initLocalLabelTable
+                           A   767    
+                           A   768    .CLASS 2
+                           A   769    
+                           A   770    .TYPE 65
+                           A   771    
+                           A   772    .ENDEF
+                           A   773    
+                           A   774    .BEGFUNC "initLocalLabelTable",50,"_initLocalLa
+                           A   775    
+                           A   776    .LINE 50
+                           A   777    
+                           A   778    .DEFINE "i"
+                           A   779    
+                           A   780    .CLASS 65
+                           A   781    
+                           A   782    .VALUE -3
+                           A   783    
+                           A   784    .TYPE 4
+                           A   785    
+                           A   786    .ENDEF
+                           A   787    
+0444B7 DDE5                A   788    	PUSH	IX
+0444B9 DD210000 00         A   789    	LD	IX,0
+0444BE DD39                A   790    	ADD	IX,SP
+0444C0 C5                  A   791    	PUSH	BC
+                           A   792    ;   51	    int i;
+                           A   793    ;   52	
+                           A   794    ;   53	    localLabelBufferIndex = 0;
+                           A   795    .LINE 53
+                           A   796    
+0444C1 21 44 97 07         A   797    	LD	HL,_localLabelBufferIndex
+0444C5 3600                A   798    	LD	(HL),%0
+0444C7 23                  A   799    	INC	HL
+0444C8 3600                A   800    	LD	(HL),%0
+                           A   801    ;   54	    localLabelCounter = 0;
+                           A   802    .LINE 54
+                           A   803    
+0444CA 21 08 F9 07         A   804    	LD	HL,_localLabelCounter
+0444CE 3600                A   805    	LD	(HL),%0
+0444D0 23                  A   806    	INC	HL
+0444D1 3600                A   807    	LD	(HL),%0
+                           A   808    ;   55	    for(i = 0; i < LOCAL_LABEL_TABLE_SI
+                           A   809    .LINE 55
+                           A   810    
+0444D3 01000000            A   811    	LD	BC,0
+0444D7 DD0FFD              A   812    	LD	(IX+%FFFFFFFD),BC
+0444DA 18 1F               A   813    	JR	L_11
+0444DC                     A   814    L_9:
+                           A   815    ;   56	        localLabelTable[i].name = NULL;
+                           A   816    .LINE 56
+                           A   817    
+0444DC DD27FD              A   818    	LD	HL,(IX+%FFFFFFFD)
+0444DF 3E07                A   819    	LD	A,%7
+0444E1 CD BF 6C 04         A   820    	CALL	__imul_b
+0444E5 01 48 F7 07         A   821    	LD	BC,_localLabelTable
+0444E9 09                  A   822    	ADD	HL,BC
+0444EA 01000000            A   823    	LD	BC,0
+0444EE E5FDE1              A   824    	LD	IY,HL
+0444F1 FD0F00              A   825    	LD	(IY+%0),BC
+0444F4 DD07FD              A   826    	LD	BC,(IX+%FFFFFFFD)
+0444F7 03                  A   827    	INC	BC
+0444F8 DD0FFD              A   828    	LD	(IX+%FFFFFFFD),BC
+                           A   829    ;   57	    }
+0444FB                     A   830    L_11:
+                           A   831    .LINE 57
+                           A   832    
+0444FB 01400000            A   833    	LD	BC,64
+0444FF DD27FD              A   834    	LD	HL,(IX+%FFFFFFFD)
+044502 B7                  A   835    	OR	A,A
+044503 ED42                A   836    	SBC	HL,BC
+044505 CD 33 63 04         A   837    	CALL	__setflag
+044509 FA DC 44 04         A   838    	JP	M,L_9
+                           A   839    ;   58	}
+                           A   840    .LINE 58
+                           A   841    
+04450D DDF9                A   842    	LD	SP,IX
+04450F DDE1                A   843    	POP	IX
+044511 C9                  A   844    	RET	
+                           A   845    
+                           A   846    
+                           A   847    ;**************************** _initLocalLabelTa
+                           A   848    ;Name                         Addr/Register   S
+                           A   849    ;_localLabelTable                    STATIC    
+                           A   850    ;_localLabelCounter                  STATIC    
+                           A   851    ;_localLabelBufferIndex              STATIC    
+                           A   852    ;i                                     IX-3    
+                           A   853    
+                           A   854    
+                           A   855    ; Stack Frame Size: 9 (bytes)
+                           A   856    ;       Spill Code: 0 (instruction)
+                           A   857    
+                           A   858    
+                           A   859    .ENDFUNC "initLocalLabelTable",58,"_initLocalLa
+                           A   860    ;   59	
+                           A   861    ;   60	void clearLocalLabels(void) {
+044512                     A   862    _clearLocalLabels:
+                           A   863    .DEFINE "_clearLocalLabels"
+                           A   864    
+                           A   865    .VALUE _clearLocalLabels
+                           A   866    
+                           A   867    .CLASS 2
+                           A   868    
+                           A   869    .TYPE 65
+                           A   870    
+                           A   871    .ENDEF
+                           A   872    
+                           A   873    .BEGFUNC "clearLocalLabels",60,"_clearLocalLabe
+                           A   874    
+044512 DDE5                A   875    	PUSH	IX
+044514 DD210000 00         A   876    	LD	IX,0
+044519 DD39                A   877    	ADD	IX,SP
+                           A   878    ;   61	    localLabelBufferIndex = 0;
+                           A   879    .LINE 61
+                           A   880    
+04451B 21 44 97 07         A   881    	LD	HL,_localLabelBufferIndex
+04451F 3600                A   882    	LD	(HL),%0
+044521 23                  A   883    	INC	HL
+044522 3600                A   884    	LD	(HL),%0
+                           A   885    ;   62	    localLabelCounter = 0;
+                           A   886    .LINE 62
+                           A   887    
+044524 21 08 F9 07         A   888    	LD	HL,_localLabelCounter
+044528 3600                A   889    	LD	(HL),%0
+04452A 23                  A   890    	INC	HL
+04452B 3600                A   891    	LD	(HL),%0
+                           A   892    ;   63	}
+                           A   893    .LINE 63
+                           A   894    
+04452D DDF9                A   895    	LD	SP,IX
+04452F DDE1                A   896    	POP	IX
+044531 C9                  A   897    	RET	
+                           A   898    
+                           A   899    
+                           A   900    ;**************************** _clearLocalLabels
+                           A   901    ;Name                         Addr/Register   S
+                           A   902    ;_localLabelCounter                  STATIC    
+                           A   903    ;_localLabelBufferIndex              STATIC    
+                           A   904    
+                           A   905    
+                           A   906    ; Stack Frame Size: 6 (bytes)
+                           A   907    ;       Spill Code: 0 (instruction)
+                           A   908    
+                           A   909    
+                           A   910    .ENDFUNC "clearLocalLabels",63,"_clearLocalLabe
+                           A   911    ;   64	
+                           A   912    ;   65	int findLocalLabelIndex(char *key) {
+044532                     A   913    _findLocalLabelIndex:
+                           A   914    .DEFINE "_findLocalLabelIndex"
+                           A   915    
+                           A   916    .VALUE _findLocalLabelIndex
+                           A   917    
+                           A   918    .CLASS 2
+                           A   919    
+                           A   920    .TYPE 68
+                           A   921    
+                           A   922    .ENDEF
+                           A   923    
+                           A   924    .BEGFUNC "findLocalLabelIndex",65,"_findLocalLa
+                           A   925    
+                           A   926    .LINE 65
+                           A   927    
+                           A   928    .DEFINE "key"
+                           A   929    
+                           A   930    .CLASS 65
+                           A   931    
+                           A   932    .VALUE 6
+                           A   933    
+                           A   934    .TYPE 34
+                           A   935    
+                           A   936    .ENDEF
+                           A   937    
+                           A   938    .DEFINE "lim"
+                           A   939    
+                           A   940    .CLASS 65
+                           A   941    
+                           A   942    .VALUE -3
+                           A   943    
+                           A   944    .TYPE 4
+                           A   945    
+                           A   946    .ENDEF
+                           A   947    
+                           A   948    .DEFINE "p"
+                           A   949    
+                           A   950    .CLASS 65
+                           A   951    
+                           A   952    .VALUE -6
+                           A   953    
+                           A   954    .TYPE 4
+                           A   955    
+                           A   956    .ENDEF
+                           A   957    
+                           A   958    .DEFINE "cmp"
+                           A   959    
+                           A   960    .CLASS 65
+                           A   961    
+                           A   962    .VALUE -9
+                           A   963    
+                           A   964    .TYPE 4
+                           A   965    
+                           A   966    .ENDEF
+                           A   967    
+                           A   968    .DEFINE "base"
+                           A   969    
+                           A   970    .CLASS 65
+                           A   971    
+                           A   972    .VALUE -12
+                           A   973    
+                           A   974    .TYPE 4
+                           A   975    
+                           A   976    .ENDEF
+                           A   977    
+044532 DDE5                A   978    	PUSH	IX
+044534 DD210000 00         A   979    	LD	IX,0
+044539 DD39                A   980    	ADD	IX,SP
+04453B ED22F4              A   981    	LEA	HL,IX+%FFFFFFF4
+04453E F9                  A   982    	LD	SP,HL
+                           A   983    ;   66	    int base = 0;
+                           A   984    .LINE 66
+                           A   985    
+04453F 01000000            A   986    	LD	BC,0
+044543 DD0FF4              A   987    	LD	(IX+%FFFFFFF4),BC
+                           A   988    ;   67		int lim, cmp;
+                           A   989    ;   68	    int p;
+                           A   990    ;   69	
+                           A   991    ;   70		for (lim = localLabelCounter; lim !
+                           A   992    .LINE 70
+                           A   993    
+044546 ED4B 08 F9 07       A   994    	LD	BC,(_localLabelCounter)
+04454B CD AC 65 04         A   995    	CALL	__stoiu
+04454F DD2FFD              A   996    	LD	(IX+%FFFFFFFD),HL
+044552 18 65               A   997    	JR	L_20
+044554                     A   998    L_18:
+                           A   999    ;   71			p = base + (lim >> 1);
+                           A  1000    .LINE 71
+                           A  1001    
+044554 DD27FD              A  1002    	LD	HL,(IX+%FFFFFFFD)
+044557 3E01                A  1003    	LD	A,%1
+044559 CD B5 63 04         A  1004    	CALL	__ishrs_b
+04455D DD07F4              A  1005    	LD	BC,(IX+%FFFFFFF4)
+044560 09                  A  1006    	ADD	HL,BC
+044561 DD2FFA              A  1007    	LD	(IX+%FFFFFFFA),HL
+                           A  1008    ;   72			cmp = strcmp(key,localLabelTabl
+                           A  1009    .LINE 72
+                           A  1010    
+044564 3E07                A  1011    	LD	A,%7
+044566 CD BF 6C 04         A  1012    	CALL	__imul_b
+04456A 01 48 F7 07         A  1013    	LD	BC,_localLabelTable
+04456E 09                  A  1014    	ADD	HL,BC
+04456F E5FDE1              A  1015    	LD	IY,HL
+044572 FD0700              A  1016    	LD	BC,(IY+%0)
+044575 C5                  A  1017    	PUSH	BC
+044576 DD0706              A  1018    	LD	BC,(IX+%6)
+044579 C5                  A  1019    	PUSH	BC
+04457A CD 8F 65 04         A  1020    	CALL	_strcmp
+04457E C1                  A  1021    	POP	BC
+04457F C1                  A  1022    	POP	BC
+044580 DD2FF7              A  1023    	LD	(IX+%FFFFFFF7),HL
+                           A  1024    ;   73			if (cmp == 0)
+                           A  1025    .LINE 73
+                           A  1026    
+044583 CD F9 69 04         A  1027    	CALL	__icmpzero
+044587 20 05               A  1028    	JR	NZ,L_17
+                           A  1029    ;   74				return p;
+                           A  1030    .LINE 74
+                           A  1031    
+044589 DD27FA              A  1032    	LD	HL,(IX+%FFFFFFFA)
+04458C 18 38               A  1033    	JR	L_22
+04458E                     A  1034    L_17:
+                           A  1035    ;   75			if (cmp > 0) {
+                           A  1036    .LINE 75
+                           A  1037    
+04458E DD07F7              A  1038    	LD	BC,(IX+%FFFFFFF7)
+044591 B7                  A  1039    	OR	A,A
+044592 ED62                A  1040    	SBC	HL,HL
+044594 B7                  A  1041    	OR	A,A
+044595 ED42                A  1042    	SBC	HL,BC
+044597 CD 33 63 04         A  1043    	CALL	__setflag
+04459B F2 AD 45 04         A  1044    	JP	P,L_19
+                           A  1045    ;   76				base = p + 1;
+                           A  1046    .LINE 76
+                           A  1047    
+04459F DD07FA              A  1048    	LD	BC,(IX+%FFFFFFFA)
+0445A2 03                  A  1049    	INC	BC
+0445A3 DD0FF4              A  1050    	LD	(IX+%FFFFFFF4),BC
+                           A  1051    ;   77				lim--;
+                           A  1052    .LINE 77
+                           A  1053    
+0445A6 DD07FD              A  1054    	LD	BC,(IX+%FFFFFFFD)
+0445A9 0B                  A  1055    	DEC	BC
+0445AA DD0FFD              A  1056    	LD	(IX+%FFFFFFFD),BC
+                           A  1057    ;   78			}
+                           A  1058    ;   79		}
+0445AD                     A  1059    L_19:
+                           A  1060    .LINE 79
+                           A  1061    
+0445AD DD27FD              A  1062    	LD	HL,(IX+%FFFFFFFD)
+0445B0 3E01                A  1063    	LD	A,%1
+0445B2 CD B5 63 04         A  1064    	CALL	__ishrs_b
+0445B6 DD2FFD              A  1065    	LD	(IX+%FFFFFFFD),HL
+0445B9                     A  1066    L_20:
+0445B9 DD27FD              A  1067    	LD	HL,(IX+%FFFFFFFD)
+0445BC CD F9 69 04         A  1068    	CALL	__icmpzero
+0445C0 20 92               A  1069    	JR	NZ,L_18
+                           A  1070    ;   80		return (LOCAL_LABEL_TABLE_SIZE);
+                           A  1071    .LINE 80
+                           A  1072    
+0445C2 21400000            A  1073    	LD	HL,64
+                           A  1074    ;   81	}
+0445C6                     A  1075    L_22:
+                           A  1076    .LINE 81
+                           A  1077    
+0445C6 DDF9                A  1078    	LD	SP,IX
+0445C8 DDE1                A  1079    	POP	IX
+0445CA C9                  A  1080    	RET	
+                           A  1081    
+                           A  1082    
+                           A  1083    ;**************************** _findLocalLabelIn
+                           A  1084    ;Name                         Addr/Register   S
+                           A  1085    ;_localLabelTable                    STATIC    
+                           A  1086    ;_strcmp                             IMPORT  --
+                           A  1087    ;_localLabelCounter                  STATIC    
+                           A  1088    ;base                                 IX-12    
+                           A  1089    ;cmp                                   IX-9    
+                           A  1090    ;p                                     IX-6    
+                           A  1091    ;lim                                   IX-3    
+                           A  1092    ;key                                   IX+6    
+                           A  1093    
+                           A  1094    
+                           A  1095    ; Stack Frame Size: 21 (bytes)
+                           A  1096    ;       Spill Code: 0 (instruction)
+                           A  1097    
+                           A  1098    
+                           A  1099    .ENDFUNC "findLocalLabelIndex",81,"_findLocalLa
+                           A  1100    ;   82	
+                           A  1101    ;   83	label * findLocalLabel(char *key){
+0445CB                     A  1102    _findLocalLabel:
+                           A  1103    .DEFINE "_findLocalLabel"
+                           A  1104    
+                           A  1105    .VALUE _findLocalLabel
+                           A  1106    
+                           A  1107    .CLASS 2
+                           A  1108    
+                           A  1109    .TAG "NONAME0"
+                           A  1110    
+                           A  1111    .TYPE 328
+                           A  1112    
+                           A  1113    .ENDEF
+                           A  1114    
+                           A  1115    .BEGFUNC "findLocalLabel",83,"_findLocalLabel"
+                           A  1116    
+                           A  1117    .LINE 83
+                           A  1118    
+                           A  1119    .DEFINE "key"
+                           A  1120    
+                           A  1121    .CLASS 65
+                           A  1122    
+                           A  1123    .VALUE 6
+                           A  1124    
+                           A  1125    .TYPE 34
+                           A  1126    
+                           A  1127    .ENDEF
+                           A  1128    
+                           A  1129    .DEFINE "p"
+                           A  1130    
+                           A  1131    .CLASS 65
+                           A  1132    
+                           A  1133    .VALUE -3
+                           A  1134    
+                           A  1135    .TYPE 4
+                           A  1136    
+                           A  1137    .ENDEF
+                           A  1138    
+0445CB DDE5                A  1139    	PUSH	IX
+0445CD DD210000 00         A  1140    	LD	IX,0
+0445D2 DD39                A  1141    	ADD	IX,SP
+0445D4 C5                  A  1142    	PUSH	BC
+                           A  1143    ;   84	    int p = findLocalLabelIndex(key);
+                           A  1144    .LINE 84
+                           A  1145    
+0445D5 DD0706              A  1146    	LD	BC,(IX+%6)
+0445D8 C5                  A  1147    	PUSH	BC
+0445D9 CD 32 45 04         A  1148    	CALL	_findLocalLabelIndex
+0445DD C1                  A  1149    	POP	BC
+0445DE DD2FFD              A  1150    	LD	(IX+%FFFFFFFD),HL
+                           A  1151    ;   85	    if(p < LOCAL_LABEL_TABLE_SIZE) retu
+                           A  1152    .LINE 85
+                           A  1153    
+0445E1 01400000            A  1154    	LD	BC,64
+0445E5 DD27FD              A  1155    	LD	HL,(IX+%FFFFFFFD)
+0445E8 B7                  A  1156    	OR	A,A
+0445E9 ED42                A  1157    	SBC	HL,BC
+0445EB CD 33 63 04         A  1158    	CALL	__setflag
+0445EF F2 03 46 04         A  1159    	JP	P,L_24
+0445F3 DD27FD              A  1160    	LD	HL,(IX+%FFFFFFFD)
+0445F6 3E07                A  1161    	LD	A,%7
+0445F8 CD BF 6C 04         A  1162    	CALL	__imul_b
+0445FC 01 48 F7 07         A  1163    	LD	BC,_localLabelTable
+044600 09                  A  1164    	ADD	HL,BC
+044601 18 03               A  1165    	JR	L_25
+                           A  1166    ;   86	    else return NULL;
+044603                     A  1167    L_24:
+                           A  1168    .LINE 86
+                           A  1169    
+044603 B7                  A  1170    	OR	A,A
+044604 ED62                A  1171    	SBC	HL,HL
+                           A  1172    ;   87	}
+044606                     A  1173    L_25:
+                           A  1174    .LINE 87
+                           A  1175    
+044606 DDF9                A  1176    	LD	SP,IX
+044608 DDE1                A  1177    	POP	IX
+04460A C9                  A  1178    	RET	
+                           A  1179    
+                           A  1180    
+                           A  1181    ;**************************** _findLocalLabel *
+                           A  1182    ;Name                         Addr/Register   S
+                           A  1183    ;_localLabelTable                    STATIC    
+                           A  1184    ;p                                     IX-3    
+                           A  1185    ;key                                   IX+6    
+                           A  1186    
+                           A  1187    
+                           A  1188    ; Stack Frame Size: 12 (bytes)
+                           A  1189    ;       Spill Code: 0 (instruction)
+                           A  1190    
+                           A  1191    
+                           A  1192    .ENDFUNC "findLocalLabel",87,"_findLocalLabel"
+                           A  1193    ;   88	
+                           A  1194    ;   89	void writeLocalLabels(void) {
+04460B                     A  1195    _writeLocalLabels:
+                           A  1196    .DEFINE "_writeLocalLabels"
+                           A  1197    
+                           A  1198    .VALUE _writeLocalLabels
+                           A  1199    
+                           A  1200    .CLASS 2
+                           A  1201    
+                           A  1202    .TYPE 65
+                           A  1203    
+                           A  1204    .ENDEF
+                           A  1205    
+                           A  1206    .BEGFUNC "writeLocalLabels",89,"_writeLocalLabe
+                           A  1207    
+                           A  1208    .LINE 89
+                           A  1209    
+                           A  1210    .DEFINE "i"
+                           A  1211    
+                           A  1212    .CLASS 65
+                           A  1213    
+                           A  1214    .VALUE -3
+                           A  1215    
+                           A  1216    .TYPE 4
+                           A  1217    
+                           A  1218    .ENDEF
+                           A  1219    
+                           A  1220    .DEFINE "delta"
+                           A  1221    
+                           A  1222    .CLASS 65
+                           A  1223    
+                           A  1224    .VALUE -5
+                           A  1225    
+                           A  1226    .TYPE 13
+                           A  1227    
+                           A  1228    .ENDEF
+                           A  1229    
+04460B DDE5                A  1230    	PUSH	IX
+04460D DD210000 00         A  1231    	LD	IX,0
+044612 DD39                A  1232    	ADD	IX,SP
+044614 C5                  A  1233    	PUSH	BC
+044615 3B                  A  1234    	DEC	SP
+044616 3B                  A  1235    	DEC	SP
+                           A  1236    ;   90	    int i;
+                           A  1237    ;   91	    uint16_t delta;
+                           A  1238    ;   92	    // number of bytes in the string bu
+                           A  1239    ;   93	    agon_fwrite(&localLabelBufferIndex,
+                           A  1240    .LINE 93
+                           A  1241    
+044617 01030000            A  1242    	LD	BC,3
+04461B C5                  A  1243    	PUSH	BC
+04461C 01020000            A  1244    	LD	BC,2
+044620 C5                  A  1245    	PUSH	BC
+044621 01010000            A  1246    	LD	BC,1
+044625 C5                  A  1247    	PUSH	BC
+044626 01 44 97 07         A  1248    	LD	BC,_localLabelBufferIndex
+04462A C5                  A  1249    	PUSH	BC
+04462B CD 63 61 04         A  1250    	CALL	_agon_fwrite
+04462F C1                  A  1251    	POP	BC
+044630 C1                  A  1252    	POP	BC
+044631 C1                  A  1253    	POP	BC
+044632 C1                  A  1254    	POP	BC
+                           A  1255    ;   94	    // the actual bytes from the string
+                           A  1256    ;   95	    if(localLabelBufferIndex) agon_fwri
+                           A  1257    .LINE 95
+                           A  1258    
+044633 2A 44 97 07         A  1259    	LD	HL,(_localLabelBufferIndex)
+044637 CD 9F 6D 04         A  1260    	CALL	__scmpzero
+04463B 28 21               A  1261    	JR	Z,L_27
+04463D 01030000            A  1262    	LD	BC,3
+044641 C5                  A  1263    	PUSH	BC
+044642 ED4B 44 97 07       A  1264    	LD	BC,(_localLabelBufferIndex)
+044647 CD AC 65 04         A  1265    	CALL	__stoiu
+04464B E5                  A  1266    	PUSH	HL
+04464C 01010000            A  1267    	LD	BC,1
+044650 C5                  A  1268    	PUSH	BC
+044651 01 42 97 06         A  1269    	LD	BC,_localLabelBuffer
+044655 C5                  A  1270    	PUSH	BC
+044656 CD 63 61 04         A  1271    	CALL	_agon_fwrite
+04465A C1                  A  1272    	POP	BC
+04465B C1                  A  1273    	POP	BC
+04465C C1                  A  1274    	POP	BC
+04465D C1                  A  1275    	POP	BC
+04465E                     A  1276    L_27:
+                           A  1277    ;   96	    // the number of labels
+                           A  1278    ;   97	    agon_fwrite(&localLabelCounter, 1, 
+                           A  1279    .LINE 97
+                           A  1280    
+04465E 01030000            A  1281    	LD	BC,3
+044662 C5                  A  1282    	PUSH	BC
+044663 01020000            A  1283    	LD	BC,2
+044667 C5                  A  1284    	PUSH	BC
+044668 01010000            A  1285    	LD	BC,1
+04466C C5                  A  1286    	PUSH	BC
+04466D 01 08 F9 07         A  1287    	LD	BC,_localLabelCounter
+044671 C5                  A  1288    	PUSH	BC
+044672 CD 63 61 04         A  1289    	CALL	_agon_fwrite
+044676 C1                  A  1290    	POP	BC
+044677 C1                  A  1291    	POP	BC
+044678 C1                  A  1292    	POP	BC
+044679 C1                  A  1293    	POP	BC
+                           A  1294    ;   98	    for(i = 0; i < localLabelCounter; i
+                           A  1295    .LINE 98
+                           A  1296    
+04467A 01000000            A  1297    	LD	BC,0
+04467E DD0FFD              A  1298    	LD	(IX+%FFFFFFFD),BC
+044681 18 6D               A  1299    	JR	L_31
+044683                     A  1300    L_29:
+                           A  1301    ;   99	        delta = localLabelTable[i].name
+                           A  1302    .LINE 99
+                           A  1303    
+044683 DD27FD              A  1304    	LD	HL,(IX+%FFFFFFFD)
+044686 3E07                A  1305    	LD	A,%7
+044688 CD BF 6C 04         A  1306    	CALL	__imul_b
+04468C 01 48 F7 07         A  1307    	LD	BC,_localLabelTable
+044690 09                  A  1308    	ADD	HL,BC
+044691 E5FDE1              A  1309    	LD	IY,HL
+044694 FD2700              A  1310    	LD	HL,(IY+%0)
+044697 01 42 97 06         A  1311    	LD	BC,_localLabelBuffer
+04469B B7                  A  1312    	OR	A,A
+04469C ED42                A  1313    	SBC	HL,BC
+04469E DD75FB              A  1314    	LD	(IX+%FFFFFFFB),L
+0446A1 DD74FC              A  1315    	LD	(IX+%FFFFFFFC),H
+                           A  1316    ;  100	        agon_fwrite(&delta, 1, sizeof(d
+                           A  1317    .LINE 100
+                           A  1318    
+0446A4 01030000            A  1319    	LD	BC,3
+0446A8 C5                  A  1320    	PUSH	BC
+0446A9 01020000            A  1321    	LD	BC,2
+0446AD C5                  A  1322    	PUSH	BC
+0446AE 01010000            A  1323    	LD	BC,1
+0446B2 C5                  A  1324    	PUSH	BC
+0446B3 ED65FB              A  1325    	PEA	IX+%FFFFFFFB
+0446B6 CD 63 61 04         A  1326    	CALL	_agon_fwrite
+0446BA C1                  A  1327    	POP	BC
+0446BB C1                  A  1328    	POP	BC
+0446BC C1                  A  1329    	POP	BC
+0446BD C1                  A  1330    	POP	BC
+                           A  1331    ;  101	        agon_fwrite(&localLabelTable[i]
+                           A  1332    .LINE 101
+                           A  1333    
+0446BE 01030000            A  1334    	LD	BC,3
+0446C2 C5                  A  1335    	PUSH	BC
+0446C3 01040000            A  1336    	LD	BC,4
+0446C7 C5                  A  1337    	PUSH	BC
+0446C8 01010000            A  1338    	LD	BC,1
+0446CC C5                  A  1339    	PUSH	BC
+0446CD DD27FD              A  1340    	LD	HL,(IX+%FFFFFFFD)
+0446D0 3E07                A  1341    	LD	A,%7
+0446D2 CD BF 6C 04         A  1342    	CALL	__imul_b
+0446D6 01 48 F7 07         A  1343    	LD	BC,_localLabelTable
+0446DA 09                  A  1344    	ADD	HL,BC
+0446DB E5FDE1              A  1345    	LD	IY,HL
+0446DE ED6603              A  1346    	PEA	IY+%3
+0446E1 CD 63 61 04         A  1347    	CALL	_agon_fwrite
+0446E5 C1                  A  1348    	POP	BC
+0446E6 C1                  A  1349    	POP	BC
+0446E7 C1                  A  1350    	POP	BC
+0446E8 C1                  A  1351    	POP	BC
+0446E9 DD07FD              A  1352    	LD	BC,(IX+%FFFFFFFD)
+0446EC 03                  A  1353    	INC	BC
+0446ED DD0FFD              A  1354    	LD	(IX+%FFFFFFFD),BC
+                           A  1355    ;  102	    }
+0446F0                     A  1356    L_31:
+                           A  1357    .LINE 102
+                           A  1358    
+0446F0 ED4B 08 F9 07       A  1359    	LD	BC,(_localLabelCounter)
+0446F5 CD AC 65 04         A  1360    	CALL	__stoiu
+0446F9 E5C1                A  1361    	LD	BC,HL
+0446FB DD27FD              A  1362    	LD	HL,(IX+%FFFFFFFD)
+0446FE B7                  A  1363    	OR	A,A
+0446FF ED42                A  1364    	SBC	HL,BC
+044701 CD 33 63 04         A  1365    	CALL	__setflag
+044705 FA 83 46 04         A  1366    	JP	M,L_29
+                           A  1367    ;  103	}
+                           A  1368    .LINE 103
+                           A  1369    
+044709 DDF9                A  1370    	LD	SP,IX
+04470B DDE1                A  1371    	POP	IX
+04470D C9                  A  1372    	RET	
+                           A  1373    
+                           A  1374    
+                           A  1375    ;**************************** _writeLocalLabels
+                           A  1376    ;Name                         Addr/Register   S
+                           A  1377    ;_localLabelTable                    STATIC    
+                           A  1378    ;_localLabelCounter                  STATIC    
+                           A  1379    ;_localLabelBuffer                   STATIC  65
+                           A  1380    ;_localLabelBufferIndex              STATIC    
+                           A  1381    ;_agon_fwrite                        IMPORT  --
+                           A  1382    ;delta                                 IX-5    
+                           A  1383    ;i                                     IX-3    
+                           A  1384    
+                           A  1385    
+                           A  1386    ; Stack Frame Size: 11 (bytes)
+                           A  1387    ;       Spill Code: 0 (instruction)
+                           A  1388    
+                           A  1389    
+                           A  1390    .ENDFUNC "writeLocalLabels",103,"_writeLocalLab
+                           A  1391    ;  104	
+                           A  1392    ;  105	void readLocalLabels(void) {
+04470E                     A  1393    _readLocalLabels:
+                           A  1394    .DEFINE "_readLocalLabels"
+                           A  1395    
+                           A  1396    .VALUE _readLocalLabels
+                           A  1397    
+                           A  1398    .CLASS 2
+                           A  1399    
+                           A  1400    .TYPE 65
+                           A  1401    
+                           A  1402    .ENDEF
+                           A  1403    
+                           A  1404    .BEGFUNC "readLocalLabels",105,"_readLocalLabel
+                           A  1405    
+                           A  1406    .LINE 105
+                           A  1407    
+                           A  1408    .DEFINE "i"
+                           A  1409    
+                           A  1410    .CLASS 65
+                           A  1411    
+                           A  1412    .VALUE -3
+                           A  1413    
+                           A  1414    .TYPE 4
+                           A  1415    
+                           A  1416    .ENDEF
+                           A  1417    
+                           A  1418    .DEFINE "delta"
+                           A  1419    
+                           A  1420    .CLASS 65
+                           A  1421    
+                           A  1422    .VALUE -5
+                           A  1423    
+                           A  1424    .TYPE 13
+                           A  1425    
+                           A  1426    .ENDEF
+                           A  1427    
+04470E DDE5                A  1428    	PUSH	IX
+044710 DD210000 00         A  1429    	LD	IX,0
+044715 DD39                A  1430    	ADD	IX,SP
+044717 C5                  A  1431    	PUSH	BC
+044718 3B                  A  1432    	DEC	SP
+044719 3B                  A  1433    	DEC	SP
+                           A  1434    ;  106	    int i;
+                           A  1435    ;  107	    uint16_t delta;
+                           A  1436    ;  108	
+                           A  1437    ;  109	    agon_fread(&localLabelBufferIndex, 
+                           A  1438    .LINE 109
+                           A  1439    
+04471A 01030000            A  1440    	LD	BC,3
+04471E C5                  A  1441    	PUSH	BC
+04471F 01010000            A  1442    	LD	BC,1
+044723 C5                  A  1443    	PUSH	BC
+044724 01020000            A  1444    	LD	BC,2
+044728 C5                  A  1445    	PUSH	BC
+044729 01 44 97 07         A  1446    	LD	BC,_localLabelBufferIndex
+04472D C5                  A  1447    	PUSH	BC
+04472E CD DA 61 04         A  1448    	CALL	_agon_fread
+044732 C1                  A  1449    	POP	BC
+044733 C1                  A  1450    	POP	BC
+044734 C1                  A  1451    	POP	BC
+044735 C1                  A  1452    	POP	BC
+                           A  1453    ;  110	    if(localLabelBufferIndex) agon_frea
+                           A  1454    .LINE 110
+                           A  1455    
+044736 2A 44 97 07         A  1456    	LD	HL,(_localLabelBufferIndex)
+04473A CD 9F 6D 04         A  1457    	CALL	__scmpzero
+04473E 28 21               A  1458    	JR	Z,L_34
+044740 01030000            A  1459    	LD	BC,3
+044744 C5                  A  1460    	PUSH	BC
+044745 01010000            A  1461    	LD	BC,1
+044749 C5                  A  1462    	PUSH	BC
+04474A ED4B 44 97 07       A  1463    	LD	BC,(_localLabelBufferIndex)
+04474F CD AC 65 04         A  1464    	CALL	__stoiu
+044753 E5                  A  1465    	PUSH	HL
+044754 01 42 97 06         A  1466    	LD	BC,_localLabelBuffer
+044758 C5                  A  1467    	PUSH	BC
+044759 CD DA 61 04         A  1468    	CALL	_agon_fread
+04475D C1                  A  1469    	POP	BC
+04475E C1                  A  1470    	POP	BC
+04475F C1                  A  1471    	POP	BC
+044760 C1                  A  1472    	POP	BC
+044761                     A  1473    L_34:
+                           A  1474    ;  111	    agon_fread(&localLabelCounter, size
+                           A  1475    .LINE 111
+                           A  1476    
+044761 01030000            A  1477    	LD	BC,3
+044765 C5                  A  1478    	PUSH	BC
+044766 01010000            A  1479    	LD	BC,1
+04476A C5                  A  1480    	PUSH	BC
+04476B 01020000            A  1481    	LD	BC,2
+04476F C5                  A  1482    	PUSH	BC
+044770 01 08 F9 07         A  1483    	LD	BC,_localLabelCounter
+044774 C5                  A  1484    	PUSH	BC
+044775 CD DA 61 04         A  1485    	CALL	_agon_fread
+044779 C1                  A  1486    	POP	BC
+04477A C1                  A  1487    	POP	BC
+04477B C1                  A  1488    	POP	BC
+04477C C1                  A  1489    	POP	BC
+                           A  1490    ;  112	    for(i = 0; i < localLabelCounter; i
+                           A  1491    .LINE 112
+                           A  1492    
+04477D 01000000            A  1493    	LD	BC,0
+044781 DD0FFD              A  1494    	LD	(IX+%FFFFFFFD),BC
+044784 18 6E               A  1495    	JR	L_38
+044786                     A  1496    L_36:
+                           A  1497    ;  113	        agon_fread(&delta, sizeof(delta
+                           A  1498    .LINE 113
+                           A  1499    
+044786 01030000            A  1500    	LD	BC,3
+04478A C5                  A  1501    	PUSH	BC
+04478B 01010000            A  1502    	LD	BC,1
+04478F C5                  A  1503    	PUSH	BC
+044790 01020000            A  1504    	LD	BC,2
+044794 C5                  A  1505    	PUSH	BC
+044795 ED65FB              A  1506    	PEA	IX+%FFFFFFFB
+044798 CD DA 61 04         A  1507    	CALL	_agon_fread
+04479C C1                  A  1508    	POP	BC
+04479D C1                  A  1509    	POP	BC
+04479E C1                  A  1510    	POP	BC
+04479F C1                  A  1511    	POP	BC
+                           A  1512    ;  114	        agon_fread(&localLabelTable[i].
+                           A  1513    .LINE 114
+                           A  1514    
+0447A0 01030000            A  1515    	LD	BC,3
+0447A4 C5                  A  1516    	PUSH	BC
+0447A5 01010000            A  1517    	LD	BC,1
+0447A9 C5                  A  1518    	PUSH	BC
+0447AA 01040000            A  1519    	LD	BC,4
+0447AE C5                  A  1520    	PUSH	BC
+0447AF DD27FD              A  1521    	LD	HL,(IX+%FFFFFFFD)
+0447B2 3E07                A  1522    	LD	A,%7
+0447B4 CD BF 6C 04         A  1523    	CALL	__imul_b
+0447B8 01 48 F7 07         A  1524    	LD	BC,_localLabelTable
+0447BC 09                  A  1525    	ADD	HL,BC
+0447BD E5FDE1              A  1526    	LD	IY,HL
+0447C0 ED6603              A  1527    	PEA	IY+%3
+0447C3 CD DA 61 04         A  1528    	CALL	_agon_fread
+0447C7 C1                  A  1529    	POP	BC
+0447C8 C1                  A  1530    	POP	BC
+0447C9 C1                  A  1531    	POP	BC
+0447CA C1                  A  1532    	POP	BC
+                           A  1533    ;  115	        localLabelTable[i].name = local
+                           A  1534    .LINE 115
+                           A  1535    
+0447CB DD07FB              A  1536    	LD	BC,(IX+%FFFFFFFB)
+0447CE CD AC 65 04         A  1537    	CALL	__stoiu
+0447D2 E5C1                A  1538    	LD	BC,HL
+0447D4 DD27FD              A  1539    	LD	HL,(IX+%FFFFFFFD)
+0447D7 3E07                A  1540    	LD	A,%7
+0447D9 CD BF 6C 04         A  1541    	CALL	__imul_b
+0447DD 11 48 F7 07         A  1542    	LD	DE,_localLabelTable
+0447E1 19                  A  1543    	ADD	HL,DE
+0447E2 E5FDE1              A  1544    	LD	IY,HL
+0447E5 21 42 97 06         A  1545    	LD	HL,_localLabelBuffer
+0447E9 09                  A  1546    	ADD	HL,BC
+0447EA FD2F00              A  1547    	LD	(IY+%0),HL
+0447ED DD07FD              A  1548    	LD	BC,(IX+%FFFFFFFD)
+0447F0 03                  A  1549    	INC	BC
+0447F1 DD0FFD              A  1550    	LD	(IX+%FFFFFFFD),BC
+                           A  1551    ;  116	    }
+0447F4                     A  1552    L_38:
+                           A  1553    .LINE 116
+                           A  1554    
+0447F4 ED4B 08 F9 07       A  1555    	LD	BC,(_localLabelCounter)
+0447F9 CD AC 65 04         A  1556    	CALL	__stoiu
+0447FD E5C1                A  1557    	LD	BC,HL
+0447FF DD27FD              A  1558    	LD	HL,(IX+%FFFFFFFD)
+044802 B7                  A  1559    	OR	A,A
+044803 ED42                A  1560    	SBC	HL,BC
+044805 CD 33 63 04         A  1561    	CALL	__setflag
+044809 FA 86 47 04         A  1562    	JP	M,L_36
+                           A  1563    ;  117	}
+                           A  1564    .LINE 117
+                           A  1565    
+04480D DDF9                A  1566    	LD	SP,IX
+04480F DDE1                A  1567    	POP	IX
+044811 C9                  A  1568    	RET	
+                           A  1569    
+                           A  1570    
+                           A  1571    ;**************************** _readLocalLabels 
+                           A  1572    ;Name                         Addr/Register   S
+                           A  1573    ;_localLabelTable                    STATIC    
+                           A  1574    ;_localLabelCounter                  STATIC    
+                           A  1575    ;_localLabelBuffer                   STATIC  65
+                           A  1576    ;_localLabelBufferIndex              STATIC    
+                           A  1577    ;_agon_fread                         IMPORT  --
+                           A  1578    ;delta                                 IX-5    
+                           A  1579    ;i                                     IX-3    
+                           A  1580    
+                           A  1581    
+                           A  1582    ; Stack Frame Size: 11 (bytes)
+                           A  1583    ;       Spill Code: 0 (instruction)
+                           A  1584    
+                           A  1585    
+                           A  1586    .ENDFUNC "readLocalLabels",117,"_readLocalLabel
+                           A  1587    ;  118	
+                           A  1588    ;  119	void writeAnonymousLabel(int32_t addres
+044812                     A  1589    _writeAnonymousLabel:
+                           A  1590    .DEFINE "_writeAnonymousLabel"
+                           A  1591    
+                           A  1592    .VALUE _writeAnonymousLabel
+                           A  1593    
+                           A  1594    .CLASS 2
+                           A  1595    
+                           A  1596    .TYPE 65
+                           A  1597    
+                           A  1598    .ENDEF
+                           A  1599    
+                           A  1600    .BEGFUNC "writeAnonymousLabel",119,"_writeAnony
+                           A  1601    
+                           A  1602    .LINE 119
+                           A  1603    
+                           A  1604    .DEFINE "address"
+                           A  1605    
+                           A  1606    .CLASS 65
+                           A  1607    
+                           A  1608    .VALUE 6
+                           A  1609    
+                           A  1610    .TYPE 5
+                           A  1611    
+                           A  1612    .ENDEF
+                           A  1613    
+044812 DDE5                A  1614    	PUSH	IX
+044814 DD210000 00         A  1615    	LD	IX,0
+044819 DD39                A  1616    	ADD	IX,SP
+                           A  1617    ;  120	    agon_fwrite(&address, 1, sizeof(add
+                           A  1618    .LINE 120
+                           A  1619    
+04481B 01040000            A  1620    	LD	BC,4
+04481F C5                  A  1621    	PUSH	BC
+044820 C5                  A  1622    	PUSH	BC
+044821 01010000            A  1623    	LD	BC,1
+044825 C5                  A  1624    	PUSH	BC
+044826 ED6506              A  1625    	PEA	IX+%6
+044829 CD 63 61 04         A  1626    	CALL	_agon_fwrite
+04482D C1                  A  1627    	POP	BC
+04482E C1                  A  1628    	POP	BC
+04482F C1                  A  1629    	POP	BC
+044830 C1                  A  1630    	POP	BC
+                           A  1631    ;  121	}
+                           A  1632    .LINE 121
+                           A  1633    
+044831 DDF9                A  1634    	LD	SP,IX
+044833 DDE1                A  1635    	POP	IX
+044835 C9                  A  1636    	RET	
+                           A  1637    
+                           A  1638    
+                           A  1639    ;**************************** _writeAnonymousLa
+                           A  1640    ;Name                         Addr/Register   S
+                           A  1641    ;_agon_fwrite                        IMPORT  --
+                           A  1642    ;address                               IX+6    
+                           A  1643    
+                           A  1644    
+                           A  1645    ; Stack Frame Size: 12 (bytes)
+                           A  1646    ;       Spill Code: 0 (instruction)
+                           A  1647    
+                           A  1648    
+                           A  1649    .ENDFUNC "writeAnonymousLabel",121,"_writeAnony
+                           A  1650    ;  122	
+                           A  1651    ;  123	void readAnonymousLabel(void) {
+044836                     A  1652    _readAnonymousLabel:
+                           A  1653    .DEFINE "_readAnonymousLabel"
+                           A  1654    
+                           A  1655    .VALUE _readAnonymousLabel
+                           A  1656    
+                           A  1657    .CLASS 2
+                           A  1658    
+                           A  1659    .TYPE 65
+                           A  1660    
+                           A  1661    .ENDEF
+                           A  1662    
+                           A  1663    .BEGFUNC "readAnonymousLabel",123,"_readAnonymo
+                           A  1664    
+                           A  1665    .LINE 123
+                           A  1666    
+                           A  1667    .DEFINE "address"
+                           A  1668    
+                           A  1669    .CLASS 65
+                           A  1670    
+                           A  1671    .VALUE -4
+                           A  1672    
+                           A  1673    .TYPE 5
+                           A  1674    
+                           A  1675    .ENDEF
+                           A  1676    
+044836 DDE5                A  1677    	PUSH	IX
+044838 DD210000 00         A  1678    	LD	IX,0
+04483D DD39                A  1679    	ADD	IX,SP
+04483F C5                  A  1680    	PUSH	BC
+044840 3B                  A  1681    	DEC	SP
+                           A  1682    ;  124	    int32_t address;
+                           A  1683    ;  125	
+                           A  1684    ;  126	    if(agon_fread(&address, sizeof(addr
+                           A  1685    .LINE 126
+                           A  1686    
+044841 01040000            A  1687    	LD	BC,4
+044845 C5                  A  1688    	PUSH	BC
+044846 01010000            A  1689    	LD	BC,1
+04484A C5                  A  1690    	PUSH	BC
+04484B 01040000            A  1691    	LD	BC,4
+04484F C5                  A  1692    	PUSH	BC
+044850 ED65FC              A  1693    	PEA	IX+%FFFFFFFC
+044853 CD DA 61 04         A  1694    	CALL	_agon_fread
+044857 C1                  A  1695    	POP	BC
+044858 C1                  A  1696    	POP	BC
+044859 C1                  A  1697    	POP	BC
+04485A C1                  A  1698    	POP	BC
+04485B CD F9 69 04         A  1699    	CALL	__icmpzero
+04485F 28 36               A  1700    	JR	Z,L_44
+                           A  1701    ;  127	        if(an_next.defined) {
+                           A  1702    .LINE 127
+                           A  1703    
+044861 3A 36 97 04         A  1704    	LD	A,(_an_next)
+044865 B7                  A  1705    	OR	A,A
+044866 28 18               A  1706    	JR	Z,L_42
+                           A  1707    ;  128	            an_prev.address = an_next.a
+                           A  1708    .LINE 128
+                           A  1709    
+044868 ED4B 37 97 04       A  1710    	LD	BC,(_an_next+1)
+04486D 3A 3A 97 04         A  1711    	LD	A,(_an_next+4)
+044871 ED43 32 97 04       A  1712    	LD	(_an_prev+1),BC
+044876 32 35 97 04         A  1713    	LD	(_an_prev+4),A
+                           A  1714    ;  129	            an_prev.defined = true;
+                           A  1715    .LINE 129
+                           A  1716    
+04487A 3E01                A  1717    	LD	A,%1
+04487C 32 31 97 04         A  1718    	LD	(_an_prev),A
+                           A  1719    ;  130	        }
+044880                     A  1720    L_42:
+                           A  1721    .LINE 130
+                           A  1722    
+                           A  1723    ;  131	        an_next.address = address;
+                           A  1724    .LINE 131
+                           A  1725    
+044880 DD07FC              A  1726    	LD	BC,(IX+%FFFFFFFC)
+044883 ED43 37 97 04       A  1727    	LD	(_an_next+1),BC
+044888 DD7EFF              A  1728    	LD	A,(IX+%FFFFFFFF)
+04488B 32 3A 97 04         A  1729    	LD	(_an_next+4),A
+                           A  1730    ;  132	        an_next.defined = true;        
+                           A  1731    .LINE 132
+                           A  1732    
+04488F 3E01                A  1733    	LD	A,%1
+044891 32 36 97 04         A  1734    	LD	(_an_next),A
+                           A  1735    ;  133	    }
+                           A  1736    ;  134	    else { // last label already read
+                           A  1737    .LINE 134
+                           A  1738    
+044895 18 1D               A  1739    	JR	L_45
+044897                     A  1740    L_44:
+                           A  1741    ;  135	        an_prev.address = an_next.addre
+                           A  1742    .LINE 135
+                           A  1743    
+044897 ED4B 37 97 04       A  1744    	LD	BC,(_an_next+1)
+04489C 3A 3A 97 04         A  1745    	LD	A,(_an_next+4)
+0448A0 ED43 32 97 04       A  1746    	LD	(_an_prev+1),BC
+0448A5 32 35 97 04         A  1747    	LD	(_an_prev+4),A
+                           A  1748    ;  136	        an_prev.defined = true;
+                           A  1749    .LINE 136
+                           A  1750    
+0448A9 3E01                A  1751    	LD	A,%1
+0448AB 32 31 97 04         A  1752    	LD	(_an_prev),A
+                           A  1753    ;  137	        an_next.defined = false;
+                           A  1754    .LINE 137
+                           A  1755    
+0448AF AF                  A  1756    	XOR	A,A
+0448B0 32 36 97 04         A  1757    	LD	(_an_next),A
+                           A  1758    ;  138	    }
+                           A  1759    ;  139	}
+0448B4                     A  1760    L_45:
+                           A  1761    .LINE 139
+                           A  1762    
+0448B4 DDF9                A  1763    	LD	SP,IX
+0448B6 DDE1                A  1764    	POP	IX
+0448B8 C9                  A  1765    	RET	
+                           A  1766    
+                           A  1767    
+                           A  1768    ;**************************** _readAnonymousLab
+                           A  1769    ;Name                         Addr/Register   S
+                           A  1770    ;_an_prev                            STATIC    
+                           A  1771    ;_an_next                            STATIC    
+                           A  1772    ;_agon_fread                         IMPORT  --
+                           A  1773    ;address                               IX-4    
+                           A  1774    
+                           A  1775    
+                           A  1776    ; Stack Frame Size: 10 (bytes)
+                           A  1777    ;       Spill Code: 0 (instruction)
+                           A  1778    
+                           A  1779    
+                           A  1780    .ENDFUNC "readAnonymousLabel",139,"_readAnonymo
+                           A  1781    ;  140	
+                           A  1782    ;  141	bool insertLocalLabel(char *labelname, 
+0448B9                     A  1783    _insertLocalLabel:
+                           A  1784    .DEFINE "_insertLocalLabel"
+                           A  1785    
+                           A  1786    .VALUE _insertLocalLabel
+                           A  1787    
+                           A  1788    .CLASS 2
+                           A  1789    
+                           A  1790    .TYPE 76
+                           A  1791    
+                           A  1792    .ENDEF
+                           A  1793    
+                           A  1794    .BEGFUNC "insertLocalLabel",141,"_insertLocalLa
+                           A  1795    
+                           A  1796    .LINE 141
+                           A  1797    
+                           A  1798    .DEFINE "labelname"
+                           A  1799    
+                           A  1800    .CLASS 65
+                           A  1801    
+                           A  1802    .VALUE 6
+                           A  1803    
+                           A  1804    .TYPE 34
+                           A  1805    
+                           A  1806    .ENDEF
+                           A  1807    
+                           A  1808    .DEFINE "address"
+                           A  1809    
+                           A  1810    .CLASS 65
+                           A  1811    
+                           A  1812    .VALUE 9
+                           A  1813    
+                           A  1814    .TYPE 5
+                           A  1815    
+                           A  1816    .ENDEF
+                           A  1817    
+                           A  1818    .DEFINE "i"
+                           A  1819    
+                           A  1820    .CLASS 65
+                           A  1821    
+                           A  1822    .VALUE -3
+                           A  1823    
+                           A  1824    .TYPE 4
+                           A  1825    
+                           A  1826    .ENDEF
+                           A  1827    
+                           A  1828    .DEFINE "ptr"
+                           A  1829    
+                           A  1830    .CLASS 65
+                           A  1831    
+                           A  1832    .VALUE -6
+                           A  1833    
+                           A  1834    .TYPE 34
+                           A  1835    
+                           A  1836    .ENDEF
+                           A  1837    
+                           A  1838    .DEFINE "len"
+                           A  1839    
+                           A  1840    .CLASS 65
+                           A  1841    
+                           A  1842    .VALUE -9
+                           A  1843    
+                           A  1844    .TYPE 4
+                           A  1845    
+                           A  1846    .ENDEF
+                           A  1847    
+                           A  1848    .DEFINE "old_name"
+                           A  1849    
+                           A  1850    .CLASS 65
+                           A  1851    
+                           A  1852    .VALUE -12
+                           A  1853    
+                           A  1854    .TYPE 34
+                           A  1855    
+                           A  1856    .ENDEF
+                           A  1857    
+                           A  1858    .DEFINE "p"
+                           A  1859    
+                           A  1860    .CLASS 65
+                           A  1861    
+                           A  1862    .VALUE -15
+                           A  1863    
+                           A  1864    .TYPE 4
+                           A  1865    
+                           A  1866    .ENDEF
+                           A  1867    
+                           A  1868    .DEFINE "old_address"
+                           A  1869    
+                           A  1870    .CLASS 65
+                           A  1871    
+                           A  1872    .VALUE -19
+                           A  1873    
+                           A  1874    .TYPE 5
+                           A  1875    
+                           A  1876    .ENDEF
+                           A  1877    
+0448B9 DDE5                A  1878    	PUSH	IX
+0448BB DD210000 00         A  1879    	LD	IX,0
+0448C0 DD39                A  1880    	ADD	IX,SP
+0448C2 ED22EA              A  1881    	LEA	HL,IX+%FFFFFFEA
+0448C5 F9                  A  1882    	LD	SP,HL
+                           A  1883    ;  142	    int len,i;
+                           A  1884    ;  143	    int p;
+                           A  1885    ;  144	    char *ptr;
+                           A  1886    ;  145	    char *old_name;
+                           A  1887    ;  146	    int32_t old_address;
+                           A  1888    ;  147	
+                           A  1889    ;  148	    if(labelname[1] == 0) {
+                           A  1890    .LINE 148
+                           A  1891    
+0448C6 DD2706              A  1892    	LD	HL,(IX+%6)
+0448C9 23                  A  1893    	INC	HL
+0448CA 7E                  A  1894    	LD	A,(HL)
+0448CB B7                  A  1895    	OR	A,A
+0448CC 20 11               A  1896    	JR	NZ,L_47
+                           A  1897    ;  149	        error(message[ERROR_INVALIDLABE
+                           A  1898    .LINE 149
+                           A  1899    
+0448CE 21 A8 70 04         A  1900    	LD	HL,_message+12
+0448D2 ED07                A  1901    	LD	BC,(HL)
+0448D4 C5                  A  1902    	PUSH	BC
+0448D5 CD CF 57 04         A  1903    	CALL	_error
+0448D9 C1                  A  1904    	POP	BC
+                           A  1905    ;  150	        return false;
+                           A  1906    .LINE 150
+                           A  1907    
+0448DA AF                  A  1908    	XOR	A,A
+0448DB C3 B0 4A 04         A  1909    	JR	L_68
+                           A  1910    ;  151	    }
+0448DF                     A  1911    L_47:
+                           A  1912    .LINE 151
+                           A  1913    
+                           A  1914    ;  152	    p = findLocalLabelIndex(labelname);
+                           A  1915    .LINE 152
+                           A  1916    
+0448DF DD0706              A  1917    	LD	BC,(IX+%6)
+0448E2 C5                  A  1918    	PUSH	BC
+0448E3 CD 32 45 04         A  1919    	CALL	_findLocalLabelIndex
+0448E7 C1                  A  1920    	POP	BC
+0448E8 DD2FF1              A  1921    	LD	(IX+%FFFFFFF1),HL
+                           A  1922    ;  153	
+                           A  1923    ;  154	    if(p >= LOCAL_LABEL_TABLE_SIZE) {
+                           A  1924    .LINE 154
+                           A  1925    
+0448EB 01400000            A  1926    	LD	BC,64
+0448EF DD27F1              A  1927    	LD	HL,(IX+%FFFFFFF1)
+0448F2 B7                  A  1928    	OR	A,A
+0448F3 ED42                A  1929    	SBC	HL,BC
+0448F5 FA A3 4A 04         A  1930    	JP	M,L_66
+                           A  1931    ;  155	        if(localLabelCounter < LOCAL_LA
+                           A  1932    .LINE 155
+                           A  1933    
+0448F9 49014000            A  1934    	LD.LIS	BC,64
+0448FD 2A 08 F9 07         A  1935    	LD	HL,(_localLabelCounter)
+044901 B7                  A  1936    	OR	A,A
+044902 40ED42              A  1937    	SBC.SIS	HL,BC
+044905 D2 95 4A 04         A  1938    	JR	NC,L_64
+                           A  1939    ;  156	            len = strlen(labelname);
+                           A  1940    .LINE 156
+                           A  1941    
+044909 DD0706              A  1942    	LD	BC,(IX+%6)
+04490C C5                  A  1943    	PUSH	BC
+04490D CD 23 66 04         A  1944    	CALL	_strlen
+044911 C1                  A  1945    	POP	BC
+044912 DD2FF7              A  1946    	LD	(IX+%FFFFFFF7),HL
+                           A  1947    ;  157	            // check space first
+                           A  1948    ;  158	            if((localLabelBufferIndex +
+                           A  1949    .LINE 158
+                           A  1950    
+044915 ED4B 44 97 07       A  1951    	LD	BC,(_localLabelBufferIndex)
+04491A CD AC 65 04         A  1952    	CALL	__stoiu
+04491E DD07F7              A  1953    	LD	BC,(IX+%FFFFFFF7)
+044921 09                  A  1954    	ADD	HL,BC
+044922 E5C1                A  1955    	LD	BC,HL
+044924 03                  A  1956    	INC	BC
+044925 21FFFF00            A  1957    	LD	HL,65535
+044929 B7                  A  1958    	OR	A,A
+04492A ED42                A  1959    	SBC	HL,BC
+04492C CD 33 63 04         A  1960    	CALL	__setflag
+044930 F2 39 49 04         A  1961    	JP	P,L_49
+                           A  1962    ;  159	                return false; // no mor
+                           A  1963    .LINE 159
+                           A  1964    
+044934 AF                  A  1965    	XOR	A,A
+044935 C3 B0 4A 04         A  1966    	JR	L_68
+044939                     A  1967    L_49:
+                           A  1968    ;  160	            // allocate space in buffer
+                           A  1969    ;  161	            ptr = &localLabelBuffer[loc
+                           A  1970    .LINE 161
+                           A  1971    
+044939 ED4B 44 97 07       A  1972    	LD	BC,(_localLabelBufferIndex)
+04493E CD AC 65 04         A  1973    	CALL	__stoiu
+044942 01 42 97 06         A  1974    	LD	BC,_localLabelBuffer
+044946 09                  A  1975    	ADD	HL,BC
+044947 DD2FFA              A  1976    	LD	(IX+%FFFFFFFA),HL
+                           A  1977    ;  162	            localLabelBufferIndex += le
+                           A  1978    .LINE 162
+                           A  1979    
+04494A DD07F7              A  1980    	LD	BC,(IX+%FFFFFFF7)
+04494D 2A 44 97 07         A  1981    	LD	HL,(_localLabelBufferIndex)
+044951 4009                A  1982    	ADD.SIS	HL,BC
+044953 23                  A  1983    	INC	HL
+044954 E5C1                A  1984    	LD	BC,HL
+044956 21 44 97 07         A  1985    	LD	HL,_localLabelBufferIndex
+04495A 71                  A  1986    	LD	(HL),C
+04495B 23                  A  1987    	INC	HL
+04495C 70                  A  1988    	LD	(HL),B
+                           A  1989    ;  163	            strcpy(ptr, labelname);
+                           A  1990    .LINE 163
+                           A  1991    
+04495D DD0706              A  1992    	LD	BC,(IX+%6)
+044960 C5                  A  1993    	PUSH	BC
+044961 DD07FA              A  1994    	LD	BC,(IX+%FFFFFFFA)
+044964 C5                  A  1995    	PUSH	BC
+044965 CD 85 6D 04         A  1996    	CALL	_strcpy
+044969 C1                  A  1997    	POP	BC
+04496A C1                  A  1998    	POP	BC
+                           A  1999    ;  164	
+                           A  2000    ;  165	            for(i = 0; i < localLabelCo
+                           A  2001    .LINE 165
+                           A  2002    
+04496B 01000000            A  2003    	LD	BC,0
+04496F DD0FFD              A  2004    	LD	(IX+%FFFFFFFD),BC
+044972 18 32               A  2005    	JR	L_54
+044974                     A  2006    L_52:
+                           A  2007    ;  166	                if(strcmp(labelname, lo
+                           A  2008    .LINE 166
+                           A  2009    
+044974 DD27FD              A  2010    	LD	HL,(IX+%FFFFFFFD)
+044977 3E07                A  2011    	LD	A,%7
+044979 CD BF 6C 04         A  2012    	CALL	__imul_b
+04497D 01 48 F7 07         A  2013    	LD	BC,_localLabelTable
+044981 09                  A  2014    	ADD	HL,BC
+044982 E5FDE1              A  2015    	LD	IY,HL
+044985 FD0700              A  2016    	LD	BC,(IY+%0)
+044988 C5                  A  2017    	PUSH	BC
+044989 DD0706              A  2018    	LD	BC,(IX+%6)
+04498C C5                  A  2019    	PUSH	BC
+04498D CD 8F 65 04         A  2020    	CALL	_strcmp
+044991 C1                  A  2021    	POP	BC
+044992 C1                  A  2022    	POP	BC
+044993 CD F9 69 04         A  2023    	CALL	__icmpzero
+044997 CD 33 63 04         A  2024    	CALL	__setflag
+04499B FA BF 49 04         A  2025    	JP	M,L_60
+04499F DD07FD              A  2026    	LD	BC,(IX+%FFFFFFFD)
+0449A2 03                  A  2027    	INC	BC
+0449A3 DD0FFD              A  2028    	LD	(IX+%FFFFFFFD),BC
+                           A  2029    ;  167	            }
+0449A6                     A  2030    L_54:
+                           A  2031    .LINE 167
+                           A  2032    
+0449A6 ED4B 08 F9 07       A  2033    	LD	BC,(_localLabelCounter)
+0449AB CD AC 65 04         A  2034    	CALL	__stoiu
+0449AF E5C1                A  2035    	LD	BC,HL
+0449B1 DD27FD              A  2036    	LD	HL,(IX+%FFFFFFFD)
+0449B4 B7                  A  2037    	OR	A,A
+0449B5 ED42                A  2038    	SBC	HL,BC
+0449B7 CD 33 63 04         A  2039    	CALL	__setflag
+0449BB FA 74 49 04         A  2040    	JP	M,L_52
+0449BF                     A  2041    L_60:
+                           A  2042    ;  168	            if(i < localLabelCounter) {
+                           A  2043    .LINE 168
+                           A  2044    
+0449BF ED4B 08 F9 07       A  2045    	LD	BC,(_localLabelCounter)
+0449C4 CD AC 65 04         A  2046    	CALL	__stoiu
+0449C8 E5C1                A  2047    	LD	BC,HL
+0449CA DD27FD              A  2048    	LD	HL,(IX+%FFFFFFFD)
+0449CD B7                  A  2049    	OR	A,A
+0449CE ED42                A  2050    	SBC	HL,BC
+0449D0 CD 33 63 04         A  2051    	CALL	__setflag
+0449D4 FA 2B 4A 04         A  2052    	JP	M,L_58
+0449D8 18 6A               A  2053    	JR	L_61
+                           A  2054    ;  169	                for(; i < localLabelCou
+0449DA                     A  2055    L_56:
+                           A  2056    .LINE 169
+                           A  2057    
+                           A  2058    ;  170	                    old_name = localLab
+                           A  2059    .LINE 170
+                           A  2060    
+0449DA DD27FD              A  2061    	LD	HL,(IX+%FFFFFFFD)
+0449DD 3E07                A  2062    	LD	A,%7
+0449DF CD BF 6C 04         A  2063    	CALL	__imul_b
+0449E3 01 48 F7 07         A  2064    	LD	BC,_localLabelTable
+0449E7 09                  A  2065    	ADD	HL,BC
+0449E8 DD2FEA              A  2066    	LD	(IX+%FFFFFFEA),HL
+0449EB DD31EA              A  2067    	LD	IY,(IX+%FFFFFFEA)
+0449EE FD0700              A  2068    	LD	BC,(IY+%0)
+0449F1 DD0FF4              A  2069    	LD	(IX+%FFFFFFF4),BC
+                           A  2070    ;  171	                    old_address = local
+                           A  2071    .LINE 171
+                           A  2072    
+0449F4 FD0703              A  2073    	LD	BC,(IY+%3)
+0449F7 FD7E06              A  2074    	LD	A,(IY+%6)
+0449FA DD0FED              A  2075    	LD	(IX+%FFFFFFED),BC
+0449FD DD77F0              A  2076    	LD	(IX+%FFFFFFF0),A
+                           A  2077    ;  172	                    localLabelTable[i].
+                           A  2078    .LINE 172
+                           A  2079    
+044A00 DD07FA              A  2080    	LD	BC,(IX+%FFFFFFFA)
+044A03 FD0F00              A  2081    	LD	(IY+%0),BC
+                           A  2082    ;  173	                    localLabelTable[i].
+                           A  2083    .LINE 173
+                           A  2084    
+044A06 DD0709              A  2085    	LD	BC,(IX+%9)
+044A09 DD7E0C              A  2086    	LD	A,(IX+%C)
+044A0C FD0F03              A  2087    	LD	(IY+%3),BC
+044A0F FD7706              A  2088    	LD	(IY+%6),A
+                           A  2089    ;  174	                    ptr = old_name;
+                           A  2090    .LINE 174
+                           A  2091    
+044A12 DD07F4              A  2092    	LD	BC,(IX+%FFFFFFF4)
+044A15 DD0FFA              A  2093    	LD	(IX+%FFFFFFFA),BC
+                           A  2094    ;  175	                    address = old_addre
+                           A  2095    .LINE 175
+                           A  2096    
+044A18 DD07ED              A  2097    	LD	BC,(IX+%FFFFFFED)
+044A1B DD7EF0              A  2098    	LD	A,(IX+%FFFFFFF0)
+044A1E DD0F09              A  2099    	LD	(IX+%9),BC
+044A21 DD770C              A  2100    	LD	(IX+%C),A
+044A24 DD07FD              A  2101    	LD	BC,(IX+%FFFFFFFD)
+044A27 03                  A  2102    	INC	BC
+044A28 DD0FFD              A  2103    	LD	(IX+%FFFFFFFD),BC
+                           A  2104    ;  176	                }
+044A2B                     A  2105    L_58:
+                           A  2106    .LINE 176
+                           A  2107    
+044A2B ED4B 08 F9 07       A  2108    	LD	BC,(_localLabelCounter)
+044A30 CD AC 65 04         A  2109    	CALL	__stoiu
+044A34 E5C1                A  2110    	LD	BC,HL
+044A36 DD27FD              A  2111    	LD	HL,(IX+%FFFFFFFD)
+044A39 B7                  A  2112    	OR	A,A
+044A3A ED42                A  2113    	SBC	HL,BC
+044A3C CD 33 63 04         A  2114    	CALL	__setflag
+044A40 FA DA 49 04         A  2115    	JP	M,L_56
+                           A  2116    ;  177	            }
+044A44                     A  2117    L_61:
+                           A  2118    .LINE 177
+                           A  2119    
+                           A  2120    ;  178	            localLabelTable[localLabelC
+                           A  2121    .LINE 178
+                           A  2122    
+044A44 ED4B 08 F9 07       A  2123    	LD	BC,(_localLabelCounter)
+044A49 CD AC 65 04         A  2124    	CALL	__stoiu
+044A4D 3E07                A  2125    	LD	A,%7
+044A4F CD BF 6C 04         A  2126    	CALL	__imul_b
+044A53 01 48 F7 07         A  2127    	LD	BC,_localLabelTable
+044A57 09                  A  2128    	ADD	HL,BC
+044A58 DD07FA              A  2129    	LD	BC,(IX+%FFFFFFFA)
+044A5B E5FDE1              A  2130    	LD	IY,HL
+044A5E FD0F00              A  2131    	LD	(IY+%0),BC
+                           A  2132    ;  179	            localLabelTable[localLabelC
+                           A  2133    .LINE 179
+                           A  2134    
+044A61 ED4B 08 F9 07       A  2135    	LD	BC,(_localLabelCounter)
+044A66 CD AC 65 04         A  2136    	CALL	__stoiu
+044A6A 3E07                A  2137    	LD	A,%7
+044A6C CD BF 6C 04         A  2138    	CALL	__imul_b
+044A70 01 48 F7 07         A  2139    	LD	BC,_localLabelTable
+044A74 09                  A  2140    	ADD	HL,BC
+044A75 DD0709              A  2141    	LD	BC,(IX+%9)
+044A78 DD7E0C              A  2142    	LD	A,(IX+%C)
+044A7B E5FDE1              A  2143    	LD	IY,HL
+044A7E FD0F03              A  2144    	LD	(IY+%3),BC
+044A81 FD7706              A  2145    	LD	(IY+%6),A
+                           A  2146    ;  180	            localLabelCounter++;
+                           A  2147    .LINE 180
+                           A  2148    
+044A84 ED4B 08 F9 07       A  2149    	LD	BC,(_localLabelCounter)
+044A89 03                  A  2150    	INC	BC
+044A8A 21 08 F9 07         A  2151    	LD	HL,_localLabelCounter
+044A8E 71                  A  2152    	LD	(HL),C
+044A8F 23                  A  2153    	INC	HL
+044A90 70                  A  2154    	LD	(HL),B
+                           A  2155    ;  181	            return true;
+                           A  2156    .LINE 181
+                           A  2157    
+044A91 3E01                A  2158    	LD	A,%1
+044A93 18 1B               A  2159    	JR	L_68
+                           A  2160    ;  182	        }
+                           A  2161    ;  183	        else error(message[ERROR_MAXLOC
+044A95                     A  2162    L_64:
+                           A  2163    .LINE 183
+                           A  2164    
+044A95 21 FF 70 04         A  2165    	LD	HL,_message+99
+044A99 ED07                A  2166    	LD	BC,(HL)
+044A9B C5                  A  2167    	PUSH	BC
+044A9C CD CF 57 04         A  2168    	CALL	_error
+044AA0 C1                  A  2169    	POP	BC
+                           A  2170    ;  184	    }
+                           A  2171    ;  185	    else error(message[ERROR_LABELDEFIN
+                           A  2172    .LINE 185
+                           A  2173    
+044AA1 18 0C               A  2174    	JR	L_67
+044AA3                     A  2175    L_66:
+044AA3 21 FC 70 04         A  2176    	LD	HL,_message+96
+044AA7 ED07                A  2177    	LD	BC,(HL)
+044AA9 C5                  A  2178    	PUSH	BC
+044AAA CD CF 57 04         A  2179    	CALL	_error
+044AAE C1                  A  2180    	POP	BC
+044AAF                     A  2181    L_67:
+                           A  2182    ;  186	    return false;
+                           A  2183    .LINE 186
+                           A  2184    
+044AAF AF                  A  2185    	XOR	A,A
+                           A  2186    ;  187	}
+044AB0                     A  2187    L_68:
+                           A  2188    .LINE 187
+                           A  2189    
+044AB0 DDF9                A  2190    	LD	SP,IX
+044AB2 DDE1                A  2191    	POP	IX
+044AB4 C9                  A  2192    	RET	
+                           A  2193    
+                           A  2194    
+                           A  2195    ;**************************** _insertLocalLabel
+                           A  2196    ;Name                         Addr/Register   S
+                           A  2197    ;_localLabelTable                    STATIC    
+                           A  2198    ;_strcmp                             IMPORT  --
+                           A  2199    ;_strcpy                             IMPORT  --
+                           A  2200    ;_localLabelBuffer                   STATIC  65
+                           A  2201    ;_localLabelBufferIndex              STATIC    
+                           A  2202    ;_strlen                             IMPORT  --
+                           A  2203    ;_localLabelCounter                  STATIC    
+                           A  2204    ;_message                            IMPORT  un
+                           A  2205    ;_error                              IMPORT  --
+                           A  2206    ;old_address                          IX-19    
+                           A  2207    ;p                                    IX-15    
+                           A  2208    ;old_name                             IX-12    
+                           A  2209    ;len                                   IX-9    
+                           A  2210    ;ptr                                   IX-6    
+                           A  2211    ;i                                     IX-3    
+                           A  2212    ;address                               IX+9    
+                           A  2213    ;labelname                             IX+6    
+                           A  2214    
+                           A  2215    
+                           A  2216    ; Stack Frame Size: 37 (bytes)
+                           A  2217    ;       Spill Code: 0 (instruction)
+                           A  2218    
+                           A  2219    
+                           A  2220    .ENDFUNC "insertLocalLabel",187,"_insertLocalLa
+                           A  2221    ;  188	
+                           A  2222    ;  189	bool insertGlobalLabel(char *labelname,
+044AB5                     A  2223    _insertGlobalLabel:
+                           A  2224    .DEFINE "_insertGlobalLabel"
+                           A  2225    
+                           A  2226    .VALUE _insertGlobalLabel
+                           A  2227    
+                           A  2228    .CLASS 2
+                           A  2229    
+                           A  2230    .TYPE 76
+                           A  2231    
+                           A  2232    .ENDEF
+                           A  2233    
+                           A  2234    .BEGFUNC "insertGlobalLabel",189,"_insertGlobal
+                           A  2235    
+                           A  2236    .LINE 189
+                           A  2237    
+                           A  2238    .DEFINE "labelname"
+                           A  2239    
+                           A  2240    .CLASS 65
+                           A  2241    
+                           A  2242    .VALUE 6
+                           A  2243    
+                           A  2244    .TYPE 34
+                           A  2245    
+                           A  2246    .ENDEF
+                           A  2247    
+                           A  2248    .DEFINE "address"
+                           A  2249    
+                           A  2250    .CLASS 65
+                           A  2251    
+                           A  2252    .VALUE 9
+                           A  2253    
+                           A  2254    .TYPE 5
+                           A  2255    
+                           A  2256    .ENDEF
+                           A  2257    
+                           A  2258    .DEFINE "i"
+                           A  2259    
+                           A  2260    .CLASS 65
+                           A  2261    
+                           A  2262    .VALUE -3
+                           A  2263    
+                           A  2264    .TYPE 4
+                           A  2265    
+                           A  2266    .ENDEF
+                           A  2267    
+                           A  2268    .DEFINE "tmp"
+                           A  2269    
+                           A  2270    .CLASS 65
+                           A  2271    
+                           A  2272    .VALUE -6
+                           A  2273    
+                           A  2274    .TAG "NONAME0"
+                           A  2275    
+                           A  2276    .TYPE 40
+                           A  2277    
+                           A  2278    .ENDEF
+                           A  2279    
+                           A  2280    .DEFINE "len"
+                           A  2281    
+                           A  2282    .CLASS 65
+                           A  2283    
+                           A  2284    .VALUE -9
+                           A  2285    
+                           A  2286    .TYPE 4
+                           A  2287    
+                           A  2288    .ENDEF
+                           A  2289    
+                           A  2290    .DEFINE "try"
+                           A  2291    
+                           A  2292    .CLASS 65
+                           A  2293    
+                           A  2294    .VALUE -15
+                           A  2295    
+                           A  2296    .TYPE 4
+                           A  2297    
+                           A  2298    .ENDEF
+                           A  2299    
+                           A  2300    .DEFINE "index"
+                           A  2301    
+                           A  2302    .CLASS 65
+                           A  2303    
+                           A  2304    .VALUE -18
+                           A  2305    
+                           A  2306    .TYPE 4
+                           A  2307    
+                           A  2308    .ENDEF
+                           A  2309    
+044AB5 DDE5                A  2310    	PUSH	IX
+044AB7 DD210000 00         A  2311    	LD	IX,0
+044ABC DD39                A  2312    	ADD	IX,SP
+044ABE ED22EE              A  2313    	LEA	HL,IX+%FFFFFFEE
+044AC1 F9                  A  2314    	LD	SP,HL
+                           A  2315    ;  190	    int index,i,try,len;
+                           A  2316    ;  191	    label *tmp;
+                           A  2317    ;  192	
+                           A  2318    ;  193	    len = strlen(labelname);
+                           A  2319    .LINE 193
+                           A  2320    
+044AC2 DD0706              A  2321    	LD	BC,(IX+%6)
+044AC5 C5                  A  2322    	PUSH	BC
+044AC6 CD 23 66 04         A  2323    	CALL	_strlen
+044ACA C1                  A  2324    	POP	BC
+044ACB DD2FF7              A  2325    	LD	(IX+%FFFFFFF7),HL
+                           A  2326    ;  194	    // check space first
+                           A  2327    ;  195	    if((globalLabelBufferIndex + len + 
+                           A  2328    .LINE 195
+                           A  2329    
+044ACE ED4B 42 97 07       A  2330    	LD	BC,(_globalLabelBufferIndex)
+044AD3 CD AC 65 04         A  2331    	CALL	__stoiu
+044AD7 DD07F7              A  2332    	LD	BC,(IX+%FFFFFFF7)
+044ADA 09                  A  2333    	ADD	HL,BC
+044ADB E5FDE1              A  2334    	LD	IY,HL
+044ADE ED0308              A  2335    	LEA	BC,IY+%8
+044AE1 21FF1F00            A  2336    	LD	HL,8191
+044AE5 B7                  A  2337    	OR	A,A
+044AE6 ED42                A  2338    	SBC	HL,BC
+044AE8 30 05               A  2339    	JR	NC,L_70
+                           A  2340    ;  196	        return false; // no more space 
+                           A  2341    .LINE 196
+                           A  2342    
+044AEA AF                  A  2343    	XOR	A,A
+044AEB C3 C7 4B 04         A  2344    	JR	L_78
+044AEF                     A  2345    L_70:
+                           A  2346    ;  197	    // allocate space in buffer for lab
+                           A  2347    ;  198	    tmp = (label *)&globalLabelBuffer[g
+                           A  2348    .LINE 198
+                           A  2349    
+044AEF ED4B 42 97 07       A  2350    	LD	BC,(_globalLabelBufferIndex)
+044AF4 CD AC 65 04         A  2351    	CALL	__stoiu
+044AF8 01 42 97 04         A  2352    	LD	BC,_globalLabelBuffer
+044AFC 09                  A  2353    	ADD	HL,BC
+044AFD DD2FFA              A  2354    	LD	(IX+%FFFFFFFA),HL
+                           A  2355    ;  199	    globalLabelBufferIndex += sizeof(la
+                           A  2356    .LINE 199
+                           A  2357    
+044B00 FD2A 42 97 07       A  2358    	LD	IY,(_globalLabelBufferIndex)
+044B05 ED0307              A  2359    	LEA	BC,IY+%7
+044B08 21 42 97 07         A  2360    	LD	HL,_globalLabelBufferIndex
+044B0C 71                  A  2361    	LD	(HL),C
+044B0D 23                  A  2362    	INC	HL
+044B0E 70                  A  2363    	LD	(HL),B
+                           A  2364    ;  200	    // allocate space in buffer for str
+                           A  2365    ;  201	    tmp->name = &globalLabelBuffer[glob
+                           A  2366    .LINE 201
+                           A  2367    
+044B0F ED4B 42 97 07       A  2368    	LD	BC,(_globalLabelBufferIndex)
+044B14 CD AC 65 04         A  2369    	CALL	__stoiu
+044B18 01 42 97 04         A  2370    	LD	BC,_globalLabelBuffer
+044B1C 09                  A  2371    	ADD	HL,BC
+044B1D DD31FA              A  2372    	LD	IY,(IX+%FFFFFFFA)
+044B20 FD2F00              A  2373    	LD	(IY+%0),HL
+                           A  2374    ;  202	    globalLabelBufferIndex += len+1;
+                           A  2375    .LINE 202
+                           A  2376    
+044B23 DD07F7              A  2377    	LD	BC,(IX+%FFFFFFF7)
+044B26 2A 42 97 07         A  2378    	LD	HL,(_globalLabelBufferIndex)
+044B2A 4009                A  2379    	ADD.SIS	HL,BC
+044B2C 23                  A  2380    	INC	HL
+044B2D E5C1                A  2381    	LD	BC,HL
+044B2F 21 42 97 07         A  2382    	LD	HL,_globalLabelBufferIndex
+044B33 71                  A  2383    	LD	(HL),C
+044B34 23                  A  2384    	INC	HL
+044B35 70                  A  2385    	LD	(HL),B
+                           A  2386    ;  203	    strcpy(tmp->name, labelname);
+                           A  2387    .LINE 203
+                           A  2388    
+044B36 DD0706              A  2389    	LD	BC,(IX+%6)
+044B39 C5                  A  2390    	PUSH	BC
+044B3A FD0700              A  2391    	LD	BC,(IY+%0)
+044B3D C5                  A  2392    	PUSH	BC
+044B3E CD 85 6D 04         A  2393    	CALL	_strcpy
+044B42 C1                  A  2394    	POP	BC
+044B43 C1                  A  2395    	POP	BC
+                           A  2396    ;  204	    tmp->address = address;
+                           A  2397    .LINE 204
+                           A  2398    
+044B44 DD0709              A  2399    	LD	BC,(IX+%9)
+044B47 DD7E0C              A  2400    	LD	A,(IX+%C)
+044B4A DD31FA              A  2401    	LD	IY,(IX+%FFFFFFFA)
+044B4D FD0F03              A  2402    	LD	(IY+%3),BC
+044B50 FD7706              A  2403    	LD	(IY+%6),A
+                           A  2404    ;  205	
+                           A  2405    ;  206	    index = hash(labelname, GLOBAL_LABE
+                           A  2406    .LINE 206
+                           A  2407    
+044B53 01002000            A  2408    	LD	BC,8192
+044B57 C5                  A  2409    	PUSH	BC
+044B58 DD0706              A  2410    	LD	BC,(IX+%6)
+044B5B C5                  A  2411    	PUSH	BC
+044B5C CD 35 3A 04         A  2412    	CALL	_hash
+044B60 C1                  A  2413    	POP	BC
+044B61 C1                  A  2414    	POP	BC
+044B62 DD2FEE              A  2415    	LD	(IX+%FFFFFFEE),HL
+                           A  2416    ;  207	    for(i = 0; i < GLOBAL_LABEL_TABLE_S
+                           A  2417    .LINE 207
+                           A  2418    
+044B65 01000000            A  2419    	LD	BC,0
+044B69 DD0FFD              A  2420    	LD	(IX+%FFFFFFFD),BC
+044B6C 18 46               A  2421    	JR	L_76
+044B6E                     A  2422    L_74:
+                           A  2423    ;  208	        try = (i + index) % GLOBAL_LABE
+                           A  2424    .LINE 208
+                           A  2425    
+044B6E DD07EE              A  2426    	LD	BC,(IX+%FFFFFFEE)
+044B71 DD27FD              A  2427    	LD	HL,(IX+%FFFFFFFD)
+044B74 09                  A  2428    	ADD	HL,BC
+044B75 01002000            A  2429    	LD	BC,8192
+044B79 CD 42 63 04         A  2430    	CALL	__irems
+044B7D DD2FF1              A  2431    	LD	(IX+%FFFFFFF1),HL
+                           A  2432    ;  209	        if(globalLabelTable[try] == NUL
+                           A  2433    .LINE 209
+                           A  2434    
+044B80 E5C1                A  2435    	LD	BC,HL
+044B82 29                  A  2436    	ADD	HL,HL
+044B83 09                  A  2437    	ADD	HL,BC
+044B84 01 46 97 07         A  2438    	LD	BC,_globalLabelTable
+044B88 09                  A  2439    	ADD	HL,BC
+044B89 DD2FF4              A  2440    	LD	(IX+%FFFFFFF4),HL
+044B8C ED27                A  2441    	LD	HL,(HL)
+044B8E CD F9 69 04         A  2442    	CALL	__icmpzero
+044B92 20 19               A  2443    	JR	NZ,L_75
+                           A  2444    ;  210	            globalLabelTable[try] = tmp
+                           A  2445    .LINE 210
+                           A  2446    
+044B94 DD27F4              A  2447    	LD	HL,(IX+%FFFFFFF4)
+044B97 DD07FA              A  2448    	LD	BC,(IX+%FFFFFFFA)
+044B9A ED0F                A  2449    	LD	(HL),BC
+                           A  2450    ;  211	            globalLabelCounter++;
+                           A  2451    .LINE 211
+                           A  2452    
+044B9C ED4B 46 F7 07       A  2453    	LD	BC,(_globalLabelCounter)
+044BA1 03                  A  2454    	INC	BC
+044BA2 21 46 F7 07         A  2455    	LD	HL,_globalLabelCounter
+044BA6 71                  A  2456    	LD	(HL),C
+044BA7 23                  A  2457    	INC	HL
+044BA8 70                  A  2458    	LD	(HL),B
+                           A  2459    ;  212	            return true;
+                           A  2460    .LINE 212
+                           A  2461    
+044BA9 3E01                A  2462    	LD	A,%1
+044BAB 18 1A               A  2463    	JR	L_78
+                           A  2464    ;  213	        } 
+                           A  2465    ;  214	    }
+044BAD                     A  2466    L_75:
+                           A  2467    .LINE 214
+                           A  2468    
+044BAD DD07FD              A  2469    	LD	BC,(IX+%FFFFFFFD)
+044BB0 03                  A  2470    	INC	BC
+044BB1 DD0FFD              A  2471    	LD	(IX+%FFFFFFFD),BC
+044BB4                     A  2472    L_76:
+044BB4 01002000            A  2473    	LD	BC,8192
+044BB8 DD27FD              A  2474    	LD	HL,(IX+%FFFFFFFD)
+044BBB B7                  A  2475    	OR	A,A
+044BBC ED42                A  2476    	SBC	HL,BC
+044BBE CD 33 63 04         A  2477    	CALL	__setflag
+044BC2 FA 6E 4B 04         A  2478    	JP	M,L_74
+                           A  2479    ;  215	    return false;
+                           A  2480    .LINE 215
+                           A  2481    
+044BC6 AF                  A  2482    	XOR	A,A
+                           A  2483    ;  216	}
+044BC7                     A  2484    L_78:
+                           A  2485    .LINE 216
+                           A  2486    
+044BC7 DDF9                A  2487    	LD	SP,IX
+044BC9 DDE1                A  2488    	POP	IX
+044BCB C9                  A  2489    	RET	
+                           A  2490    
+                           A  2491    
+                           A  2492    ;**************************** _insertGlobalLabe
+                           A  2493    ;Name                         Addr/Register   S
+                           A  2494    ;_globalLabelCounter                 STATIC    
+                           A  2495    ;_globalLabelTable                   STATIC  24
+                           A  2496    ;_hash                               IMPORT  --
+                           A  2497    ;_strcpy                             IMPORT  --
+                           A  2498    ;_globalLabelBuffer                  STATIC  13
+                           A  2499    ;_globalLabelBufferIndex             STATIC    
+                           A  2500    ;_strlen                             IMPORT  --
+                           A  2501    ;index                                IX-18    
+                           A  2502    ;try                                  IX-15    
+                           A  2503    ;G_0                                  IX-12    
+                           A  2504    ;len                                   IX-9    
+                           A  2505    ;tmp                                   IX-6    
+                           A  2506    ;i                                     IX-3    
+                           A  2507    ;address                               IX+9    
+                           A  2508    ;labelname                             IX+6    
+                           A  2509    
+                           A  2510    
+                           A  2511    ; Stack Frame Size: 33 (bytes)
+                           A  2512    ;       Spill Code: 0 (instruction)
+                           A  2513    
+                           A  2514    
+                           A  2515    .ENDFUNC "insertGlobalLabel",216,"_insertGlobal
+                           A  2516    ;  217	
+                           A  2517    ;  218	void print_bufferspace(){
+044BCC                     A  2518    _print_bufferspace:
+                           A  2519    .DEFINE "_print_bufferspace"
+                           A  2520    
+                           A  2521    .VALUE _print_bufferspace
+                           A  2522    
+                           A  2523    .CLASS 2
+                           A  2524    
+                           A  2525    .TYPE 65
+                           A  2526    
+                           A  2527    .ENDEF
+                           A  2528    
+                           A  2529    .BEGFUNC "print_bufferspace",218,"_print_buffer
+                           A  2530    
+044BCC DDE5                A  2531    	PUSH	IX
+044BCE DD210000 00         A  2532    	LD	IX,0
+044BD3 DD39                A  2533    	ADD	IX,SP
+                           A  2534    ;  219	    printf("%d bytes available in label
+                           A  2535    .LINE 219
+                           A  2536    
+044BD5 01 B2 65 04         A  2537    	LD	BC,___print_uputch
+044BD9 ED43 49 8B 04       A  2538    	LD	(___print_xputch),BC
+044BDE ED4B 42 97 07       A  2539    	LD	BC,(_globalLabelBufferIndex)
+044BE3 CD AC 65 04         A  2540    	CALL	__stoiu
+044BE7 E5C1                A  2541    	LD	BC,HL
+044BE9 21000002            A  2542    	LD	HL,131072
+044BED B7                  A  2543    	OR	A,A
+044BEE ED42                A  2544    	SBC	HL,BC
+044BF0 E5C1                A  2545    	LD	BC,HL
+044BF2 CD 2C 6D 04         A  2546    	CALL	__itol
+044BF6 C5D1                A  2547    	LD	DE,BC
+044BF8 4F                  A  2548    	LD	C,A
+044BF9 0600                A  2549    	LD	B,%0
+044BFB C5                  A  2550    	PUSH	BC
+044BFC D5                  A  2551    	PUSH	DE
+044BFD CD 8C 66 04         A  2552    	CALL	__u_itoa
+044C01 C1                  A  2553    	POP	BC
+044C02 C1                  A  2554    	POP	BC
+044C03 01 6A 90 04         A  2555    	LD	BC,L__37
+044C07 C5                  A  2556    	PUSH	BC
+044C08 CD 24 64 04         A  2557    	CALL	___print_sendstring
+044C0C C1                  A  2558    	POP	BC
+                           A  2559    ;  220	}
+                           A  2560    .LINE 220
+                           A  2561    
+044C0D DDF9                A  2562    	LD	SP,IX
+044C0F DDE1                A  2563    	POP	IX
+044C11 C9                  A  2564    	RET	
+                           A  2565    
+                           A  2566    
+                           A  2567    ;**************************** _print_bufferspac
+                           A  2568    ;Name                         Addr/Register   S
+                           A  2569    ;___print_sendstring                 IMPORT  --
+                           A  2570    ;_globalLabelBufferIndex             STATIC    
+                           A  2571    ;__u_itoa                            IMPORT  --
+                           A  2572    ;___print_xputch                     IMPORT    
+                           A  2573    ;___print_uputch                     IMPORT  --
+                           A  2574    
+                           A  2575    
+                           A  2576    ; Stack Frame Size: 6 (bytes)
+                           A  2577    ;       Spill Code: 0 (instruction)
+                           A  2578    
+                           A  2579    
+                           A  2580    .ENDFUNC "print_bufferspace",220,"_print_buffer
+                           A  2581    	SEGMENT STRSECT
+04906A                     A  2582    L__37:
+04906A 20627974 65732061   A  2583    	DB	" bytes available in label buffer"
+049072 7661696C 61626C65 
+04907A 20696E20 6C616265 
+049082 6C206275 66666572 
+04908A 0A00                A  2584    	DB	10,0
+                           A  2585    	SEGMENT CODE
+                           A  2586    ;  221	
+                           A  2587    ;  222	label * findGlobalLabel(char *name){
+044C12                     A  2588    _findGlobalLabel:
+                           A  2589    .DEFINE "_findGlobalLabel"
+                           A  2590    
+                           A  2591    .VALUE _findGlobalLabel
+                           A  2592    
+                           A  2593    .CLASS 2
+                           A  2594    
+                           A  2595    .TAG "NONAME0"
+                           A  2596    
+                           A  2597    .TYPE 328
+                           A  2598    
+                           A  2599    .ENDEF
+                           A  2600    
+                           A  2601    .BEGFUNC "findGlobalLabel",222,"_findGlobalLabe
+                           A  2602    
+                           A  2603    .LINE 222
+                           A  2604    
+                           A  2605    .DEFINE "name"
+                           A  2606    
+                           A  2607    .CLASS 65
+                           A  2608    
+                           A  2609    .VALUE 6
+                           A  2610    
+                           A  2611    .TYPE 34
+                           A  2612    
+                           A  2613    .ENDEF
+                           A  2614    
+                           A  2615    .DEFINE "i"
+                           A  2616    
+                           A  2617    .CLASS 65
+                           A  2618    
+                           A  2619    .VALUE -6
+                           A  2620    
+                           A  2621    .TYPE 4
+                           A  2622    
+                           A  2623    .ENDEF
+                           A  2624    
+                           A  2625    .DEFINE "try"
+                           A  2626    
+                           A  2627    .CLASS 65
+                           A  2628    
+                           A  2629    .VALUE -9
+                           A  2630    
+                           A  2631    .TYPE 4
+                           A  2632    
+                           A  2633    .ENDEF
+                           A  2634    
+                           A  2635    .DEFINE "index"
+                           A  2636    
+                           A  2637    .CLASS 65
+                           A  2638    
+                           A  2639    .VALUE -12
+                           A  2640    
+                           A  2641    .TYPE 4
+                           A  2642    
+                           A  2643    .ENDEF
+                           A  2644    
+044C12 DDE5                A  2645    	PUSH	IX
+044C14 DD210000 00         A  2646    	LD	IX,0
+044C19 DD39                A  2647    	ADD	IX,SP
+044C1B ED22F4              A  2648    	LEA	HL,IX+%FFFFFFF4
+044C1E F9                  A  2649    	LD	SP,HL
+                           A  2650    ;  223	    int index,i,try;
+                           A  2651    ;  224	
+                           A  2652    ;  225	    index = hash(name, GLOBAL_LABEL_TAB
+                           A  2653    .LINE 225
+                           A  2654    
+044C1F 01002000            A  2655    	LD	BC,8192
+044C23 C5                  A  2656    	PUSH	BC
+044C24 DD0706              A  2657    	LD	BC,(IX+%6)
+044C27 C5                  A  2658    	PUSH	BC
+044C28 CD 35 3A 04         A  2659    	CALL	_hash
+044C2C C1                  A  2660    	POP	BC
+044C2D C1                  A  2661    	POP	BC
+044C2E DD2FF4              A  2662    	LD	(IX+%FFFFFFF4),HL
+                           A  2663    ;  226	    for(i = 0; i < GLOBAL_LABEL_TABLE_S
+                           A  2664    .LINE 226
+                           A  2665    
+044C31 01000000            A  2666    	LD	BC,0
+044C35 DD0FFA              A  2667    	LD	(IX+%FFFFFFFA),BC
+044C38 18 5D               A  2668    	JR	L_87
+044C3A                     A  2669    L_85:
+                           A  2670    ;  227	        try = (index + i) % GLOBAL_LABE
+                           A  2671    .LINE 227
+                           A  2672    
+044C3A DD07FA              A  2673    	LD	BC,(IX+%FFFFFFFA)
+044C3D DD27F4              A  2674    	LD	HL,(IX+%FFFFFFF4)
+044C40 09                  A  2675    	ADD	HL,BC
+044C41 01002000            A  2676    	LD	BC,8192
+044C45 CD 42 63 04         A  2677    	CALL	__irems
+044C49 DD2FF7              A  2678    	LD	(IX+%FFFFFFF7),HL
+                           A  2679    ;  228	        if(globalLabelTable[try] == NUL
+                           A  2680    .LINE 228
+                           A  2681    
+044C4C E5C1                A  2682    	LD	BC,HL
+044C4E 29                  A  2683    	ADD	HL,HL
+044C4F 09                  A  2684    	ADD	HL,BC
+044C50 01 46 97 07         A  2685    	LD	BC,_globalLabelTable
+044C54 09                  A  2686    	ADD	HL,BC
+044C55 DD2FFD              A  2687    	LD	(IX+%FFFFFFFD),HL
+044C58 ED27                A  2688    	LD	HL,(HL)
+044C5A CD F9 69 04         A  2689    	CALL	__icmpzero
+044C5E 20 05               A  2690    	JR	NZ,L_84
+                           A  2691    ;  229	            return NULL;
+                           A  2692    .LINE 229
+                           A  2693    
+044C60 B7                  A  2694    	OR	A,A
+044C61 ED62                A  2695    	SBC	HL,HL
+044C63 18 47               A  2696    	JR	L_89
+                           A  2697    ;  230	        }
+044C65                     A  2698    L_84:
+                           A  2699    .LINE 230
+                           A  2700    
+                           A  2701    ;  231	        if(globalLabelTable[try] != NUL
+                           A  2702    .LINE 231
+                           A  2703    
+044C65 DD27FD              A  2704    	LD	HL,(IX+%FFFFFFFD)
+044C68 ED27                A  2705    	LD	HL,(HL)
+044C6A CD F9 69 04         A  2706    	CALL	__icmpzero
+044C6E 28 20               A  2707    	JR	Z,L_86
+                           A  2708    ;  232	            strcmp(globalLabelTable[try
+                           A  2709    .LINE 232
+                           A  2710    
+044C70 DD0706              A  2711    	LD	BC,(IX+%6)
+044C73 C5                  A  2712    	PUSH	BC
+044C74 DD27FD              A  2713    	LD	HL,(IX+%FFFFFFFD)
+044C77 ED31                A  2714    	LD	IY,(HL)
+044C79 FD0700              A  2715    	LD	BC,(IY+%0)
+044C7C C5                  A  2716    	PUSH	BC
+044C7D CD 8F 65 04         A  2717    	CALL	_strcmp
+044C81 C1                  A  2718    	POP	BC
+044C82 C1                  A  2719    	POP	BC
+044C83 CD F9 69 04         A  2720    	CALL	__icmpzero
+044C87 20 07               A  2721    	JR	NZ,L_86
+                           A  2722    ;  233	            return globalLabelTable[try
+                           A  2723    .LINE 233
+                           A  2724    
+044C89 DD27FD              A  2725    	LD	HL,(IX+%FFFFFFFD)
+044C8C ED27                A  2726    	LD	HL,(HL)
+044C8E 18 1C               A  2727    	JR	L_89
+                           A  2728    ;  234	        }
+                           A  2729    ;  235	    }
+044C90                     A  2730    L_86:
+                           A  2731    .LINE 235
+                           A  2732    
+044C90 DD07FA              A  2733    	LD	BC,(IX+%FFFFFFFA)
+044C93 03                  A  2734    	INC	BC
+044C94 DD0FFA              A  2735    	LD	(IX+%FFFFFFFA),BC
+044C97                     A  2736    L_87:
+044C97 01002000            A  2737    	LD	BC,8192
+044C9B DD27FA              A  2738    	LD	HL,(IX+%FFFFFFFA)
+044C9E B7                  A  2739    	OR	A,A
+044C9F ED42                A  2740    	SBC	HL,BC
+044CA1 CD 33 63 04         A  2741    	CALL	__setflag
+044CA5 FA 3A 4C 04         A  2742    	JP	M,L_85
+                           A  2743    ;  236	    return NULL;
+                           A  2744    .LINE 236
+                           A  2745    
+044CA9 B7                  A  2746    	OR	A,A
+044CAA ED62                A  2747    	SBC	HL,HL
+                           A  2748    ;  237	}
+044CAC                     A  2749    L_89:
+                           A  2750    .LINE 237
+                           A  2751    
+044CAC DDF9                A  2752    	LD	SP,IX
+044CAE DDE1                A  2753    	POP	IX
+044CB0 C9                  A  2754    	RET	
+                           A  2755    
+                           A  2756    
+                           A  2757    ;**************************** _findGlobalLabel 
+                           A  2758    ;Name                         Addr/Register   S
+                           A  2759    ;_strcmp                             IMPORT  --
+                           A  2760    ;_globalLabelTable                   STATIC  24
+                           A  2761    ;_hash                               IMPORT  --
+                           A  2762    ;index                                IX-12    
+                           A  2763    ;try                                   IX-9    
+                           A  2764    ;i                                     IX-6    
+                           A  2765    ;G_1                                   IX-3    
+                           A  2766    ;name                                  IX+6    
+                           A  2767    
+                           A  2768    
+                           A  2769    ; Stack Frame Size: 21 (bytes)
+                           A  2770    ;       Spill Code: 0 (instruction)
+                           A  2771    
+                           A  2772    
+                           A  2773    .ENDFUNC "findGlobalLabel",237,"_findGlobalLabe
+                           A  2774    ;  238	
+                           A  2775    ;  239	label *findLabel(char *name) {
+044CB1                     A  2776    _findLabel:
+                           A  2777    .DEFINE "_findLabel"
+                           A  2778    
+                           A  2779    .VALUE _findLabel
+                           A  2780    
+                           A  2781    .CLASS 2
+                           A  2782    
+                           A  2783    .TAG "NONAME0"
+                           A  2784    
+                           A  2785    .TYPE 328
+                           A  2786    
+                           A  2787    .ENDEF
+                           A  2788    
+                           A  2789    .BEGFUNC "findLabel",239,"_findLabel"
+                           A  2790    
+                           A  2791    .LINE 239
+                           A  2792    
+                           A  2793    .DEFINE "name"
+                           A  2794    
+                           A  2795    .CLASS 65
+                           A  2796    
+                           A  2797    .VALUE 6
+                           A  2798    
+                           A  2799    .TYPE 34
+                           A  2800    
+                           A  2801    .ENDEF
+                           A  2802    
+044CB1 DDE5                A  2803    	PUSH	IX
+044CB3 DD210000 00         A  2804    	LD	IX,0
+044CB8 DD39                A  2805    	ADD	IX,SP
+044CBA C5                  A  2806    	PUSH	BC
+044CBB C5                  A  2807    	PUSH	BC
+044CBC C5                  A  2808    	PUSH	BC
+                           A  2809    ;  240	    if(name[0] == '@') {
+                           A  2810    .LINE 240
+                           A  2811    
+044CBD DD2706              A  2812    	LD	HL,(IX+%6)
+044CC0 7E                  A  2813    	LD	A,(HL)
+044CC1 47                  A  2814    	LD	B,A
+044CC2 17ED62              A  2815    	SEXT	HL
+044CC5 68                  A  2816    	LD	L,B
+044CC6 01400000            A  2817    	LD	BC,64
+044CCA B7                  A  2818    	OR	A,A
+044CCB ED42                A  2819    	SBC	HL,BC
+044CCD C2 92 4D 04         A  2820    	JR	NZ,L_103
+                           A  2821    ;  241	        
+                           A  2822    ;  242	        if(((name[1] == 'f') || (name[1
+                           A  2823    .LINE 242
+                           A  2824    
+044CD1 DD0706              A  2825    	LD	BC,(IX+%6)
+044CD4 03                  A  2826    	INC	BC
+044CD5 DD0FFD              A  2827    	LD	(IX+%FFFFFFFD),BC
+044CD8 DD0FFA              A  2828    	LD	(IX+%FFFFFFFA),BC
+044CDB C5E1                A  2829    	LD	HL,BC
+044CDD 7E                  A  2830    	LD	A,(HL)
+044CDE 47                  A  2831    	LD	B,A
+044CDF 17ED62              A  2832    	SEXT	HL
+044CE2 68                  A  2833    	LD	L,B
+044CE3 01660000            A  2834    	LD	BC,102
+044CE7 B7                  A  2835    	OR	A,A
+044CE8 ED42                A  2836    	SBC	HL,BC
+044CEA 28 18               A  2837    	JR	Z,L_91
+044CEC DD07FD              A  2838    	LD	BC,(IX+%FFFFFFFD)
+044CEF DD0FFA              A  2839    	LD	(IX+%FFFFFFFA),BC
+044CF2 DD27FD              A  2840    	LD	HL,(IX+%FFFFFFFD)
+044CF5 7E                  A  2841    	LD	A,(HL)
+044CF6 47                  A  2842    	LD	B,A
+044CF7 17ED62              A  2843    	SEXT	HL
+044CFA 68                  A  2844    	LD	L,B
+044CFB 016E0000            A  2845    	LD	BC,110
+044CFF B7                  A  2846    	OR	A,A
+044D00 ED42                A  2847    	SBC	HL,BC
+044D02 20 2D               A  2848    	JR	NZ,L_100
+044D04                     A  2849    L_91:
+044D04 DD3106              A  2850    	LD	IY,(IX+%6)
+044D07 FD7E02              A  2851    	LD	A,(IY+%2)
+044D0A B7                  A  2852    	OR	A,A
+044D0B 20 24               A  2853    	JR	NZ,L_100
+                           A  2854    ;  243	            if(an_next.defined) {
+                           A  2855    .LINE 243
+                           A  2856    
+044D0D 3A 36 97 04         A  2857    	LD	A,(_an_next)
+044D11 B7                  A  2858    	OR	A,A
+044D12 28 18               A  2859    	JR	Z,L_93
+                           A  2860    ;  244	                an_return.address = an_
+                           A  2861    .LINE 244
+                           A  2862    
+044D14 ED4B 37 97 04       A  2863    	LD	BC,(_an_next+1)
+044D19 3A 3A 97 04         A  2864    	LD	A,(_an_next+4)
+044D1D ED43 3E 97 04       A  2865    	LD	(_an_return+3),BC
+044D22 32 41 97 04         A  2866    	LD	(_an_return+6),A
+                           A  2867    ;  245	                return &an_return;
+                           A  2868    .LINE 245
+                           A  2869    
+044D26 21 3B 97 04         A  2870    	LD	HL,_an_return
+044D2A 18 6F               A  2871    	JR	L_104
+                           A  2872    ;  246	            }
+                           A  2873    ;  247	            else return NULL;
+044D2C                     A  2874    L_93:
+                           A  2875    .LINE 247
+                           A  2876    
+044D2C B7                  A  2877    	OR	A,A
+044D2D ED62                A  2878    	SBC	HL,HL
+044D2F 18 6A               A  2879    	JR	L_104
+                           A  2880    ;  248	        }
+044D31                     A  2881    L_100:
+                           A  2882    .LINE 248
+                           A  2883    
+                           A  2884    ;  249	        if(((name[1] == 'b') || (name[1
+                           A  2885    .LINE 249
+                           A  2886    
+044D31 DD07FA              A  2887    	LD	BC,(IX+%FFFFFFFA)
+044D34 DD0FF7              A  2888    	LD	(IX+%FFFFFFF7),BC
+044D37 C5E1                A  2889    	LD	HL,BC
+044D39 7E                  A  2890    	LD	A,(HL)
+044D3A 47                  A  2891    	LD	B,A
+044D3B 17ED62              A  2892    	SEXT	HL
+044D3E 68                  A  2893    	LD	L,B
+044D3F 01620000            A  2894    	LD	BC,98
+044D43 B7                  A  2895    	OR	A,A
+044D44 ED42                A  2896    	SBC	HL,BC
+044D46 28 12               A  2897    	JR	Z,L_96
+044D48 DD27F7              A  2898    	LD	HL,(IX+%FFFFFFF7)
+044D4B 7E                  A  2899    	LD	A,(HL)
+044D4C 47                  A  2900    	LD	B,A
+044D4D 17ED62              A  2901    	SEXT	HL
+044D50 68                  A  2902    	LD	L,B
+044D51 01700000            A  2903    	LD	BC,112
+044D55 B7                  A  2904    	OR	A,A
+044D56 ED42                A  2905    	SBC	HL,BC
+044D58 20 2D               A  2906    	JR	NZ,L_101
+044D5A                     A  2907    L_96:
+044D5A DD3106              A  2908    	LD	IY,(IX+%6)
+044D5D FD7E02              A  2909    	LD	A,(IY+%2)
+044D60 B7                  A  2910    	OR	A,A
+044D61 20 24               A  2911    	JR	NZ,L_101
+                           A  2912    ;  250	            if(an_prev.defined) {
+                           A  2913    .LINE 250
+                           A  2914    
+044D63 3A 31 97 04         A  2915    	LD	A,(_an_prev)
+044D67 B7                  A  2916    	OR	A,A
+044D68 28 18               A  2917    	JR	Z,L_98
+                           A  2918    ;  251	                an_return.address = an_
+                           A  2919    .LINE 251
+                           A  2920    
+044D6A ED4B 32 97 04       A  2921    	LD	BC,(_an_prev+1)
+044D6F 3A 35 97 04         A  2922    	LD	A,(_an_prev+4)
+044D73 ED43 3E 97 04       A  2923    	LD	(_an_return+3),BC
+044D78 32 41 97 04         A  2924    	LD	(_an_return+6),A
+                           A  2925    ;  252	                return &an_return;
+                           A  2926    .LINE 252
+                           A  2927    
+044D7C 21 3B 97 04         A  2928    	LD	HL,_an_return
+044D80 18 19               A  2929    	JR	L_104
+                           A  2930    ;  253	            }
+                           A  2931    ;  254	            else return NULL;
+044D82                     A  2932    L_98:
+                           A  2933    .LINE 254
+                           A  2934    
+044D82 B7                  A  2935    	OR	A,A
+044D83 ED62                A  2936    	SBC	HL,HL
+044D85 18 14               A  2937    	JR	L_104
+                           A  2938    ;  255	        }
+044D87                     A  2939    L_101:
+                           A  2940    .LINE 255
+                           A  2941    
+                           A  2942    ;  256	        
+                           A  2943    ;  257	        return findLocalLabel(name);
+                           A  2944    .LINE 257
+                           A  2945    
+044D87 DD0706              A  2946    	LD	BC,(IX+%6)
+044D8A C5                  A  2947    	PUSH	BC
+044D8B CD CB 45 04         A  2948    	CALL	_findLocalLabel
+044D8F C1                  A  2949    	POP	BC
+044D90 18 09               A  2950    	JR	L_104
+                           A  2951    ;  258	    }
+                           A  2952    ;  259	    else return findGlobalLabel(name);
+044D92                     A  2953    L_103:
+                           A  2954    .LINE 259
+                           A  2955    
+044D92 DD0706              A  2956    	LD	BC,(IX+%6)
+044D95 C5                  A  2957    	PUSH	BC
+044D96 CD 12 4C 04         A  2958    	CALL	_findGlobalLabel
+044D9A C1                  A  2959    	POP	BC
+044D9B                     A  2960    L_104:
+                           A  2961    .LINE 260
+                           A  2962    
+044D9B DDF9                A  2963    	LD	SP,IX
+044D9D DDE1                A  2964    	POP	IX
+044D9F C9                  A  2965    	RET	
+                           A  2966    
+                           A  2967    
+                           A  2968    ;**************************** _findLabel ******
+                           A  2969    ;Name                         Addr/Register   S
+                           A  2970    ;_findGlobalLabel                    IMPORT  --
+                           A  2971    ;_an_prev                            STATIC    
+                           A  2972    ;_an_return                          STATIC    
+                           A  2973    ;_an_next                            STATIC    
+                           A  2974    ;G_6                                   IX-9    
+                           A  2975    ;G_5                                   IX-6    
+                           A  2976    ;G_4                                   IX-3    
+                           A  2977    ;name                                  IX+6    
+                           A  2978    
+                           A  2979    
+                           A  2980    ; Stack Frame Size: 18 (bytes)
+                           A  2981    ;       Spill Code: 0 (instruction)
+                           A  2982    
+                           A  2983    
+                           A  2984    .ENDFUNC "findLabel",260,"_findLabel"
+                           A  2985    	XREF _message:ROM
+                           A  2986    	XREF _agon_fread:ROM
+                           A  2987    	XREF _agon_fwrite:ROM
+                           A  2988    	XREF _error:ROM
+                           A  2989    	XREF _hash:ROM
+                           A  2990    	XREF _strlen:ROM
+                           A  2991    	XREF _strcmp:ROM
+                           A  2992    	XREF _strcpy:ROM
+                           A  2993    	XREF __u_itoa:ROM
+                           A  2994    	XREF ___print_sendstring:ROM
+                           A  2995    	XREF ___print_xputch:ROM
+                           A  2996    	XREF ___print_uputch:ROM
+                           A  2997    	XREF __irems:ROM
+                           A  2998    	XREF __stoiu:ROM
+                           A  2999    	XREF __itol:ROM
+                           A  3000    	XREF __setflag:ROM
+                           A  3001    	XREF __scmpzero:ROM
+                           A  3002    	XREF __icmpzero:ROM
+                           A  3003    	XREF __imul_b:ROM
+                           A  3004    	XREF __ishrs_b:ROM
+                           A  3005    	XDEF _findLabel
+                           A  3006    	XDEF _findGlobalLabel
+                           A  3007    	XDEF _print_bufferspace
+                           A  3008    	XDEF _insertGlobalLabel
+                           A  3009    	XDEF _insertLocalLabel
+                           A  3010    	XDEF _readAnonymousLabel
+                           A  3011    	XDEF _writeAnonymousLabel
+                           A  3012    	XDEF _readLocalLabels
+                           A  3013    	XDEF _writeLocalLabels
+                           A  3014    	XDEF _findLocalLabel
+                           A  3015    	XDEF _findLocalLabelIndex
+                           A  3016    	XDEF _clearLocalLabels
+                           A  3017    	XDEF _initLocalLabelTable
+                           A  3018    	XDEF _initAnonymousLabelTable
+                           A  3019    	XDEF _initGlobalLabelTable
+                           A  3020    	XDEF _getLocalLabelCount
+                           A  3021    	XDEF _getGlobalLabelCount
+                           A  3022    	XDEF _localLabelCounter
+                           A  3023    	XDEF _localLabelTable
+                           A  3024    	XDEF _globalLabelCounter
+                           A  3025    	XDEF _globalLabelTable
+                           A  3026    	XDEF _localLabelBufferIndex
+                           A  3027    	XDEF _globalLabelBufferIndex
+                           A  3028    	XDEF _localLabelBuffer
+                           A  3029    	XDEF _globalLabelBuffer
+                           A  3030    	XDEF _an_return
+                           A  3031    	XDEF _an_next
+                           A  3032    	XDEF _an_prev
+                           A  3033    	END
+
+
+Errors: 0
+Warnings: 0
+Lines Assembled: 3034

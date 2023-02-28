@@ -1,0 +1,701 @@
+; Zilog eZ80 ANSI C Compiler Release 3.4
+; -nomodsect -optsize -noreduceopt -nopadbranch -debug
+; -peephole -globalopt -localcse -const=ROM 
+	FILE	"..\main.c"
+	.assume ADL=1
+.DEBUG "C"
+	SEGMENT CODE
+.BEGREC "fmt_type",19
+.DEFINE "status"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "flags"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "size"
+.VALUE 2
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "chr"
+.VALUE 3
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "type"
+.VALUE 4
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "field_width"
+.VALUE 5
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "precision"
+.VALUE 6
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "set_begin"
+.VALUE 7
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "set_end"
+.VALUE 10
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "pad_whole"
+.VALUE 13
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_pre_fract"
+.VALUE 14
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_post_fract"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_at"
+.VALUE 16
+.CLASS 8
+.TYPE 34
+.ENDEF
+.ENDREC "fmt_type"
+.BEGREC "flt_info",12
+.DEFINE "flags"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "exp"
+.VALUE 1
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "digits"
+.VALUE 2
+.CLASS 8
+.DIM 10
+.TYPE 108
+.ENDEF
+.ENDREC "flt_info"
+.BEGREC "NONAME0",6
+.DEFINE "quot"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "rem"
+.VALUE 3
+.CLASS 8
+.TYPE 4
+.ENDEF
+.ENDREC "NONAME0"
+.BEGREC "NONAME1",8
+.DEFINE "quot"
+.VALUE 0
+.CLASS 8
+.TYPE 5
+.ENDEF
+.DEFINE "rem"
+.VALUE 4
+.CLASS 8
+.TYPE 5
+.ENDEF
+.ENDREC "NONAME1"
+.BEGREC "header",6
+.DEFINE "s"
+.VALUE 0
+.CLASS 11
+.TAG "NONAME2"
+.TYPE 8
+.ENDEF
+.DEFINE "x"
+.VALUE 0
+.CLASS 11
+.TYPE 2
+.ENDEF
+.ENDREC "header"
+.BEGREC "NONAME2",6
+.DEFINE "ptr"
+.VALUE 0
+.CLASS 8
+.TAG "header"
+.TYPE 40
+.ENDEF
+.DEFINE "size"
+.VALUE 3
+.CLASS 8
+.TYPE 14
+.ENDEF
+.ENDREC "NONAME2"
+.BEGREC "NONAME3",16
+.DEFINE "reg"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "reg_index"
+.VALUE 3
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "indirect"
+.VALUE 4
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "cc"
+.VALUE 5
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "cc_index"
+.VALUE 6
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "displacement"
+.VALUE 7
+.CLASS 8
+.TYPE 3
+.ENDEF
+.DEFINE "displacement_provided"
+.VALUE 9
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "immediate_provided"
+.VALUE 10
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "immediate"
+.VALUE 11
+.CLASS 8
+.TYPE 5
+.ENDEF
+.DEFINE "wasLabel"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME3"
+.BEGREC "NONAME4",4
+.DEFINE "suffix"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "prefix1"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "prefix2"
+.VALUE 2
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "opcode"
+.VALUE 3
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME4"
+.BEGREC "NONAME5",16
+.DEFINE "operandA"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "operandB"
+.VALUE 3
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "ddfdpermitted"
+.VALUE 6
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "transformA"
+.VALUE 7
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "transformB"
+.VALUE 10
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "prefix"
+.VALUE 13
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "opcode"
+.VALUE 14
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "adl"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME5"
+.BEGREC "NONAME6",17
+.DEFINE "name"
+.VALUE 0
+.CLASS 8
+.DIM 8
+.TYPE 98
+.ENDEF
+.DEFINE "type"
+.VALUE 8
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "asmtype"
+.VALUE 9
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "listnumber"
+.VALUE 10
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "list"
+.VALUE 11
+.CLASS 8
+.TAG "NONAME5"
+.TYPE 40
+.ENDEF
+.DEFINE "asmargument"
+.VALUE 14
+.CLASS 8
+.TYPE 4
+.ENDEF
+.ENDREC "NONAME6"
+.BEGREC "NONAME7",6
+.DEFINE "type"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "match"
+.VALUE 3
+.CLASS 8
+.TYPE 556
+.ENDEF
+.ENDREC "NONAME7"
+.BEGREC "NONAME8",264
+.DEFINE "current_instruction"
+.VALUE 0
+.CLASS 8
+.TAG "NONAME6"
+.TYPE 40
+.ENDEF
+.DEFINE "next"
+.VALUE 3
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "label"
+.VALUE 6
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "mnemonic"
+.VALUE 38
+.CLASS 8
+.DIM 16
+.TYPE 98
+.ENDEF
+.DEFINE "suffix"
+.VALUE 54
+.CLASS 8
+.DIM 16
+.TYPE 98
+.ENDEF
+.DEFINE "operand1"
+.VALUE 70
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "operand2"
+.VALUE 102
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "comment"
+.VALUE 134
+.CLASS 8
+.DIM 128
+.TYPE 98
+.ENDEF
+.DEFINE "size"
+.VALUE 262
+.CLASS 8
+.TYPE 13
+.ENDEF
+.ENDREC "NONAME8"
+.BEGREC "NONAME9",261
+.DEFINE "start"
+.VALUE 0
+.CLASS 8
+.DIM 256
+.TYPE 98
+.ENDEF
+.DEFINE "length"
+.VALUE 256
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "next"
+.VALUE 257
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "terminator"
+.VALUE 260
+.CLASS 8
+.TYPE 2
+.ENDEF
+.ENDREC "NONAME9"
+.BEGREC "NONAME10",7
+.DEFINE "name"
+.VALUE 0
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "address"
+.VALUE 3
+.CLASS 8
+.TYPE 5
+.ENDEF
+.ENDREC "NONAME10"
+.BEGREC "NONAME11",5
+.DEFINE "defined"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "address"
+.VALUE 1
+.CLASS 8
+.TYPE 5
+.ENDEF
+.ENDREC "NONAME11"
+;    1	#include <stdio.h>
+;    2	#include <stdlib.h>
+;    3	#include <string.h>
+;    4	#include <stdint.h>
+;    5	#include "globals.h"
+;    6	#include "utils.h"
+;    7	#include "assemble.h"
+;    8	#include "label.h"
+;    9	#include "stdint.h"
+;   10	
+;   11	int main(int argc, char *argv[])
+;   12	{
+_main:
+.DEFINE "_main"
+
+.VALUE _main
+
+.CLASS 2
+
+.TYPE 68
+
+.ENDEF
+
+.BEGFUNC "main",12,"_main"
+
+.LINE 12
+
+.DEFINE "argc"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 4
+
+.ENDEF
+
+.DEFINE "argv"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 290
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	DEC	SP
+;   13	    if(argc < 2){
+.LINE 13
+
+	LD	BC,2
+	LD	HL,(IX+%6)
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	P,L_1
+;   14	        printf("Usage: asm <filename> [-l]\n");
+.LINE 14
+
+	LD	BC,___print_uputch
+	LD	(___print_xputch),BC
+	LD	BC,L__1
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+;   15	        return 0;
+.LINE 15
+
+	OR	A,A
+	SBC	HL,HL
+	JR	L_13
+;   16	    }
+L_1:
+.LINE 16
+
+;   17	
+;   18	    prepare_filenames(argv[1]);
+.LINE 18
+
+	LD	IY,(IX+%9)
+	LEA	HL,IY+%3
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_prepare_filenames
+	POP	BC
+;   19	    if(!openfiles()) return 0;
+.LINE 19
+
+	CALL	_openfiles
+	OR	A,A
+	JR	NZ,L_3
+	OR	A,A
+	SBC	HL,HL
+	JR	L_13
+L_3:
+;   20	
+;   21	    debug_enabled = false;
+.LINE 21
+
+	XOR	A,A
+	LD	(_debug_enabled),A
+;   22	    if((argc == 3) && (strcmp(argv[2], "-d") == 0)) debug_enabled = true;
+.LINE 22
+
+	LD	BC,3
+	LD	HL,(IX+%6)
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L__4
+	LD	A,%1
+	JR	L__5
+L__4:
+	XOR	A,A
+L__5:
+	LD	(IX+%FFFFFFFF),A
+	OR	A,A
+	JR	NZ,L_8
+	LD	BC,L__7
+	PUSH	BC
+	LD	IY,(IX+%9)
+	LEA	HL,IY+%6
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_strcmp
+	POP	BC
+	POP	BC
+	CALL	__icmpzero
+	JR	NZ,L_8
+	LD	A,%1
+	LD	(_debug_enabled),A
+L_8:
+;   23	    if((argc == 3) && (strcmp(argv[2], "-l") == 0)) consolelist_enabled = true;
+.LINE 23
+
+	LD	A,(IX+%FFFFFFFF)
+	OR	A,A
+	JR	NZ,L_9
+	LD	BC,L__10
+	PUSH	BC
+	LD	IY,(IX+%9)
+	LEA	HL,IY+%6
+	LD	BC,(HL)
+	PUSH	BC
+	CALL	_strcmp
+	POP	BC
+	POP	BC
+	CALL	__icmpzero
+	JR	NZ,L_9
+	LD	A,%1
+	LD	(_consolelist_enabled),A
+L_9:
+;   24	
+;   25	    // Init tables
+;   26	    initGlobalLabelTable();
+.LINE 26
+
+	CALL	_initGlobalLabelTable
+;   27	    initLocalLabelTable();
+.LINE 27
+
+	CALL	_initLocalLabelTable
+;   28	    initAnonymousLabelTable();
+.LINE 28
+
+	CALL	_initAnonymousLabelTable
+;   29	
+;   30	    // Assemble input to output
+;   31	    assemble();
+.LINE 31
+
+	CALL	_assemble
+;   32	    if(global_errors) {
+.LINE 32
+
+	LD	HL,(_global_errors)
+	CALL	__scmpzero
+	JR	Z,L_11
+;   33	        //remove(filename[FILE_OUTPUT]);
+;   34	        printf("Error in input\n");
+.LINE 34
+
+	LD	BC,___print_uputch
+	LD	(___print_xputch),BC
+	LD	BC,L__13
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+;   35	    }
+;   36	    else printf("%d bytes\n", totalsize);
+.LINE 36
+
+	JR	L_12
+L_11:
+	LD	BC,___print_uputch
+	LD	(___print_xputch),BC
+	LD	A,(_totalsize+3)
+	LD	C,A
+	LD	B,%0
+	PUSH	BC
+	LD	BC,(_totalsize)
+	PUSH	BC
+	CALL	__u_itoa
+	POP	BC
+	POP	BC
+	LD	BC,L__14
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+L_12:
+;   37	 
+;   38	    closeAllFiles();   
+.LINE 38
+
+	CALL	_closeAllFiles
+;   39	    return 0;
+.LINE 39
+
+	OR	A,A
+	SBC	HL,HL
+L_13:
+.LINE 40
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _main ***************************
+;Name                         Addr/Register   Size   Type
+;_closeAllFiles                      IMPORT  -----   function
+;_totalsize                          IMPORT      4   variable
+;__u_itoa                            IMPORT  -----   function
+;_global_errors                      IMPORT      2   variable
+;_assemble                           IMPORT  -----   function
+;_initAnonymousLabelTable            IMPORT  -----   function
+;_initLocalLabelTable                IMPORT  -----   function
+;_initGlobalLabelTable               IMPORT  -----   function
+;_consolelist_enabled                IMPORT      1   variable
+;_strcmp                             IMPORT  -----   function
+;_debug_enabled                      IMPORT      1   variable
+;_openfiles                          IMPORT  -----   function
+;_prepare_filenames                  IMPORT  -----   function
+;___print_sendstring                 IMPORT  -----   function
+;___print_xputch                     IMPORT      3   variable
+;___print_uputch                     IMPORT  -----   function
+;G_0                                   IX-1      1   variable
+;argv                                  IX+9      3   parameter
+;argc                                  IX+6      3   parameter
+
+
+; Stack Frame Size: 13 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "main",40,"_main"
+	SEGMENT STRSECT
+L__1:
+	DB	"Usage: asm <filename> [-l]"
+	DB	10,0
+L__7:
+	DB	"-d"
+	DB	0
+L__10:
+	DB	"-l"
+	DB	0
+L__13:
+	DB	"Error in input"
+	DB	10,0
+L__14:
+	DB	" bytes"
+	DB	10,0
+	XREF _assemble:ROM
+	XREF _initLocalLabelTable:ROM
+	XREF _initAnonymousLabelTable:ROM
+	XREF _initGlobalLabelTable:ROM
+	XREF _openfiles:ROM
+	XREF _closeAllFiles:ROM
+	XREF _prepare_filenames:ROM
+	XREF _global_errors:ROM
+	XREF _totalsize:ROM
+	XREF _consolelist_enabled:ROM
+	XREF _debug_enabled:ROM
+	XREF _strcmp:ROM
+	XREF __u_itoa:ROM
+	XREF ___print_sendstring:ROM
+	XREF ___print_xputch:ROM
+	XREF ___print_uputch:ROM
+	XREF __setflag:ROM
+	XREF __scmpzero:ROM
+	XREF __icmpzero:ROM
+	XDEF _main
+	END

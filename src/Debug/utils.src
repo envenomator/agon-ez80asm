@@ -1,0 +1,3821 @@
+; Zilog eZ80 ANSI C Compiler Release 3.4
+; -nomodsect -optsize -noreduceopt -nopadbranch -debug
+; -peephole -globalopt -localcse -const=ROM 
+	FILE	"..\utils.c"
+	.assume ADL=1
+.DEBUG "C"
+	SEGMENT CODE
+.BEGREC "fmt_type",19
+.DEFINE "status"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "flags"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "size"
+.VALUE 2
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "chr"
+.VALUE 3
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "type"
+.VALUE 4
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "field_width"
+.VALUE 5
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "precision"
+.VALUE 6
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "set_begin"
+.VALUE 7
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "set_end"
+.VALUE 10
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "pad_whole"
+.VALUE 13
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_pre_fract"
+.VALUE 14
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_post_fract"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "pad_at"
+.VALUE 16
+.CLASS 8
+.TYPE 34
+.ENDEF
+.ENDREC "fmt_type"
+.BEGREC "flt_info",12
+.DEFINE "flags"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "exp"
+.VALUE 1
+.CLASS 8
+.TYPE 2
+.ENDEF
+.DEFINE "digits"
+.VALUE 2
+.CLASS 8
+.DIM 10
+.TYPE 108
+.ENDEF
+.ENDREC "flt_info"
+.BEGREC "NONAME0",16
+.DEFINE "reg"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "reg_index"
+.VALUE 3
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "indirect"
+.VALUE 4
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "cc"
+.VALUE 5
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "cc_index"
+.VALUE 6
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "displacement"
+.VALUE 7
+.CLASS 8
+.TYPE 3
+.ENDEF
+.DEFINE "displacement_provided"
+.VALUE 9
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "immediate_provided"
+.VALUE 10
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "immediate"
+.VALUE 11
+.CLASS 8
+.TYPE 5
+.ENDEF
+.DEFINE "wasLabel"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME0"
+.BEGREC "NONAME1",4
+.DEFINE "suffix"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "prefix1"
+.VALUE 1
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "prefix2"
+.VALUE 2
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "opcode"
+.VALUE 3
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME1"
+.BEGREC "NONAME2",16
+.DEFINE "operandA"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "operandB"
+.VALUE 3
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "ddfdpermitted"
+.VALUE 6
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "transformA"
+.VALUE 7
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "transformB"
+.VALUE 10
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "prefix"
+.VALUE 13
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "opcode"
+.VALUE 14
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "adl"
+.VALUE 15
+.CLASS 8
+.TYPE 12
+.ENDEF
+.ENDREC "NONAME2"
+.BEGREC "NONAME3",17
+.DEFINE "name"
+.VALUE 0
+.CLASS 8
+.DIM 8
+.TYPE 98
+.ENDEF
+.DEFINE "type"
+.VALUE 8
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "asmtype"
+.VALUE 9
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "listnumber"
+.VALUE 10
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "list"
+.VALUE 11
+.CLASS 8
+.TAG "NONAME2"
+.TYPE 40
+.ENDEF
+.DEFINE "asmargument"
+.VALUE 14
+.CLASS 8
+.TYPE 4
+.ENDEF
+.ENDREC "NONAME3"
+.BEGREC "NONAME4",6
+.DEFINE "type"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "match"
+.VALUE 3
+.CLASS 8
+.TYPE 556
+.ENDEF
+.ENDREC "NONAME4"
+.BEGREC "NONAME5",264
+.DEFINE "current_instruction"
+.VALUE 0
+.CLASS 8
+.TAG "NONAME3"
+.TYPE 40
+.ENDEF
+.DEFINE "next"
+.VALUE 3
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "label"
+.VALUE 6
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "mnemonic"
+.VALUE 38
+.CLASS 8
+.DIM 16
+.TYPE 98
+.ENDEF
+.DEFINE "suffix"
+.VALUE 54
+.CLASS 8
+.DIM 16
+.TYPE 98
+.ENDEF
+.DEFINE "operand1"
+.VALUE 70
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "operand2"
+.VALUE 102
+.CLASS 8
+.DIM 32
+.TYPE 98
+.ENDEF
+.DEFINE "comment"
+.VALUE 134
+.CLASS 8
+.DIM 128
+.TYPE 98
+.ENDEF
+.DEFINE "size"
+.VALUE 262
+.CLASS 8
+.TYPE 13
+.ENDEF
+.ENDREC "NONAME5"
+.BEGREC "NONAME6",261
+.DEFINE "start"
+.VALUE 0
+.CLASS 8
+.DIM 256
+.TYPE 98
+.ENDEF
+.DEFINE "length"
+.VALUE 256
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "next"
+.VALUE 257
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "terminator"
+.VALUE 260
+.CLASS 8
+.TYPE 2
+.ENDEF
+.ENDREC "NONAME6"
+.BEGREC "NONAME7",6
+.DEFINE "quot"
+.VALUE 0
+.CLASS 8
+.TYPE 4
+.ENDEF
+.DEFINE "rem"
+.VALUE 3
+.CLASS 8
+.TYPE 4
+.ENDEF
+.ENDREC "NONAME7"
+.BEGREC "NONAME8",8
+.DEFINE "quot"
+.VALUE 0
+.CLASS 8
+.TYPE 5
+.ENDEF
+.DEFINE "rem"
+.VALUE 4
+.CLASS 8
+.TYPE 5
+.ENDEF
+.ENDREC "NONAME8"
+.BEGREC "header",6
+.DEFINE "s"
+.VALUE 0
+.CLASS 11
+.TAG "NONAME9"
+.TYPE 8
+.ENDEF
+.DEFINE "x"
+.VALUE 0
+.CLASS 11
+.TYPE 2
+.ENDEF
+.ENDREC "header"
+.BEGREC "NONAME9",6
+.DEFINE "ptr"
+.VALUE 0
+.CLASS 8
+.TAG "header"
+.TYPE 40
+.ENDEF
+.DEFINE "size"
+.VALUE 3
+.CLASS 8
+.TYPE 14
+.ENDEF
+.ENDREC "NONAME9"
+.BEGREC "NONAME10",7
+.DEFINE "name"
+.VALUE 0
+.CLASS 8
+.TYPE 34
+.ENDEF
+.DEFINE "address"
+.VALUE 3
+.CLASS 8
+.TYPE 5
+.ENDEF
+.ENDREC "NONAME10"
+.BEGREC "NONAME11",5
+.DEFINE "defined"
+.VALUE 0
+.CLASS 8
+.TYPE 12
+.ENDEF
+.DEFINE "address"
+.VALUE 1
+.CLASS 8
+.TYPE 5
+.ENDEF
+.ENDREC "NONAME11"
+;    1	#include <stdio.h>
+;    2	#include <string.h>
+;    3	#include <ctype.h>
+;    4	#include "globals.h"
+;    5	#include "utils.h"
+;    6	#include "str2num.h"
+;    7	#include "label.h"
+;    8	#include "instruction.h"
+;    9	#include "stdint.h"
+;   10	#include "mos-interface.h"
+;   11	
+;   12	// return a base filename, stripping the given extension from it
+;   13	void remove_ext (char* myStr, char extSep, char pathSep) {
+_remove_ext:
+.DEFINE "_remove_ext"
+
+.VALUE _remove_ext
+
+.CLASS 2
+
+.TYPE 65
+
+.ENDEF
+
+.BEGFUNC "remove_ext",13,"_remove_ext"
+
+.LINE 13
+
+.DEFINE "myStr"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "extSep"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 2
+
+.ENDEF
+
+.DEFINE "pathSep"
+
+.CLASS 65
+
+.VALUE 12
+
+.TYPE 2
+
+.ENDEF
+
+.DEFINE "lastExt"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "lastPath"
+
+.CLASS 65
+
+.VALUE -6
+
+.TYPE 34
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+	PUSH	BC
+;   14	    char *lastExt, *lastPath;
+;   15	    // Error checks.
+;   16	    if (myStr == NULL) return;
+.LINE 16
+
+	LD	HL,(IX+%6)
+	CALL	__icmpzero
+	JR	Z,L_10
+;   17	    // Find the relevant characters.
+;   18	    lastExt = strrchr (myStr, extSep);
+.LINE 18
+
+	LD	A,(IX+%9)
+	SEXT	HL
+	LD	L,(IX+%9)
+	PUSH	HL
+	LD	BC,(IX+%6)
+	PUSH	BC
+	CALL	_strrchr
+	POP	BC
+	POP	BC
+	LD	(IX+%FFFFFFFD),HL
+;   19	    lastPath = (pathSep == 0) ? NULL : strrchr (myStr, pathSep);
+.LINE 19
+
+	LD	A,(IX+%C)
+	OR	A,A
+	JR	NZ,L_4
+	LD	BC,0
+	LD	(IX+%FFFFFFF7),BC
+	JR	L_5
+L_4:
+	LD	A,(IX+%C)
+	SEXT	HL
+	LD	L,(IX+%C)
+	PUSH	HL
+	LD	BC,(IX+%6)
+	PUSH	BC
+	CALL	_strrchr
+	POP	BC
+	POP	BC
+	LD	(IX+%FFFFFFF7),HL
+L_5:
+	LD	BC,(IX+%FFFFFFF7)
+	LD	(IX+%FFFFFFFA),BC
+;   20	    // If it has an extension separator.
+;   21	    if (lastExt != NULL) {
+.LINE 21
+
+	LD	HL,(IX+%FFFFFFFD)
+	CALL	__icmpzero
+	JR	Z,L_10
+;   22	        // and it's to the right of the path separator.
+;   23	        if (lastPath != NULL) {
+.LINE 23
+
+	LD	HL,(IX+%FFFFFFFA)
+	CALL	__icmpzero
+	JR	Z,L_8
+;   24	            if (lastPath < lastExt) {
+.LINE 24
+
+	LD	BC,(IX+%FFFFFFFD)
+	LD	HL,(IX+%FFFFFFFA)
+	OR	A,A
+	SBC	HL,BC
+	JR	NC,L_10
+;   25	                // then remove it.
+;   26	                *lastExt = '\0';
+.LINE 26
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	(HL),%0
+;   27	            }
+;   28	        } else {
+.LINE 28
+
+	JR	L_10
+L_8:
+;   29	            // Has extension separator with no path separator.
+;   30	            *lastExt = '\0';
+.LINE 30
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	(HL),%0
+;   31	        }
+;   32	    }
+;   33	}
+L_10:
+.LINE 33
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _remove_ext ***************************
+;Name                         Addr/Register   Size   Type
+;_strrchr                            IMPORT  -----   function
+;temp2                                 IX-9      3   variable
+;lastPath                              IX-6      3   variable
+;lastExt                               IX-3      3   variable
+;pathSep                              IX+12      1   parameter
+;extSep                                IX+9      1   parameter
+;myStr                                 IX+6      3   parameter
+
+
+; Stack Frame Size: 24 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "remove_ext",33,"_remove_ext"
+;   34	
+;   35	
+;   36	bool isEmpty(const char *str){
+_isEmpty:
+.DEFINE "_isEmpty"
+
+.VALUE _isEmpty
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "isEmpty",36,"_isEmpty"
+
+.LINE 36
+
+.DEFINE "str"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 194
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   37	    return (str[0] == '\0');
+.LINE 37
+
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L__7
+	LD	A,%1
+	JR	L__8
+L__7:
+	XOR	A,A
+L__8:
+;   38	}
+.LINE 38
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _isEmpty ***************************
+;Name                         Addr/Register   Size   Type
+;str                                   IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "isEmpty",38,"_isEmpty"
+;   39	
+;   40	bool notEmpty(const char *str) {
+_notEmpty:
+.DEFINE "_notEmpty"
+
+.VALUE _notEmpty
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "notEmpty",40,"_notEmpty"
+
+.LINE 40
+
+.DEFINE "str"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 194
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   41	    return (str[0] != '\0');
+.LINE 41
+
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	OR	A,A
+	JR	Z,L__11
+	LD	A,%1
+	JR	L__12
+L__11:
+	XOR	A,A
+L__12:
+;   42	}
+.LINE 42
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _notEmpty ***************************
+;Name                         Addr/Register   Size   Type
+;str                                   IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "notEmpty",42,"_notEmpty"
+;   43	
+;   44	void error(char* msg)
+;   45	{
+_error:
+.DEFINE "_error"
+
+.VALUE _error
+
+.CLASS 2
+
+.TYPE 65
+
+.ENDEF
+
+.BEGFUNC "error",45,"_error"
+
+.LINE 45
+
+.DEFINE "msg"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   46	    printf("\"%s\" - line %d - %s\n", filename[FILE_CURRENT], linenumber, msg);
+.LINE 46
+
+	LD	BC,___print_uputch
+	LD	(___print_xputch),BC
+	LD	BC,34
+	PUSH	BC
+	CALL	___print_uputch
+	POP	BC
+	LD	BC,_filename
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+	LD	BC,L__14
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+	LD	BC,(_linenumber)
+	XOR	A,A
+	LD	DE,BC
+	LD	C,A
+	LD	B,%0
+	PUSH	BC
+	PUSH	DE
+	CALL	__u_itoa
+	POP	BC
+	POP	BC
+	LD	BC,L__15
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+	LD	BC,(IX+%6)
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+	LD	BC,10
+	PUSH	BC
+	CALL	___print_uputch
+	POP	BC
+;   47	    global_errors++;
+.LINE 47
+
+	LD	BC,(_global_errors)
+	INC	BC
+	LD	HL,_global_errors
+	LD	(HL),C
+	INC	HL
+	LD	(HL),B
+;   48	}
+.LINE 48
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _error ***************************
+;Name                         Addr/Register   Size   Type
+;_global_errors                      IMPORT      2   variable
+;_linenumber                         IMPORT      3   variable
+;__u_itoa                            IMPORT  -----   function
+;_filename                           IMPORT    768   variable
+;___print_sendstring                 IMPORT  -----   function
+;___print_xputch                     IMPORT      3   variable
+;___print_uputch                     IMPORT  -----   function
+;msg                                   IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "error",48,"_error"
+	SEGMENT STRSECT
+L__14:
+	DB	"\" - line "
+	DB	0
+L__15:
+	DB	" - "
+	DB	0
+	SEGMENT CODE
+;   49	
+;   50	void trimRight(char *str) {
+_trimRight:
+.DEFINE "_trimRight"
+
+.VALUE _trimRight
+
+.CLASS 2
+
+.TYPE 65
+
+.ENDEF
+
+.BEGFUNC "trimRight",50,"_trimRight"
+
+.LINE 50
+
+.DEFINE "str"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   51	    while(*str) str++;
+.LINE 51
+
+	JR	L_16
+L_17:
+	LD	BC,(IX+%6)
+	INC	BC
+	LD	(IX+%6),BC
+L_16:
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_17
+;   52	    str--;
+.LINE 52
+
+	LD	BC,(IX+%6)
+	DEC	BC
+	LD	(IX+%6),BC
+;   53	    while(isspace(*str)) str--;
+.LINE 53
+
+	JR	L_21
+L_22:
+	LD	BC,(IX+%6)
+	DEC	BC
+	LD	(IX+%6),BC
+L_21:
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	PUSH	HL
+	CALL	_isspace
+	POP	BC
+	CALL	__icmpzero
+	JR	NZ,L_22
+;   54	    str++;
+.LINE 54
+
+	LD	BC,(IX+%6)
+	INC	BC
+	LD	(IX+%6),BC
+;   55	    *str = 0;
+.LINE 55
+
+	LD	HL,BC
+	LD	(HL),%0
+;   56	}
+.LINE 56
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _trimRight ***************************
+;Name                         Addr/Register   Size   Type
+;_isspace                            IMPORT  -----   function
+;str                                   IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "trimRight",56,"_trimRight"
+;   57	
+;   58	typedef enum {
+;   59	    TOKEN_REGULAR,
+;   60	    TOKEN_STRING,
+;   61	    TOKEN_BRACKET
+;   62	} tokenclass;
+;   63	
+;   64	// split a 'command.suffix' token in two parts 
+;   65	void split_suffix(char *mnemonic, char *suffix, char *buffer) {
+_split_suffix:
+.DEFINE "_split_suffix"
+
+.VALUE _split_suffix
+
+.CLASS 2
+
+.TYPE 65
+
+.ENDEF
+
+.BEGFUNC "split_suffix",65,"_split_suffix"
+
+.LINE 65
+
+.DEFINE "mnemonic"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "suffix"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "buffer"
+
+.CLASS 65
+
+.VALUE 12
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "cmd"
+
+.CLASS 65
+
+.VALUE -1
+
+.TYPE 12
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	DEC	SP
+;   66	    bool cmd = true;
+.LINE 66
+
+	LD	(IX+%FFFFFFFF),%1
+;   67	
+;   68	    while(*buffer) {
+.LINE 68
+
+	JR	L_34
+L_35:
+;   69	        if(cmd) {
+.LINE 69
+
+	LD	A,(IX+%FFFFFFFF)
+	OR	A,A
+	JR	Z,L_31
+;   70	            *mnemonic = *buffer;
+.LINE 70
+
+	LD	HL,(IX+%C)
+	LD	IY,(IX+%6)
+	LD	A,(HL)
+	LD	(IY),A
+;   71	            if(*buffer == '.') cmd = false;
+.LINE 71
+
+	LD	HL,(IX+%C)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,46
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_28
+	LD	(IX+%FFFFFFFF),%0
+;   72	            else mnemonic++;
+.LINE 72
+
+	JR	L_33
+L_28:
+	LD	BC,(IX+%6)
+	INC	BC
+	LD	(IX+%6),BC
+;   73	        }
+;   74	        else *suffix++ = *buffer;
+.LINE 74
+
+	JR	L_33
+L_31:
+	LD	HL,(IX+%C)
+	LD	IY,(IX+%9)
+	LD	A,(HL)
+	LD	(IY),A
+	LD	BC,(IX+%9)
+	INC	BC
+	LD	(IX+%9),BC
+L_33:
+;   75	        buffer++;
+.LINE 75
+
+	LD	BC,(IX+%C)
+	INC	BC
+	LD	(IX+%C),BC
+;   76	    }
+L_34:
+.LINE 76
+
+	LD	HL,(IX+%C)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_35
+;   77	    *suffix = 0;
+.LINE 77
+
+	LD	HL,(IX+%9)
+	LD	(HL),%0
+;   78	    *mnemonic = 0;
+.LINE 78
+
+	LD	HL,(IX+%6)
+	LD	(HL),%0
+;   79	}
+.LINE 79
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _split_suffix ***************************
+;Name                         Addr/Register   Size   Type
+;cmd                                   IX-1      1   variable
+;buffer                               IX+12      3   parameter
+;suffix                                IX+9      3   parameter
+;mnemonic                              IX+6      3   parameter
+
+
+; Stack Frame Size: 16 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "split_suffix",79,"_split_suffix"
+;   80	
+;   81	uint8_t getLineToken(tokentype *token, char *src, char terminator) {
+_getLineToken:
+.DEFINE "_getLineToken"
+
+.VALUE _getLineToken
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "getLineToken",81,"_getLineToken"
+
+.LINE 81
+
+.DEFINE "token"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME6"
+
+.TYPE 40
+
+.ENDEF
+
+.DEFINE "src"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "terminator"
+
+.CLASS 65
+
+.VALUE 12
+
+.TYPE 2
+
+.ENDEF
+
+.DEFINE "target"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "index"
+
+.CLASS 65
+
+.VALUE -4
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "escaped"
+
+.CLASS 65
+
+.VALUE -5
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "terminated"
+
+.CLASS 65
+
+.VALUE -6
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "state"
+
+.CLASS 65
+
+.VALUE -9
+
+.TYPE 4
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+%FFFFFFE8
+	LD	SP,HL
+;   82	    char *target;
+;   83	    uint8_t index = 0;
+.LINE 83
+
+	LD	(IX+%FFFFFFFC),%0
+;   84	    bool escaped = false;
+.LINE 84
+
+	LD	(IX+%FFFFFFFB),%0
+;   85	    bool terminated;
+;   86	    tokenclass state;
+;   87	
+;   88	    // remove leading space
+;   89	    while(*src) {
+.LINE 89
+
+	JR	L_41
+L_42:
+;   90	        if(isspace(*src) != 0) src++;
+.LINE 90
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	PUSH	HL
+	CALL	_isspace
+	POP	BC
+	CALL	__icmpzero
+	JR	Z,L_44
+	LD	BC,(IX+%9)
+	INC	BC
+	LD	(IX+%9),BC
+;   91	        else break;
+.LINE 91
+
+;   92	    }
+L_41:
+.LINE 92
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_42
+L_44:
+;   93	    if(*src == 0) { // empty string
+.LINE 93
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_45
+;   94	        token->terminator = 0;
+.LINE 94
+
+	XOR	A,A
+	LD	BC,260
+	LD	IY,(IX+%6)
+	CALL	__bstiy
+;   95	        token->start[0] = 0;
+.LINE 95
+
+	LD	(IY+%0),%0
+;   96	        token->length = 0;
+.LINE 96
+
+	XOR	A,A
+	LD	BC,256
+	CALL	__bstiy
+;   97	        token->next = NULL;
+.LINE 97
+
+	OR	A,A
+	SBC	HL,HL
+	LD	BC,257
+	CALL	__istiy
+;   98	        return 0;
+.LINE 98
+
+	XOR	A,A
+	JR	L_95
+;   99	    }
+L_45:
+.LINE 99
+
+;  100	    // copy over the token itself, taking care of the character state within the token
+;  101	    state = TOKEN_REGULAR;
+.LINE 101
+
+	LD	BC,0
+	LD	(IX+%FFFFFFF7),BC
+;  102	    target = token->start;
+.LINE 102
+
+	LD	IY,(IX+%6)
+	LEA	BC,IY+%0
+	LD	(IX+%FFFFFFFD),BC
+;  103	    while(true) {
+L_82:
+.LINE 103
+
+;  104	        terminated = false;
+.LINE 104
+
+	LD	(IX+%FFFFFFFA),%0
+;  105	        switch(state) {
+.LINE 105
+
+	LD	HL,(IX+%FFFFFFF7)
+	CALL	__seqcaseD
+	JP	(HL)
+L__27:
+	DW	3
+	DW	0
+	DB	0
+	DW24	L_60	
+
+	DW24	L_46	
+
+	DW24	L_57	
+
+	DW24	L_75	
+
+;  106	            case TOKEN_STRING:
+L_46:
+.LINE 106
+
+;  107	                switch(*src) {
+.LINE 107
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	CALL	__case8D
+	JP	(HL)
+L__28:
+	DW	2
+	DB	34
+	DW24	L_52	
+
+	DB	92
+	DW24	L_47	
+
+	DW24	L_55	
+
+;  108	                    case '\\':
+L_47:
+.LINE 108
+
+;  109	                        escaped = !escaped;
+.LINE 109
+
+	LD	A,(IX+%FFFFFFFB)
+	OR	A,A
+	JR	NZ,L_49
+	LD	BC,1
+	LD	(IX+%FFFFFFF4),BC
+	JR	L_50
+L_49:
+	LD	BC,0
+	LD	(IX+%FFFFFFF4),BC
+L_50:
+	LD	A,(IX+%FFFFFFF4)
+	LD	(IX+%FFFFFFFB),A
+;  110	                        break;
+.LINE 110
+
+	JR	L_75
+;  111	                    case '\"':
+L_52:
+.LINE 111
+
+;  112	                        if(!escaped) state = TOKEN_REGULAR;
+.LINE 112
+
+	LD	A,(IX+%FFFFFFFB)
+	OR	A,A
+	JR	NZ,L_54
+	LD	BC,0
+	LD	(IX+%FFFFFFF7),BC
+L_54:
+;  113	                        escaped = false;
+.LINE 113
+
+	LD	(IX+%FFFFFFFB),%0
+;  114	                        break;
+.LINE 114
+
+	JR	L_75
+;  115	                    default:
+L_55:
+.LINE 115
+
+;  116	                        escaped = false;
+.LINE 116
+
+	LD	(IX+%FFFFFFFB),%0
+;  117	                        break;
+.LINE 117
+
+	JR	L_75
+;  118	                }
+;  119	                break;
+;  120	            case TOKEN_BRACKET:
+L_57:
+.LINE 120
+
+;  121	                if(*src == ')') state = TOKEN_REGULAR;
+.LINE 121
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,41
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_75
+	LD	BC,0
+	LD	(IX+%FFFFFFF7),BC
+;  122	                break;
+.LINE 122
+
+	JR	L_75
+;  123	            case TOKEN_REGULAR:
+L_60:
+.LINE 123
+
+;  124	                if(*src == '\"') state = TOKEN_STRING;
+.LINE 124
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,34
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_63
+	LD	BC,1
+	LD	(IX+%FFFFFFF7),BC
+L_63:
+;  125	                if(*src == '(') state = TOKEN_BRACKET;
+.LINE 125
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,40
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_69
+	LD	BC,2
+	LD	(IX+%FFFFFFF7),BC
+L_69:
+;  126	                terminated = ((*src == ';') || (*src == terminator));
+.LINE 126
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,59
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_65
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	CP	A,(IX+%C)
+	JR	NZ,L_66
+L_65:
+	LD	BC,1
+	LD	(IX+%FFFFFFF1),BC
+	JR	L_67
+L_66:
+	LD	BC,0
+	LD	(IX+%FFFFFFF1),BC
+L_67:
+	LD	A,(IX+%FFFFFFF1)
+	LD	(IX+%FFFFFFFA),A
+;  127	                break;            
+;  128	        }
+L_75:
+.LINE 128
+
+;  129	        terminated = terminated || (*src == 0);
+.LINE 129
+
+	LD	A,(IX+%FFFFFFFA)
+	OR	A,A
+	JR	NZ,L_71
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_72
+L_71:
+	LD	BC,1
+	LD	(IX+%FFFFFFEE),BC
+	JR	L_73
+L_72:
+	LD	BC,0
+	LD	(IX+%FFFFFFEE),BC
+L_73:
+	LD	A,(IX+%FFFFFFEE)
+	LD	(IX+%FFFFFFFA),A
+;  130	        if(terminated) {
+.LINE 130
+
+	OR	A,A
+	JR	Z,L_79
+;  131	            token->terminator = *src;
+.LINE 131
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	BC,260
+	LD	IY,(IX+%6)
+	CALL	__bstiy
+;  132	            break;
+.LINE 132
+
+	JR	L_88
+;  133	        }
+L_79:
+.LINE 133
+
+;  134	        *target++ = *src++;
+.LINE 134
+
+	LD	BC,(IX+%9)
+	LD	(IX+%FFFFFFEB),BC
+	LD	BC,(IX+%FFFFFFFD)
+	LD	(IX+%FFFFFFE8),BC
+	LD	HL,(IX+%FFFFFFEB)
+	LD	IY,(IX+%FFFFFFE8)
+	LD	A,(HL)
+	LD	(IY),A
+	LD	BC,(IX+%9)
+	INC	BC
+	LD	(IX+%9),BC
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  135	        index++;
+.LINE 135
+
+	INC	(IX+%FFFFFFFC)
+	JR	L_82
+;  136	    }
+;  137	    // remove trailing space
+;  138	    while(index) {
+L_89:
+.LINE 138
+
+;  139	        target--;
+.LINE 139
+
+	LD	BC,(IX+%FFFFFFFD)
+	DEC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  140	        if(isspace(*target) == 0) {
+.LINE 140
+
+	LD	HL,BC
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	PUSH	HL
+	CALL	_isspace
+	POP	BC
+	CALL	__icmpzero
+	JR	NZ,L_87
+;  141	            target++;
+.LINE 141
+
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  142	            break;
+.LINE 142
+
+	JR	L_91
+;  143	        }
+L_87:
+.LINE 143
+
+;  144	        index--;
+.LINE 144
+
+	DEC	(IX+%FFFFFFFC)
+;  145	    }
+L_88:
+.LINE 145
+
+	LD	A,(IX+%FFFFFFFC)
+	OR	A,A
+	JR	NZ,L_89
+L_91:
+;  146	    *target = 0;
+.LINE 146
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	(HL),%0
+;  147	    if(*src == 0) token->next = NULL;
+.LINE 147
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_93
+	OR	A,A
+	SBC	HL,HL
+	LD	BC,257
+	LD	IY,(IX+%6)
+	CALL	__istiy
+;  148	    else token->next = src+1;
+.LINE 148
+
+	JR	L_94
+L_93:
+	LD	HL,(IX+%9)
+	INC	HL
+	LD	BC,257
+	LD	IY,(IX+%6)
+	CALL	__istiy
+L_94:
+;  149	    token->length = index;
+.LINE 149
+
+	LD	A,(IX+%FFFFFFFC)
+	LD	BC,256
+	LD	IY,(IX+%6)
+	CALL	__bstiy
+;  150	    return index;
+.LINE 150
+
+	LD	A,(IX+%FFFFFFFC)
+;  151	}
+L_95:
+.LINE 151
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _getLineToken ***************************
+;Name                         Addr/Register   Size   Type
+;_isspace                            IMPORT  -----   function
+;temp74                               IX-18      3   variable
+;temp68                               IX-15      3   variable
+;temp51                               IX-12      3   variable
+;state                                 IX-9      3   variable
+;terminated                            IX-6      1   variable
+;escaped                               IX-5      1   variable
+;index                                 IX-4      1   variable
+;target                                IX-3      3   variable
+;terminator                           IX+12      1   parameter
+;src                                   IX+9      3   parameter
+;token                                 IX+6      3   parameter
+
+
+; Stack Frame Size: 39 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "getLineToken",151,"_getLineToken"
+;  152	
+;  153	uint8_t getOperatorToken(tokentype *token, char *src) {
+_getOperatorToken:
+.DEFINE "_getOperatorToken"
+
+.VALUE _getOperatorToken
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "getOperatorToken",153,"_getOperatorToken"
+
+.LINE 153
+
+.DEFINE "token"
+
+.CLASS 65
+
+.VALUE 6
+
+.TAG "NONAME6"
+
+.TYPE 40
+
+.ENDEF
+
+.DEFINE "src"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "target"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "index"
+
+.CLASS 65
+
+.VALUE -4
+
+.TYPE 12
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+%FFFFFFF3
+	LD	SP,HL
+;  154	    char *target;
+;  155	    uint8_t index = 0;
+.LINE 155
+
+	LD	(IX+%FFFFFFFC),%0
+;  156	
+;  157	    // remove leading space
+;  158	    while(*src) {
+.LINE 158
+
+	JR	L_99
+L_100:
+;  159	        if(isspace(*src) != 0) src++;
+.LINE 159
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	PUSH	HL
+	CALL	_isspace
+	POP	BC
+	CALL	__icmpzero
+	JR	Z,L_102
+	LD	BC,(IX+%9)
+	INC	BC
+	LD	(IX+%9),BC
+;  160	        else break;
+.LINE 160
+
+;  161	    }
+L_99:
+.LINE 161
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_100
+L_102:
+;  162	    if(*src == 0) { // empty string
+.LINE 162
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_103
+;  163	        token->terminator = 0;
+.LINE 163
+
+	XOR	A,A
+	LD	BC,260
+	LD	IY,(IX+%6)
+	CALL	__bstiy
+;  164	        token->start[0] = 0;
+.LINE 164
+
+	LD	(IY+%0),%0
+;  165	        token->length = 0;
+.LINE 165
+
+	XOR	A,A
+	LD	BC,256
+	CALL	__bstiy
+;  166	        token->next = NULL;
+.LINE 166
+
+	OR	A,A
+	SBC	HL,HL
+	LD	BC,257
+	CALL	__istiy
+;  167	        return 0;
+.LINE 167
+
+	XOR	A,A
+	JR	L_132
+;  168	    }
+L_103:
+.LINE 168
+
+;  169	    // copy content
+;  170	    target = token->start;
+.LINE 170
+
+	LD	IY,(IX+%6)
+	LEA	BC,IY+%0
+	LD	(IX+%FFFFFFFD),BC
+;  171	    while(true) {
+L_119:
+.LINE 171
+
+;  172	        if((*src == 0) || (*src == '+') || (*src == '-') || (*src == '<') || (*src == '>')) {
+.LINE 172
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	OR	A,A
+	JR	Z,L_113
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,43
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_113
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,45
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_113
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,60
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_113
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,62
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_116
+L_113:
+;  173	            if(((*src == '<') || (*src == '>'))) {
+.LINE 173
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,60
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_111
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,62
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_112
+L_111:
+;  174	                if((*(src+1) == *src)) src += 1;
+.LINE 174
+
+	LD	BC,(IX+%9)
+	INC	BC
+	LD	(IX+%FFFFFFF9),BC
+	LD	HL,(IX+%9)
+	LD	IY,(IX+%FFFFFFF9)
+	LD	A,(HL)
+	CP	A,(IY)
+	JR	NZ,L_110
+	LD	BC,(IX+%FFFFFFF9)
+	LD	(IX+%9),BC
+;  175	                else {
+.LINE 175
+
+	JR	L_112
+L_110:
+;  176	                    token->terminator = '!'; // ERROR
+.LINE 176
+
+	LD	A,%21
+	LD	BC,260
+	LD	IY,(IX+%6)
+	CALL	__bstiy
+;  177	                    break;
+.LINE 177
+
+	JR	L_125
+;  178	                }
+;  179	            }
+L_112:
+.LINE 179
+
+;  180	            token->terminator = *src;
+.LINE 180
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	LD	BC,260
+	LD	IY,(IX+%6)
+	CALL	__bstiy
+;  181	            break;
+.LINE 181
+
+	JR	L_125
+;  182	        }
+L_116:
+.LINE 182
+
+;  183	        *target++ = *src++;
+.LINE 183
+
+	LD	BC,(IX+%9)
+	LD	(IX+%FFFFFFF6),BC
+	LD	BC,(IX+%FFFFFFFD)
+	LD	(IX+%FFFFFFF3),BC
+	LD	HL,(IX+%FFFFFFF6)
+	LD	IY,(IX+%FFFFFFF3)
+	LD	A,(HL)
+	LD	(IY),A
+	LD	BC,(IX+%9)
+	INC	BC
+	LD	(IX+%9),BC
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  184	        index++;
+.LINE 184
+
+	INC	(IX+%FFFFFFFC)
+	JR	L_119
+;  185	    }
+;  186	    // remove trailing space
+;  187	    while(index) {
+L_126:
+.LINE 187
+
+;  188	        target--;
+.LINE 188
+
+	LD	BC,(IX+%FFFFFFFD)
+	DEC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  189	        if(isspace(*target) == 0) {
+.LINE 189
+
+	LD	HL,BC
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	PUSH	HL
+	CALL	_isspace
+	POP	BC
+	CALL	__icmpzero
+	JR	NZ,L_124
+;  190	            target++;
+.LINE 190
+
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  191	            break;
+.LINE 191
+
+	JR	L_128
+;  192	        }
+L_124:
+.LINE 192
+
+;  193	        index--;
+.LINE 193
+
+	DEC	(IX+%FFFFFFFC)
+;  194	    }
+L_125:
+.LINE 194
+
+	LD	A,(IX+%FFFFFFFC)
+	OR	A,A
+	JR	NZ,L_126
+L_128:
+;  195	    *target = 0;
+.LINE 195
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	(HL),%0
+;  196	    if(*src == 0) token->next = NULL;
+.LINE 196
+
+	LD	HL,(IX+%9)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_130
+	OR	A,A
+	SBC	HL,HL
+	LD	BC,257
+	LD	IY,(IX+%6)
+	CALL	__istiy
+;  197	    else token->next = src+1;
+.LINE 197
+
+	JR	L_131
+L_130:
+	LD	HL,(IX+%9)
+	INC	HL
+	LD	BC,257
+	LD	IY,(IX+%6)
+	CALL	__istiy
+L_131:
+;  198	    token->length = index;
+.LINE 198
+
+	LD	A,(IX+%FFFFFFFC)
+	LD	BC,256
+	LD	IY,(IX+%6)
+	CALL	__bstiy
+;  199	    return index;
+.LINE 199
+
+	LD	A,(IX+%FFFFFFFC)
+;  200	}
+L_132:
+.LINE 200
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _getOperatorToken ***************************
+;Name                         Addr/Register   Size   Type
+;_isspace                            IMPORT  -----   function
+;G_0                                   IX-7      3   variable
+;index                                 IX-4      1   variable
+;target                                IX-3      3   variable
+;src                                   IX+9      3   parameter
+;token                                 IX+6      3   parameter
+
+
+; Stack Frame Size: 25 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "getOperatorToken",200,"_getOperatorToken"
+;  201	
+;  202	
+;  203	bool openFile(uint8_t *file, char *name, uint8_t mode) {
+_openFile:
+.DEFINE "_openFile"
+
+.VALUE _openFile
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "openFile",203,"_openFile"
+
+.LINE 203
+
+.DEFINE "file"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 44
+
+.ENDEF
+
+.DEFINE "name"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "mode"
+
+.CLASS 65
+
+.VALUE 12
+
+.TYPE 12
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;  204	    *file = mos_fopen(name, mode);
+.LINE 204
+
+	LD	C,(IX+%C)
+	LD	B,%0
+	PUSH	BC
+	LD	BC,(IX+%9)
+	PUSH	BC
+	CALL	_mos_fopen
+	POP	BC
+	POP	BC
+	LD	HL,(IX+%6)
+	LD	(HL),A
+;  205	
+;  206	    if(*file) return true;
+.LINE 206
+
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	OR	A,A
+	JR	Z,L_134
+	LD	A,%1
+	JR	L_135
+L_134:
+;  207	    printf("Error opening \"%s\"\n", name);
+.LINE 207
+
+	LD	BC,___print_uputch
+	LD	(___print_xputch),BC
+	LD	BC,L__59
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+	LD	BC,(IX+%9)
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+	LD	BC,L__60
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+;  208	    return false;
+.LINE 208
+
+	XOR	A,A
+;  209	}
+L_135:
+.LINE 209
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _openFile ***************************
+;Name                         Addr/Register   Size   Type
+;___print_sendstring                 IMPORT  -----   function
+;___print_xputch                     IMPORT      3   variable
+;___print_uputch                     IMPORT  -----   function
+;_mos_fopen                          IMPORT  -----   function
+;mode                                 IX+12      1   parameter
+;name                                  IX+9      3   parameter
+;file                                  IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "openFile",209,"_openFile"
+	SEGMENT STRSECT
+L__59:
+	DB	"Error opening \""
+	DB	0
+L__60:
+	DB	"\""
+	DB	10,0
+	SEGMENT CODE
+;  210	
+;  211	bool reOpenFile(uint8_t number, uint8_t mode) {
+_reOpenFile:
+.DEFINE "_reOpenFile"
+
+.VALUE _reOpenFile
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "reOpenFile",211,"_reOpenFile"
+
+.LINE 211
+
+.DEFINE "number"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "mode"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 12
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+;  212	    if(filehandle[number]) mos_fclose(filehandle[number]);
+.LINE 212
+
+	LD	A,(IX+%6)
+	UEXT	HL
+	LD	L,A
+	LD	BC,_filehandle
+	ADD	HL,BC
+	LD	(IX+%FFFFFFFD),HL
+	LD	(IX+%FFFFFFFA),HL
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	OR	A,A
+	JR	Z,L_137
+	LD	BC,(IX+%FFFFFFFD)
+	LD	(IX+%FFFFFFFA),BC
+	LD	HL,(IX+%FFFFFFFD)
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_fclose
+	POP	BC
+L_137:
+;  213	    return openFile(&filehandle[number], filename[number], mode);
+.LINE 213
+
+	LD	C,(IX+%9)
+	LD	B,%0
+	PUSH	BC
+	LD	A,(IX+%6)
+	UEXT	HL
+	LD	L,A
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	LD	BC,_filename
+	ADD	HL,BC
+	PUSH	HL
+	LD	BC,(IX+%FFFFFFFA)
+	PUSH	BC
+	CALL	_openFile
+	POP	BC
+	POP	BC
+	POP	BC
+;  214	}
+.LINE 214
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _reOpenFile ***************************
+;Name                         Addr/Register   Size   Type
+;_filename                           IMPORT    768   variable
+;_openFile                           IMPORT  -----   function
+;_mos_fclose                         IMPORT  -----   function
+;_filehandle                         IMPORT      6   variable
+;G_2                                   IX-6      3   variable
+;G_1                                   IX-3      3   variable
+;mode                                  IX+9      1   parameter
+;number                                IX+6      1   parameter
+
+
+; Stack Frame Size: 18 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "reOpenFile",214,"_reOpenFile"
+;  215	
+;  216	void prepare_filenames(char *input_filename) {
+_prepare_filenames:
+.DEFINE "_prepare_filenames"
+
+.VALUE _prepare_filenames
+
+.CLASS 2
+
+.TYPE 65
+
+.ENDEF
+
+.BEGFUNC "prepare_filenames",216,"_prepare_filenames"
+
+.LINE 216
+
+.DEFINE "input_filename"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;  217	    // prepare filenames
+;  218	    strcpy(filename[FILE_INPUT], input_filename);
+.LINE 218
+
+	LD	BC,(IX+%6)
+	PUSH	BC
+	LD	BC,128
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	CALL	_strcpy
+	POP	BC
+	POP	BC
+;  219	    strcpy(filename[FILE_OUTPUT], input_filename);
+.LINE 219
+
+	LD	BC,(IX+%6)
+	PUSH	BC
+	LD	BC,256
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	CALL	_strcpy
+	POP	BC
+	POP	BC
+;  220	    remove_ext(filename[FILE_OUTPUT], '.', '/');
+.LINE 220
+
+	LD	BC,47
+	PUSH	BC
+	LD	BC,46
+	PUSH	BC
+	LD	BC,256
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	CALL	_remove_ext
+	POP	BC
+	POP	BC
+	POP	BC
+;  221	    strcpy(filename[FILE_LOCAL_LABELS], filename[FILE_OUTPUT]);
+.LINE 221
+
+	LD	BC,256
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	LD	BC,384
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	CALL	_strcpy
+	POP	BC
+	POP	BC
+;  222	    strcpy(filename[FILE_ANONYMOUS_LABELS],filename[FILE_OUTPUT]);
+.LINE 222
+
+	LD	BC,256
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	LD	BC,512
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	CALL	_strcpy
+	POP	BC
+	POP	BC
+;  223	    strcpy(filename[FILE_LISTING],filename[FILE_OUTPUT]);
+.LINE 223
+
+	LD	BC,256
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	LD	BC,640
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	CALL	_strcpy
+	POP	BC
+	POP	BC
+;  224	    strcat(filename[FILE_OUTPUT], ".bin");
+.LINE 224
+
+	LD	BC,L__64
+	PUSH	BC
+	LD	BC,256
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	CALL	_strcat
+	POP	BC
+	POP	BC
+;  225	    strcat(filename[FILE_LOCAL_LABELS], ".lcllbls");
+.LINE 225
+
+	LD	BC,L__65
+	PUSH	BC
+	LD	BC,384
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	CALL	_strcat
+	POP	BC
+	POP	BC
+;  226	    strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
+.LINE 226
+
+	LD	BC,L__66
+	PUSH	BC
+	LD	BC,512
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	CALL	_strcat
+	POP	BC
+	POP	BC
+;  227	    strcat(filename[FILE_LISTING], ".lst");
+.LINE 227
+
+	LD	BC,L__67
+	PUSH	BC
+	LD	BC,640
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	CALL	_strcat
+	POP	BC
+	POP	BC
+;  228	}
+.LINE 228
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _prepare_filenames ***************************
+;Name                         Addr/Register   Size   Type
+;_strcat                             IMPORT  -----   function
+;_remove_ext                         IMPORT  -----   function
+;_filename                           IMPORT    768   variable
+;_strcpy                             IMPORT  -----   function
+;input_filename                        IX+6      3   parameter
+
+
+; Stack Frame Size: 9 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "prepare_filenames",228,"_prepare_filenames"
+	SEGMENT STRSECT
+L__64:
+	DB	".bin"
+	DB	0
+L__65:
+	DB	".lcllbls"
+	DB	0
+L__66:
+	DB	".anonlbls"
+	DB	0
+L__67:
+	DB	".lst"
+	DB	0
+	SEGMENT CODE
+;  229	
+;  230	void closeAllFiles() {
+_closeAllFiles:
+.DEFINE "_closeAllFiles"
+
+.VALUE _closeAllFiles
+
+.CLASS 2
+
+.TYPE 65
+
+.ENDEF
+
+.BEGFUNC "closeAllFiles",230,"_closeAllFiles"
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+%FFFFFFF1
+	LD	SP,HL
+;  231	   // Cleanup
+;  232	    if(filehandle[FILE_INPUT]) mos_fclose(filehandle[FILE_INPUT]);
+.LINE 232
+
+	LD	BC,_filehandle
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+	LD	HL,BC
+	LD	A,(HL)
+	OR	A,A
+	JR	Z,L_142
+	LD	HL,(IX+%FFFFFFFD)
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_fclose
+	POP	BC
+L_142:
+;  233	    if(filehandle[FILE_OUTPUT]) mos_fclose(filehandle[FILE_OUTPUT]);
+.LINE 233
+
+	LD	IY,_filehandle
+	LEA	IY,IY+%2
+	LD	(IX+%FFFFFFFA),IY
+	LD	HL,(IX+%FFFFFFFA)
+	LD	A,(HL)
+	OR	A,A
+	JR	Z,L_144
+	LD	HL,(IX+%FFFFFFFA)
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_fclose
+	POP	BC
+L_144:
+;  234	    if(filehandle[FILE_LOCAL_LABELS]) mos_fclose(filehandle[FILE_LOCAL_LABELS]);
+.LINE 234
+
+	LD	IY,_filehandle
+	LEA	IY,IY+%3
+	LD	(IX+%FFFFFFF7),IY
+	LD	HL,(IX+%FFFFFFF7)
+	LD	A,(HL)
+	OR	A,A
+	JR	Z,L_146
+	LD	HL,(IX+%FFFFFFF7)
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_fclose
+	POP	BC
+L_146:
+;  235	    if(filehandle[FILE_ANONYMOUS_LABELS]) mos_fclose(filehandle[FILE_ANONYMOUS_LABELS]);
+.LINE 235
+
+	LD	IY,_filehandle
+	LEA	IY,IY+%4
+	LD	(IX+%FFFFFFF4),IY
+	LD	HL,(IX+%FFFFFFF4)
+	LD	A,(HL)
+	OR	A,A
+	JR	Z,L_148
+	LD	HL,(IX+%FFFFFFF4)
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_fclose
+	POP	BC
+L_148:
+;  236	    if(filehandle[FILE_LISTING]) mos_fclose(filehandle[FILE_LISTING]);
+.LINE 236
+
+	LD	IY,_filehandle
+	LEA	IY,IY+%5
+	LD	(IX+%FFFFFFF1),IY
+	LD	HL,(IX+%FFFFFFF1)
+	LD	A,(HL)
+	OR	A,A
+	JR	Z,L_149
+	LD	HL,(IX+%FFFFFFF1)
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_fclose
+	POP	BC
+;  237	    //remove(filename[FILE_LOCAL_LABELS]);
+;  238	    //remove(filename[FILE_ANONYMOUS_LABELS]);
+;  239	}
+L_149:
+.LINE 239
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _closeAllFiles ***************************
+;Name                         Addr/Register   Size   Type
+;_mos_fclose                         IMPORT  -----   function
+;_filehandle                         IMPORT      6   variable
+;G_12                                 IX-15      3   variable
+;G_11                                 IX-12      3   variable
+;G_10                                  IX-9      3   variable
+;G_9                                   IX-6      3   variable
+;G_8                                   IX-3      3   variable
+
+
+; Stack Frame Size: 21 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "closeAllFiles",239,"_closeAllFiles"
+;  240	
+;  241	bool openfiles(void) {
+_openfiles:
+.DEFINE "_openfiles"
+
+.VALUE _openfiles
+
+.CLASS 2
+
+.TYPE 76
+
+.ENDEF
+
+.BEGFUNC "openfiles",241,"_openfiles"
+
+.LINE 241
+
+.DEFINE "status"
+
+.CLASS 65
+
+.VALUE -1
+
+.TYPE 12
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+%FFFFFFF0
+	LD	SP,HL
+;  242	    bool status = true;
+;  243	
+;  244	    status = status && openFile(&filehandle[FILE_INPUT], filename[FILE_INPUT], fa_read);
+.LINE 244
+
+	LD	BC,1
+	PUSH	BC
+	LD	BC,128
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	LD	BC,_filehandle
+	INC	BC
+	PUSH	BC
+	CALL	_openFile
+	POP	BC
+	POP	BC
+	POP	BC
+	OR	A,A
+	JR	Z,L_152
+	LD	BC,1
+	LD	(IX+%FFFFFFFC),BC
+	JR	L_153
+L_152:
+	LD	BC,0
+	LD	(IX+%FFFFFFFC),BC
+L_153:
+	LD	A,(IX+%FFFFFFFC)
+	LD	(IX+%FFFFFFFF),A
+;  245	    status = status && openFile(&filehandle[FILE_OUTPUT], filename[FILE_OUTPUT], fa_write | fa_create_always);
+.LINE 245
+
+	OR	A,A
+	JR	Z,L_157
+	LD	BC,10
+	PUSH	BC
+	LD	BC,256
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	LD	BC,_filehandle+2
+	PUSH	BC
+	CALL	_openFile
+	POP	BC
+	POP	BC
+	POP	BC
+	OR	A,A
+	JR	Z,L_157
+	LD	BC,1
+	LD	(IX+%FFFFFFF9),BC
+	JR	L_158
+L_157:
+	LD	BC,0
+	LD	(IX+%FFFFFFF9),BC
+L_158:
+	LD	A,(IX+%FFFFFFF9)
+	LD	(IX+%FFFFFFFF),A
+;  246	    status = status && openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], fa_write | fa_create_always);
+.LINE 246
+
+	OR	A,A
+	JR	Z,L_162
+	LD	BC,10
+	PUSH	BC
+	LD	BC,384
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	LD	BC,_filehandle+3
+	PUSH	BC
+	CALL	_openFile
+	POP	BC
+	POP	BC
+	POP	BC
+	OR	A,A
+	JR	Z,L_162
+	LD	BC,1
+	LD	(IX+%FFFFFFF6),BC
+	JR	L_163
+L_162:
+	LD	BC,0
+	LD	(IX+%FFFFFFF6),BC
+L_163:
+	LD	A,(IX+%FFFFFFF6)
+	LD	(IX+%FFFFFFFF),A
+;  247	    status = status && openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], fa_write | fa_create_always);
+.LINE 247
+
+	OR	A,A
+	JR	Z,L_167
+	LD	BC,10
+	PUSH	BC
+	LD	BC,512
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	LD	BC,_filehandle+4
+	PUSH	BC
+	CALL	_openFile
+	POP	BC
+	POP	BC
+	POP	BC
+	OR	A,A
+	JR	Z,L_167
+	LD	BC,1
+	LD	(IX+%FFFFFFF3),BC
+	JR	L_168
+L_167:
+	LD	BC,0
+	LD	(IX+%FFFFFFF3),BC
+L_168:
+	LD	A,(IX+%FFFFFFF3)
+	LD	(IX+%FFFFFFFF),A
+;  248	    status = status && openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], fa_write | fa_create_always);
+.LINE 248
+
+	OR	A,A
+	JR	Z,L_172
+	LD	BC,10
+	PUSH	BC
+	LD	BC,640
+	LD	HL,_filename
+	ADD	HL,BC
+	PUSH	HL
+	LD	BC,_filehandle+5
+	PUSH	BC
+	CALL	_openFile
+	POP	BC
+	POP	BC
+	POP	BC
+	OR	A,A
+	JR	Z,L_172
+	LD	BC,1
+	LD	(IX+%FFFFFFF0),BC
+	JR	L_173
+L_172:
+	LD	BC,0
+	LD	(IX+%FFFFFFF0),BC
+L_173:
+	LD	A,(IX+%FFFFFFF0)
+	LD	(IX+%FFFFFFFF),A
+;  249	    if(!status) closeAllFiles();
+.LINE 249
+
+	OR	A,A
+	JR	NZ,L_176
+	CALL	_closeAllFiles
+L_176:
+;  250	    return status;
+.LINE 250
+
+	LD	A,(IX+%FFFFFFFF)
+;  251	}
+.LINE 251
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _openfiles ***************************
+;Name                         Addr/Register   Size   Type
+;_closeAllFiles                      IMPORT  -----   function
+;_filehandle                         IMPORT      6   variable
+;_filename                           IMPORT    768   variable
+;_openFile                           IMPORT  -----   function
+;temp174                              IX-16      3   variable
+;temp169                              IX-13      3   variable
+;temp164                              IX-10      3   variable
+;temp159                               IX-7      3   variable
+;temp154                               IX-4      3   variable
+;status                                IX-1      1   variable
+
+
+; Stack Frame Size: 22 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "openfiles",251,"_openfiles"
+;  252	
+;  253	
+;  254	char *agon_fgets(char *s, int size, uint8_t fileid) {
+_agon_fgets:
+.DEFINE "_agon_fgets"
+
+.VALUE _agon_fgets
+
+.CLASS 2
+
+.TYPE 322
+
+.ENDEF
+
+.BEGFUNC "agon_fgets",254,"_agon_fgets"
+
+.LINE 254
+
+.DEFINE "s"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "size"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 4
+
+.ENDEF
+
+.DEFINE "fileid"
+
+.CLASS 65
+
+.VALUE 12
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "cs"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "c"
+
+.CLASS 65
+
+.VALUE -6
+
+.TYPE 4
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+%FFFFFFF4
+	LD	SP,HL
+;  255		int c;
+;  256		char *cs;
+;  257	
+;  258	    c = 0;
+.LINE 258
+
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+;  259		cs = s;
+.LINE 259
+
+	LD	BC,(IX+%6)
+	LD	(IX+%FFFFFFFD),BC
+;  260		while (--size > 0 && (c = mos_fgetc(filehandle[fileid])) != EOF)
+.LINE 260
+
+	JR	L_181
+L_182:
+;  261			if ((*cs++ = c) == '\n')
+.LINE 261
+
+	LD	BC,(IX+%FFFFFFFD)
+	LD	(IX+%FFFFFFF4),BC
+	LD	A,(IX+%FFFFFFFA)
+	LD	HL,BC
+	LD	(HL),A
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+	LD	HL,(IX+%FFFFFFF4)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,10
+	OR	A,A
+	SBC	HL,BC
+	JR	Z,L_183
+;  262				break;
+L_181:
+.LINE 262
+
+	LD	BC,(IX+%9)
+	DEC	BC
+	LD	(IX+%9),BC
+	OR	A,A
+	SBC	HL,HL
+	OR	A,A
+	SBC	HL,BC
+	JP	P,L_183
+	LD	A,(IX+%C)
+	UEXT	HL
+	LD	L,A
+	LD	BC,_filehandle
+	ADD	HL,BC
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_fgetc
+	POP	BC
+	LD	B,A
+	LD	A,B
+	SEXT	HL
+	LD	L,B
+	LD	(IX+%FFFFFFFA),HL
+	LD	BC,16777215
+	LD	HL,(IX+%FFFFFFFA)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_182
+L_183:
+;  263		*cs = '\0';
+.LINE 263
+
+	LD	HL,(IX+%FFFFFFFD)
+	LD	(HL),%0
+;  264		return (c == EOF && cs == s) ? NULL : s;
+.LINE 264
+
+	LD	BC,16777215
+	LD	HL,(IX+%FFFFFFFA)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_187
+	LD	BC,(IX+%6)
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_187
+	LD	BC,0
+	LD	(IX+%FFFFFFF7),BC
+	JR	L_188
+L_187:
+	LD	BC,(IX+%6)
+	LD	(IX+%FFFFFFF7),BC
+L_188:
+	LD	HL,(IX+%FFFFFFF7)
+;  265	}
+.LINE 265
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _agon_fgets ***************************
+;Name                         Addr/Register   Size   Type
+;_filehandle                         IMPORT      6   variable
+;_mos_fgetc                          IMPORT  -----   function
+;temp185                               IX-9      3   variable
+;c                                     IX-6      3   variable
+;cs                                    IX-3      3   variable
+;fileid                               IX+12      1   parameter
+;size                                  IX+9      3   parameter
+;s                                     IX+6      3   parameter
+
+
+; Stack Frame Size: 27 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "agon_fgets",265,"_agon_fgets"
+;  266	
+;  267	int agon_fputs(char *s, uint8_t fileid) {
+_agon_fputs:
+.DEFINE "_agon_fputs"
+
+.VALUE _agon_fputs
+
+.CLASS 2
+
+.TYPE 68
+
+.ENDEF
+
+.BEGFUNC "agon_fputs",267,"_agon_fputs"
+
+.LINE 267
+
+.DEFINE "s"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "fileid"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "number"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 4
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;  268	    int number = 0;
+.LINE 268
+
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+;  269	    while(*s) {
+.LINE 269
+
+	JR	L_192
+L_193:
+;  270	        mos_fputc(filehandle[fileid], *s);
+.LINE 270
+
+	LD	HL,(IX+%6)
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	LD	A,(IX+%9)
+	UEXT	HL
+	LD	L,A
+	LD	BC,_filehandle
+	ADD	HL,BC
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_fputc
+	POP	BC
+	POP	BC
+;  271	        number++;
+.LINE 271
+
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  272	        s++;
+.LINE 272
+
+	LD	BC,(IX+%6)
+	INC	BC
+	LD	(IX+%6),BC
+;  273	    }
+L_192:
+.LINE 273
+
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	OR	A,A
+	JR	NZ,L_193
+;  274	    return number;
+.LINE 274
+
+	LD	HL,(IX+%FFFFFFFD)
+;  275	}
+.LINE 275
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _agon_fputs ***************************
+;Name                         Addr/Register   Size   Type
+;_filehandle                         IMPORT      6   variable
+;_mos_fputc                          IMPORT  -----   function
+;number                                IX-3      3   variable
+;fileid                                IX+9      1   parameter
+;s                                     IX+6      3   parameter
+
+
+; Stack Frame Size: 15 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "agon_fputs",275,"_agon_fputs"
+;  276	
+;  277	size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
+_agon_fwrite:
+.DEFINE "_agon_fwrite"
+
+.VALUE _agon_fwrite
+
+.CLASS 2
+
+.TYPE 78
+
+.ENDEF
+
+.BEGFUNC "agon_fwrite",277,"_agon_fwrite"
+
+.LINE 277
+
+.DEFINE "ptr"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 33
+
+.ENDEF
+
+.DEFINE "size"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 14
+
+.ENDEF
+
+.DEFINE "nmemb"
+
+.CLASS 65
+
+.VALUE 12
+
+.TYPE 14
+
+.ENDEF
+
+.DEFINE "fileid"
+
+.CLASS 65
+
+.VALUE 15
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "n"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 14
+
+.ENDEF
+
+.DEFINE "s"
+
+.CLASS 65
+
+.VALUE -6
+
+.TYPE 14
+
+.ENDEF
+
+.DEFINE "result"
+
+.CLASS 65
+
+.VALUE -9
+
+.TYPE 14
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+	PUSH	BC
+;  278	    size_t n, s, result = 0;
+.LINE 278
+
+	LD	BC,0
+	LD	(IX+%FFFFFFF7),BC
+;  279	
+;  280	    for(n = 0; n < nmemb; n++) {
+.LINE 280
+
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_205
+L_203:
+;  281	        for(s = 0; s < size; s++) {
+.LINE 281
+
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_202
+L_200:
+;  282	            mos_fputc(filehandle[fileid], (*(char *)ptr));
+.LINE 282
+
+	LD	HL,(IX+%6)
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	LD	A,(IX+%F)
+	UEXT	HL
+	LD	L,A
+	LD	BC,_filehandle
+	ADD	HL,BC
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_fputc
+	POP	BC
+	POP	BC
+;  283	            ptr++;
+.LINE 283
+
+	LD	BC,(IX+%6)
+	LD	(IX+%6),BC
+;  284	            result++;
+.LINE 284
+
+	LD	BC,(IX+%FFFFFFF7)
+	INC	BC
+	LD	(IX+%FFFFFFF7),BC
+	LD	BC,(IX+%FFFFFFFA)
+	INC	BC
+	LD	(IX+%FFFFFFFA),BC
+;  285	        }
+L_202:
+.LINE 285
+
+	LD	BC,(IX+%9)
+	LD	HL,(IX+%FFFFFFFA)
+	OR	A,A
+	SBC	HL,BC
+	JR	C,L_200
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+;  286	    }
+L_205:
+.LINE 286
+
+	LD	BC,(IX+%C)
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	JR	C,L_203
+;  287	    return result;
+.LINE 287
+
+	LD	HL,(IX+%FFFFFFF7)
+;  288	}
+.LINE 288
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _agon_fwrite ***************************
+;Name                         Addr/Register   Size   Type
+;_filehandle                         IMPORT      6   variable
+;_mos_fputc                          IMPORT  -----   function
+;result                                IX-9      3   variable
+;s                                     IX-6      3   variable
+;n                                     IX-3      3   variable
+;fileid                               IX+15      1   parameter
+;nmemb                                IX+12      3   parameter
+;size                                  IX+9      3   parameter
+;ptr                                   IX+6      3   parameter
+
+
+; Stack Frame Size: 27 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "agon_fwrite",288,"_agon_fwrite"
+;  289	
+;  290	size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
+_agon_fread:
+.DEFINE "_agon_fread"
+
+.VALUE _agon_fread
+
+.CLASS 2
+
+.TYPE 78
+
+.ENDEF
+
+.BEGFUNC "agon_fread",290,"_agon_fread"
+
+.LINE 290
+
+.DEFINE "ptr"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 33
+
+.ENDEF
+
+.DEFINE "size"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 14
+
+.ENDEF
+
+.DEFINE "nmemb"
+
+.CLASS 65
+
+.VALUE 12
+
+.TYPE 14
+
+.ENDEF
+
+.DEFINE "fileid"
+
+.CLASS 65
+
+.VALUE 15
+
+.TYPE 12
+
+.ENDEF
+
+.DEFINE "result"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 14
+
+.ENDEF
+
+.DEFINE "s"
+
+.CLASS 65
+
+.VALUE -6
+
+.TYPE 14
+
+.ENDEF
+
+.DEFINE "n"
+
+.CLASS 65
+
+.VALUE -9
+
+.TYPE 14
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+	PUSH	BC
+	PUSH	BC
+;  291	    size_t n, s, result = 0;
+.LINE 291
+
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+;  292	
+;  293	    for(n = 0; n < nmemb; n++) {
+.LINE 293
+
+	LD	(IX+%FFFFFFF7),BC
+	JR	L_219
+L_217:
+;  294	        for(s = 0; s < size; s++) {
+.LINE 294
+
+	LD	BC,0
+	LD	(IX+%FFFFFFFA),BC
+	JR	L_216
+L_214:
+;  295	            if((*(char *)ptr = mos_fgetc(filehandle[fileid])) == EOF) {
+.LINE 295
+
+	LD	A,(IX+%F)
+	UEXT	HL
+	LD	L,A
+	LD	BC,_filehandle
+	ADD	HL,BC
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_fgetc
+	POP	BC
+	LD	HL,(IX+%6)
+	LD	(HL),A
+	LD	HL,(IX+%6)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,16777215
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_212
+;  296	                *(char *)ptr = 0;
+.LINE 296
+
+	LD	HL,(IX+%6)
+	LD	(HL),%0
+;  297	                return result;
+.LINE 297
+
+	LD	HL,(IX+%FFFFFFFD)
+	JR	L_221
+;  298	            }
+L_212:
+.LINE 298
+
+;  299	            ptr++;
+.LINE 299
+
+	LD	BC,(IX+%6)
+	LD	(IX+%6),BC
+;  300	            result++;
+.LINE 300
+
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+	LD	BC,(IX+%FFFFFFFA)
+	INC	BC
+	LD	(IX+%FFFFFFFA),BC
+;  301	        }
+L_216:
+.LINE 301
+
+	LD	BC,(IX+%9)
+	LD	HL,(IX+%FFFFFFFA)
+	OR	A,A
+	SBC	HL,BC
+	JR	C,L_214
+	LD	BC,(IX+%FFFFFFF7)
+	INC	BC
+	LD	(IX+%FFFFFFF7),BC
+;  302	    }
+L_219:
+.LINE 302
+
+	LD	BC,(IX+%C)
+	LD	HL,(IX+%FFFFFFF7)
+	OR	A,A
+	SBC	HL,BC
+	JR	C,L_217
+;  303	    return result;
+.LINE 303
+
+	LD	HL,(IX+%FFFFFFFD)
+;  304	}
+L_221:
+.LINE 304
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _agon_fread ***************************
+;Name                         Addr/Register   Size   Type
+;_filehandle                         IMPORT      6   variable
+;_mos_fgetc                          IMPORT  -----   function
+;n                                     IX-9      3   variable
+;s                                     IX-6      3   variable
+;result                                IX-3      3   variable
+;fileid                               IX+15      1   parameter
+;nmemb                                IX+12      3   parameter
+;size                                  IX+9      3   parameter
+;ptr                                   IX+6      3   parameter
+
+
+; Stack Frame Size: 27 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "agon_fread",304,"_agon_fread"
+;  305	
+;  306	int strcasecmp (char *s1, char *s2) {
+_strcasecmp:
+.DEFINE "_strcasecmp"
+
+.VALUE _strcasecmp
+
+.CLASS 2
+
+.TYPE 68
+
+.ENDEF
+
+.BEGFUNC "strcasecmp",306,"_strcasecmp"
+
+.LINE 306
+
+.DEFINE "s1"
+
+.CLASS 65
+
+.VALUE 6
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "s2"
+
+.CLASS 65
+
+.VALUE 9
+
+.TYPE 34
+
+.ENDEF
+
+.DEFINE "p1"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 204
+
+.ENDEF
+
+.DEFINE "p2"
+
+.CLASS 65
+
+.VALUE -6
+
+.TYPE 204
+
+.ENDEF
+
+.DEFINE "result"
+
+.CLASS 65
+
+.VALUE -9
+
+.TYPE 4
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	LEA	HL,IX+%FFFFFFED
+	LD	SP,HL
+;  307	  const unsigned char *p1 = (const unsigned char *) s1;
+.LINE 307
+
+	LD	BC,(IX+%6)
+	LD	(IX+%FFFFFFFD),BC
+;  308	  const unsigned char *p2 = (const unsigned char *) s2;
+.LINE 308
+
+	LD	BC,(IX+%9)
+	LD	(IX+%FFFFFFFA),BC
+;  309	  int result;
+;  310	  if (p1 == p2)
+.LINE 310
+
+	LD	BC,(IX+%9)
+	LD	HL,(IX+%6)
+	OR	A,A
+	SBC	HL,BC
+	JR	NZ,L_226
+;  311	    return 0;
+.LINE 311
+
+	OR	A,A
+	SBC	HL,HL
+	JR	L_230
+;  312	  while ((result = tolower(*p1) - tolower(*p2++)) == 0)
+.LINE 312
+
+L_227:
+;  313	    if (*p1++ == '\0')
+.LINE 313
+
+	LD	BC,(IX+%FFFFFFFD)
+	LD	(IX+%FFFFFFF4),BC
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+	LD	HL,(IX+%FFFFFFF4)
+	LD	A,(HL)
+	OR	A,A
+	JR	Z,L_229
+;  314	      break;
+L_226:
+.LINE 314
+
+	LD	BC,(IX+%FFFFFFFA)
+	LD	(IX+%FFFFFFF1),BC
+	LD	BC,(IX+%FFFFFFFA)
+	INC	BC
+	LD	(IX+%FFFFFFFA),BC
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,(HL)
+	UEXT	HL
+	LD	L,A
+	PUSH	HL
+	CALL	_tolower
+	POP	BC
+	LD	BC,HL
+	LD	HL,(IX+%FFFFFFF1)
+	LD	A,(HL)
+	UEXT	HL
+	LD	L,A
+	PUSH	HL
+	LD	(IX+%FFFFFFEE),BC
+	LD	(IX+%FFFFFFED),A
+	CALL	_tolower
+	LD	BC,(IX+%FFFFFFEE)
+	LD	A,(IX+%FFFFFFED)
+	POP	DE
+	LD	DE,HL
+	LD	HL,BC
+	OR	A,A
+	SBC	HL,DE
+	LD	(IX+%FFFFFFF7),HL
+	CALL	__icmpzero
+	JR	Z,L_227
+L_229:
+;  315	  return result;
+.LINE 315
+
+	LD	HL,(IX+%FFFFFFF7)
+L_230:
+.LINE 316
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _strcasecmp ***************************
+;Name                         Addr/Register   Size   Type
+;_tolower                            IMPORT  -----   function
+;result                                IX-9      3   variable
+;p2                                    IX-6      3   variable
+;p1                                    IX-3      3   variable
+;s2                                    IX+9      3   parameter
+;s1                                    IX+6      3   parameter
+
+
+; Stack Frame Size: 31 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "strcasecmp",316,"_strcasecmp"
+	XREF _mos_fputc:ROM
+	XREF _mos_fgetc:ROM
+	XREF _mos_fclose:ROM
+	XREF _mos_fopen:ROM
+	XREF _global_errors:ROM
+	XREF _linenumber:ROM
+	XREF _filehandle:ROM
+	XREF _filename:ROM
+	XREF _tolower:ROM
+	XREF _isspace:ROM
+	XREF _strrchr:ROM
+	XREF _strcat:ROM
+	XREF _strcpy:ROM
+	XREF __u_itoa:ROM
+	XREF ___print_sendstring:ROM
+	XREF ___print_xputch:ROM
+	XREF ___print_uputch:ROM
+	XREF __istiy:ROM
+	XREF __bstiy:ROM
+	XREF __icmpzero:ROM
+	XREF __case8D:ROM
+	XREF __seqcaseD:ROM
+	XDEF _strcasecmp
+	XDEF _agon_fread
+	XDEF _agon_fwrite
+	XDEF _agon_fputs
+	XDEF _agon_fgets
+	XDEF _openfiles
+	XDEF _closeAllFiles
+	XDEF _prepare_filenames
+	XDEF _reOpenFile
+	XDEF _openFile
+	XDEF _getOperatorToken
+	XDEF _getLineToken
+	XDEF _split_suffix
+	XDEF _trimRight
+	XDEF _error
+	XDEF _notEmpty
+	XDEF _isEmpty
+	XDEF _remove_ext
+	END

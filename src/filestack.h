@@ -2,14 +2,13 @@
 #define FILESTACK_H
 
 #include <stdint.h>
-#include <stdbool.h>
 #include "globals.h"
 
 #define FILESTACK_MAXFILES  4
 
 typedef struct {
     uint16_t linenumber;
-    FILE *fp;
+    uint8_t fp;
     char filename[FILENAMEMAXLENGTH];
 } filestackitem;
 
