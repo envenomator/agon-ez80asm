@@ -11,6 +11,7 @@
 #include "str2num.h"
 #include "listing.h"
 #include "filestack.h"
+#include "stdint.h"
  
 void empty_operand(operand *op) {
     op->reg = R_NONE;

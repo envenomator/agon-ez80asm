@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "assemble.h"
 #include "label.h"
+#include "stdint.h"
 
 #include <time.h>
 #include <sys/time.h>

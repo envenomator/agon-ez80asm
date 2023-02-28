@@ -6,6 +6,7 @@
 #include "str2num.h"
 #include "label.h"
 #include "instruction.h"
+#include "stdint.h"
 
 // return a base filename, stripping the given extension from it
 void remove_ext (char* myStr, char extSep, char pathSep) {

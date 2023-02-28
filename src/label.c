@@ -6,6 +6,7 @@
 #include "str2num.h"
 #include "utils.h"
 #include "globals.h"
+#include "stdint.h"
 
 // memory for anonymous labels
 anonymouslabeltype an_prev;
