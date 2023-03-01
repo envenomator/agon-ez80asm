@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     14:26:44     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:29:18     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -310,32 +310,32 @@ PC     Object              I  Line    Source
                            A   306    .TYPE 13
                            A   307    .ENDEF
                            A   308    .ENDREC "NONAME5"
-                           A   309    .BEGREC "NONAME6",261
+                           A   309    .BEGREC "NONAME6",133
                            A   310    .DEFINE "start"
                            A   311    .VALUE 0
                            A   312    .CLASS 8
-                           A   313    .DIM 256
+                           A   313    .DIM 128
                            A   314    .TYPE 98
                            A   315    .ENDEF
                            A   316    .DEFINE "length"
-                           A   317    .VALUE 256
+                           A   317    .VALUE 128
                            A   318    .CLASS 8
                            A   319    .TYPE 12
                            A   320    .ENDEF
                            A   321    .DEFINE "next"
-                           A   322    .VALUE 257
+                           A   322    .VALUE 129
                            A   323    .CLASS 8
                            A   324    .TYPE 34
                            A   325    .ENDEF
                            A   326    .DEFINE "terminator"
-                           A   327    .VALUE 260
+                           A   327    .VALUE 132
                            A   328    .CLASS 8
                            A   329    .TYPE 2
                            A   330    .ENDEF
                            A   331    .ENDREC "NONAME6"
                            A   332    	SEGMENT BSS
-07FA2A                     A   333    __listLine:
-07FA2A                     A   334    	DS	128
+06FD65                     A   333    __listLine:
+06FD65                     A   334    	DS	128
                            A   335    .DEFINE "_listLine"
                            A   336    .ALIAS "__listLine"
                            A   337    .CLASS 83
@@ -343,16 +343,16 @@ PC     Object              I  Line    Source
                            A   339    .DIM 128
                            A   340    .TYPE 98
                            A   341    .ENDEF
-07FAAA                     A   342    __listAddress:
-07FAAA                     A   343    	DS	4*1
+06FDE5                     A   342    __listAddress:
+06FDE5                     A   343    	DS	4*1
                            A   344    .DEFINE "_listAddress"
                            A   345    .ALIAS "__listAddress"
                            A   346    .CLASS 83
                            A   347    .VALUE __listAddress
                            A   348    .TYPE 15
                            A   349    .ENDEF
-07FAAE                     A   350    __listObjects:
-07FAAE                     A   351    	DS	256
+06FDE9                     A   350    __listObjects:
+06FDE9                     A   351    	DS	256
                            A   352    .DEFINE "_listObjects"
                            A   353    .ALIAS "__listObjects"
                            A   354    .CLASS 83
@@ -360,8 +360,8 @@ PC     Object              I  Line    Source
                            A   356    .DIM 256
                            A   357    .TYPE 108
                            A   358    .ENDEF
-07FBAE                     A   359    __listObjectCount:
-07FBAE                     A   360    	DS	1
+06FEE9                     A   359    __listObjectCount:
+06FEE9                     A   360    	DS	1
                            A   361    .DEFINE "_listObjectCount"
                            A   362    .ALIAS "__listObjectCount"
                            A   363    .CLASS 83
@@ -369,57 +369,57 @@ PC     Object              I  Line    Source
                            A   365    .TYPE 12
                            A   366    .ENDEF
                            A   367    	SEGMENT DATA
-048C09                     A   368    __listFirstline:
-048C09 01                  A   369    	DB	1
+0481C4                     A   368    __listFirstline:
+0481C4 01                  A   369    	DB	1
                            A   370    .DEFINE "_listFirstline"
                            A   371    .ALIAS "__listFirstline"
                            A   372    .CLASS 69
                            A   373    .VALUE __listFirstline
                            A   374    .TYPE 12
                            A   375    .ENDEF
-048C0A                     A   376    __listHeader:
-048C0A 50                  A   377    	DB	80
-048C0B 43                  A   378    	DB	67
-048C0C 20                  A   379    	DB	32
-048C0D 20                  A   380    	DB	32
-048C0E 20                  A   381    	DB	32
-048C0F 20                  A   382    	DB	32
-048C10 20                  A   383    	DB	32
-048C11 20                  A   384    	DB	32
-048C12 4F                  A   385    	DB	79
-048C13 75                  A   386    	DB	117
-048C14 74                  A   387    	DB	116
-048C15 70                  A   388    	DB	112
-048C16 75                  A   389    	DB	117
-048C17 74                  A   390    	DB	116
-048C18 20                  A   391    	DB	32
-048C19 20                  A   392    	DB	32
-048C1A 20                  A   393    	DB	32
-048C1B 20                  A   394    	DB	32
-048C1C 20                  A   395    	DB	32
-048C1D 20                  A   396    	DB	32
-048C1E 20                  A   397    	DB	32
-048C1F 20                  A   398    	DB	32
-048C20 20                  A   399    	DB	32
-048C21 20                  A   400    	DB	32
-048C22 20                  A   401    	DB	32
-048C23 20                  A   402    	DB	32
-048C24 4C                  A   403    	DB	76
-048C25 69                  A   404    	DB	105
-048C26 6E                  A   405    	DB	110
-048C27 65                  A   406    	DB	101
-048C28 20                  A   407    	DB	32
-048C29 20                  A   408    	DB	32
-048C2A 20                  A   409    	DB	32
-048C2B 53                  A   410    	DB	83
-048C2C 6F                  A   411    	DB	111
-048C2D 75                  A   412    	DB	117
-048C2E 72                  A   413    	DB	114
-048C2F 63                  A   414    	DB	99
-048C30 65                  A   415    	DB	101
-048C31 0A                  A   416    	DB	10
-048C32 0D                  A   417    	DB	13
-048C33 00                  A   418    	DB	0
+0481C5                     A   376    __listHeader:
+0481C5 50                  A   377    	DB	80
+0481C6 43                  A   378    	DB	67
+0481C7 20                  A   379    	DB	32
+0481C8 20                  A   380    	DB	32
+0481C9 20                  A   381    	DB	32
+0481CA 20                  A   382    	DB	32
+0481CB 20                  A   383    	DB	32
+0481CC 20                  A   384    	DB	32
+0481CD 4F                  A   385    	DB	79
+0481CE 75                  A   386    	DB	117
+0481CF 74                  A   387    	DB	116
+0481D0 70                  A   388    	DB	112
+0481D1 75                  A   389    	DB	117
+0481D2 74                  A   390    	DB	116
+0481D3 20                  A   391    	DB	32
+0481D4 20                  A   392    	DB	32
+0481D5 20                  A   393    	DB	32
+0481D6 20                  A   394    	DB	32
+0481D7 20                  A   395    	DB	32
+0481D8 20                  A   396    	DB	32
+0481D9 20                  A   397    	DB	32
+0481DA 20                  A   398    	DB	32
+0481DB 20                  A   399    	DB	32
+0481DC 20                  A   400    	DB	32
+0481DD 20                  A   401    	DB	32
+0481DE 20                  A   402    	DB	32
+0481DF 4C                  A   403    	DB	76
+0481E0 69                  A   404    	DB	105
+0481E1 6E                  A   405    	DB	110
+0481E2 65                  A   406    	DB	101
+0481E3 20                  A   407    	DB	32
+0481E4 20                  A   408    	DB	32
+0481E5 20                  A   409    	DB	32
+0481E6 53                  A   410    	DB	83
+0481E7 6F                  A   411    	DB	111
+0481E8 75                  A   412    	DB	117
+0481E9 72                  A   413    	DB	114
+0481EA 63                  A   414    	DB	99
+0481EB 65                  A   415    	DB	101
+0481EC 0A                  A   416    	DB	10
+0481ED 0D                  A   417    	DB	13
+0481EE 00                  A   418    	DB	0
                            A   419    .DEFINE "_listHeader"
                            A   420    .ALIAS "__listHeader"
                            A   421    .CLASS 69
@@ -428,8 +428,8 @@ PC     Object              I  Line    Source
                            A   424    .TYPE 98
                            A   425    .ENDEF
                            A   426    	SEGMENT BSS
-07FBAF                     A   427    _buffer:
-07FBAF                     A   428    	DS	160
+06FEEA                     A   427    _buffer:
+06FEEA                     A   428    	DS	160
                            A   429    .DEFINE "buffer"
                            A   430    .ALIAS "_buffer"
                            A   431    .CLASS 83
@@ -456,7 +456,7 @@ PC     Object              I  Line    Source
                            A   452    	SEGMENT CODE
                            A   453    ;   17	
                            A   454    ;   18	void listInit(bool console) {
-044E72                     A   455    _listInit:
+044475                     A   455    _listInit:
                            A   456    .DEFINE "_listInit"
                            A   457    
                            A   458    .VALUE _listInit
@@ -481,68 +481,68 @@ PC     Object              I  Line    Source
                            A   477    
                            A   478    .ENDEF
                            A   479    
-044E72 DDE5                A   480    	PUSH	IX
-044E74 DD210000 00         A   481    	LD	IX,0
-044E79 DD39                A   482    	ADD	IX,SP
+044475 DDE5                A   480    	PUSH	IX
+044477 DD210000 00         A   481    	LD	IX,0
+04447C DD39                A   482    	ADD	IX,SP
                            A   483    ;   19	    sprintf(buffer, "%s", _listHeader);
                            A   484    .LINE 19
                            A   485    
-044E7B 01 AF FB 07         A   486    	LD	BC,_buffer
-044E7F ED43 73 FC 07       A   487    	LD	(___print_out),BC
-044E84 01 E2 66 04         A   488    	LD	BC,___print_sputch
-044E88 ED43 34 8C 04       A   489    	LD	(___print_xputch),BC
-044E8D 01 0A 8C 04         A   490    	LD	BC,__listHeader
-044E91 C5                  A   491    	PUSH	BC
-044E92 CD 0E 65 04         A   492    	CALL	___print_sendstring
-044E96 C1                  A   493    	POP	BC
-044E97 01000000            A   494    	LD	BC,0
-044E9B C5                  A   495    	PUSH	BC
-044E9C CD E2 66 04         A   496    	CALL	___print_sputch
-044EA0 C1                  A   497    	POP	BC
+04447E 01 EA FE 06         A   486    	LD	BC,_buffer
+044482 ED43 AE FF 06       A   487    	LD	(___print_out),BC
+044487 01 CE 5C 04         A   488    	LD	BC,___print_sputch
+04448B ED43 EF 81 04       A   489    	LD	(___print_xputch),BC
+044490 01 C5 81 04         A   490    	LD	BC,__listHeader
+044494 C5                  A   491    	PUSH	BC
+044495 CD FA 5A 04         A   492    	CALL	___print_sendstring
+044499 C1                  A   493    	POP	BC
+04449A 01000000            A   494    	LD	BC,0
+04449E C5                  A   495    	PUSH	BC
+04449F CD CE 5C 04         A   496    	CALL	___print_sputch
+0444A3 C1                  A   497    	POP	BC
                            A   498    ;   20	    agon_fputs(buffer, FILE_LISTING);
                            A   499    .LINE 20
                            A   500    
-044EA1 01050000            A   501    	LD	BC,5
-044EA5 C5                  A   502    	PUSH	BC
-044EA6 01 AF FB 07         A   503    	LD	BC,_buffer
-044EAA C5                  A   504    	PUSH	BC
-044EAB CD E7 61 04         A   505    	CALL	_agon_fputs
-044EAF C1                  A   506    	POP	BC
-044EB0 C1                  A   507    	POP	BC
+0444A4 01050000            A   501    	LD	BC,5
+0444A8 C5                  A   502    	PUSH	BC
+0444A9 01 EA FE 06         A   503    	LD	BC,_buffer
+0444AD C5                  A   504    	PUSH	BC
+0444AE CD DF 57 04         A   505    	CALL	_agon_fputs
+0444B2 C1                  A   506    	POP	BC
+0444B3 C1                  A   507    	POP	BC
                            A   508    ;   21	    if(console) printf("%s", _listHeade
                            A   509    .LINE 21
                            A   510    
-044EB1 DD7E06              A   511    	LD	A,(IX+%6)
-044EB4 B7                  A   512    	OR	A,A
-044EB5 28 13               A   513    	JR	Z,L_1
-044EB7 01 9C 66 04         A   514    	LD	BC,___print_uputch
-044EBB ED43 34 8C 04       A   515    	LD	(___print_xputch),BC
-044EC0 01 0A 8C 04         A   516    	LD	BC,__listHeader
-044EC4 C5                  A   517    	PUSH	BC
-044EC5 CD 0E 65 04         A   518    	CALL	___print_sendstring
-044EC9 C1                  A   519    	POP	BC
-044ECA                     A   520    L_1:
+0444B4 DD7E06              A   511    	LD	A,(IX+%6)
+0444B7 B7                  A   512    	OR	A,A
+0444B8 28 13               A   513    	JR	Z,L_1
+0444BA 01 88 5C 04         A   514    	LD	BC,___print_uputch
+0444BE ED43 EF 81 04       A   515    	LD	(___print_xputch),BC
+0444C3 01 C5 81 04         A   516    	LD	BC,__listHeader
+0444C7 C5                  A   517    	PUSH	BC
+0444C8 CD FA 5A 04         A   518    	CALL	___print_sendstring
+0444CC C1                  A   519    	POP	BC
+0444CD                     A   520    L_1:
                            A   521    ;   22	    _listFirstline = false;
                            A   522    .LINE 22
                            A   523    
-044ECA AF                  A   524    	XOR	A,A
-044ECB 32 09 8C 04         A   525    	LD	(__listFirstline),A
+0444CD AF                  A   524    	XOR	A,A
+0444CE 32 C4 81 04         A   525    	LD	(__listFirstline),A
                            A   526    ;   23	    _listLine[0] = 0;
                            A   527    .LINE 23
                            A   528    
-044ECF AF                  A   529    	XOR	A,A
-044ED0 32 2A FA 07         A   530    	LD	(__listLine),A
+0444D2 AF                  A   529    	XOR	A,A
+0444D3 32 65 FD 06         A   530    	LD	(__listLine),A
                            A   531    ;   24	    _listObjectCount = 0;
                            A   532    .LINE 24
                            A   533    
-044ED4 AF                  A   534    	XOR	A,A
-044ED5 32 AE FB 07         A   535    	LD	(__listObjectCount),A
+0444D7 AF                  A   534    	XOR	A,A
+0444D8 32 E9 FE 06         A   535    	LD	(__listObjectCount),A
                            A   536    ;   25	}
                            A   537    .LINE 25
                            A   538    
-044ED9 DDF9                A   539    	LD	SP,IX
-044EDB DDE1                A   540    	POP	IX
-044EDD C9                  A   541    	RET	
+0444DC DDF9                A   539    	LD	SP,IX
+0444DE DDE1                A   540    	POP	IX
+0444E0 C9                  A   541    	RET	
                            A   542    
                            A   543    
                            A   544    ;**************************** _listInit *******
@@ -568,7 +568,7 @@ PC     Object              I  Line    Source
                            A   564    .ENDFUNC "listInit",25,"_listInit"
                            A   565    ;   26	
                            A   566    ;   27	void listStartLine(char *line) {
-044EDE                     A   567    _listStartLine:
+0444E1                     A   567    _listStartLine:
                            A   568    .DEFINE "_listStartLine"
                            A   569    
                            A   570    .VALUE _listStartLine
@@ -593,44 +593,44 @@ PC     Object              I  Line    Source
                            A   589    
                            A   590    .ENDEF
                            A   591    
-044EDE DDE5                A   592    	PUSH	IX
-044EE0 DD210000 00         A   593    	LD	IX,0
-044EE5 DD39                A   594    	ADD	IX,SP
+0444E1 DDE5                A   592    	PUSH	IX
+0444E3 DD210000 00         A   593    	LD	IX,0
+0444E8 DD39                A   594    	ADD	IX,SP
                            A   595    ;   28	    strcpy(_listLine, line);
                            A   596    .LINE 28
                            A   597    
-044EE7 DD0706              A   598    	LD	BC,(IX+%6)
-044EEA C5                  A   599    	PUSH	BC
-044EEB 01 2A FA 07         A   600    	LD	BC,__listLine
-044EEF C5                  A   601    	PUSH	BC
-044EF0 CD 6F 6E 04         A   602    	CALL	_strcpy
-044EF4 C1                  A   603    	POP	BC
-044EF5 C1                  A   604    	POP	BC
+0444EA DD0706              A   598    	LD	BC,(IX+%6)
+0444ED C5                  A   599    	PUSH	BC
+0444EE 01 65 FD 06         A   600    	LD	BC,__listLine
+0444F2 C5                  A   601    	PUSH	BC
+0444F3 CD EE 63 04         A   602    	CALL	_strcpy
+0444F7 C1                  A   603    	POP	BC
+0444F8 C1                  A   604    	POP	BC
                            A   605    ;   29	    trimRight(_listLine);
                            A   606    .LINE 29
                            A   607    
-044EF6 01 2A FA 07         A   608    	LD	BC,__listLine
-044EFA C5                  A   609    	PUSH	BC
-044EFB CD 13 59 04         A   610    	CALL	_trimRight
-044EFF C1                  A   611    	POP	BC
+0444F9 01 65 FD 06         A   608    	LD	BC,__listLine
+0444FD C5                  A   609    	PUSH	BC
+0444FE CD 16 4F 04         A   610    	CALL	_trimRight
+044502 C1                  A   611    	POP	BC
                            A   612    ;   30	    _listAddress = address;
                            A   613    .LINE 30
                            A   614    
-044F00 ED4B 1A 97 04       A   615    	LD	BC,(_address)
-044F05 3A 1D 97 04         A   616    	LD	A,(_address+3)
-044F09 ED43 AA FA 07       A   617    	LD	(__listAddress),BC
-044F0E 32 AD FA 07         A   618    	LD	(__listAddress+3),A
+044503 ED4B 55 8A 04       A   615    	LD	BC,(_address)
+044508 3A 58 8A 04         A   616    	LD	A,(_address+3)
+04450C ED43 E5 FD 06       A   617    	LD	(__listAddress),BC
+044511 32 E8 FD 06         A   618    	LD	(__listAddress+3),A
                            A   619    ;   31	    _listObjectCount = 0;
                            A   620    .LINE 31
                            A   621    
-044F12 AF                  A   622    	XOR	A,A
-044F13 32 AE FB 07         A   623    	LD	(__listObjectCount),A
+044515 AF                  A   622    	XOR	A,A
+044516 32 E9 FE 06         A   623    	LD	(__listObjectCount),A
                            A   624    ;   32	}
                            A   625    .LINE 32
                            A   626    
-044F17 DDF9                A   627    	LD	SP,IX
-044F19 DDE1                A   628    	POP	IX
-044F1B C9                  A   629    	RET	
+04451A DDF9                A   627    	LD	SP,IX
+04451C DDE1                A   628    	POP	IX
+04451E C9                  A   629    	RET	
                            A   630    
                            A   631    
                            A   632    ;**************************** _listStartLine **
@@ -651,7 +651,7 @@ PC     Object              I  Line    Source
                            A   647    .ENDFUNC "listStartLine",32,"_listStartLine"
                            A   648    ;   33	
                            A   649    ;   34	void listEndLine(bool console) {
-044F1C                     A   650    _listEndLine:
+04451F                     A   650    _listEndLine:
                            A   651    .DEFINE "_listEndLine"
                            A   652    
                            A   653    .VALUE _listEndLine
@@ -716,415 +716,415 @@ PC     Object              I  Line    Source
                            A   712    
                            A   713    .ENDEF
                            A   714    
-044F1C DDE5                A   715    	PUSH	IX
-044F1E DD210000 00         A   716    	LD	IX,0
-044F23 DD39                A   717    	ADD	IX,SP
-044F25 C5                  A   718    	PUSH	BC
-044F26 3B                  A   719    	DEC	SP
+04451F DDE5                A   715    	PUSH	IX
+044521 DD210000 00         A   716    	LD	IX,0
+044526 DD39                A   717    	ADD	IX,SP
+044528 C5                  A   718    	PUSH	BC
+044529 3B                  A   719    	DEC	SP
                            A   720    ;   35	    uint8_t i, lines, objectnum;
                            A   721    ;   36	    uint8_t linemax;
                            A   722    ;   37	
                            A   723    ;   38	    linemax = (_listObjectCount / OBJEC
                            A   724    .LINE 38
                            A   725    
-044F27 3A AE FB 07         A   726    	LD	A,(__listObjectCount)
-044F2B B7ED62              A   727    	UEXT	HL
-044F2E 6F                  A   728    	LD	L,A
-044F2F 01060000            A   729    	LD	BC,6
-044F33 CD 70 6D 04         A   730    	CALL	__idivs
-044F37 DD75FE              A   731    	LD	(IX+%FFFFFFFE),L
+04452A 3A E9 FE 06         A   726    	LD	A,(__listObjectCount)
+04452E B7ED62              A   727    	UEXT	HL
+044531 6F                  A   728    	LD	L,A
+044532 01060000            A   729    	LD	BC,6
+044536 CD 5C 63 04         A   730    	CALL	__idivs
+04453A DD75FE              A   731    	LD	(IX+%FFFFFFFE),L
                            A   732    ;   39	    if(_listObjectCount % OBJECTS_PER_L
                            A   733    .LINE 39
                            A   734    
-044F3A 3A AE FB 07         A   735    	LD	A,(__listObjectCount)
-044F3E B7ED62              A   736    	UEXT	HL
-044F41 6F                  A   737    	LD	L,A
-044F42 01060000            A   738    	LD	BC,6
-044F46 CD 2C 64 04         A   739    	CALL	__irems
-044F4A CD E3 6A 04         A   740    	CALL	__icmpzero
-044F4E 28 03               A   741    	JR	Z,L_7
-044F50 DD34FE              A   742    	INC	(IX+%FFFFFFFE)
-044F53                     A   743    L_7:
+04453D 3A E9 FE 06         A   735    	LD	A,(__listObjectCount)
+044541 B7ED62              A   736    	UEXT	HL
+044544 6F                  A   737    	LD	L,A
+044545 01060000            A   738    	LD	BC,6
+044549 CD 24 5A 04         A   739    	CALL	__irems
+04454D CD CF 60 04         A   740    	CALL	__icmpzero
+044551 28 03               A   741    	JR	Z,L_7
+044553 DD34FE              A   742    	INC	(IX+%FFFFFFFE)
+044556                     A   743    L_7:
                            A   744    ;   40	    if(linemax == 0) linemax = 1;
                            A   745    .LINE 40
                            A   746    
-044F53 DD7EFE              A   747    	LD	A,(IX+%FFFFFFFE)
-044F56 B7                  A   748    	OR	A,A
-044F57 20 04               A   749    	JR	NZ,L_8
-044F59 DD36FE01            A   750    	LD	(IX+%FFFFFFFE),%1
-044F5D                     A   751    L_8:
+044556 DD7EFE              A   747    	LD	A,(IX+%FFFFFFFE)
+044559 B7                  A   748    	OR	A,A
+04455A 20 04               A   749    	JR	NZ,L_8
+04455C DD36FE01            A   750    	LD	(IX+%FFFFFFFE),%1
+044560                     A   751    L_8:
                            A   752    ;   41	
                            A   753    ;   42	    objectnum = 0;
                            A   754    .LINE 42
                            A   755    
-044F5D DD36FD00            A   756    	LD	(IX+%FFFFFFFD),%0
+044560 DD36FD00            A   756    	LD	(IX+%FFFFFFFD),%0
                            A   757    ;   43	    for(lines = 0; lines < linemax; lin
                            A   758    .LINE 43
                            A   759    
-044F61 DD36FF00            A   760    	LD	(IX+%FFFFFFFF),%0
-044F65 C3 0C 52 04         A   761    	JR	L_32
-044F69                     A   762    L_30:
+044564 DD36FF00            A   760    	LD	(IX+%FFFFFFFF),%0
+044568 C3 0F 48 04         A   761    	JR	L_32
+04456C                     A   762    L_30:
                            A   763    ;   44	        if(lines == 0) {
                            A   764    .LINE 44
                            A   765    
-044F69 DD7EFF              A   766    	LD	A,(IX+%FFFFFFFF)
-044F6C B7                  A   767    	OR	A,A
-044F6D 20 77               A   768    	JR	NZ,L_13
+04456C DD7EFF              A   766    	LD	A,(IX+%FFFFFFFF)
+04456F B7                  A   767    	OR	A,A
+044570 20 77               A   768    	JR	NZ,L_13
                            A   769    ;   45	            sprintf(buffer, "%06X  ",_l
                            A   770    .LINE 45
                            A   771    
-044F6F 01 AF FB 07         A   772    	LD	BC,_buffer
-044F73 ED43 73 FC 07       A   773    	LD	(___print_out),BC
-044F78 01 E2 66 04         A   774    	LD	BC,___print_sputch
-044F7C ED43 34 8C 04       A   775    	LD	(___print_xputch),BC
-044F81 3E06                A   776    	LD	A,%6
-044F83 32 63 FC 07         A   777    	LD	(___print_fmt+5),A
-044F87 3E60                A   778    	LD	A,%60
-044F89 32 5F FC 07         A   779    	LD	(___print_fmt+1),A
-044F8D 3E78                A   780    	LD	A,%78
-044F8F 32 62 FC 07         A   781    	LD	(___print_fmt+4),A
-044F93 3A AD FA 07         A   782    	LD	A,(__listAddress+3)
-044F97 4F                  A   783    	LD	C,A
-044F98 0600                A   784    	LD	B,%0
-044F9A C5                  A   785    	PUSH	BC
-044F9B ED4B AA FA 07       A   786    	LD	BC,(__listAddress)
-044FA0 C5                  A   787    	PUSH	BC
-044FA1 CD 22 67 04         A   788    	CALL	__u_uitoa
-044FA5 C1                  A   789    	POP	BC
-044FA6 C1                  A   790    	POP	BC
-044FA7 01 A2 91 04         A   791    	LD	BC,L__6
-044FAB C5                  A   792    	PUSH	BC
-044FAC CD 0E 65 04         A   793    	CALL	___print_sendstring
-044FB0 C1                  A   794    	POP	BC
-044FB1 01000000            A   795    	LD	BC,0
-044FB5 C5                  A   796    	PUSH	BC
-044FB6 CD E2 66 04         A   797    	CALL	___print_sputch
-044FBA C1                  A   798    	POP	BC
+044572 01 EA FE 06         A   772    	LD	BC,_buffer
+044576 ED43 AE FF 06       A   773    	LD	(___print_out),BC
+04457B 01 CE 5C 04         A   774    	LD	BC,___print_sputch
+04457F ED43 EF 81 04       A   775    	LD	(___print_xputch),BC
+044584 3E06                A   776    	LD	A,%6
+044586 32 9E FF 06         A   777    	LD	(___print_fmt+5),A
+04458A 3E60                A   778    	LD	A,%60
+04458C 32 9A FF 06         A   779    	LD	(___print_fmt+1),A
+044590 3E78                A   780    	LD	A,%78
+044592 32 9D FF 06         A   781    	LD	(___print_fmt+4),A
+044596 3A E8 FD 06         A   782    	LD	A,(__listAddress+3)
+04459A 4F                  A   783    	LD	C,A
+04459B 0600                A   784    	LD	B,%0
+04459D C5                  A   785    	PUSH	BC
+04459E ED4B E5 FD 06       A   786    	LD	BC,(__listAddress)
+0445A3 C5                  A   787    	PUSH	BC
+0445A4 CD 0E 5D 04         A   788    	CALL	__u_uitoa
+0445A8 C1                  A   789    	POP	BC
+0445A9 C1                  A   790    	POP	BC
+0445AA 01 5D 87 04         A   791    	LD	BC,L__6
+0445AE C5                  A   792    	PUSH	BC
+0445AF CD FA 5A 04         A   793    	CALL	___print_sendstring
+0445B3 C1                  A   794    	POP	BC
+0445B4 01000000            A   795    	LD	BC,0
+0445B8 C5                  A   796    	PUSH	BC
+0445B9 CD CE 5C 04         A   797    	CALL	___print_sputch
+0445BD C1                  A   798    	POP	BC
                            A   799    ;   46	            agon_fputs(buffer, FILE_LIS
                            A   800    .LINE 46
                            A   801    
-044FBB 01050000            A   802    	LD	BC,5
-044FBF C5                  A   803    	PUSH	BC
-044FC0 01 AF FB 07         A   804    	LD	BC,_buffer
-044FC4 C5                  A   805    	PUSH	BC
-044FC5 CD E7 61 04         A   806    	CALL	_agon_fputs
-044FC9 C1                  A   807    	POP	BC
-044FCA C1                  A   808    	POP	BC
+0445BE 01050000            A   802    	LD	BC,5
+0445C2 C5                  A   803    	PUSH	BC
+0445C3 01 EA FE 06         A   804    	LD	BC,_buffer
+0445C7 C5                  A   805    	PUSH	BC
+0445C8 CD DF 57 04         A   806    	CALL	_agon_fputs
+0445CC C1                  A   807    	POP	BC
+0445CD C1                  A   808    	POP	BC
                            A   809    ;   47	            if(console) printf("%s",buf
                            A   810    .LINE 47
                            A   811    
-044FCB DD7E06              A   812    	LD	A,(IX+%6)
-044FCE B7                  A   813    	OR	A,A
-044FCF 28 64               A   814    	JR	Z,L_24
-044FD1 01 9C 66 04         A   815    	LD	BC,___print_uputch
-044FD5 ED43 34 8C 04       A   816    	LD	(___print_xputch),BC
-044FDA 01 AF FB 07         A   817    	LD	BC,_buffer
-044FDE C5                  A   818    	PUSH	BC
-044FDF CD 0E 65 04         A   819    	CALL	___print_sendstring
-044FE3 C1                  A   820    	POP	BC
+0445CE DD7E06              A   812    	LD	A,(IX+%6)
+0445D1 B7                  A   813    	OR	A,A
+0445D2 28 64               A   814    	JR	Z,L_24
+0445D4 01 88 5C 04         A   815    	LD	BC,___print_uputch
+0445D8 ED43 EF 81 04       A   816    	LD	(___print_xputch),BC
+0445DD 01 EA FE 06         A   817    	LD	BC,_buffer
+0445E1 C5                  A   818    	PUSH	BC
+0445E2 CD FA 5A 04         A   819    	CALL	___print_sendstring
+0445E6 C1                  A   820    	POP	BC
                            A   821    ;   48	        }
                            A   822    ;   49	        else {
                            A   823    .LINE 49
                            A   824    
-044FE4 18 4F               A   825    	JR	L_24
-044FE6                     A   826    L_13:
+0445E7 18 4F               A   825    	JR	L_24
+0445E9                     A   826    L_13:
                            A   827    ;   50	            sprintf(buffer, "        ")
                            A   828    .LINE 50
                            A   829    
-044FE6 01 AF FB 07         A   830    	LD	BC,_buffer
-044FEA ED43 73 FC 07       A   831    	LD	(___print_out),BC
-044FEF 01 E2 66 04         A   832    	LD	BC,___print_sputch
-044FF3 ED43 34 8C 04       A   833    	LD	(___print_xputch),BC
-044FF8 01 A5 91 04         A   834    	LD	BC,L__8
-044FFC C5                  A   835    	PUSH	BC
-044FFD CD 0E 65 04         A   836    	CALL	___print_sendstring
-045001 C1                  A   837    	POP	BC
-045002 01000000            A   838    	LD	BC,0
-045006 C5                  A   839    	PUSH	BC
-045007 CD E2 66 04         A   840    	CALL	___print_sputch
-04500B C1                  A   841    	POP	BC
+0445E9 01 EA FE 06         A   830    	LD	BC,_buffer
+0445ED ED43 AE FF 06       A   831    	LD	(___print_out),BC
+0445F2 01 CE 5C 04         A   832    	LD	BC,___print_sputch
+0445F6 ED43 EF 81 04       A   833    	LD	(___print_xputch),BC
+0445FB 01 60 87 04         A   834    	LD	BC,L__8
+0445FF C5                  A   835    	PUSH	BC
+044600 CD FA 5A 04         A   836    	CALL	___print_sendstring
+044604 C1                  A   837    	POP	BC
+044605 01000000            A   838    	LD	BC,0
+044609 C5                  A   839    	PUSH	BC
+04460A CD CE 5C 04         A   840    	CALL	___print_sputch
+04460E C1                  A   841    	POP	BC
                            A   842    ;   51	            agon_fputs(buffer, FILE_LIS
                            A   843    .LINE 51
                            A   844    
-04500C 01050000            A   845    	LD	BC,5
-045010 C5                  A   846    	PUSH	BC
-045011 01 AF FB 07         A   847    	LD	BC,_buffer
-045015 C5                  A   848    	PUSH	BC
-045016 CD E7 61 04         A   849    	CALL	_agon_fputs
-04501A C1                  A   850    	POP	BC
-04501B C1                  A   851    	POP	BC
+04460F 01050000            A   845    	LD	BC,5
+044613 C5                  A   846    	PUSH	BC
+044614 01 EA FE 06         A   847    	LD	BC,_buffer
+044618 C5                  A   848    	PUSH	BC
+044619 CD DF 57 04         A   849    	CALL	_agon_fputs
+04461D C1                  A   850    	POP	BC
+04461E C1                  A   851    	POP	BC
                            A   852    ;   52	            if(console) printf("%s",buf
                            A   853    .LINE 52
                            A   854    
-04501C DD7E06              A   855    	LD	A,(IX+%6)
-04501F B7                  A   856    	OR	A,A
-045020 28 13               A   857    	JR	Z,L_24
-045022 01 9C 66 04         A   858    	LD	BC,___print_uputch
-045026 ED43 34 8C 04       A   859    	LD	(___print_xputch),BC
-04502B 01 AF FB 07         A   860    	LD	BC,_buffer
-04502F C5                  A   861    	PUSH	BC
-045030 CD 0E 65 04         A   862    	CALL	___print_sendstring
-045034 C1                  A   863    	POP	BC
+04461F DD7E06              A   855    	LD	A,(IX+%6)
+044622 B7                  A   856    	OR	A,A
+044623 28 13               A   857    	JR	Z,L_24
+044625 01 88 5C 04         A   858    	LD	BC,___print_uputch
+044629 ED43 EF 81 04       A   859    	LD	(___print_xputch),BC
+04462E 01 EA FE 06         A   860    	LD	BC,_buffer
+044632 C5                  A   861    	PUSH	BC
+044633 CD FA 5A 04         A   862    	CALL	___print_sendstring
+044637 C1                  A   863    	POP	BC
                            A   864    ;   53	        }
-045035                     A   865    L_24:
+044638                     A   865    L_24:
                            A   866    .LINE 53
                            A   867    
                            A   868    ;   54	        for(i = 0; i < OBJECTS_PER_LINE
                            A   869    .LINE 54
                            A   870    
-045035 DD36FC00            A   871    	LD	(IX+%FFFFFFFC),%0
-045039 C3 25 51 04         A   872    	JR	L_23
-04503D                     A   873    L_21:
+044638 DD36FC00            A   871    	LD	(IX+%FFFFFFFC),%0
+04463C C3 28 47 04         A   872    	JR	L_23
+044640                     A   873    L_21:
                            A   874    ;   55	            if(objectnum < _listObjectC
                            A   875    .LINE 55
                            A   876    
-04503D DD7EFD              A   877    	LD	A,(IX+%FFFFFFFD)
-045040 21 AE FB 07         A   878    	LD	HL,__listObjectCount
-045044 BE                  A   879    	CP	A,(HL)
-045045 D2 D3 50 04         A   880    	JR	NC,L_20
+044640 DD7EFD              A   877    	LD	A,(IX+%FFFFFFFD)
+044643 21 E9 FE 06         A   878    	LD	HL,__listObjectCount
+044647 BE                  A   879    	CP	A,(HL)
+044648 D2 D6 46 04         A   880    	JR	NC,L_20
                            A   881    ;   56	                sprintf(buffer, "%02X "
                            A   882    .LINE 56
                            A   883    
-045049 01 AF FB 07         A   884    	LD	BC,_buffer
-04504D ED43 73 FC 07       A   885    	LD	(___print_out),BC
-045052 01 E2 66 04         A   886    	LD	BC,___print_sputch
-045056 ED43 34 8C 04       A   887    	LD	(___print_xputch),BC
-04505B 3E02                A   888    	LD	A,%2
-04505D 32 63 FC 07         A   889    	LD	(___print_fmt+5),A
-045061 3E60                A   890    	LD	A,%60
-045063 32 5F FC 07         A   891    	LD	(___print_fmt+1),A
-045067 3E78                A   892    	LD	A,%78
-045069 32 62 FC 07         A   893    	LD	(___print_fmt+4),A
-04506D DD7EFD              A   894    	LD	A,(IX+%FFFFFFFD)
-045070 B7ED62              A   895    	UEXT	HL
-045073 6F                  A   896    	LD	L,A
-045074 01 AE FA 07         A   897    	LD	BC,__listObjects
-045078 09                  A   898    	ADD	HL,BC
-045079 7E                  A   899    	LD	A,(HL)
-04507A B7ED62              A   900    	UEXT	HL
-04507D 6F                  A   901    	LD	L,A
-04507E E5C1                A   902    	LD	BC,HL
-045080 CD 16 6E 04         A   903    	CALL	__itol
-045084 C5D1                A   904    	LD	DE,BC
-045086 4F                  A   905    	LD	C,A
-045087 0600                A   906    	LD	B,%0
-045089 C5                  A   907    	PUSH	BC
-04508A D5                  A   908    	PUSH	DE
-04508B CD 22 67 04         A   909    	CALL	__u_uitoa
-04508F C1                  A   910    	POP	BC
-045090 C1                  A   911    	POP	BC
-045091 01200000            A   912    	LD	BC,32
-045095 C5                  A   913    	PUSH	BC
-045096 CD E2 66 04         A   914    	CALL	___print_sputch
-04509A C1                  A   915    	POP	BC
-04509B 01000000            A   916    	LD	BC,0
-04509F C5                  A   917    	PUSH	BC
-0450A0 CD E2 66 04         A   918    	CALL	___print_sputch
-0450A4 C1                  A   919    	POP	BC
+04464C 01 EA FE 06         A   884    	LD	BC,_buffer
+044650 ED43 AE FF 06       A   885    	LD	(___print_out),BC
+044655 01 CE 5C 04         A   886    	LD	BC,___print_sputch
+044659 ED43 EF 81 04       A   887    	LD	(___print_xputch),BC
+04465E 3E02                A   888    	LD	A,%2
+044660 32 9E FF 06         A   889    	LD	(___print_fmt+5),A
+044664 3E60                A   890    	LD	A,%60
+044666 32 9A FF 06         A   891    	LD	(___print_fmt+1),A
+04466A 3E78                A   892    	LD	A,%78
+04466C 32 9D FF 06         A   893    	LD	(___print_fmt+4),A
+044670 DD7EFD              A   894    	LD	A,(IX+%FFFFFFFD)
+044673 B7ED62              A   895    	UEXT	HL
+044676 6F                  A   896    	LD	L,A
+044677 01 E9 FD 06         A   897    	LD	BC,__listObjects
+04467B 09                  A   898    	ADD	HL,BC
+04467C 7E                  A   899    	LD	A,(HL)
+04467D B7ED62              A   900    	UEXT	HL
+044680 6F                  A   901    	LD	L,A
+044681 E5C1                A   902    	LD	BC,HL
+044683 CD 95 63 04         A   903    	CALL	__itol
+044687 C5D1                A   904    	LD	DE,BC
+044689 4F                  A   905    	LD	C,A
+04468A 0600                A   906    	LD	B,%0
+04468C C5                  A   907    	PUSH	BC
+04468D D5                  A   908    	PUSH	DE
+04468E CD 0E 5D 04         A   909    	CALL	__u_uitoa
+044692 C1                  A   910    	POP	BC
+044693 C1                  A   911    	POP	BC
+044694 01200000            A   912    	LD	BC,32
+044698 C5                  A   913    	PUSH	BC
+044699 CD CE 5C 04         A   914    	CALL	___print_sputch
+04469D C1                  A   915    	POP	BC
+04469E 01000000            A   916    	LD	BC,0
+0446A2 C5                  A   917    	PUSH	BC
+0446A3 CD CE 5C 04         A   918    	CALL	___print_sputch
+0446A7 C1                  A   919    	POP	BC
                            A   920    ;   57	                agon_fputs(buffer, FILE
                            A   921    .LINE 57
                            A   922    
-0450A5 01050000            A   923    	LD	BC,5
-0450A9 C5                  A   924    	PUSH	BC
-0450AA 01 AF FB 07         A   925    	LD	BC,_buffer
-0450AE C5                  A   926    	PUSH	BC
-0450AF CD E7 61 04         A   927    	CALL	_agon_fputs
-0450B3 C1                  A   928    	POP	BC
-0450B4 C1                  A   929    	POP	BC
+0446A8 01050000            A   923    	LD	BC,5
+0446AC C5                  A   924    	PUSH	BC
+0446AD 01 EA FE 06         A   925    	LD	BC,_buffer
+0446B1 C5                  A   926    	PUSH	BC
+0446B2 CD DF 57 04         A   927    	CALL	_agon_fputs
+0446B6 C1                  A   928    	POP	BC
+0446B7 C1                  A   929    	POP	BC
                            A   930    ;   58	                if(console) printf("%s"
                            A   931    .LINE 58
                            A   932    
-0450B5 DD7E06              A   933    	LD	A,(IX+%6)
-0450B8 B7                  A   934    	OR	A,A
-0450B9 28 13               A   935    	JR	Z,L_17
-0450BB 01 9C 66 04         A   936    	LD	BC,___print_uputch
-0450BF ED43 34 8C 04       A   937    	LD	(___print_xputch),BC
-0450C4 01 AF FB 07         A   938    	LD	BC,_buffer
-0450C8 C5                  A   939    	PUSH	BC
-0450C9 CD 0E 65 04         A   940    	CALL	___print_sendstring
-0450CD C1                  A   941    	POP	BC
-0450CE                     A   942    L_17:
+0446B8 DD7E06              A   933    	LD	A,(IX+%6)
+0446BB B7                  A   934    	OR	A,A
+0446BC 28 13               A   935    	JR	Z,L_17
+0446BE 01 88 5C 04         A   936    	LD	BC,___print_uputch
+0446C2 ED43 EF 81 04       A   937    	LD	(___print_xputch),BC
+0446C7 01 EA FE 06         A   938    	LD	BC,_buffer
+0446CB C5                  A   939    	PUSH	BC
+0446CC CD FA 5A 04         A   940    	CALL	___print_sendstring
+0446D0 C1                  A   941    	POP	BC
+0446D1                     A   942    L_17:
                            A   943    ;   59	                objectnum++;
                            A   944    .LINE 59
                            A   945    
-0450CE DD34FD              A   946    	INC	(IX+%FFFFFFFD)
+0446D1 DD34FD              A   946    	INC	(IX+%FFFFFFFD)
                            A   947    ;   60	            }
                            A   948    ;   61	            else {
                            A   949    .LINE 61
                            A   950    
-0450D1 18 4F               A   951    	JR	L_22
-0450D3                     A   952    L_20:
+0446D4 18 4F               A   951    	JR	L_22
+0446D6                     A   952    L_20:
                            A   953    ;   62	                sprintf(buffer, "   ");
                            A   954    .LINE 62
                            A   955    
-0450D3 01 AF FB 07         A   956    	LD	BC,_buffer
-0450D7 ED43 73 FC 07       A   957    	LD	(___print_out),BC
-0450DC 01 E2 66 04         A   958    	LD	BC,___print_sputch
-0450E0 ED43 34 8C 04       A   959    	LD	(___print_xputch),BC
-0450E5 01 AE 91 04         A   960    	LD	BC,L__12
-0450E9 C5                  A   961    	PUSH	BC
-0450EA CD 0E 65 04         A   962    	CALL	___print_sendstring
-0450EE C1                  A   963    	POP	BC
-0450EF 01000000            A   964    	LD	BC,0
-0450F3 C5                  A   965    	PUSH	BC
-0450F4 CD E2 66 04         A   966    	CALL	___print_sputch
-0450F8 C1                  A   967    	POP	BC
+0446D6 01 EA FE 06         A   956    	LD	BC,_buffer
+0446DA ED43 AE FF 06       A   957    	LD	(___print_out),BC
+0446DF 01 CE 5C 04         A   958    	LD	BC,___print_sputch
+0446E3 ED43 EF 81 04       A   959    	LD	(___print_xputch),BC
+0446E8 01 69 87 04         A   960    	LD	BC,L__12
+0446EC C5                  A   961    	PUSH	BC
+0446ED CD FA 5A 04         A   962    	CALL	___print_sendstring
+0446F1 C1                  A   963    	POP	BC
+0446F2 01000000            A   964    	LD	BC,0
+0446F6 C5                  A   965    	PUSH	BC
+0446F7 CD CE 5C 04         A   966    	CALL	___print_sputch
+0446FB C1                  A   967    	POP	BC
                            A   968    ;   63	                agon_fputs(buffer, FILE
                            A   969    .LINE 63
                            A   970    
-0450F9 01050000            A   971    	LD	BC,5
-0450FD C5                  A   972    	PUSH	BC
-0450FE 01 AF FB 07         A   973    	LD	BC,_buffer
-045102 C5                  A   974    	PUSH	BC
-045103 CD E7 61 04         A   975    	CALL	_agon_fputs
-045107 C1                  A   976    	POP	BC
-045108 C1                  A   977    	POP	BC
+0446FC 01050000            A   971    	LD	BC,5
+044700 C5                  A   972    	PUSH	BC
+044701 01 EA FE 06         A   973    	LD	BC,_buffer
+044705 C5                  A   974    	PUSH	BC
+044706 CD DF 57 04         A   975    	CALL	_agon_fputs
+04470A C1                  A   976    	POP	BC
+04470B C1                  A   977    	POP	BC
                            A   978    ;   64	                if(console) printf("%s"
                            A   979    .LINE 64
                            A   980    
-045109 DD7E06              A   981    	LD	A,(IX+%6)
-04510C B7                  A   982    	OR	A,A
-04510D 28 13               A   983    	JR	Z,L_22
-04510F 01 9C 66 04         A   984    	LD	BC,___print_uputch
-045113 ED43 34 8C 04       A   985    	LD	(___print_xputch),BC
-045118 01 AF FB 07         A   986    	LD	BC,_buffer
-04511C C5                  A   987    	PUSH	BC
-04511D CD 0E 65 04         A   988    	CALL	___print_sendstring
-045121 C1                  A   989    	POP	BC
+04470C DD7E06              A   981    	LD	A,(IX+%6)
+04470F B7                  A   982    	OR	A,A
+044710 28 13               A   983    	JR	Z,L_22
+044712 01 88 5C 04         A   984    	LD	BC,___print_uputch
+044716 ED43 EF 81 04       A   985    	LD	(___print_xputch),BC
+04471B 01 EA FE 06         A   986    	LD	BC,_buffer
+04471F C5                  A   987    	PUSH	BC
+044720 CD FA 5A 04         A   988    	CALL	___print_sendstring
+044724 C1                  A   989    	POP	BC
                            A   990    ;   65	            }
                            A   991    ;   66	        }
-045122                     A   992    L_22:
+044725                     A   992    L_22:
                            A   993    .LINE 66
                            A   994    
-045122 DD34FC              A   995    	INC	(IX+%FFFFFFFC)
-045125                     A   996    L_23:
-045125 DD7EFC              A   997    	LD	A,(IX+%FFFFFFFC)
-045128 FE06                A   998    	CP	A,%6
-04512A DA 3D 50 04         A   999    	JR	C,L_21
+044725 DD34FC              A   995    	INC	(IX+%FFFFFFFC)
+044728                     A   996    L_23:
+044728 DD7EFC              A   997    	LD	A,(IX+%FFFFFFFC)
+04472B FE06                A   998    	CP	A,%6
+04472D DA 40 46 04         A   999    	JR	C,L_21
                            A  1000    ;   67	        if(lines == 0) {
                            A  1001    .LINE 67
                            A  1002    
-04512E DD7EFF              A  1003    	LD	A,(IX+%FFFFFFFF)
-045131 B7                  A  1004    	OR	A,A
-045132 C2 BA 51 04         A  1005    	JR	NZ,L_28
+044731 DD7EFF              A  1003    	LD	A,(IX+%FFFFFFFF)
+044734 B7                  A  1004    	OR	A,A
+044735 C2 BD 47 04         A  1005    	JR	NZ,L_28
                            A  1006    ;   68	            sprintf(buffer, "%04d   %s\
                            A  1007    .LINE 68
                            A  1008    
-045136 01 AF FB 07         A  1009    	LD	BC,_buffer
-04513A ED43 73 FC 07       A  1010    	LD	(___print_out),BC
-04513F 01 E2 66 04         A  1011    	LD	BC,___print_sputch
-045143 ED43 34 8C 04       A  1012    	LD	(___print_xputch),BC
-045148 3E04                A  1013    	LD	A,%4
-04514A 32 63 FC 07         A  1014    	LD	(___print_fmt+5),A
-04514E 3E40                A  1015    	LD	A,%40
-045150 32 5F FC 07         A  1016    	LD	(___print_fmt+1),A
-045154 ED4B 14 97 04       A  1017    	LD	BC,(_linenumber)
-045159 AF                  A  1018    	XOR	A,A
-04515A C5D1                A  1019    	LD	DE,BC
-04515C 4F                  A  1020    	LD	C,A
-04515D 0600                A  1021    	LD	B,%0
-04515F C5                  A  1022    	PUSH	BC
-045160 D5                  A  1023    	PUSH	DE
-045161 CD 76 67 04         A  1024    	CALL	__u_itoa
-045165 C1                  A  1025    	POP	BC
-045166 C1                  A  1026    	POP	BC
-045167 01 B2 91 04         A  1027    	LD	BC,L__16
-04516B C5                  A  1028    	PUSH	BC
-04516C CD 0E 65 04         A  1029    	CALL	___print_sendstring
-045170 C1                  A  1030    	POP	BC
-045171 01 2A FA 07         A  1031    	LD	BC,__listLine
-045175 C5                  A  1032    	PUSH	BC
-045176 CD 0E 65 04         A  1033    	CALL	___print_sendstring
-04517A C1                  A  1034    	POP	BC
-04517B 01 B6 91 04         A  1035    	LD	BC,L__17
-04517F C5                  A  1036    	PUSH	BC
-045180 CD 0E 65 04         A  1037    	CALL	___print_sendstring
-045184 C1                  A  1038    	POP	BC
-045185 01000000            A  1039    	LD	BC,0
-045189 C5                  A  1040    	PUSH	BC
-04518A CD E2 66 04         A  1041    	CALL	___print_sputch
-04518E C1                  A  1042    	POP	BC
+044739 01 EA FE 06         A  1009    	LD	BC,_buffer
+04473D ED43 AE FF 06       A  1010    	LD	(___print_out),BC
+044742 01 CE 5C 04         A  1011    	LD	BC,___print_sputch
+044746 ED43 EF 81 04       A  1012    	LD	(___print_xputch),BC
+04474B 3E04                A  1013    	LD	A,%4
+04474D 32 9E FF 06         A  1014    	LD	(___print_fmt+5),A
+044751 3E40                A  1015    	LD	A,%40
+044753 32 9A FF 06         A  1016    	LD	(___print_fmt+1),A
+044757 ED4B 4F 8A 04       A  1017    	LD	BC,(_linenumber)
+04475C AF                  A  1018    	XOR	A,A
+04475D C5D1                A  1019    	LD	DE,BC
+04475F 4F                  A  1020    	LD	C,A
+044760 0600                A  1021    	LD	B,%0
+044762 C5                  A  1022    	PUSH	BC
+044763 D5                  A  1023    	PUSH	DE
+044764 CD 62 5D 04         A  1024    	CALL	__u_itoa
+044768 C1                  A  1025    	POP	BC
+044769 C1                  A  1026    	POP	BC
+04476A 01 6D 87 04         A  1027    	LD	BC,L__16
+04476E C5                  A  1028    	PUSH	BC
+04476F CD FA 5A 04         A  1029    	CALL	___print_sendstring
+044773 C1                  A  1030    	POP	BC
+044774 01 65 FD 06         A  1031    	LD	BC,__listLine
+044778 C5                  A  1032    	PUSH	BC
+044779 CD FA 5A 04         A  1033    	CALL	___print_sendstring
+04477D C1                  A  1034    	POP	BC
+04477E 01 71 87 04         A  1035    	LD	BC,L__17
+044782 C5                  A  1036    	PUSH	BC
+044783 CD FA 5A 04         A  1037    	CALL	___print_sendstring
+044787 C1                  A  1038    	POP	BC
+044788 01000000            A  1039    	LD	BC,0
+04478C C5                  A  1040    	PUSH	BC
+04478D CD CE 5C 04         A  1041    	CALL	___print_sputch
+044791 C1                  A  1042    	POP	BC
                            A  1043    ;   69	            agon_fputs(buffer, FILE_LIS
                            A  1044    .LINE 69
                            A  1045    
-04518F 01050000            A  1046    	LD	BC,5
-045193 C5                  A  1047    	PUSH	BC
-045194 01 AF FB 07         A  1048    	LD	BC,_buffer
-045198 C5                  A  1049    	PUSH	BC
-045199 CD E7 61 04         A  1050    	CALL	_agon_fputs
-04519D C1                  A  1051    	POP	BC
-04519E C1                  A  1052    	POP	BC
+044792 01050000            A  1046    	LD	BC,5
+044796 C5                  A  1047    	PUSH	BC
+044797 01 EA FE 06         A  1048    	LD	BC,_buffer
+04479B C5                  A  1049    	PUSH	BC
+04479C CD DF 57 04         A  1050    	CALL	_agon_fputs
+0447A0 C1                  A  1051    	POP	BC
+0447A1 C1                  A  1052    	POP	BC
                            A  1053    ;   70	            if(console) printf("%s",buf
                            A  1054    .LINE 70
                            A  1055    
-04519F DD7E06              A  1056    	LD	A,(IX+%6)
-0451A2 B7                  A  1057    	OR	A,A
-0451A3 28 64               A  1058    	JR	Z,L_31
-0451A5 01 9C 66 04         A  1059    	LD	BC,___print_uputch
-0451A9 ED43 34 8C 04       A  1060    	LD	(___print_xputch),BC
-0451AE 01 AF FB 07         A  1061    	LD	BC,_buffer
-0451B2 C5                  A  1062    	PUSH	BC
-0451B3 CD 0E 65 04         A  1063    	CALL	___print_sendstring
-0451B7 C1                  A  1064    	POP	BC
+0447A2 DD7E06              A  1056    	LD	A,(IX+%6)
+0447A5 B7                  A  1057    	OR	A,A
+0447A6 28 64               A  1058    	JR	Z,L_31
+0447A8 01 88 5C 04         A  1059    	LD	BC,___print_uputch
+0447AC ED43 EF 81 04       A  1060    	LD	(___print_xputch),BC
+0447B1 01 EA FE 06         A  1061    	LD	BC,_buffer
+0447B5 C5                  A  1062    	PUSH	BC
+0447B6 CD FA 5A 04         A  1063    	CALL	___print_sendstring
+0447BA C1                  A  1064    	POP	BC
                            A  1065    ;   71	        }
                            A  1066    ;   72	        else {
                            A  1067    .LINE 72
                            A  1068    
-0451B8 18 4F               A  1069    	JR	L_31
-0451BA                     A  1070    L_28:
+0447BB 18 4F               A  1069    	JR	L_31
+0447BD                     A  1070    L_28:
                            A  1071    ;   73	            sprintf(buffer, "\n\r");
                            A  1072    .LINE 73
                            A  1073    
-0451BA 01 AF FB 07         A  1074    	LD	BC,_buffer
-0451BE ED43 73 FC 07       A  1075    	LD	(___print_out),BC
-0451C3 01 E2 66 04         A  1076    	LD	BC,___print_sputch
-0451C7 ED43 34 8C 04       A  1077    	LD	(___print_xputch),BC
-0451CC 01 B9 91 04         A  1078    	LD	BC,L__19
-0451D0 C5                  A  1079    	PUSH	BC
-0451D1 CD 0E 65 04         A  1080    	CALL	___print_sendstring
-0451D5 C1                  A  1081    	POP	BC
-0451D6 01000000            A  1082    	LD	BC,0
-0451DA C5                  A  1083    	PUSH	BC
-0451DB CD E2 66 04         A  1084    	CALL	___print_sputch
-0451DF C1                  A  1085    	POP	BC
+0447BD 01 EA FE 06         A  1074    	LD	BC,_buffer
+0447C1 ED43 AE FF 06       A  1075    	LD	(___print_out),BC
+0447C6 01 CE 5C 04         A  1076    	LD	BC,___print_sputch
+0447CA ED43 EF 81 04       A  1077    	LD	(___print_xputch),BC
+0447CF 01 74 87 04         A  1078    	LD	BC,L__19
+0447D3 C5                  A  1079    	PUSH	BC
+0447D4 CD FA 5A 04         A  1080    	CALL	___print_sendstring
+0447D8 C1                  A  1081    	POP	BC
+0447D9 01000000            A  1082    	LD	BC,0
+0447DD C5                  A  1083    	PUSH	BC
+0447DE CD CE 5C 04         A  1084    	CALL	___print_sputch
+0447E2 C1                  A  1085    	POP	BC
                            A  1086    ;   74	            agon_fputs(buffer, FILE_LIS
                            A  1087    .LINE 74
                            A  1088    
-0451E0 01050000            A  1089    	LD	BC,5
-0451E4 C5                  A  1090    	PUSH	BC
-0451E5 01 AF FB 07         A  1091    	LD	BC,_buffer
-0451E9 C5                  A  1092    	PUSH	BC
-0451EA CD E7 61 04         A  1093    	CALL	_agon_fputs
-0451EE C1                  A  1094    	POP	BC
-0451EF C1                  A  1095    	POP	BC
+0447E3 01050000            A  1089    	LD	BC,5
+0447E7 C5                  A  1090    	PUSH	BC
+0447E8 01 EA FE 06         A  1091    	LD	BC,_buffer
+0447EC C5                  A  1092    	PUSH	BC
+0447ED CD DF 57 04         A  1093    	CALL	_agon_fputs
+0447F1 C1                  A  1094    	POP	BC
+0447F2 C1                  A  1095    	POP	BC
                            A  1096    ;   75	            if(console) printf("%s",buf
                            A  1097    .LINE 75
                            A  1098    
-0451F0 DD7E06              A  1099    	LD	A,(IX+%6)
-0451F3 B7                  A  1100    	OR	A,A
-0451F4 28 13               A  1101    	JR	Z,L_31
-0451F6 01 9C 66 04         A  1102    	LD	BC,___print_uputch
-0451FA ED43 34 8C 04       A  1103    	LD	(___print_xputch),BC
-0451FF 01 AF FB 07         A  1104    	LD	BC,_buffer
-045203 C5                  A  1105    	PUSH	BC
-045204 CD 0E 65 04         A  1106    	CALL	___print_sendstring
-045208 C1                  A  1107    	POP	BC
+0447F3 DD7E06              A  1099    	LD	A,(IX+%6)
+0447F6 B7                  A  1100    	OR	A,A
+0447F7 28 13               A  1101    	JR	Z,L_31
+0447F9 01 88 5C 04         A  1102    	LD	BC,___print_uputch
+0447FD ED43 EF 81 04       A  1103    	LD	(___print_xputch),BC
+044802 01 EA FE 06         A  1104    	LD	BC,_buffer
+044806 C5                  A  1105    	PUSH	BC
+044807 CD FA 5A 04         A  1106    	CALL	___print_sendstring
+04480B C1                  A  1107    	POP	BC
                            A  1108    ;   76	        }
                            A  1109    ;   77	    }
-045209                     A  1110    L_31:
+04480C                     A  1110    L_31:
                            A  1111    .LINE 77
                            A  1112    
-045209 DD34FF              A  1113    	INC	(IX+%FFFFFFFF)
-04520C                     A  1114    L_32:
-04520C DD7EFF              A  1115    	LD	A,(IX+%FFFFFFFF)
-04520F DDBEFE              A  1116    	CP	A,(IX+%FFFFFFFE)
-045212 DA 69 4F 04         A  1117    	JR	C,L_30
+04480C DD34FF              A  1113    	INC	(IX+%FFFFFFFF)
+04480F                     A  1114    L_32:
+04480F DD7EFF              A  1115    	LD	A,(IX+%FFFFFFFF)
+044812 DDBEFE              A  1116    	CP	A,(IX+%FFFFFFFE)
+044815 DA 6C 45 04         A  1117    	JR	C,L_30
                            A  1118    ;   78	}
                            A  1119    .LINE 78
                            A  1120    
-045216 DDF9                A  1121    	LD	SP,IX
-045218 DDE1                A  1122    	POP	IX
-04521A C9                  A  1123    	RET	
+044819 DDF9                A  1121    	LD	SP,IX
+04481B DDE1                A  1122    	POP	IX
+04481D C9                  A  1123    	RET	
                            A  1124    
                            A  1125    
                            A  1126    ;**************************** _listEndLine ****
@@ -1157,26 +1157,26 @@ PC     Object              I  Line    Source
                            A  1153    
                            A  1154    .ENDFUNC "listEndLine",78,"_listEndLine"
                            A  1155    	SEGMENT STRSECT
-0491A2                     A  1156    L__6:
-0491A2 2020                A  1157    	DB	"  "
-0491A4 00                  A  1158    	DB	0
-0491A5                     A  1159    L__8:
-0491A5 20202020 20202020   A  1160    	DB	"        "
-0491AD 00                  A  1161    	DB	0
-0491AE                     A  1162    L__12:
-0491AE 202020              A  1163    	DB	"   "
-0491B1 00                  A  1164    	DB	0
-0491B2                     A  1165    L__16:
-0491B2 202020              A  1166    	DB	"   "
-0491B5 00                  A  1167    	DB	0
-0491B6                     A  1168    L__17:
-0491B6 0A0D00              A  1169    	DB	10,13,0
-0491B9                     A  1170    L__19:
-0491B9 0A0D00              A  1171    	DB	10,13,0
+04875D                     A  1156    L__6:
+04875D 2020                A  1157    	DB	"  "
+04875F 00                  A  1158    	DB	0
+048760                     A  1159    L__8:
+048760 20202020 20202020   A  1160    	DB	"        "
+048768 00                  A  1161    	DB	0
+048769                     A  1162    L__12:
+048769 202020              A  1163    	DB	"   "
+04876C 00                  A  1164    	DB	0
+04876D                     A  1165    L__16:
+04876D 202020              A  1166    	DB	"   "
+048770 00                  A  1167    	DB	0
+048771                     A  1168    L__17:
+048771 0A0D00              A  1169    	DB	10,13,0
+048774                     A  1170    L__19:
+048774 0A0D00              A  1171    	DB	10,13,0
                            A  1172    	SEGMENT CODE
                            A  1173    ;   79	
                            A  1174    ;   80	void listEmit8bit(uint8_t value) {
-04521B                     A  1175    _listEmit8bit:
+04481E                     A  1175    _listEmit8bit:
                            A  1176    .DEFINE "_listEmit8bit"
                            A  1177    
                            A  1178    .VALUE _listEmit8bit
@@ -1201,27 +1201,27 @@ PC     Object              I  Line    Source
                            A  1197    
                            A  1198    .ENDEF
                            A  1199    
-04521B DDE5                A  1200    	PUSH	IX
-04521D DD210000 00         A  1201    	LD	IX,0
-045222 DD39                A  1202    	ADD	IX,SP
+04481E DDE5                A  1200    	PUSH	IX
+044820 DD210000 00         A  1201    	LD	IX,0
+044825 DD39                A  1202    	ADD	IX,SP
                            A  1203    ;   81	    _listObjects[_listObjectCount++] = 
                            A  1204    .LINE 81
                            A  1205    
-045224 3A AE FB 07         A  1206    	LD	A,(__listObjectCount)
-045228 B7ED62              A  1207    	UEXT	HL
-04522B 6F                  A  1208    	LD	L,A
-04522C 01 AE FA 07         A  1209    	LD	BC,__listObjects
-045230 09                  A  1210    	ADD	HL,BC
-045231 DD7E06              A  1211    	LD	A,(IX+%6)
-045234 77                  A  1212    	LD	(HL),A
-045235 3A AE FB 07         A  1213    	LD	A,(__listObjectCount)
-045239 3C                  A  1214    	INC	A
-04523A 32 AE FB 07         A  1215    	LD	(__listObjectCount),A
+044827 3A E9 FE 06         A  1206    	LD	A,(__listObjectCount)
+04482B B7ED62              A  1207    	UEXT	HL
+04482E 6F                  A  1208    	LD	L,A
+04482F 01 E9 FD 06         A  1209    	LD	BC,__listObjects
+044833 09                  A  1210    	ADD	HL,BC
+044834 DD7E06              A  1211    	LD	A,(IX+%6)
+044837 77                  A  1212    	LD	(HL),A
+044838 3A E9 FE 06         A  1213    	LD	A,(__listObjectCount)
+04483C 3C                  A  1214    	INC	A
+04483D 32 E9 FE 06         A  1215    	LD	(__listObjectCount),A
                            A  1216    .LINE 82
                            A  1217    
-04523E DDF9                A  1218    	LD	SP,IX
-045240 DDE1                A  1219    	POP	IX
-045242 C9                  A  1220    	RET	
+044841 DDF9                A  1218    	LD	SP,IX
+044843 DDE1                A  1219    	POP	IX
+044845 C9                  A  1220    	RET	
                            A  1221    
                            A  1222    
                            A  1223    ;**************************** _listEmit8bit ***

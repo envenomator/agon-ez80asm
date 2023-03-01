@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     14:26:44     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:29:18     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -168,25 +168,25 @@ PC     Object              I  Line    Source
                            A   164    .TYPE 14
                            A   165    .ENDEF
                            A   166    .ENDREC "NONAME4"
-                           A   167    .BEGREC "NONAME5",261
+                           A   167    .BEGREC "NONAME5",133
                            A   168    .DEFINE "start"
                            A   169    .VALUE 0
                            A   170    .CLASS 8
-                           A   171    .DIM 256
+                           A   171    .DIM 128
                            A   172    .TYPE 98
                            A   173    .ENDEF
                            A   174    .DEFINE "length"
-                           A   175    .VALUE 256
+                           A   175    .VALUE 128
                            A   176    .CLASS 8
                            A   177    .TYPE 12
                            A   178    .ENDEF
                            A   179    .DEFINE "next"
-                           A   180    .VALUE 257
+                           A   180    .VALUE 129
                            A   181    .CLASS 8
                            A   182    .TYPE 34
                            A   183    .ENDEF
                            A   184    .DEFINE "terminator"
-                           A   185    .VALUE 260
+                           A   185    .VALUE 132
                            A   186    .CLASS 8
                            A   187    .TYPE 2
                            A   188    .ENDEF
@@ -408,8 +408,8 @@ PC     Object              I  Line    Source
                            A   404    .ENDEF
                            A   405    .ENDREC "NONAME11"
                            A   406    	SEGMENT BSS
-049851                     A   407    _an_prev:
-049851                     A   408    	DS	5
+048B8C                     A   407    _an_prev:
+048B8C                     A   408    	DS	5
                            A   409    .DEFINE "an_prev"
                            A   410    .ALIAS "_an_prev"
                            A   411    .CLASS 83
@@ -417,8 +417,8 @@ PC     Object              I  Line    Source
                            A   413    .TAG "NONAME1"
                            A   414    .TYPE 8
                            A   415    .ENDEF
-049856                     A   416    _an_next:
-049856                     A   417    	DS	5
+048B91                     A   416    _an_next:
+048B91                     A   417    	DS	5
                            A   418    .DEFINE "an_next"
                            A   419    .ALIAS "_an_next"
                            A   420    .CLASS 83
@@ -426,8 +426,8 @@ PC     Object              I  Line    Source
                            A   422    .TAG "NONAME1"
                            A   423    .TYPE 8
                            A   424    .ENDEF
-04985B                     A   425    _an_return:
-04985B                     A   426    	DS	7
+048B96                     A   425    _an_return:
+048B96                     A   426    	DS	7
                            A   427    .DEFINE "an_return"
                            A   428    .ALIAS "_an_return"
                            A   429    .CLASS 83
@@ -435,8 +435,8 @@ PC     Object              I  Line    Source
                            A   431    .TAG "NONAME0"
                            A   432    .TYPE 8
                            A   433    .ENDEF
-049862                     A   434    _globalLabelBuffer:
-049862                     A   435    	DS	131072
+048B9D                     A   434    _globalLabelBuffer:
+048B9D                     A   435    	DS	131072
                            A   436    .DEFINE "globalLabelBuffer"
                            A   437    .ALIAS "_globalLabelBuffer"
                            A   438    .CLASS 83
@@ -444,33 +444,33 @@ PC     Object              I  Line    Source
                            A   440    .DIM 131072
                            A   441    .TYPE 98
                            A   442    .ENDEF
-069862                     A   443    _localLabelBuffer:
-069862                     A   444    	DS	65536
+068B9D                     A   443    _localLabelBuffer:
+068B9D                     A   444    	DS	4096
                            A   445    .DEFINE "localLabelBuffer"
                            A   446    .ALIAS "_localLabelBuffer"
                            A   447    .CLASS 83
                            A   448    .VALUE _localLabelBuffer
-                           A   449    .DIM 65536
+                           A   449    .DIM 4096
                            A   450    .TYPE 98
                            A   451    .ENDEF
-079862                     A   452    _globalLabelBufferIndex:
-079862                     A   453    	DS	2*1
+069B9D                     A   452    _globalLabelBufferIndex:
+069B9D                     A   453    	DS	2*1
                            A   454    .DEFINE "globalLabelBufferIndex"
                            A   455    .ALIAS "_globalLabelBufferIndex"
                            A   456    .CLASS 83
                            A   457    .VALUE _globalLabelBufferIndex
                            A   458    .TYPE 13
                            A   459    .ENDEF
-079864                     A   460    _localLabelBufferIndex:
-079864                     A   461    	DS	2*1
+069B9F                     A   460    _localLabelBufferIndex:
+069B9F                     A   461    	DS	2*1
                            A   462    .DEFINE "localLabelBufferIndex"
                            A   463    .ALIAS "_localLabelBufferIndex"
                            A   464    .CLASS 83
                            A   465    .VALUE _localLabelBufferIndex
                            A   466    .TYPE 13
                            A   467    .ENDEF
-079866                     A   468    _globalLabelTable:
-079866                     A   469    	DS	24576
+069BA1                     A   468    _globalLabelTable:
+069BA1                     A   469    	DS	24576
                            A   470    .DEFINE "globalLabelTable"
                            A   471    .ALIAS "_globalLabelTable"
                            A   472    .CLASS 83
@@ -479,16 +479,16 @@ PC     Object              I  Line    Source
                            A   475    .TAG "NONAME0"
                            A   476    .TYPE 360
                            A   477    .ENDEF
-07F866                     A   478    _globalLabelCounter:
-07F866                     A   479    	DS	2*1
+06FBA1                     A   478    _globalLabelCounter:
+06FBA1                     A   479    	DS	2*1
                            A   480    .DEFINE "globalLabelCounter"
                            A   481    .ALIAS "_globalLabelCounter"
                            A   482    .CLASS 83
                            A   483    .VALUE _globalLabelCounter
                            A   484    .TYPE 13
                            A   485    .ENDEF
-07F868                     A   486    _localLabelTable:
-07F868                     A   487    	DS	448
+06FBA3                     A   486    _localLabelTable:
+06FBA3                     A   487    	DS	448
                            A   488    .DEFINE "localLabelTable"
                            A   489    .ALIAS "_localLabelTable"
                            A   490    .CLASS 83
@@ -497,8 +497,8 @@ PC     Object              I  Line    Source
                            A   493    .TAG "NONAME0"
                            A   494    .TYPE 104
                            A   495    .ENDEF
-07FA28                     A   496    _localLabelCounter:
-07FA28                     A   497    	DS	2*1
+06FD63                     A   496    _localLabelCounter:
+06FD63                     A   497    	DS	2*1
                            A   498    .DEFINE "localLabelCounter"
                            A   499    .ALIAS "_localLabelCounter"
                            A   500    .CLASS 83
@@ -534,7 +534,7 @@ PC     Object              I  Line    Source
                            A   530    	SEGMENT CODE
                            A   531    ;   27	
                            A   532    ;   28	void printLocalLabelTable(void) {
-04441D                     A   533    _printLocalLabelTable:
+043A20                     A   533    _printLocalLabelTable:
                            A   534    .DEFINE "_printLocalLabelTable"
                            A   535    
                            A   536    .VALUE _printLocalLabelTable
@@ -559,99 +559,99 @@ PC     Object              I  Line    Source
                            A   555    
                            A   556    .ENDEF
                            A   557    
-04441D DDE5                A   558    	PUSH	IX
-04441F DD210000 00         A   559    	LD	IX,0
-044424 DD39                A   560    	ADD	IX,SP
-044426 C5                  A   561    	PUSH	BC
-044427 C5                  A   562    	PUSH	BC
+043A20 DDE5                A   558    	PUSH	IX
+043A22 DD210000 00         A   559    	LD	IX,0
+043A27 DD39                A   560    	ADD	IX,SP
+043A29 C5                  A   561    	PUSH	BC
+043A2A C5                  A   562    	PUSH	BC
                            A   563    ;   29	    int i;
                            A   564    ;   30	    printf("\r\nLocal table (%d entries
                            A   565    .LINE 30
                            A   566    
-044428 01 9C 66 04         A   567    	LD	BC,___print_uputch
-04442C ED43 34 8C 04       A   568    	LD	(___print_xputch),BC
-044431 01 5C 91 04         A   569    	LD	BC,L__0
-044435 C5                  A   570    	PUSH	BC
-044436 CD 0E 65 04         A   571    	CALL	___print_sendstring
-04443A C1                  A   572    	POP	BC
-04443B ED4B 28 FA 07       A   573    	LD	BC,(_localLabelCounter)
-044440 CD 96 66 04         A   574    	CALL	__stoiu
-044444 E5C1                A   575    	LD	BC,HL
-044446 CD 16 6E 04         A   576    	CALL	__itol
-04444A C5D1                A   577    	LD	DE,BC
-04444C 4F                  A   578    	LD	C,A
-04444D 0600                A   579    	LD	B,%0
-04444F C5                  A   580    	PUSH	BC
-044450 D5                  A   581    	PUSH	DE
-044451 CD 76 67 04         A   582    	CALL	__u_itoa
-044455 C1                  A   583    	POP	BC
-044456 C1                  A   584    	POP	BC
-044457 01 6C 91 04         A   585    	LD	BC,L__1
-04445B C5                  A   586    	PUSH	BC
-04445C CD 0E 65 04         A   587    	CALL	___print_sendstring
-044460 C1                  A   588    	POP	BC
+043A2B 01 88 5C 04         A   567    	LD	BC,___print_uputch
+043A2F ED43 EF 81 04       A   568    	LD	(___print_xputch),BC
+043A34 01 17 87 04         A   569    	LD	BC,L__0
+043A38 C5                  A   570    	PUSH	BC
+043A39 CD FA 5A 04         A   571    	CALL	___print_sendstring
+043A3D C1                  A   572    	POP	BC
+043A3E ED4B 63 FD 06       A   573    	LD	BC,(_localLabelCounter)
+043A43 CD 82 5C 04         A   574    	CALL	__stoiu
+043A47 E5C1                A   575    	LD	BC,HL
+043A49 CD 95 63 04         A   576    	CALL	__itol
+043A4D C5D1                A   577    	LD	DE,BC
+043A4F 4F                  A   578    	LD	C,A
+043A50 0600                A   579    	LD	B,%0
+043A52 C5                  A   580    	PUSH	BC
+043A53 D5                  A   581    	PUSH	DE
+043A54 CD 62 5D 04         A   582    	CALL	__u_itoa
+043A58 C1                  A   583    	POP	BC
+043A59 C1                  A   584    	POP	BC
+043A5A 01 27 87 04         A   585    	LD	BC,L__1
+043A5E C5                  A   586    	PUSH	BC
+043A5F CD FA 5A 04         A   587    	CALL	___print_sendstring
+043A63 C1                  A   588    	POP	BC
                            A   589    ;   31	    for(i = 0; i < localLabelCounter; i
                            A   590    .LINE 31
                            A   591    
-044461 01000000            A   592    	LD	BC,0
-044465 DD0FFD              A   593    	LD	(IX+%FFFFFFFD),BC
-044468 18 67               A   594    	JR	L_3
-04446A                     A   595    L_1:
-04446A DD27FD              A   596    	LD	HL,(IX+%FFFFFFFD)
-04446D 3E07                A   597    	LD	A,%7
-04446F CD A9 6D 04         A   598    	CALL	__imul_b
-044473 01 68 F8 07         A   599    	LD	BC,_localLabelTable
-044477 09                  A   600    	ADD	HL,BC
-044478 DD2FFA              A   601    	LD	(IX+%FFFFFFFA),HL
-04447B 01 9C 66 04         A   602    	LD	BC,___print_uputch
-04447F ED43 34 8C 04       A   603    	LD	(___print_xputch),BC
-044484 3E08                A   604    	LD	A,%8
-044486 32 63 FC 07         A   605    	LD	(___print_fmt+5),A
-04448A 3E40                A   606    	LD	A,%40
-04448C 32 5F FC 07         A   607    	LD	(___print_fmt+1),A
-044490 3E78                A   608    	LD	A,%78
-044492 32 62 FC 07         A   609    	LD	(___print_fmt+4),A
-044496 DD31FA              A   610    	LD	IY,(IX+%FFFFFFFA)
-044499 FD0703              A   611    	LD	BC,(IY+%3)
-04449C FD7E06              A   612    	LD	A,(IY+%6)
-04449F 2600                A   613    	LD	H,%0
-0444A1 6F                  A   614    	LD	L,A
-0444A2 E5                  A   615    	PUSH	HL
-0444A3 C5                  A   616    	PUSH	BC
-0444A4 CD 22 67 04         A   617    	CALL	__u_uitoa
-0444A8 C1                  A   618    	POP	BC
-0444A9 C1                  A   619    	POP	BC
-0444AA 01 79 91 04         A   620    	LD	BC,L__2
-0444AE C5                  A   621    	PUSH	BC
-0444AF CD 0E 65 04         A   622    	CALL	___print_sendstring
-0444B3 C1                  A   623    	POP	BC
-0444B4 DD31FA              A   624    	LD	IY,(IX+%FFFFFFFA)
-0444B7 FD0700              A   625    	LD	BC,(IY+%0)
-0444BA C5                  A   626    	PUSH	BC
-0444BB CD 0E 65 04         A   627    	CALL	___print_sendstring
-0444BF C1                  A   628    	POP	BC
-0444C0 01 7D 91 04         A   629    	LD	BC,L__3
-0444C4 C5                  A   630    	PUSH	BC
-0444C5 CD 0E 65 04         A   631    	CALL	___print_sendstring
-0444C9 C1                  A   632    	POP	BC
-0444CA DD07FD              A   633    	LD	BC,(IX+%FFFFFFFD)
-0444CD 03                  A   634    	INC	BC
-0444CE DD0FFD              A   635    	LD	(IX+%FFFFFFFD),BC
-0444D1                     A   636    L_3:
-0444D1 ED4B 28 FA 07       A   637    	LD	BC,(_localLabelCounter)
-0444D6 CD 96 66 04         A   638    	CALL	__stoiu
-0444DA E5C1                A   639    	LD	BC,HL
-0444DC DD27FD              A   640    	LD	HL,(IX+%FFFFFFFD)
-0444DF B7                  A   641    	OR	A,A
-0444E0 ED42                A   642    	SBC	HL,BC
-0444E2 CD 1D 64 04         A   643    	CALL	__setflag
-0444E6 FA 6A 44 04         A   644    	JP	M,L_1
+043A64 01000000            A   592    	LD	BC,0
+043A68 DD0FFD              A   593    	LD	(IX+%FFFFFFFD),BC
+043A6B 18 67               A   594    	JR	L_3
+043A6D                     A   595    L_1:
+043A6D DD27FD              A   596    	LD	HL,(IX+%FFFFFFFD)
+043A70 3E07                A   597    	LD	A,%7
+043A72 CD 9A 66 04         A   598    	CALL	__imul_b
+043A76 01 A3 FB 06         A   599    	LD	BC,_localLabelTable
+043A7A 09                  A   600    	ADD	HL,BC
+043A7B DD2FFA              A   601    	LD	(IX+%FFFFFFFA),HL
+043A7E 01 88 5C 04         A   602    	LD	BC,___print_uputch
+043A82 ED43 EF 81 04       A   603    	LD	(___print_xputch),BC
+043A87 3E08                A   604    	LD	A,%8
+043A89 32 9E FF 06         A   605    	LD	(___print_fmt+5),A
+043A8D 3E40                A   606    	LD	A,%40
+043A8F 32 9A FF 06         A   607    	LD	(___print_fmt+1),A
+043A93 3E78                A   608    	LD	A,%78
+043A95 32 9D FF 06         A   609    	LD	(___print_fmt+4),A
+043A99 DD31FA              A   610    	LD	IY,(IX+%FFFFFFFA)
+043A9C FD0703              A   611    	LD	BC,(IY+%3)
+043A9F FD7E06              A   612    	LD	A,(IY+%6)
+043AA2 2600                A   613    	LD	H,%0
+043AA4 6F                  A   614    	LD	L,A
+043AA5 E5                  A   615    	PUSH	HL
+043AA6 C5                  A   616    	PUSH	BC
+043AA7 CD 0E 5D 04         A   617    	CALL	__u_uitoa
+043AAB C1                  A   618    	POP	BC
+043AAC C1                  A   619    	POP	BC
+043AAD 01 34 87 04         A   620    	LD	BC,L__2
+043AB1 C5                  A   621    	PUSH	BC
+043AB2 CD FA 5A 04         A   622    	CALL	___print_sendstring
+043AB6 C1                  A   623    	POP	BC
+043AB7 DD31FA              A   624    	LD	IY,(IX+%FFFFFFFA)
+043ABA FD0700              A   625    	LD	BC,(IY+%0)
+043ABD C5                  A   626    	PUSH	BC
+043ABE CD FA 5A 04         A   627    	CALL	___print_sendstring
+043AC2 C1                  A   628    	POP	BC
+043AC3 01 38 87 04         A   629    	LD	BC,L__3
+043AC7 C5                  A   630    	PUSH	BC
+043AC8 CD FA 5A 04         A   631    	CALL	___print_sendstring
+043ACC C1                  A   632    	POP	BC
+043ACD DD07FD              A   633    	LD	BC,(IX+%FFFFFFFD)
+043AD0 03                  A   634    	INC	BC
+043AD1 DD0FFD              A   635    	LD	(IX+%FFFFFFFD),BC
+043AD4                     A   636    L_3:
+043AD4 ED4B 63 FD 06       A   637    	LD	BC,(_localLabelCounter)
+043AD9 CD 82 5C 04         A   638    	CALL	__stoiu
+043ADD E5C1                A   639    	LD	BC,HL
+043ADF DD27FD              A   640    	LD	HL,(IX+%FFFFFFFD)
+043AE2 B7                  A   641    	OR	A,A
+043AE3 ED42                A   642    	SBC	HL,BC
+043AE5 CD 15 5A 04         A   643    	CALL	__setflag
+043AE9 FA 6D 3A 04         A   644    	JP	M,L_1
                            A   645    ;   32	}
                            A   646    .LINE 32
                            A   647    
-0444EA DDF9                A   648    	LD	SP,IX
-0444EC DDE1                A   649    	POP	IX
-0444EE C9                  A   650    	RET	
+043AED DDF9                A   648    	LD	SP,IX
+043AEF DDE1                A   649    	POP	IX
+043AF1 C9                  A   650    	RET	
                            A   651    
                            A   652    
                            A   653    ;**************************** _printLocalLabelT
@@ -673,23 +673,23 @@ PC     Object              I  Line    Source
                            A   669    
                            A   670    .ENDFUNC "printLocalLabelTable",32,"_printLocal
                            A   671    	SEGMENT STRSECT
-04915C                     A   672    L__0:
-04915C 0D0A                A   673    	DB	13,10
-04915E 4C6F6361 6C207461   A   674    	DB	"Local table ("
-049166 626C6520 28 
-04916B 00                  A   675    	DB	0
-04916C                     A   676    L__1:
-04916C 20656E74 72696573   A   677    	DB	" entries):"
-049174 293A 
-049176 0A0D00              A   678    	DB	10,13,0
-049179                     A   679    L__2:
-049179 202D20              A   680    	DB	" - "
-04917C 00                  A   681    	DB	0
-04917D                     A   682    L__3:
-04917D 0A0D00              A   683    	DB	10,13,0
+048717                     A   672    L__0:
+048717 0D0A                A   673    	DB	13,10
+048719 4C6F6361 6C207461   A   674    	DB	"Local table ("
+048721 626C6520 28 
+048726 00                  A   675    	DB	0
+048727                     A   676    L__1:
+048727 20656E74 72696573   A   677    	DB	" entries):"
+04872F 293A 
+048731 0A0D00              A   678    	DB	10,13,0
+048734                     A   679    L__2:
+048734 202D20              A   680    	DB	" - "
+048737 00                  A   681    	DB	0
+048738                     A   682    L__3:
+048738 0A0D00              A   683    	DB	10,13,0
                            A   684    	SEGMENT CODE
                            A   685    ;   33	uint16_t getGlobalLabelCount(void) {
-0444EF                     A   686    _getGlobalLabelCount:
+043AF2                     A   686    _getGlobalLabelCount:
                            A   687    .DEFINE "_getGlobalLabelCount"
                            A   688    
                            A   689    .VALUE _getGlobalLabelCount
@@ -702,19 +702,19 @@ PC     Object              I  Line    Source
                            A   696    
                            A   697    .BEGFUNC "getGlobalLabelCount",33,"_getGlobalLa
                            A   698    
-0444EF DDE5                A   699    	PUSH	IX
-0444F1 DD210000 00         A   700    	LD	IX,0
-0444F6 DD39                A   701    	ADD	IX,SP
+043AF2 DDE5                A   699    	PUSH	IX
+043AF4 DD210000 00         A   700    	LD	IX,0
+043AF9 DD39                A   701    	ADD	IX,SP
                            A   702    ;   34	    return globalLabelCounter;
                            A   703    .LINE 34
                            A   704    
-0444F8 2A 66 F8 07         A   705    	LD	HL,(_globalLabelCounter)
+043AFB 2A A1 FB 06         A   705    	LD	HL,(_globalLabelCounter)
                            A   706    ;   35	}
                            A   707    .LINE 35
                            A   708    
-0444FC DDF9                A   709    	LD	SP,IX
-0444FE DDE1                A   710    	POP	IX
-044500 C9                  A   711    	RET	
+043AFF DDF9                A   709    	LD	SP,IX
+043B01 DDE1                A   710    	POP	IX
+043B03 C9                  A   711    	RET	
                            A   712    
                            A   713    
                            A   714    ;**************************** _getGlobalLabelCo
@@ -728,7 +728,7 @@ PC     Object              I  Line    Source
                            A   722    
                            A   723    .ENDFUNC "getGlobalLabelCount",35,"_getGlobalLa
                            A   724    ;   36	uint16_t getLocalLabelCount(void) {
-044501                     A   725    _getLocalLabelCount:
+043B04                     A   725    _getLocalLabelCount:
                            A   726    .DEFINE "_getLocalLabelCount"
                            A   727    
                            A   728    .VALUE _getLocalLabelCount
@@ -741,19 +741,19 @@ PC     Object              I  Line    Source
                            A   735    
                            A   736    .BEGFUNC "getLocalLabelCount",36,"_getLocalLabe
                            A   737    
-044501 DDE5                A   738    	PUSH	IX
-044503 DD210000 00         A   739    	LD	IX,0
-044508 DD39                A   740    	ADD	IX,SP
+043B04 DDE5                A   738    	PUSH	IX
+043B06 DD210000 00         A   739    	LD	IX,0
+043B0B DD39                A   740    	ADD	IX,SP
                            A   741    ;   37	    return localLabelCounter;
                            A   742    .LINE 37
                            A   743    
-04450A 2A 28 FA 07         A   744    	LD	HL,(_localLabelCounter)
+043B0D 2A 63 FD 06         A   744    	LD	HL,(_localLabelCounter)
                            A   745    ;   38	}
                            A   746    .LINE 38
                            A   747    
-04450E DDF9                A   748    	LD	SP,IX
-044510 DDE1                A   749    	POP	IX
-044512 C9                  A   750    	RET	
+043B11 DDF9                A   748    	LD	SP,IX
+043B13 DDE1                A   749    	POP	IX
+043B15 C9                  A   750    	RET	
                            A   751    
                            A   752    
                            A   753    ;**************************** _getLocalLabelCou
@@ -767,7 +767,7 @@ PC     Object              I  Line    Source
                            A   761    
                            A   762    .ENDFUNC "getLocalLabelCount",38,"_getLocalLabe
                            A   763    ;   39	void initGlobalLabelTable(void) {
-044513                     A   764    _initGlobalLabelTable:
+043B16                     A   764    _initGlobalLabelTable:
                            A   765    .DEFINE "_initGlobalLabelTable"
                            A   766    
                            A   767    .VALUE _initGlobalLabelTable
@@ -792,63 +792,63 @@ PC     Object              I  Line    Source
                            A   786    
                            A   787    .ENDEF
                            A   788    
-044513 DDE5                A   789    	PUSH	IX
-044515 DD210000 00         A   790    	LD	IX,0
-04451A DD39                A   791    	ADD	IX,SP
-04451C C5                  A   792    	PUSH	BC
+043B16 DDE5                A   789    	PUSH	IX
+043B18 DD210000 00         A   790    	LD	IX,0
+043B1D DD39                A   791    	ADD	IX,SP
+043B1F C5                  A   792    	PUSH	BC
                            A   793    ;   40	    int i;
                            A   794    ;   41	
                            A   795    ;   42	    globalLabelBufferIndex = 0;
                            A   796    .LINE 42
                            A   797    
-04451D 21 62 98 07         A   798    	LD	HL,_globalLabelBufferIndex
-044521 3600                A   799    	LD	(HL),%0
-044523 23                  A   800    	INC	HL
-044524 3600                A   801    	LD	(HL),%0
+043B20 21 9D 9B 06         A   798    	LD	HL,_globalLabelBufferIndex
+043B24 3600                A   799    	LD	(HL),%0
+043B26 23                  A   800    	INC	HL
+043B27 3600                A   801    	LD	(HL),%0
                            A   802    ;   43	    globalLabelCounter = 0;
                            A   803    .LINE 43
                            A   804    
-044526 21 66 F8 07         A   805    	LD	HL,_globalLabelCounter
-04452A 3600                A   806    	LD	(HL),%0
-04452C 23                  A   807    	INC	HL
-04452D 3600                A   808    	LD	(HL),%0
+043B29 21 A1 FB 06         A   805    	LD	HL,_globalLabelCounter
+043B2D 3600                A   806    	LD	(HL),%0
+043B2F 23                  A   807    	INC	HL
+043B30 3600                A   808    	LD	(HL),%0
                            A   809    ;   44	    for(i = 0; i < GLOBAL_LABEL_TABLE_S
                            A   810    .LINE 44
                            A   811    
-04452F 01000000            A   812    	LD	BC,0
-044533 DD0FFD              A   813    	LD	(IX+%FFFFFFFD),BC
-044536 18 19               A   814    	JR	L_10
-044538                     A   815    L_8:
+043B32 01000000            A   812    	LD	BC,0
+043B36 DD0FFD              A   813    	LD	(IX+%FFFFFFFD),BC
+043B39 18 19               A   814    	JR	L_10
+043B3B                     A   815    L_8:
                            A   816    ;   45	        globalLabelTable[i] = NULL;
                            A   817    .LINE 45
                            A   818    
-044538 DD27FD              A   819    	LD	HL,(IX+%FFFFFFFD)
-04453B E5C1                A   820    	LD	BC,HL
-04453D 29                  A   821    	ADD	HL,HL
-04453E 09                  A   822    	ADD	HL,BC
-04453F 01 66 98 07         A   823    	LD	BC,_globalLabelTable
-044543 09                  A   824    	ADD	HL,BC
-044544 01000000            A   825    	LD	BC,0
-044548 ED0F                A   826    	LD	(HL),BC
-04454A DD07FD              A   827    	LD	BC,(IX+%FFFFFFFD)
-04454D 03                  A   828    	INC	BC
-04454E DD0FFD              A   829    	LD	(IX+%FFFFFFFD),BC
+043B3B DD27FD              A   819    	LD	HL,(IX+%FFFFFFFD)
+043B3E E5C1                A   820    	LD	BC,HL
+043B40 29                  A   821    	ADD	HL,HL
+043B41 09                  A   822    	ADD	HL,BC
+043B42 01 A1 9B 06         A   823    	LD	BC,_globalLabelTable
+043B46 09                  A   824    	ADD	HL,BC
+043B47 01000000            A   825    	LD	BC,0
+043B4B ED0F                A   826    	LD	(HL),BC
+043B4D DD07FD              A   827    	LD	BC,(IX+%FFFFFFFD)
+043B50 03                  A   828    	INC	BC
+043B51 DD0FFD              A   829    	LD	(IX+%FFFFFFFD),BC
                            A   830    ;   46	    }
-044551                     A   831    L_10:
+043B54                     A   831    L_10:
                            A   832    .LINE 46
                            A   833    
-044551 01002000            A   834    	LD	BC,8192
-044555 DD27FD              A   835    	LD	HL,(IX+%FFFFFFFD)
-044558 B7                  A   836    	OR	A,A
-044559 ED42                A   837    	SBC	HL,BC
-04455B CD 1D 64 04         A   838    	CALL	__setflag
-04455F FA 38 45 04         A   839    	JP	M,L_8
+043B54 01002000            A   834    	LD	BC,8192
+043B58 DD27FD              A   835    	LD	HL,(IX+%FFFFFFFD)
+043B5B B7                  A   836    	OR	A,A
+043B5C ED42                A   837    	SBC	HL,BC
+043B5E CD 15 5A 04         A   838    	CALL	__setflag
+043B62 FA 3B 3B 04         A   839    	JP	M,L_8
                            A   840    ;   47	}
                            A   841    .LINE 47
                            A   842    
-044563 DDF9                A   843    	LD	SP,IX
-044565 DDE1                A   844    	POP	IX
-044567 C9                  A   845    	RET	
+043B66 DDF9                A   843    	LD	SP,IX
+043B68 DDE1                A   844    	POP	IX
+043B6A C9                  A   845    	RET	
                            A   846    
                            A   847    
                            A   848    ;**************************** _initGlobalLabelT
@@ -866,7 +866,7 @@ PC     Object              I  Line    Source
                            A   860    .ENDFUNC "initGlobalLabelTable",47,"_initGlobal
                            A   861    ;   48	
                            A   862    ;   49	void initAnonymousLabelTable(void) {
-044568                     A   863    _initAnonymousLabelTable:
+043B6B                     A   863    _initAnonymousLabelTable:
                            A   864    .DEFINE "_initAnonymousLabelTable"
                            A   865    
                            A   866    .VALUE _initAnonymousLabelTable
@@ -879,30 +879,30 @@ PC     Object              I  Line    Source
                            A   873    
                            A   874    .BEGFUNC "initAnonymousLabelTable",49,"_initAno
                            A   875    
-044568 DDE5                A   876    	PUSH	IX
-04456A DD210000 00         A   877    	LD	IX,0
-04456F DD39                A   878    	ADD	IX,SP
+043B6B DDE5                A   876    	PUSH	IX
+043B6D DD210000 00         A   877    	LD	IX,0
+043B72 DD39                A   878    	ADD	IX,SP
                            A   879    ;   50	    an_prev.defined = false;
                            A   880    .LINE 50
                            A   881    
-044571 AF                  A   882    	XOR	A,A
-044572 32 51 98 04         A   883    	LD	(_an_prev),A
+043B74 AF                  A   882    	XOR	A,A
+043B75 32 8C 8B 04         A   883    	LD	(_an_prev),A
                            A   884    ;   51	    an_next.defined = false;
                            A   885    .LINE 51
                            A   886    
-044576 AF                  A   887    	XOR	A,A
-044577 32 56 98 04         A   888    	LD	(_an_next),A
+043B79 AF                  A   887    	XOR	A,A
+043B7A 32 91 8B 04         A   888    	LD	(_an_next),A
                            A   889    ;   52	    an_return.name = NULL;
                            A   890    .LINE 52
                            A   891    
-04457B 01000000            A   892    	LD	BC,0
-04457F ED43 5B 98 04       A   893    	LD	(_an_return),BC
+043B7E 01000000            A   892    	LD	BC,0
+043B82 ED43 96 8B 04       A   893    	LD	(_an_return),BC
                            A   894    ;   53	}
                            A   895    .LINE 53
                            A   896    
-044584 DDF9                A   897    	LD	SP,IX
-044586 DDE1                A   898    	POP	IX
-044588 C9                  A   899    	RET	
+043B87 DDF9                A   897    	LD	SP,IX
+043B89 DDE1                A   898    	POP	IX
+043B8B C9                  A   899    	RET	
                            A   900    
                            A   901    
                            A   902    ;**************************** _initAnonymousLab
@@ -919,7 +919,7 @@ PC     Object              I  Line    Source
                            A   913    .ENDFUNC "initAnonymousLabelTable",53,"_initAno
                            A   914    ;   54	
                            A   915    ;   55	void initLocalLabelTable(void) {
-044589                     A   916    _initLocalLabelTable:
+043B8C                     A   916    _initLocalLabelTable:
                            A   917    .DEFINE "_initLocalLabelTable"
                            A   918    
                            A   919    .VALUE _initLocalLabelTable
@@ -944,63 +944,63 @@ PC     Object              I  Line    Source
                            A   938    
                            A   939    .ENDEF
                            A   940    
-044589 DDE5                A   941    	PUSH	IX
-04458B DD210000 00         A   942    	LD	IX,0
-044590 DD39                A   943    	ADD	IX,SP
-044592 C5                  A   944    	PUSH	BC
+043B8C DDE5                A   941    	PUSH	IX
+043B8E DD210000 00         A   942    	LD	IX,0
+043B93 DD39                A   943    	ADD	IX,SP
+043B95 C5                  A   944    	PUSH	BC
                            A   945    ;   56	    int i;
                            A   946    ;   57	
                            A   947    ;   58	    localLabelBufferIndex = 0;
                            A   948    .LINE 58
                            A   949    
-044593 21 64 98 07         A   950    	LD	HL,_localLabelBufferIndex
-044597 3600                A   951    	LD	(HL),%0
-044599 23                  A   952    	INC	HL
-04459A 3600                A   953    	LD	(HL),%0
+043B96 21 9F 9B 06         A   950    	LD	HL,_localLabelBufferIndex
+043B9A 3600                A   951    	LD	(HL),%0
+043B9C 23                  A   952    	INC	HL
+043B9D 3600                A   953    	LD	(HL),%0
                            A   954    ;   59	    localLabelCounter = 0;
                            A   955    .LINE 59
                            A   956    
-04459C 21 28 FA 07         A   957    	LD	HL,_localLabelCounter
-0445A0 3600                A   958    	LD	(HL),%0
-0445A2 23                  A   959    	INC	HL
-0445A3 3600                A   960    	LD	(HL),%0
+043B9F 21 63 FD 06         A   957    	LD	HL,_localLabelCounter
+043BA3 3600                A   958    	LD	(HL),%0
+043BA5 23                  A   959    	INC	HL
+043BA6 3600                A   960    	LD	(HL),%0
                            A   961    ;   60	    for(i = 0; i < LOCAL_LABEL_TABLE_SI
                            A   962    .LINE 60
                            A   963    
-0445A5 01000000            A   964    	LD	BC,0
-0445A9 DD0FFD              A   965    	LD	(IX+%FFFFFFFD),BC
-0445AC 18 1F               A   966    	JR	L_16
-0445AE                     A   967    L_14:
+043BA8 01000000            A   964    	LD	BC,0
+043BAC DD0FFD              A   965    	LD	(IX+%FFFFFFFD),BC
+043BAF 18 1F               A   966    	JR	L_16
+043BB1                     A   967    L_14:
                            A   968    ;   61	        localLabelTable[i].name = NULL;
                            A   969    .LINE 61
                            A   970    
-0445AE DD27FD              A   971    	LD	HL,(IX+%FFFFFFFD)
-0445B1 3E07                A   972    	LD	A,%7
-0445B3 CD A9 6D 04         A   973    	CALL	__imul_b
-0445B7 01 68 F8 07         A   974    	LD	BC,_localLabelTable
-0445BB 09                  A   975    	ADD	HL,BC
-0445BC 01000000            A   976    	LD	BC,0
-0445C0 E5FDE1              A   977    	LD	IY,HL
-0445C3 FD0F00              A   978    	LD	(IY+%0),BC
-0445C6 DD07FD              A   979    	LD	BC,(IX+%FFFFFFFD)
-0445C9 03                  A   980    	INC	BC
-0445CA DD0FFD              A   981    	LD	(IX+%FFFFFFFD),BC
+043BB1 DD27FD              A   971    	LD	HL,(IX+%FFFFFFFD)
+043BB4 3E07                A   972    	LD	A,%7
+043BB6 CD 9A 66 04         A   973    	CALL	__imul_b
+043BBA 01 A3 FB 06         A   974    	LD	BC,_localLabelTable
+043BBE 09                  A   975    	ADD	HL,BC
+043BBF 01000000            A   976    	LD	BC,0
+043BC3 E5FDE1              A   977    	LD	IY,HL
+043BC6 FD0F00              A   978    	LD	(IY+%0),BC
+043BC9 DD07FD              A   979    	LD	BC,(IX+%FFFFFFFD)
+043BCC 03                  A   980    	INC	BC
+043BCD DD0FFD              A   981    	LD	(IX+%FFFFFFFD),BC
                            A   982    ;   62	    }
-0445CD                     A   983    L_16:
+043BD0                     A   983    L_16:
                            A   984    .LINE 62
                            A   985    
-0445CD 01400000            A   986    	LD	BC,64
-0445D1 DD27FD              A   987    	LD	HL,(IX+%FFFFFFFD)
-0445D4 B7                  A   988    	OR	A,A
-0445D5 ED42                A   989    	SBC	HL,BC
-0445D7 CD 1D 64 04         A   990    	CALL	__setflag
-0445DB FA AE 45 04         A   991    	JP	M,L_14
+043BD0 01400000            A   986    	LD	BC,64
+043BD4 DD27FD              A   987    	LD	HL,(IX+%FFFFFFFD)
+043BD7 B7                  A   988    	OR	A,A
+043BD8 ED42                A   989    	SBC	HL,BC
+043BDA CD 15 5A 04         A   990    	CALL	__setflag
+043BDE FA B1 3B 04         A   991    	JP	M,L_14
                            A   992    ;   63	}
                            A   993    .LINE 63
                            A   994    
-0445DF DDF9                A   995    	LD	SP,IX
-0445E1 DDE1                A   996    	POP	IX
-0445E3 C9                  A   997    	RET	
+043BE2 DDF9                A   995    	LD	SP,IX
+043BE4 DDE1                A   996    	POP	IX
+043BE6 C9                  A   997    	RET	
                            A   998    
                            A   999    
                            A  1000    ;**************************** _initLocalLabelTa
@@ -1018,7 +1018,7 @@ PC     Object              I  Line    Source
                            A  1012    .ENDFUNC "initLocalLabelTable",63,"_initLocalLa
                            A  1013    ;   64	
                            A  1014    ;   65	void clearLocalLabels(void) {
-0445E4                     A  1015    _clearLocalLabels:
+043BE7                     A  1015    _clearLocalLabels:
                            A  1016    .DEFINE "_clearLocalLabels"
                            A  1017    
                            A  1018    .VALUE _clearLocalLabels
@@ -1031,29 +1031,29 @@ PC     Object              I  Line    Source
                            A  1025    
                            A  1026    .BEGFUNC "clearLocalLabels",65,"_clearLocalLabe
                            A  1027    
-0445E4 DDE5                A  1028    	PUSH	IX
-0445E6 DD210000 00         A  1029    	LD	IX,0
-0445EB DD39                A  1030    	ADD	IX,SP
+043BE7 DDE5                A  1028    	PUSH	IX
+043BE9 DD210000 00         A  1029    	LD	IX,0
+043BEE DD39                A  1030    	ADD	IX,SP
                            A  1031    ;   66	    localLabelBufferIndex = 0;
                            A  1032    .LINE 66
                            A  1033    
-0445ED 21 64 98 07         A  1034    	LD	HL,_localLabelBufferIndex
-0445F1 3600                A  1035    	LD	(HL),%0
-0445F3 23                  A  1036    	INC	HL
-0445F4 3600                A  1037    	LD	(HL),%0
+043BF0 21 9F 9B 06         A  1034    	LD	HL,_localLabelBufferIndex
+043BF4 3600                A  1035    	LD	(HL),%0
+043BF6 23                  A  1036    	INC	HL
+043BF7 3600                A  1037    	LD	(HL),%0
                            A  1038    ;   67	    localLabelCounter = 0;
                            A  1039    .LINE 67
                            A  1040    
-0445F6 21 28 FA 07         A  1041    	LD	HL,_localLabelCounter
-0445FA 3600                A  1042    	LD	(HL),%0
-0445FC 23                  A  1043    	INC	HL
-0445FD 3600                A  1044    	LD	(HL),%0
+043BF9 21 63 FD 06         A  1041    	LD	HL,_localLabelCounter
+043BFD 3600                A  1042    	LD	(HL),%0
+043BFF 23                  A  1043    	INC	HL
+043C00 3600                A  1044    	LD	(HL),%0
                            A  1045    ;   68	}
                            A  1046    .LINE 68
                            A  1047    
-0445FF DDF9                A  1048    	LD	SP,IX
-044601 DDE1                A  1049    	POP	IX
-044603 C9                  A  1050    	RET	
+043C02 DDF9                A  1048    	LD	SP,IX
+043C04 DDE1                A  1049    	POP	IX
+043C06 C9                  A  1050    	RET	
                            A  1051    
                            A  1052    
                            A  1053    ;**************************** _clearLocalLabels
@@ -1069,7 +1069,7 @@ PC     Object              I  Line    Source
                            A  1063    .ENDFUNC "clearLocalLabels",68,"_clearLocalLabe
                            A  1064    ;   69	
                            A  1065    ;   70	int findLocalLabelIndex(char *key) {
-044604                     A  1066    _findLocalLabelIndex:
+043C07                     A  1066    _findLocalLabelIndex:
                            A  1067    .DEFINE "_findLocalLabelIndex"
                            A  1068    
                            A  1069    .VALUE _findLocalLabelIndex
@@ -1134,109 +1134,109 @@ PC     Object              I  Line    Source
                            A  1128    
                            A  1129    .ENDEF
                            A  1130    
-044604 DDE5                A  1131    	PUSH	IX
-044606 DD210000 00         A  1132    	LD	IX,0
-04460B DD39                A  1133    	ADD	IX,SP
-04460D ED22F4              A  1134    	LEA	HL,IX+%FFFFFFF4
-044610 F9                  A  1135    	LD	SP,HL
+043C07 DDE5                A  1131    	PUSH	IX
+043C09 DD210000 00         A  1132    	LD	IX,0
+043C0E DD39                A  1133    	ADD	IX,SP
+043C10 ED22F4              A  1134    	LEA	HL,IX+%FFFFFFF4
+043C13 F9                  A  1135    	LD	SP,HL
                            A  1136    ;   71	    int base = 0;
                            A  1137    .LINE 71
                            A  1138    
-044611 01000000            A  1139    	LD	BC,0
-044615 DD0FF4              A  1140    	LD	(IX+%FFFFFFF4),BC
+043C14 01000000            A  1139    	LD	BC,0
+043C18 DD0FF4              A  1140    	LD	(IX+%FFFFFFF4),BC
                            A  1141    ;   72		int lim, cmp;
                            A  1142    ;   73	    int p;
                            A  1143    ;   74	
                            A  1144    ;   75		for (lim = localLabelCounter; lim !
                            A  1145    .LINE 75
                            A  1146    
-044618 ED4B 28 FA 07       A  1147    	LD	BC,(_localLabelCounter)
-04461D CD 96 66 04         A  1148    	CALL	__stoiu
-044621 DD2FFD              A  1149    	LD	(IX+%FFFFFFFD),HL
-044624 18 65               A  1150    	JR	L_25
-044626                     A  1151    L_23:
+043C1B ED4B 63 FD 06       A  1147    	LD	BC,(_localLabelCounter)
+043C20 CD 82 5C 04         A  1148    	CALL	__stoiu
+043C24 DD2FFD              A  1149    	LD	(IX+%FFFFFFFD),HL
+043C27 18 65               A  1150    	JR	L_25
+043C29                     A  1151    L_23:
                            A  1152    ;   76			p = base + (lim >> 1);
                            A  1153    .LINE 76
                            A  1154    
-044626 DD27FD              A  1155    	LD	HL,(IX+%FFFFFFFD)
-044629 3E01                A  1156    	LD	A,%1
-04462B CD 9F 64 04         A  1157    	CALL	__ishrs_b
-04462F DD07F4              A  1158    	LD	BC,(IX+%FFFFFFF4)
-044632 09                  A  1159    	ADD	HL,BC
-044633 DD2FFA              A  1160    	LD	(IX+%FFFFFFFA),HL
+043C29 DD27FD              A  1155    	LD	HL,(IX+%FFFFFFFD)
+043C2C 3E01                A  1156    	LD	A,%1
+043C2E CD 5C 5A 04         A  1157    	CALL	__ishrs_b
+043C32 DD07F4              A  1158    	LD	BC,(IX+%FFFFFFF4)
+043C35 09                  A  1159    	ADD	HL,BC
+043C36 DD2FFA              A  1160    	LD	(IX+%FFFFFFFA),HL
                            A  1161    ;   77			cmp = strcmp(key,localLabelTabl
                            A  1162    .LINE 77
                            A  1163    
-044636 3E07                A  1164    	LD	A,%7
-044638 CD A9 6D 04         A  1165    	CALL	__imul_b
-04463C 01 68 F8 07         A  1166    	LD	BC,_localLabelTable
-044640 09                  A  1167    	ADD	HL,BC
-044641 E5FDE1              A  1168    	LD	IY,HL
-044644 FD0700              A  1169    	LD	BC,(IY+%0)
-044647 C5                  A  1170    	PUSH	BC
-044648 DD0706              A  1171    	LD	BC,(IX+%6)
-04464B C5                  A  1172    	PUSH	BC
-04464C CD 79 66 04         A  1173    	CALL	_strcmp
-044650 C1                  A  1174    	POP	BC
-044651 C1                  A  1175    	POP	BC
-044652 DD2FF7              A  1176    	LD	(IX+%FFFFFFF7),HL
+043C39 3E07                A  1164    	LD	A,%7
+043C3B CD 9A 66 04         A  1165    	CALL	__imul_b
+043C3F 01 A3 FB 06         A  1166    	LD	BC,_localLabelTable
+043C43 09                  A  1167    	ADD	HL,BC
+043C44 E5FDE1              A  1168    	LD	IY,HL
+043C47 FD0700              A  1169    	LD	BC,(IY+%0)
+043C4A C5                  A  1170    	PUSH	BC
+043C4B DD0706              A  1171    	LD	BC,(IX+%6)
+043C4E C5                  A  1172    	PUSH	BC
+043C4F CD 65 5C 04         A  1173    	CALL	_strcmp
+043C53 C1                  A  1174    	POP	BC
+043C54 C1                  A  1175    	POP	BC
+043C55 DD2FF7              A  1176    	LD	(IX+%FFFFFFF7),HL
                            A  1177    ;   78			if (cmp == 0)
                            A  1178    .LINE 78
                            A  1179    
-044655 CD E3 6A 04         A  1180    	CALL	__icmpzero
-044659 20 05               A  1181    	JR	NZ,L_22
+043C58 CD CF 60 04         A  1180    	CALL	__icmpzero
+043C5C 20 05               A  1181    	JR	NZ,L_22
                            A  1182    ;   79				return p;
                            A  1183    .LINE 79
                            A  1184    
-04465B DD27FA              A  1185    	LD	HL,(IX+%FFFFFFFA)
-04465E 18 38               A  1186    	JR	L_27
-044660                     A  1187    L_22:
+043C5E DD27FA              A  1185    	LD	HL,(IX+%FFFFFFFA)
+043C61 18 38               A  1186    	JR	L_27
+043C63                     A  1187    L_22:
                            A  1188    ;   80			if (cmp > 0) {
                            A  1189    .LINE 80
                            A  1190    
-044660 DD07F7              A  1191    	LD	BC,(IX+%FFFFFFF7)
-044663 B7                  A  1192    	OR	A,A
-044664 ED62                A  1193    	SBC	HL,HL
-044666 B7                  A  1194    	OR	A,A
-044667 ED42                A  1195    	SBC	HL,BC
-044669 CD 1D 64 04         A  1196    	CALL	__setflag
-04466D F2 7F 46 04         A  1197    	JP	P,L_24
+043C63 DD07F7              A  1191    	LD	BC,(IX+%FFFFFFF7)
+043C66 B7                  A  1192    	OR	A,A
+043C67 ED62                A  1193    	SBC	HL,HL
+043C69 B7                  A  1194    	OR	A,A
+043C6A ED42                A  1195    	SBC	HL,BC
+043C6C CD 15 5A 04         A  1196    	CALL	__setflag
+043C70 F2 82 3C 04         A  1197    	JP	P,L_24
                            A  1198    ;   81				base = p + 1;
                            A  1199    .LINE 81
                            A  1200    
-044671 DD07FA              A  1201    	LD	BC,(IX+%FFFFFFFA)
-044674 03                  A  1202    	INC	BC
-044675 DD0FF4              A  1203    	LD	(IX+%FFFFFFF4),BC
+043C74 DD07FA              A  1201    	LD	BC,(IX+%FFFFFFFA)
+043C77 03                  A  1202    	INC	BC
+043C78 DD0FF4              A  1203    	LD	(IX+%FFFFFFF4),BC
                            A  1204    ;   82				lim--;
                            A  1205    .LINE 82
                            A  1206    
-044678 DD07FD              A  1207    	LD	BC,(IX+%FFFFFFFD)
-04467B 0B                  A  1208    	DEC	BC
-04467C DD0FFD              A  1209    	LD	(IX+%FFFFFFFD),BC
+043C7B DD07FD              A  1207    	LD	BC,(IX+%FFFFFFFD)
+043C7E 0B                  A  1208    	DEC	BC
+043C7F DD0FFD              A  1209    	LD	(IX+%FFFFFFFD),BC
                            A  1210    ;   83			}
                            A  1211    ;   84		}
-04467F                     A  1212    L_24:
+043C82                     A  1212    L_24:
                            A  1213    .LINE 84
                            A  1214    
-04467F DD27FD              A  1215    	LD	HL,(IX+%FFFFFFFD)
-044682 3E01                A  1216    	LD	A,%1
-044684 CD 9F 64 04         A  1217    	CALL	__ishrs_b
-044688 DD2FFD              A  1218    	LD	(IX+%FFFFFFFD),HL
-04468B                     A  1219    L_25:
-04468B DD27FD              A  1220    	LD	HL,(IX+%FFFFFFFD)
-04468E CD E3 6A 04         A  1221    	CALL	__icmpzero
-044692 20 92               A  1222    	JR	NZ,L_23
+043C82 DD27FD              A  1215    	LD	HL,(IX+%FFFFFFFD)
+043C85 3E01                A  1216    	LD	A,%1
+043C87 CD 5C 5A 04         A  1217    	CALL	__ishrs_b
+043C8B DD2FFD              A  1218    	LD	(IX+%FFFFFFFD),HL
+043C8E                     A  1219    L_25:
+043C8E DD27FD              A  1220    	LD	HL,(IX+%FFFFFFFD)
+043C91 CD CF 60 04         A  1221    	CALL	__icmpzero
+043C95 20 92               A  1222    	JR	NZ,L_23
                            A  1223    ;   85		return (LOCAL_LABEL_TABLE_SIZE);
                            A  1224    .LINE 85
                            A  1225    
-044694 21400000            A  1226    	LD	HL,64
+043C97 21400000            A  1226    	LD	HL,64
                            A  1227    ;   86	}
-044698                     A  1228    L_27:
+043C9B                     A  1228    L_27:
                            A  1229    .LINE 86
                            A  1230    
-044698 DDF9                A  1231    	LD	SP,IX
-04469A DDE1                A  1232    	POP	IX
-04469C C9                  A  1233    	RET	
+043C9B DDF9                A  1231    	LD	SP,IX
+043C9D DDE1                A  1232    	POP	IX
+043C9F C9                  A  1233    	RET	
                            A  1234    
                            A  1235    
                            A  1236    ;**************************** _findLocalLabelIn
@@ -1258,7 +1258,7 @@ PC     Object              I  Line    Source
                            A  1252    .ENDFUNC "findLocalLabelIndex",86,"_findLocalLa
                            A  1253    ;   87	
                            A  1254    ;   88	label * findLocalLabel(char *key){
-04469D                     A  1255    _findLocalLabel:
+043CA0                     A  1255    _findLocalLabel:
                            A  1256    .DEFINE "_findLocalLabel"
                            A  1257    
                            A  1258    .VALUE _findLocalLabel
@@ -1295,46 +1295,46 @@ PC     Object              I  Line    Source
                            A  1289    
                            A  1290    .ENDEF
                            A  1291    
-04469D DDE5                A  1292    	PUSH	IX
-04469F DD210000 00         A  1293    	LD	IX,0
-0446A4 DD39                A  1294    	ADD	IX,SP
-0446A6 C5                  A  1295    	PUSH	BC
+043CA0 DDE5                A  1292    	PUSH	IX
+043CA2 DD210000 00         A  1293    	LD	IX,0
+043CA7 DD39                A  1294    	ADD	IX,SP
+043CA9 C5                  A  1295    	PUSH	BC
                            A  1296    ;   89	    int p = findLocalLabelIndex(key);
                            A  1297    .LINE 89
                            A  1298    
-0446A7 DD0706              A  1299    	LD	BC,(IX+%6)
-0446AA C5                  A  1300    	PUSH	BC
-0446AB CD 04 46 04         A  1301    	CALL	_findLocalLabelIndex
-0446AF C1                  A  1302    	POP	BC
-0446B0 DD2FFD              A  1303    	LD	(IX+%FFFFFFFD),HL
+043CAA DD0706              A  1299    	LD	BC,(IX+%6)
+043CAD C5                  A  1300    	PUSH	BC
+043CAE CD 07 3C 04         A  1301    	CALL	_findLocalLabelIndex
+043CB2 C1                  A  1302    	POP	BC
+043CB3 DD2FFD              A  1303    	LD	(IX+%FFFFFFFD),HL
                            A  1304    ;   90	    if(p < LOCAL_LABEL_TABLE_SIZE) retu
                            A  1305    .LINE 90
                            A  1306    
-0446B3 01400000            A  1307    	LD	BC,64
-0446B7 DD27FD              A  1308    	LD	HL,(IX+%FFFFFFFD)
-0446BA B7                  A  1309    	OR	A,A
-0446BB ED42                A  1310    	SBC	HL,BC
-0446BD CD 1D 64 04         A  1311    	CALL	__setflag
-0446C1 F2 D5 46 04         A  1312    	JP	P,L_29
-0446C5 DD27FD              A  1313    	LD	HL,(IX+%FFFFFFFD)
-0446C8 3E07                A  1314    	LD	A,%7
-0446CA CD A9 6D 04         A  1315    	CALL	__imul_b
-0446CE 01 68 F8 07         A  1316    	LD	BC,_localLabelTable
-0446D2 09                  A  1317    	ADD	HL,BC
-0446D3 18 03               A  1318    	JR	L_30
+043CB6 01400000            A  1307    	LD	BC,64
+043CBA DD27FD              A  1308    	LD	HL,(IX+%FFFFFFFD)
+043CBD B7                  A  1309    	OR	A,A
+043CBE ED42                A  1310    	SBC	HL,BC
+043CC0 CD 15 5A 04         A  1311    	CALL	__setflag
+043CC4 F2 D8 3C 04         A  1312    	JP	P,L_29
+043CC8 DD27FD              A  1313    	LD	HL,(IX+%FFFFFFFD)
+043CCB 3E07                A  1314    	LD	A,%7
+043CCD CD 9A 66 04         A  1315    	CALL	__imul_b
+043CD1 01 A3 FB 06         A  1316    	LD	BC,_localLabelTable
+043CD5 09                  A  1317    	ADD	HL,BC
+043CD6 18 03               A  1318    	JR	L_30
                            A  1319    ;   91	    else return NULL;
-0446D5                     A  1320    L_29:
+043CD8                     A  1320    L_29:
                            A  1321    .LINE 91
                            A  1322    
-0446D5 B7                  A  1323    	OR	A,A
-0446D6 ED62                A  1324    	SBC	HL,HL
+043CD8 B7                  A  1323    	OR	A,A
+043CD9 ED62                A  1324    	SBC	HL,HL
                            A  1325    ;   92	}
-0446D8                     A  1326    L_30:
+043CDB                     A  1326    L_30:
                            A  1327    .LINE 92
                            A  1328    
-0446D8 DDF9                A  1329    	LD	SP,IX
-0446DA DDE1                A  1330    	POP	IX
-0446DC C9                  A  1331    	RET	
+043CDB DDF9                A  1329    	LD	SP,IX
+043CDD DDE1                A  1330    	POP	IX
+043CDF C9                  A  1331    	RET	
                            A  1332    
                            A  1333    
                            A  1334    ;**************************** _findLocalLabel *
@@ -1369,7 +1369,7 @@ PC     Object              I  Line    Source
                            A  1363    ;  110	    return result;
                            A  1364    ;  111	}*/
                            A  1365    ;  112	void writeLocalLabels(void) {
-0446DD                     A  1366    _writeLocalLabels:
+043CE0                     A  1366    _writeLocalLabels:
                            A  1367    .DEFINE "_writeLocalLabels"
                            A  1368    
                            A  1369    .VALUE _writeLocalLabels
@@ -1404,157 +1404,157 @@ PC     Object              I  Line    Source
                            A  1398    
                            A  1399    .ENDEF
                            A  1400    
-0446DD DDE5                A  1401    	PUSH	IX
-0446DF DD210000 00         A  1402    	LD	IX,0
-0446E4 DD39                A  1403    	ADD	IX,SP
-0446E6 C5                  A  1404    	PUSH	BC
-0446E7 3B                  A  1405    	DEC	SP
-0446E8 3B                  A  1406    	DEC	SP
+043CE0 DDE5                A  1401    	PUSH	IX
+043CE2 DD210000 00         A  1402    	LD	IX,0
+043CE7 DD39                A  1403    	ADD	IX,SP
+043CE9 C5                  A  1404    	PUSH	BC
+043CEA 3B                  A  1405    	DEC	SP
+043CEB 3B                  A  1406    	DEC	SP
                            A  1407    ;  113	    int i;
                            A  1408    ;  114	    uint16_t delta;
                            A  1409    ;  115	    // number of bytes in the string bu
                            A  1410    ;  116	    agon_fwrite(&localLabelBufferIndex,
                            A  1411    .LINE 116
                            A  1412    
-0446E9 01030000            A  1413    	LD	BC,3
-0446ED C5                  A  1414    	PUSH	BC
-0446EE 01010000            A  1415    	LD	BC,1
-0446F2 C5                  A  1416    	PUSH	BC
-0446F3 01020000            A  1417    	LD	BC,2
-0446F7 C5                  A  1418    	PUSH	BC
-0446F8 01 64 98 07         A  1419    	LD	BC,_localLabelBufferIndex
-0446FC C5                  A  1420    	PUSH	BC
-0446FD CD 34 62 04         A  1421    	CALL	_agon_fwrite
-044701 C1                  A  1422    	POP	BC
-044702 C1                  A  1423    	POP	BC
-044703 C1                  A  1424    	POP	BC
-044704 C1                  A  1425    	POP	BC
+043CEC 01030000            A  1413    	LD	BC,3
+043CF0 C5                  A  1414    	PUSH	BC
+043CF1 01010000            A  1415    	LD	BC,1
+043CF5 C5                  A  1416    	PUSH	BC
+043CF6 01020000            A  1417    	LD	BC,2
+043CFA C5                  A  1418    	PUSH	BC
+043CFB 01 9F 9B 06         A  1419    	LD	BC,_localLabelBufferIndex
+043CFF C5                  A  1420    	PUSH	BC
+043D00 CD 2C 58 04         A  1421    	CALL	_agon_fwrite
+043D04 C1                  A  1422    	POP	BC
+043D05 C1                  A  1423    	POP	BC
+043D06 C1                  A  1424    	POP	BC
+043D07 C1                  A  1425    	POP	BC
                            A  1426    ;  117	    // the actual bytes from the string
                            A  1427    ;  118	    if(localLabelBufferIndex) agon_fwri
                            A  1428    .LINE 118
                            A  1429    
-044705 2A 64 98 07         A  1430    	LD	HL,(_localLabelBufferIndex)
-044709 CD 89 6E 04         A  1431    	CALL	__scmpzero
-04470D 28 21               A  1432    	JR	Z,L_32
-04470F 01030000            A  1433    	LD	BC,3
-044713 C5                  A  1434    	PUSH	BC
-044714 01010000            A  1435    	LD	BC,1
-044718 C5                  A  1436    	PUSH	BC
-044719 ED4B 64 98 07       A  1437    	LD	BC,(_localLabelBufferIndex)
-04471E CD 96 66 04         A  1438    	CALL	__stoiu
-044722 E5                  A  1439    	PUSH	HL
-044723 01 62 98 06         A  1440    	LD	BC,_localLabelBuffer
-044727 C5                  A  1441    	PUSH	BC
-044728 CD 34 62 04         A  1442    	CALL	_agon_fwrite
-04472C C1                  A  1443    	POP	BC
-04472D C1                  A  1444    	POP	BC
-04472E C1                  A  1445    	POP	BC
-04472F C1                  A  1446    	POP	BC
-044730                     A  1447    L_32:
+043D08 2A 9F 9B 06         A  1430    	LD	HL,(_localLabelBufferIndex)
+043D0C CD 08 64 04         A  1431    	CALL	__scmpzero
+043D10 28 21               A  1432    	JR	Z,L_32
+043D12 01030000            A  1433    	LD	BC,3
+043D16 C5                  A  1434    	PUSH	BC
+043D17 01010000            A  1435    	LD	BC,1
+043D1B C5                  A  1436    	PUSH	BC
+043D1C ED4B 9F 9B 06       A  1437    	LD	BC,(_localLabelBufferIndex)
+043D21 CD 82 5C 04         A  1438    	CALL	__stoiu
+043D25 E5                  A  1439    	PUSH	HL
+043D26 01 9D 8B 06         A  1440    	LD	BC,_localLabelBuffer
+043D2A C5                  A  1441    	PUSH	BC
+043D2B CD 2C 58 04         A  1442    	CALL	_agon_fwrite
+043D2F C1                  A  1443    	POP	BC
+043D30 C1                  A  1444    	POP	BC
+043D31 C1                  A  1445    	POP	BC
+043D32 C1                  A  1446    	POP	BC
+043D33                     A  1447    L_32:
                            A  1448    ;  119	    // the number of labels
                            A  1449    ;  120	    agon_fwrite(&localLabelCounter, siz
                            A  1450    .LINE 120
                            A  1451    
-044730 01030000            A  1452    	LD	BC,3
-044734 C5                  A  1453    	PUSH	BC
-044735 01010000            A  1454    	LD	BC,1
-044739 C5                  A  1455    	PUSH	BC
-04473A 01020000            A  1456    	LD	BC,2
-04473E C5                  A  1457    	PUSH	BC
-04473F 01 28 FA 07         A  1458    	LD	BC,_localLabelCounter
-044743 C5                  A  1459    	PUSH	BC
-044744 CD 34 62 04         A  1460    	CALL	_agon_fwrite
-044748 C1                  A  1461    	POP	BC
-044749 C1                  A  1462    	POP	BC
-04474A C1                  A  1463    	POP	BC
-04474B C1                  A  1464    	POP	BC
+043D33 01030000            A  1452    	LD	BC,3
+043D37 C5                  A  1453    	PUSH	BC
+043D38 01010000            A  1454    	LD	BC,1
+043D3C C5                  A  1455    	PUSH	BC
+043D3D 01020000            A  1456    	LD	BC,2
+043D41 C5                  A  1457    	PUSH	BC
+043D42 01 63 FD 06         A  1458    	LD	BC,_localLabelCounter
+043D46 C5                  A  1459    	PUSH	BC
+043D47 CD 2C 58 04         A  1460    	CALL	_agon_fwrite
+043D4B C1                  A  1461    	POP	BC
+043D4C C1                  A  1462    	POP	BC
+043D4D C1                  A  1463    	POP	BC
+043D4E C1                  A  1464    	POP	BC
                            A  1465    ;  121	    for(i = 0; i < localLabelCounter; i
                            A  1466    .LINE 121
                            A  1467    
-04474C 01000000            A  1468    	LD	BC,0
-044750 DD0FFD              A  1469    	LD	(IX+%FFFFFFFD),BC
-044753 18 6D               A  1470    	JR	L_36
-044755                     A  1471    L_34:
+043D4F 01000000            A  1468    	LD	BC,0
+043D53 DD0FFD              A  1469    	LD	(IX+%FFFFFFFD),BC
+043D56 18 6D               A  1470    	JR	L_36
+043D58                     A  1471    L_34:
                            A  1472    ;  122	        delta = localLabelTable[i].name
                            A  1473    .LINE 122
                            A  1474    
-044755 DD27FD              A  1475    	LD	HL,(IX+%FFFFFFFD)
-044758 3E07                A  1476    	LD	A,%7
-04475A CD A9 6D 04         A  1477    	CALL	__imul_b
-04475E 01 68 F8 07         A  1478    	LD	BC,_localLabelTable
-044762 09                  A  1479    	ADD	HL,BC
-044763 E5FDE1              A  1480    	LD	IY,HL
-044766 FD2700              A  1481    	LD	HL,(IY+%0)
-044769 01 62 98 06         A  1482    	LD	BC,_localLabelBuffer
-04476D B7                  A  1483    	OR	A,A
-04476E ED42                A  1484    	SBC	HL,BC
-044770 DD75FB              A  1485    	LD	(IX+%FFFFFFFB),L
-044773 DD74FC              A  1486    	LD	(IX+%FFFFFFFC),H
+043D58 DD27FD              A  1475    	LD	HL,(IX+%FFFFFFFD)
+043D5B 3E07                A  1476    	LD	A,%7
+043D5D CD 9A 66 04         A  1477    	CALL	__imul_b
+043D61 01 A3 FB 06         A  1478    	LD	BC,_localLabelTable
+043D65 09                  A  1479    	ADD	HL,BC
+043D66 E5FDE1              A  1480    	LD	IY,HL
+043D69 FD2700              A  1481    	LD	HL,(IY+%0)
+043D6C 01 9D 8B 06         A  1482    	LD	BC,_localLabelBuffer
+043D70 B7                  A  1483    	OR	A,A
+043D71 ED42                A  1484    	SBC	HL,BC
+043D73 DD75FB              A  1485    	LD	(IX+%FFFFFFFB),L
+043D76 DD74FC              A  1486    	LD	(IX+%FFFFFFFC),H
                            A  1487    ;  123	        agon_fwrite(&delta, sizeof(delt
                            A  1488    .LINE 123
                            A  1489    
-044776 01030000            A  1490    	LD	BC,3
-04477A C5                  A  1491    	PUSH	BC
-04477B 01010000            A  1492    	LD	BC,1
-04477F C5                  A  1493    	PUSH	BC
-044780 01020000            A  1494    	LD	BC,2
-044784 C5                  A  1495    	PUSH	BC
-044785 ED65FB              A  1496    	PEA	IX+%FFFFFFFB
-044788 CD 34 62 04         A  1497    	CALL	_agon_fwrite
-04478C C1                  A  1498    	POP	BC
-04478D C1                  A  1499    	POP	BC
-04478E C1                  A  1500    	POP	BC
-04478F C1                  A  1501    	POP	BC
+043D79 01030000            A  1490    	LD	BC,3
+043D7D C5                  A  1491    	PUSH	BC
+043D7E 01010000            A  1492    	LD	BC,1
+043D82 C5                  A  1493    	PUSH	BC
+043D83 01020000            A  1494    	LD	BC,2
+043D87 C5                  A  1495    	PUSH	BC
+043D88 ED65FB              A  1496    	PEA	IX+%FFFFFFFB
+043D8B CD 2C 58 04         A  1497    	CALL	_agon_fwrite
+043D8F C1                  A  1498    	POP	BC
+043D90 C1                  A  1499    	POP	BC
+043D91 C1                  A  1500    	POP	BC
+043D92 C1                  A  1501    	POP	BC
                            A  1502    ;  124	        agon_fwrite(&localLabelTable[i]
                            A  1503    .LINE 124
                            A  1504    
-044790 01030000            A  1505    	LD	BC,3
-044794 C5                  A  1506    	PUSH	BC
-044795 01010000            A  1507    	LD	BC,1
-044799 C5                  A  1508    	PUSH	BC
-04479A 01040000            A  1509    	LD	BC,4
-04479E C5                  A  1510    	PUSH	BC
-04479F DD27FD              A  1511    	LD	HL,(IX+%FFFFFFFD)
-0447A2 3E07                A  1512    	LD	A,%7
-0447A4 CD A9 6D 04         A  1513    	CALL	__imul_b
-0447A8 01 68 F8 07         A  1514    	LD	BC,_localLabelTable
-0447AC 09                  A  1515    	ADD	HL,BC
-0447AD E5FDE1              A  1516    	LD	IY,HL
-0447B0 ED6603              A  1517    	PEA	IY+%3
-0447B3 CD 34 62 04         A  1518    	CALL	_agon_fwrite
-0447B7 C1                  A  1519    	POP	BC
-0447B8 C1                  A  1520    	POP	BC
-0447B9 C1                  A  1521    	POP	BC
-0447BA C1                  A  1522    	POP	BC
-0447BB DD07FD              A  1523    	LD	BC,(IX+%FFFFFFFD)
-0447BE 03                  A  1524    	INC	BC
-0447BF DD0FFD              A  1525    	LD	(IX+%FFFFFFFD),BC
+043D93 01030000            A  1505    	LD	BC,3
+043D97 C5                  A  1506    	PUSH	BC
+043D98 01010000            A  1507    	LD	BC,1
+043D9C C5                  A  1508    	PUSH	BC
+043D9D 01040000            A  1509    	LD	BC,4
+043DA1 C5                  A  1510    	PUSH	BC
+043DA2 DD27FD              A  1511    	LD	HL,(IX+%FFFFFFFD)
+043DA5 3E07                A  1512    	LD	A,%7
+043DA7 CD 9A 66 04         A  1513    	CALL	__imul_b
+043DAB 01 A3 FB 06         A  1514    	LD	BC,_localLabelTable
+043DAF 09                  A  1515    	ADD	HL,BC
+043DB0 E5FDE1              A  1516    	LD	IY,HL
+043DB3 ED6603              A  1517    	PEA	IY+%3
+043DB6 CD 2C 58 04         A  1518    	CALL	_agon_fwrite
+043DBA C1                  A  1519    	POP	BC
+043DBB C1                  A  1520    	POP	BC
+043DBC C1                  A  1521    	POP	BC
+043DBD C1                  A  1522    	POP	BC
+043DBE DD07FD              A  1523    	LD	BC,(IX+%FFFFFFFD)
+043DC1 03                  A  1524    	INC	BC
+043DC2 DD0FFD              A  1525    	LD	(IX+%FFFFFFFD),BC
                            A  1526    ;  125	        //printf("W: index %d, counter 
                            A  1527    ;  126	    }
-0447C2                     A  1528    L_36:
+043DC5                     A  1528    L_36:
                            A  1529    .LINE 126
                            A  1530    
-0447C2 ED4B 28 FA 07       A  1531    	LD	BC,(_localLabelCounter)
-0447C7 CD 96 66 04         A  1532    	CALL	__stoiu
-0447CB E5C1                A  1533    	LD	BC,HL
-0447CD DD27FD              A  1534    	LD	HL,(IX+%FFFFFFFD)
-0447D0 B7                  A  1535    	OR	A,A
-0447D1 ED42                A  1536    	SBC	HL,BC
-0447D3 CD 1D 64 04         A  1537    	CALL	__setflag
-0447D7 FA 55 47 04         A  1538    	JP	M,L_34
+043DC5 ED4B 63 FD 06       A  1531    	LD	BC,(_localLabelCounter)
+043DCA CD 82 5C 04         A  1532    	CALL	__stoiu
+043DCE E5C1                A  1533    	LD	BC,HL
+043DD0 DD27FD              A  1534    	LD	HL,(IX+%FFFFFFFD)
+043DD3 B7                  A  1535    	OR	A,A
+043DD4 ED42                A  1536    	SBC	HL,BC
+043DD6 CD 15 5A 04         A  1537    	CALL	__setflag
+043DDA FA 58 3D 04         A  1538    	JP	M,L_34
                            A  1539    ;  127	}
                            A  1540    .LINE 127
                            A  1541    
-0447DB DDF9                A  1542    	LD	SP,IX
-0447DD DDE1                A  1543    	POP	IX
-0447DF C9                  A  1544    	RET	
+043DDE DDF9                A  1542    	LD	SP,IX
+043DE0 DDE1                A  1543    	POP	IX
+043DE2 C9                  A  1544    	RET	
                            A  1545    
                            A  1546    
                            A  1547    ;**************************** _writeLocalLabels
                            A  1548    ;Name                         Addr/Register   S
                            A  1549    ;_localLabelTable                    STATIC    
                            A  1550    ;_localLabelCounter                  STATIC    
-                           A  1551    ;_localLabelBuffer                   STATIC  65
+                           A  1551    ;_localLabelBuffer                   STATIC   4
                            A  1552    ;_localLabelBufferIndex              STATIC    
                            A  1553    ;_agon_fwrite                        IMPORT  --
                            A  1554    ;delta                                 IX-5    
@@ -1568,7 +1568,7 @@ PC     Object              I  Line    Source
                            A  1562    .ENDFUNC "writeLocalLabels",127,"_writeLocalLab
                            A  1563    ;  128	
                            A  1564    ;  129	void readLocalLabels(void) {
-0447E0                     A  1565    _readLocalLabels:
+043DE3                     A  1565    _readLocalLabels:
                            A  1566    .DEFINE "_readLocalLabels"
                            A  1567    
                            A  1568    .VALUE _readLocalLabels
@@ -1603,156 +1603,156 @@ PC     Object              I  Line    Source
                            A  1597    
                            A  1598    .ENDEF
                            A  1599    
-0447E0 DDE5                A  1600    	PUSH	IX
-0447E2 DD210000 00         A  1601    	LD	IX,0
-0447E7 DD39                A  1602    	ADD	IX,SP
-0447E9 C5                  A  1603    	PUSH	BC
-0447EA 3B                  A  1604    	DEC	SP
-0447EB 3B                  A  1605    	DEC	SP
+043DE3 DDE5                A  1600    	PUSH	IX
+043DE5 DD210000 00         A  1601    	LD	IX,0
+043DEA DD39                A  1602    	ADD	IX,SP
+043DEC C5                  A  1603    	PUSH	BC
+043DED 3B                  A  1604    	DEC	SP
+043DEE 3B                  A  1605    	DEC	SP
                            A  1606    ;  130	    int i;
                            A  1607    ;  131	    uint16_t delta;
                            A  1608    ;  132	
                            A  1609    ;  133	    agon_fread(&localLabelBufferIndex, 
                            A  1610    .LINE 133
                            A  1611    
-0447EC 01030000            A  1612    	LD	BC,3
-0447F0 C5                  A  1613    	PUSH	BC
-0447F1 01010000            A  1614    	LD	BC,1
-0447F5 C5                  A  1615    	PUSH	BC
-0447F6 01020000            A  1616    	LD	BC,2
-0447FA C5                  A  1617    	PUSH	BC
-0447FB 01 64 98 07         A  1618    	LD	BC,_localLabelBufferIndex
-0447FF C5                  A  1619    	PUSH	BC
-044800 CD B7 62 04         A  1620    	CALL	_agon_fread
-044804 C1                  A  1621    	POP	BC
-044805 C1                  A  1622    	POP	BC
-044806 C1                  A  1623    	POP	BC
-044807 C1                  A  1624    	POP	BC
+043DEF 01030000            A  1612    	LD	BC,3
+043DF3 C5                  A  1613    	PUSH	BC
+043DF4 01010000            A  1614    	LD	BC,1
+043DF8 C5                  A  1615    	PUSH	BC
+043DF9 01020000            A  1616    	LD	BC,2
+043DFD C5                  A  1617    	PUSH	BC
+043DFE 01 9F 9B 06         A  1618    	LD	BC,_localLabelBufferIndex
+043E02 C5                  A  1619    	PUSH	BC
+043E03 CD AF 58 04         A  1620    	CALL	_agon_fread
+043E07 C1                  A  1621    	POP	BC
+043E08 C1                  A  1622    	POP	BC
+043E09 C1                  A  1623    	POP	BC
+043E0A C1                  A  1624    	POP	BC
                            A  1625    ;  134	    if(localLabelBufferIndex) agon_frea
                            A  1626    .LINE 134
                            A  1627    
-044808 2A 64 98 07         A  1628    	LD	HL,(_localLabelBufferIndex)
-04480C CD 89 6E 04         A  1629    	CALL	__scmpzero
-044810 28 21               A  1630    	JR	Z,L_39
-044812 01030000            A  1631    	LD	BC,3
-044816 C5                  A  1632    	PUSH	BC
-044817 01010000            A  1633    	LD	BC,1
-04481B C5                  A  1634    	PUSH	BC
-04481C ED4B 64 98 07       A  1635    	LD	BC,(_localLabelBufferIndex)
-044821 CD 96 66 04         A  1636    	CALL	__stoiu
-044825 E5                  A  1637    	PUSH	HL
-044826 01 62 98 06         A  1638    	LD	BC,_localLabelBuffer
-04482A C5                  A  1639    	PUSH	BC
-04482B CD B7 62 04         A  1640    	CALL	_agon_fread
-04482F C1                  A  1641    	POP	BC
-044830 C1                  A  1642    	POP	BC
-044831 C1                  A  1643    	POP	BC
-044832 C1                  A  1644    	POP	BC
-044833                     A  1645    L_39:
+043E0B 2A 9F 9B 06         A  1628    	LD	HL,(_localLabelBufferIndex)
+043E0F CD 08 64 04         A  1629    	CALL	__scmpzero
+043E13 28 21               A  1630    	JR	Z,L_39
+043E15 01030000            A  1631    	LD	BC,3
+043E19 C5                  A  1632    	PUSH	BC
+043E1A 01010000            A  1633    	LD	BC,1
+043E1E C5                  A  1634    	PUSH	BC
+043E1F ED4B 9F 9B 06       A  1635    	LD	BC,(_localLabelBufferIndex)
+043E24 CD 82 5C 04         A  1636    	CALL	__stoiu
+043E28 E5                  A  1637    	PUSH	HL
+043E29 01 9D 8B 06         A  1638    	LD	BC,_localLabelBuffer
+043E2D C5                  A  1639    	PUSH	BC
+043E2E CD AF 58 04         A  1640    	CALL	_agon_fread
+043E32 C1                  A  1641    	POP	BC
+043E33 C1                  A  1642    	POP	BC
+043E34 C1                  A  1643    	POP	BC
+043E35 C1                  A  1644    	POP	BC
+043E36                     A  1645    L_39:
                            A  1646    ;  135	    agon_fread(&localLabelCounter, size
                            A  1647    .LINE 135
                            A  1648    
-044833 01030000            A  1649    	LD	BC,3
-044837 C5                  A  1650    	PUSH	BC
-044838 01010000            A  1651    	LD	BC,1
-04483C C5                  A  1652    	PUSH	BC
-04483D 01020000            A  1653    	LD	BC,2
-044841 C5                  A  1654    	PUSH	BC
-044842 01 28 FA 07         A  1655    	LD	BC,_localLabelCounter
-044846 C5                  A  1656    	PUSH	BC
-044847 CD B7 62 04         A  1657    	CALL	_agon_fread
-04484B C1                  A  1658    	POP	BC
-04484C C1                  A  1659    	POP	BC
-04484D C1                  A  1660    	POP	BC
-04484E C1                  A  1661    	POP	BC
+043E36 01030000            A  1649    	LD	BC,3
+043E3A C5                  A  1650    	PUSH	BC
+043E3B 01010000            A  1651    	LD	BC,1
+043E3F C5                  A  1652    	PUSH	BC
+043E40 01020000            A  1653    	LD	BC,2
+043E44 C5                  A  1654    	PUSH	BC
+043E45 01 63 FD 06         A  1655    	LD	BC,_localLabelCounter
+043E49 C5                  A  1656    	PUSH	BC
+043E4A CD AF 58 04         A  1657    	CALL	_agon_fread
+043E4E C1                  A  1658    	POP	BC
+043E4F C1                  A  1659    	POP	BC
+043E50 C1                  A  1660    	POP	BC
+043E51 C1                  A  1661    	POP	BC
                            A  1662    ;  136	    for(i = 0; i < localLabelCounter; i
                            A  1663    .LINE 136
                            A  1664    
-04484F 01000000            A  1665    	LD	BC,0
-044853 DD0FFD              A  1666    	LD	(IX+%FFFFFFFD),BC
-044856 18 6E               A  1667    	JR	L_43
-044858                     A  1668    L_41:
+043E52 01000000            A  1665    	LD	BC,0
+043E56 DD0FFD              A  1666    	LD	(IX+%FFFFFFFD),BC
+043E59 18 6E               A  1667    	JR	L_43
+043E5B                     A  1668    L_41:
                            A  1669    ;  137	        agon_fread(&delta, sizeof(delta
                            A  1670    .LINE 137
                            A  1671    
-044858 01030000            A  1672    	LD	BC,3
-04485C C5                  A  1673    	PUSH	BC
-04485D 01010000            A  1674    	LD	BC,1
-044861 C5                  A  1675    	PUSH	BC
-044862 01020000            A  1676    	LD	BC,2
-044866 C5                  A  1677    	PUSH	BC
-044867 ED65FB              A  1678    	PEA	IX+%FFFFFFFB
-04486A CD B7 62 04         A  1679    	CALL	_agon_fread
-04486E C1                  A  1680    	POP	BC
-04486F C1                  A  1681    	POP	BC
-044870 C1                  A  1682    	POP	BC
-044871 C1                  A  1683    	POP	BC
+043E5B 01030000            A  1672    	LD	BC,3
+043E5F C5                  A  1673    	PUSH	BC
+043E60 01010000            A  1674    	LD	BC,1
+043E64 C5                  A  1675    	PUSH	BC
+043E65 01020000            A  1676    	LD	BC,2
+043E69 C5                  A  1677    	PUSH	BC
+043E6A ED65FB              A  1678    	PEA	IX+%FFFFFFFB
+043E6D CD AF 58 04         A  1679    	CALL	_agon_fread
+043E71 C1                  A  1680    	POP	BC
+043E72 C1                  A  1681    	POP	BC
+043E73 C1                  A  1682    	POP	BC
+043E74 C1                  A  1683    	POP	BC
                            A  1684    ;  138	        agon_fread(&localLabelTable[i].
                            A  1685    .LINE 138
                            A  1686    
-044872 01030000            A  1687    	LD	BC,3
-044876 C5                  A  1688    	PUSH	BC
-044877 01010000            A  1689    	LD	BC,1
-04487B C5                  A  1690    	PUSH	BC
-04487C 01040000            A  1691    	LD	BC,4
-044880 C5                  A  1692    	PUSH	BC
-044881 DD27FD              A  1693    	LD	HL,(IX+%FFFFFFFD)
-044884 3E07                A  1694    	LD	A,%7
-044886 CD A9 6D 04         A  1695    	CALL	__imul_b
-04488A 01 68 F8 07         A  1696    	LD	BC,_localLabelTable
-04488E 09                  A  1697    	ADD	HL,BC
-04488F E5FDE1              A  1698    	LD	IY,HL
-044892 ED6603              A  1699    	PEA	IY+%3
-044895 CD B7 62 04         A  1700    	CALL	_agon_fread
-044899 C1                  A  1701    	POP	BC
-04489A C1                  A  1702    	POP	BC
-04489B C1                  A  1703    	POP	BC
-04489C C1                  A  1704    	POP	BC
+043E75 01030000            A  1687    	LD	BC,3
+043E79 C5                  A  1688    	PUSH	BC
+043E7A 01010000            A  1689    	LD	BC,1
+043E7E C5                  A  1690    	PUSH	BC
+043E7F 01040000            A  1691    	LD	BC,4
+043E83 C5                  A  1692    	PUSH	BC
+043E84 DD27FD              A  1693    	LD	HL,(IX+%FFFFFFFD)
+043E87 3E07                A  1694    	LD	A,%7
+043E89 CD 9A 66 04         A  1695    	CALL	__imul_b
+043E8D 01 A3 FB 06         A  1696    	LD	BC,_localLabelTable
+043E91 09                  A  1697    	ADD	HL,BC
+043E92 E5FDE1              A  1698    	LD	IY,HL
+043E95 ED6603              A  1699    	PEA	IY+%3
+043E98 CD AF 58 04         A  1700    	CALL	_agon_fread
+043E9C C1                  A  1701    	POP	BC
+043E9D C1                  A  1702    	POP	BC
+043E9E C1                  A  1703    	POP	BC
+043E9F C1                  A  1704    	POP	BC
                            A  1705    ;  139	        localLabelTable[i].name = local
                            A  1706    .LINE 139
                            A  1707    
-04489D DD07FB              A  1708    	LD	BC,(IX+%FFFFFFFB)
-0448A0 CD 96 66 04         A  1709    	CALL	__stoiu
-0448A4 E5C1                A  1710    	LD	BC,HL
-0448A6 DD27FD              A  1711    	LD	HL,(IX+%FFFFFFFD)
-0448A9 3E07                A  1712    	LD	A,%7
-0448AB CD A9 6D 04         A  1713    	CALL	__imul_b
-0448AF 11 68 F8 07         A  1714    	LD	DE,_localLabelTable
-0448B3 19                  A  1715    	ADD	HL,DE
-0448B4 E5FDE1              A  1716    	LD	IY,HL
-0448B7 21 62 98 06         A  1717    	LD	HL,_localLabelBuffer
-0448BB 09                  A  1718    	ADD	HL,BC
-0448BC FD2F00              A  1719    	LD	(IY+%0),HL
-0448BF DD07FD              A  1720    	LD	BC,(IX+%FFFFFFFD)
-0448C2 03                  A  1721    	INC	BC
-0448C3 DD0FFD              A  1722    	LD	(IX+%FFFFFFFD),BC
+043EA0 DD07FB              A  1708    	LD	BC,(IX+%FFFFFFFB)
+043EA3 CD 82 5C 04         A  1709    	CALL	__stoiu
+043EA7 E5C1                A  1710    	LD	BC,HL
+043EA9 DD27FD              A  1711    	LD	HL,(IX+%FFFFFFFD)
+043EAC 3E07                A  1712    	LD	A,%7
+043EAE CD 9A 66 04         A  1713    	CALL	__imul_b
+043EB2 11 A3 FB 06         A  1714    	LD	DE,_localLabelTable
+043EB6 19                  A  1715    	ADD	HL,DE
+043EB7 E5FDE1              A  1716    	LD	IY,HL
+043EBA 21 9D 8B 06         A  1717    	LD	HL,_localLabelBuffer
+043EBE 09                  A  1718    	ADD	HL,BC
+043EBF FD2F00              A  1719    	LD	(IY+%0),HL
+043EC2 DD07FD              A  1720    	LD	BC,(IX+%FFFFFFFD)
+043EC5 03                  A  1721    	INC	BC
+043EC6 DD0FFD              A  1722    	LD	(IX+%FFFFFFFD),BC
                            A  1723    ;  140	        //printf("R: index %d, counter 
                            A  1724    ;  141	        //printf("R: index %d, counter 
                            A  1725    ;  142	    }
-0448C6                     A  1726    L_43:
+043EC9                     A  1726    L_43:
                            A  1727    .LINE 142
                            A  1728    
-0448C6 ED4B 28 FA 07       A  1729    	LD	BC,(_localLabelCounter)
-0448CB CD 96 66 04         A  1730    	CALL	__stoiu
-0448CF E5C1                A  1731    	LD	BC,HL
-0448D1 DD27FD              A  1732    	LD	HL,(IX+%FFFFFFFD)
-0448D4 B7                  A  1733    	OR	A,A
-0448D5 ED42                A  1734    	SBC	HL,BC
-0448D7 CD 1D 64 04         A  1735    	CALL	__setflag
-0448DB FA 58 48 04         A  1736    	JP	M,L_41
+043EC9 ED4B 63 FD 06       A  1729    	LD	BC,(_localLabelCounter)
+043ECE CD 82 5C 04         A  1730    	CALL	__stoiu
+043ED2 E5C1                A  1731    	LD	BC,HL
+043ED4 DD27FD              A  1732    	LD	HL,(IX+%FFFFFFFD)
+043ED7 B7                  A  1733    	OR	A,A
+043ED8 ED42                A  1734    	SBC	HL,BC
+043EDA CD 15 5A 04         A  1735    	CALL	__setflag
+043EDE FA 5B 3E 04         A  1736    	JP	M,L_41
                            A  1737    ;  143	}
                            A  1738    .LINE 143
                            A  1739    
-0448DF DDF9                A  1740    	LD	SP,IX
-0448E1 DDE1                A  1741    	POP	IX
-0448E3 C9                  A  1742    	RET	
+043EE2 DDF9                A  1740    	LD	SP,IX
+043EE4 DDE1                A  1741    	POP	IX
+043EE6 C9                  A  1742    	RET	
                            A  1743    
                            A  1744    
                            A  1745    ;**************************** _readLocalLabels 
                            A  1746    ;Name                         Addr/Register   S
                            A  1747    ;_localLabelTable                    STATIC    
                            A  1748    ;_localLabelCounter                  STATIC    
-                           A  1749    ;_localLabelBuffer                   STATIC  65
+                           A  1749    ;_localLabelBuffer                   STATIC   4
                            A  1750    ;_localLabelBufferIndex              STATIC    
                            A  1751    ;_agon_fread                         IMPORT  --
                            A  1752    ;delta                                 IX-5    
@@ -1766,7 +1766,7 @@ PC     Object              I  Line    Source
                            A  1760    .ENDFUNC "readLocalLabels",143,"_readLocalLabel
                            A  1761    ;  144	
                            A  1762    ;  145	void writeAnonymousLabel(int32_t addres
-0448E4                     A  1763    _writeAnonymousLabel:
+043EE7                     A  1763    _writeAnonymousLabel:
                            A  1764    .DEFINE "_writeAnonymousLabel"
                            A  1765    
                            A  1766    .VALUE _writeAnonymousLabel
@@ -1791,29 +1791,29 @@ PC     Object              I  Line    Source
                            A  1785    
                            A  1786    .ENDEF
                            A  1787    
-0448E4 DDE5                A  1788    	PUSH	IX
-0448E6 DD210000 00         A  1789    	LD	IX,0
-0448EB DD39                A  1790    	ADD	IX,SP
+043EE7 DDE5                A  1788    	PUSH	IX
+043EE9 DD210000 00         A  1789    	LD	IX,0
+043EEE DD39                A  1790    	ADD	IX,SP
                            A  1791    ;  146	    agon_fwrite(&address, 1, sizeof(add
                            A  1792    .LINE 146
                            A  1793    
-0448ED 01040000            A  1794    	LD	BC,4
-0448F1 C5                  A  1795    	PUSH	BC
-0448F2 C5                  A  1796    	PUSH	BC
-0448F3 01010000            A  1797    	LD	BC,1
-0448F7 C5                  A  1798    	PUSH	BC
-0448F8 ED6506              A  1799    	PEA	IX+%6
-0448FB CD 34 62 04         A  1800    	CALL	_agon_fwrite
-0448FF C1                  A  1801    	POP	BC
-044900 C1                  A  1802    	POP	BC
-044901 C1                  A  1803    	POP	BC
-044902 C1                  A  1804    	POP	BC
+043EF0 01040000            A  1794    	LD	BC,4
+043EF4 C5                  A  1795    	PUSH	BC
+043EF5 C5                  A  1796    	PUSH	BC
+043EF6 01010000            A  1797    	LD	BC,1
+043EFA C5                  A  1798    	PUSH	BC
+043EFB ED6506              A  1799    	PEA	IX+%6
+043EFE CD 2C 58 04         A  1800    	CALL	_agon_fwrite
+043F02 C1                  A  1801    	POP	BC
+043F03 C1                  A  1802    	POP	BC
+043F04 C1                  A  1803    	POP	BC
+043F05 C1                  A  1804    	POP	BC
                            A  1805    ;  147	}
                            A  1806    .LINE 147
                            A  1807    
-044903 DDF9                A  1808    	LD	SP,IX
-044905 DDE1                A  1809    	POP	IX
-044907 C9                  A  1810    	RET	
+043F06 DDF9                A  1808    	LD	SP,IX
+043F08 DDE1                A  1809    	POP	IX
+043F0A C9                  A  1810    	RET	
                            A  1811    
                            A  1812    
                            A  1813    ;**************************** _writeAnonymousLa
@@ -1829,7 +1829,7 @@ PC     Object              I  Line    Source
                            A  1823    .ENDFUNC "writeAnonymousLabel",147,"_writeAnony
                            A  1824    ;  148	
                            A  1825    ;  149	void readAnonymousLabel(void) {
-044908                     A  1826    _readAnonymousLabel:
+043F0B                     A  1826    _readAnonymousLabel:
                            A  1827    .DEFINE "_readAnonymousLabel"
                            A  1828    
                            A  1829    .VALUE _readAnonymousLabel
@@ -1854,95 +1854,95 @@ PC     Object              I  Line    Source
                            A  1848    
                            A  1849    .ENDEF
                            A  1850    
-044908 DDE5                A  1851    	PUSH	IX
-04490A DD210000 00         A  1852    	LD	IX,0
-04490F DD39                A  1853    	ADD	IX,SP
-044911 C5                  A  1854    	PUSH	BC
-044912 3B                  A  1855    	DEC	SP
+043F0B DDE5                A  1851    	PUSH	IX
+043F0D DD210000 00         A  1852    	LD	IX,0
+043F12 DD39                A  1853    	ADD	IX,SP
+043F14 C5                  A  1854    	PUSH	BC
+043F15 3B                  A  1855    	DEC	SP
                            A  1856    ;  150	    int32_t address;
                            A  1857    ;  151	
                            A  1858    ;  152	    if(agon_fread(&address, sizeof(addr
                            A  1859    .LINE 152
                            A  1860    
-044913 01040000            A  1861    	LD	BC,4
-044917 C5                  A  1862    	PUSH	BC
-044918 01010000            A  1863    	LD	BC,1
-04491C C5                  A  1864    	PUSH	BC
-04491D 01040000            A  1865    	LD	BC,4
-044921 C5                  A  1866    	PUSH	BC
-044922 ED65FC              A  1867    	PEA	IX+%FFFFFFFC
-044925 CD B7 62 04         A  1868    	CALL	_agon_fread
-044929 C1                  A  1869    	POP	BC
-04492A C1                  A  1870    	POP	BC
-04492B C1                  A  1871    	POP	BC
-04492C C1                  A  1872    	POP	BC
-04492D CD E3 6A 04         A  1873    	CALL	__icmpzero
-044931 28 36               A  1874    	JR	Z,L_49
+043F16 01040000            A  1861    	LD	BC,4
+043F1A C5                  A  1862    	PUSH	BC
+043F1B 01010000            A  1863    	LD	BC,1
+043F1F C5                  A  1864    	PUSH	BC
+043F20 01040000            A  1865    	LD	BC,4
+043F24 C5                  A  1866    	PUSH	BC
+043F25 ED65FC              A  1867    	PEA	IX+%FFFFFFFC
+043F28 CD AF 58 04         A  1868    	CALL	_agon_fread
+043F2C C1                  A  1869    	POP	BC
+043F2D C1                  A  1870    	POP	BC
+043F2E C1                  A  1871    	POP	BC
+043F2F C1                  A  1872    	POP	BC
+043F30 CD CF 60 04         A  1873    	CALL	__icmpzero
+043F34 28 36               A  1874    	JR	Z,L_49
                            A  1875    ;  153	        if(an_next.defined) {
                            A  1876    .LINE 153
                            A  1877    
-044933 3A 56 98 04         A  1878    	LD	A,(_an_next)
-044937 B7                  A  1879    	OR	A,A
-044938 28 18               A  1880    	JR	Z,L_47
+043F36 3A 91 8B 04         A  1878    	LD	A,(_an_next)
+043F3A B7                  A  1879    	OR	A,A
+043F3B 28 18               A  1880    	JR	Z,L_47
                            A  1881    ;  154	            an_prev.address = an_next.a
                            A  1882    .LINE 154
                            A  1883    
-04493A ED4B 57 98 04       A  1884    	LD	BC,(_an_next+1)
-04493F 3A 5A 98 04         A  1885    	LD	A,(_an_next+4)
-044943 ED43 52 98 04       A  1886    	LD	(_an_prev+1),BC
-044948 32 55 98 04         A  1887    	LD	(_an_prev+4),A
+043F3D ED4B 92 8B 04       A  1884    	LD	BC,(_an_next+1)
+043F42 3A 95 8B 04         A  1885    	LD	A,(_an_next+4)
+043F46 ED43 8D 8B 04       A  1886    	LD	(_an_prev+1),BC
+043F4B 32 90 8B 04         A  1887    	LD	(_an_prev+4),A
                            A  1888    ;  155	            an_prev.defined = true;
                            A  1889    .LINE 155
                            A  1890    
-04494C 3E01                A  1891    	LD	A,%1
-04494E 32 51 98 04         A  1892    	LD	(_an_prev),A
+043F4F 3E01                A  1891    	LD	A,%1
+043F51 32 8C 8B 04         A  1892    	LD	(_an_prev),A
                            A  1893    ;  156	        }
-044952                     A  1894    L_47:
+043F55                     A  1894    L_47:
                            A  1895    .LINE 156
                            A  1896    
                            A  1897    ;  157	        an_next.address = address;
                            A  1898    .LINE 157
                            A  1899    
-044952 DD07FC              A  1900    	LD	BC,(IX+%FFFFFFFC)
-044955 ED43 57 98 04       A  1901    	LD	(_an_next+1),BC
-04495A DD7EFF              A  1902    	LD	A,(IX+%FFFFFFFF)
-04495D 32 5A 98 04         A  1903    	LD	(_an_next+4),A
+043F55 DD07FC              A  1900    	LD	BC,(IX+%FFFFFFFC)
+043F58 ED43 92 8B 04       A  1901    	LD	(_an_next+1),BC
+043F5D DD7EFF              A  1902    	LD	A,(IX+%FFFFFFFF)
+043F60 32 95 8B 04         A  1903    	LD	(_an_next+4),A
                            A  1904    ;  158	        an_next.defined = true;        
                            A  1905    .LINE 158
                            A  1906    
-044961 3E01                A  1907    	LD	A,%1
-044963 32 56 98 04         A  1908    	LD	(_an_next),A
+043F64 3E01                A  1907    	LD	A,%1
+043F66 32 91 8B 04         A  1908    	LD	(_an_next),A
                            A  1909    ;  159	    }
                            A  1910    ;  160	    else { // last label already read
                            A  1911    .LINE 160
                            A  1912    
-044967 18 1D               A  1913    	JR	L_50
-044969                     A  1914    L_49:
+043F6A 18 1D               A  1913    	JR	L_50
+043F6C                     A  1914    L_49:
                            A  1915    ;  161	        an_prev.address = an_next.addre
                            A  1916    .LINE 161
                            A  1917    
-044969 ED4B 57 98 04       A  1918    	LD	BC,(_an_next+1)
-04496E 3A 5A 98 04         A  1919    	LD	A,(_an_next+4)
-044972 ED43 52 98 04       A  1920    	LD	(_an_prev+1),BC
-044977 32 55 98 04         A  1921    	LD	(_an_prev+4),A
+043F6C ED4B 92 8B 04       A  1918    	LD	BC,(_an_next+1)
+043F71 3A 95 8B 04         A  1919    	LD	A,(_an_next+4)
+043F75 ED43 8D 8B 04       A  1920    	LD	(_an_prev+1),BC
+043F7A 32 90 8B 04         A  1921    	LD	(_an_prev+4),A
                            A  1922    ;  162	        an_prev.defined = true;
                            A  1923    .LINE 162
                            A  1924    
-04497B 3E01                A  1925    	LD	A,%1
-04497D 32 51 98 04         A  1926    	LD	(_an_prev),A
+043F7E 3E01                A  1925    	LD	A,%1
+043F80 32 8C 8B 04         A  1926    	LD	(_an_prev),A
                            A  1927    ;  163	        an_next.defined = false;
                            A  1928    .LINE 163
                            A  1929    
-044981 AF                  A  1930    	XOR	A,A
-044982 32 56 98 04         A  1931    	LD	(_an_next),A
+043F84 AF                  A  1930    	XOR	A,A
+043F85 32 91 8B 04         A  1931    	LD	(_an_next),A
                            A  1932    ;  164	    }
                            A  1933    ;  165	}
-044986                     A  1934    L_50:
+043F89                     A  1934    L_50:
                            A  1935    .LINE 165
                            A  1936    
-044986 DDF9                A  1937    	LD	SP,IX
-044988 DDE1                A  1938    	POP	IX
-04498A C9                  A  1939    	RET	
+043F89 DDF9                A  1937    	LD	SP,IX
+043F8B DDE1                A  1938    	POP	IX
+043F8D C9                  A  1939    	RET	
                            A  1940    
                            A  1941    
                            A  1942    ;**************************** _readAnonymousLab
@@ -1960,7 +1960,7 @@ PC     Object              I  Line    Source
                            A  1954    .ENDFUNC "readAnonymousLabel",165,"_readAnonymo
                            A  1955    ;  166	
                            A  1956    ;  167	bool insertLocalLabel(char *labelname, 
-04498B                     A  1957    _insertLocalLabel:
+043F8E                     A  1957    _insertLocalLabel:
                            A  1958    .DEFINE "_insertLocalLabel"
                            A  1959    
                            A  1960    .VALUE _insertLocalLabel
@@ -2055,11 +2055,11 @@ PC     Object              I  Line    Source
                            A  2049    
                            A  2050    .ENDEF
                            A  2051    
-04498B DDE5                A  2052    	PUSH	IX
-04498D DD210000 00         A  2053    	LD	IX,0
-044992 DD39                A  2054    	ADD	IX,SP
-044994 ED22EA              A  2055    	LEA	HL,IX+%FFFFFFEA
-044997 F9                  A  2056    	LD	SP,HL
+043F8E DDE5                A  2052    	PUSH	IX
+043F90 DD210000 00         A  2053    	LD	IX,0
+043F95 DD39                A  2054    	ADD	IX,SP
+043F97 ED22EA              A  2055    	LEA	HL,IX+%FFFFFFEA
+043F9A F9                  A  2056    	LD	SP,HL
                            A  2057    ;  168	    int len,i;
                            A  2058    ;  169	    int p;
                            A  2059    ;  170	    char *ptr;
@@ -2069,307 +2069,307 @@ PC     Object              I  Line    Source
                            A  2063    ;  174	    if(labelname[1] == 0) {
                            A  2064    .LINE 174
                            A  2065    
-044998 DD2706              A  2066    	LD	HL,(IX+%6)
-04499B 23                  A  2067    	INC	HL
-04499C 7E                  A  2068    	LD	A,(HL)
-04499D B7                  A  2069    	OR	A,A
-04499E 20 11               A  2070    	JR	NZ,L_52
+043F9B DD2706              A  2066    	LD	HL,(IX+%6)
+043F9E 23                  A  2067    	INC	HL
+043F9F 7E                  A  2068    	LD	A,(HL)
+043FA0 B7                  A  2069    	OR	A,A
+043FA1 20 11               A  2070    	JR	NZ,L_52
                            A  2071    ;  175	        error(message[ERROR_INVALIDLABE
                            A  2072    .LINE 175
                            A  2073    
-0449A0 21 92 71 04         A  2074    	LD	HL,_message+12
-0449A4 ED07                A  2075    	LD	BC,(HL)
-0449A6 C5                  A  2076    	PUSH	BC
-0449A7 CD A1 58 04         A  2077    	CALL	_error
-0449AB C1                  A  2078    	POP	BC
+043FA3 21 4D 67 04         A  2074    	LD	HL,_message+12
+043FA7 ED07                A  2075    	LD	BC,(HL)
+043FA9 C5                  A  2076    	PUSH	BC
+043FAA CD A4 4E 04         A  2077    	CALL	_error
+043FAE C1                  A  2078    	POP	BC
                            A  2079    ;  176	        return false;
                            A  2080    .LINE 176
                            A  2081    
-0449AC AF                  A  2082    	XOR	A,A
-0449AD C3 82 4B 04         A  2083    	JR	L_73
+043FAF AF                  A  2082    	XOR	A,A
+043FB0 C3 85 41 04         A  2083    	JR	L_73
                            A  2084    ;  177	    }
-0449B1                     A  2085    L_52:
+043FB4                     A  2085    L_52:
                            A  2086    .LINE 177
                            A  2087    
                            A  2088    ;  178	    p = findLocalLabelIndex(labelname);
                            A  2089    .LINE 178
                            A  2090    
-0449B1 DD0706              A  2091    	LD	BC,(IX+%6)
-0449B4 C5                  A  2092    	PUSH	BC
-0449B5 CD 04 46 04         A  2093    	CALL	_findLocalLabelIndex
-0449B9 C1                  A  2094    	POP	BC
-0449BA DD2FF1              A  2095    	LD	(IX+%FFFFFFF1),HL
+043FB4 DD0706              A  2091    	LD	BC,(IX+%6)
+043FB7 C5                  A  2092    	PUSH	BC
+043FB8 CD 07 3C 04         A  2093    	CALL	_findLocalLabelIndex
+043FBC C1                  A  2094    	POP	BC
+043FBD DD2FF1              A  2095    	LD	(IX+%FFFFFFF1),HL
                            A  2096    ;  179	
                            A  2097    ;  180	    if(p >= LOCAL_LABEL_TABLE_SIZE) {
                            A  2098    .LINE 180
                            A  2099    
-0449BD 01400000            A  2100    	LD	BC,64
-0449C1 DD27F1              A  2101    	LD	HL,(IX+%FFFFFFF1)
-0449C4 B7                  A  2102    	OR	A,A
-0449C5 ED42                A  2103    	SBC	HL,BC
-0449C7 FA 75 4B 04         A  2104    	JP	M,L_71
+043FC0 01400000            A  2100    	LD	BC,64
+043FC4 DD27F1              A  2101    	LD	HL,(IX+%FFFFFFF1)
+043FC7 B7                  A  2102    	OR	A,A
+043FC8 ED42                A  2103    	SBC	HL,BC
+043FCA FA 78 41 04         A  2104    	JP	M,L_71
                            A  2105    ;  181	        if(localLabelCounter < LOCAL_LA
                            A  2106    .LINE 181
                            A  2107    
-0449CB 49014000            A  2108    	LD.LIS	BC,64
-0449CF 2A 28 FA 07         A  2109    	LD	HL,(_localLabelCounter)
-0449D3 B7                  A  2110    	OR	A,A
-0449D4 40ED42              A  2111    	SBC.SIS	HL,BC
-0449D7 D2 67 4B 04         A  2112    	JR	NC,L_69
+043FCE 49014000            A  2108    	LD.LIS	BC,64
+043FD2 2A 63 FD 06         A  2109    	LD	HL,(_localLabelCounter)
+043FD6 B7                  A  2110    	OR	A,A
+043FD7 40ED42              A  2111    	SBC.SIS	HL,BC
+043FDA D2 6A 41 04         A  2112    	JR	NC,L_69
                            A  2113    ;  182	            len = strlen(labelname);
                            A  2114    .LINE 182
                            A  2115    
-0449DB DD0706              A  2116    	LD	BC,(IX+%6)
-0449DE C5                  A  2117    	PUSH	BC
-0449DF CD 0D 67 04         A  2118    	CALL	_strlen
-0449E3 C1                  A  2119    	POP	BC
-0449E4 DD2FF7              A  2120    	LD	(IX+%FFFFFFF7),HL
+043FDE DD0706              A  2116    	LD	BC,(IX+%6)
+043FE1 C5                  A  2117    	PUSH	BC
+043FE2 CD F9 5C 04         A  2118    	CALL	_strlen
+043FE6 C1                  A  2119    	POP	BC
+043FE7 DD2FF7              A  2120    	LD	(IX+%FFFFFFF7),HL
                            A  2121    ;  183	            // check space first
                            A  2122    ;  184	            if((localLabelBufferIndex +
                            A  2123    .LINE 184
                            A  2124    
-0449E7 ED4B 64 98 07       A  2125    	LD	BC,(_localLabelBufferIndex)
-0449EC CD 96 66 04         A  2126    	CALL	__stoiu
-0449F0 DD07F7              A  2127    	LD	BC,(IX+%FFFFFFF7)
-0449F3 09                  A  2128    	ADD	HL,BC
-0449F4 E5C1                A  2129    	LD	BC,HL
-0449F6 03                  A  2130    	INC	BC
-0449F7 21FFFF00            A  2131    	LD	HL,65535
-0449FB B7                  A  2132    	OR	A,A
-0449FC ED42                A  2133    	SBC	HL,BC
-0449FE CD 1D 64 04         A  2134    	CALL	__setflag
-044A02 F2 0B 4A 04         A  2135    	JP	P,L_54
+043FEA ED4B 9F 9B 06       A  2125    	LD	BC,(_localLabelBufferIndex)
+043FEF CD 82 5C 04         A  2126    	CALL	__stoiu
+043FF3 DD07F7              A  2127    	LD	BC,(IX+%FFFFFFF7)
+043FF6 09                  A  2128    	ADD	HL,BC
+043FF7 E5C1                A  2129    	LD	BC,HL
+043FF9 03                  A  2130    	INC	BC
+043FFA 21FF0F00            A  2131    	LD	HL,4095
+043FFE B7                  A  2132    	OR	A,A
+043FFF ED42                A  2133    	SBC	HL,BC
+044001 CD 15 5A 04         A  2134    	CALL	__setflag
+044005 F2 0E 40 04         A  2135    	JP	P,L_54
                            A  2136    ;  185	                return false; // no mor
                            A  2137    .LINE 185
                            A  2138    
-044A06 AF                  A  2139    	XOR	A,A
-044A07 C3 82 4B 04         A  2140    	JR	L_73
-044A0B                     A  2141    L_54:
+044009 AF                  A  2139    	XOR	A,A
+04400A C3 85 41 04         A  2140    	JR	L_73
+04400E                     A  2141    L_54:
                            A  2142    ;  186	            // allocate space in buffer
                            A  2143    ;  187	            ptr = &localLabelBuffer[loc
                            A  2144    .LINE 187
                            A  2145    
-044A0B ED4B 64 98 07       A  2146    	LD	BC,(_localLabelBufferIndex)
-044A10 CD 96 66 04         A  2147    	CALL	__stoiu
-044A14 01 62 98 06         A  2148    	LD	BC,_localLabelBuffer
-044A18 09                  A  2149    	ADD	HL,BC
-044A19 DD2FFA              A  2150    	LD	(IX+%FFFFFFFA),HL
+04400E ED4B 9F 9B 06       A  2146    	LD	BC,(_localLabelBufferIndex)
+044013 CD 82 5C 04         A  2147    	CALL	__stoiu
+044017 01 9D 8B 06         A  2148    	LD	BC,_localLabelBuffer
+04401B 09                  A  2149    	ADD	HL,BC
+04401C DD2FFA              A  2150    	LD	(IX+%FFFFFFFA),HL
                            A  2151    ;  188	            localLabelBufferIndex += le
                            A  2152    .LINE 188
                            A  2153    
-044A1C DD07F7              A  2154    	LD	BC,(IX+%FFFFFFF7)
-044A1F 2A 64 98 07         A  2155    	LD	HL,(_localLabelBufferIndex)
-044A23 4009                A  2156    	ADD.SIS	HL,BC
-044A25 23                  A  2157    	INC	HL
-044A26 E5C1                A  2158    	LD	BC,HL
-044A28 21 64 98 07         A  2159    	LD	HL,_localLabelBufferIndex
-044A2C 71                  A  2160    	LD	(HL),C
-044A2D 23                  A  2161    	INC	HL
-044A2E 70                  A  2162    	LD	(HL),B
+04401F DD07F7              A  2154    	LD	BC,(IX+%FFFFFFF7)
+044022 2A 9F 9B 06         A  2155    	LD	HL,(_localLabelBufferIndex)
+044026 4009                A  2156    	ADD.SIS	HL,BC
+044028 23                  A  2157    	INC	HL
+044029 E5C1                A  2158    	LD	BC,HL
+04402B 21 9F 9B 06         A  2159    	LD	HL,_localLabelBufferIndex
+04402F 71                  A  2160    	LD	(HL),C
+044030 23                  A  2161    	INC	HL
+044031 70                  A  2162    	LD	(HL),B
                            A  2163    ;  189	            strcpy(ptr, labelname);
                            A  2164    .LINE 189
                            A  2165    
-044A2F DD0706              A  2166    	LD	BC,(IX+%6)
-044A32 C5                  A  2167    	PUSH	BC
-044A33 DD07FA              A  2168    	LD	BC,(IX+%FFFFFFFA)
-044A36 C5                  A  2169    	PUSH	BC
-044A37 CD 6F 6E 04         A  2170    	CALL	_strcpy
-044A3B C1                  A  2171    	POP	BC
-044A3C C1                  A  2172    	POP	BC
+044032 DD0706              A  2166    	LD	BC,(IX+%6)
+044035 C5                  A  2167    	PUSH	BC
+044036 DD07FA              A  2168    	LD	BC,(IX+%FFFFFFFA)
+044039 C5                  A  2169    	PUSH	BC
+04403A CD EE 63 04         A  2170    	CALL	_strcpy
+04403E C1                  A  2171    	POP	BC
+04403F C1                  A  2172    	POP	BC
                            A  2173    ;  190	
                            A  2174    ;  191	            for(i = 0; i < localLabelCo
                            A  2175    .LINE 191
                            A  2176    
-044A3D 01000000            A  2177    	LD	BC,0
-044A41 DD0FFD              A  2178    	LD	(IX+%FFFFFFFD),BC
-044A44 18 32               A  2179    	JR	L_59
-044A46                     A  2180    L_57:
+044040 01000000            A  2177    	LD	BC,0
+044044 DD0FFD              A  2178    	LD	(IX+%FFFFFFFD),BC
+044047 18 32               A  2179    	JR	L_59
+044049                     A  2180    L_57:
                            A  2181    ;  192	                if(strcmp(labelname, lo
                            A  2182    .LINE 192
                            A  2183    
-044A46 DD27FD              A  2184    	LD	HL,(IX+%FFFFFFFD)
-044A49 3E07                A  2185    	LD	A,%7
-044A4B CD A9 6D 04         A  2186    	CALL	__imul_b
-044A4F 01 68 F8 07         A  2187    	LD	BC,_localLabelTable
-044A53 09                  A  2188    	ADD	HL,BC
-044A54 E5FDE1              A  2189    	LD	IY,HL
-044A57 FD0700              A  2190    	LD	BC,(IY+%0)
-044A5A C5                  A  2191    	PUSH	BC
-044A5B DD0706              A  2192    	LD	BC,(IX+%6)
-044A5E C5                  A  2193    	PUSH	BC
-044A5F CD 79 66 04         A  2194    	CALL	_strcmp
-044A63 C1                  A  2195    	POP	BC
-044A64 C1                  A  2196    	POP	BC
-044A65 CD E3 6A 04         A  2197    	CALL	__icmpzero
-044A69 CD 1D 64 04         A  2198    	CALL	__setflag
-044A6D FA 91 4A 04         A  2199    	JP	M,L_65
-044A71 DD07FD              A  2200    	LD	BC,(IX+%FFFFFFFD)
-044A74 03                  A  2201    	INC	BC
-044A75 DD0FFD              A  2202    	LD	(IX+%FFFFFFFD),BC
+044049 DD27FD              A  2184    	LD	HL,(IX+%FFFFFFFD)
+04404C 3E07                A  2185    	LD	A,%7
+04404E CD 9A 66 04         A  2186    	CALL	__imul_b
+044052 01 A3 FB 06         A  2187    	LD	BC,_localLabelTable
+044056 09                  A  2188    	ADD	HL,BC
+044057 E5FDE1              A  2189    	LD	IY,HL
+04405A FD0700              A  2190    	LD	BC,(IY+%0)
+04405D C5                  A  2191    	PUSH	BC
+04405E DD0706              A  2192    	LD	BC,(IX+%6)
+044061 C5                  A  2193    	PUSH	BC
+044062 CD 65 5C 04         A  2194    	CALL	_strcmp
+044066 C1                  A  2195    	POP	BC
+044067 C1                  A  2196    	POP	BC
+044068 CD CF 60 04         A  2197    	CALL	__icmpzero
+04406C CD 15 5A 04         A  2198    	CALL	__setflag
+044070 FA 94 40 04         A  2199    	JP	M,L_65
+044074 DD07FD              A  2200    	LD	BC,(IX+%FFFFFFFD)
+044077 03                  A  2201    	INC	BC
+044078 DD0FFD              A  2202    	LD	(IX+%FFFFFFFD),BC
                            A  2203    ;  193	            }
-044A78                     A  2204    L_59:
+04407B                     A  2204    L_59:
                            A  2205    .LINE 193
                            A  2206    
-044A78 ED4B 28 FA 07       A  2207    	LD	BC,(_localLabelCounter)
-044A7D CD 96 66 04         A  2208    	CALL	__stoiu
-044A81 E5C1                A  2209    	LD	BC,HL
-044A83 DD27FD              A  2210    	LD	HL,(IX+%FFFFFFFD)
-044A86 B7                  A  2211    	OR	A,A
-044A87 ED42                A  2212    	SBC	HL,BC
-044A89 CD 1D 64 04         A  2213    	CALL	__setflag
-044A8D FA 46 4A 04         A  2214    	JP	M,L_57
-044A91                     A  2215    L_65:
+04407B ED4B 63 FD 06       A  2207    	LD	BC,(_localLabelCounter)
+044080 CD 82 5C 04         A  2208    	CALL	__stoiu
+044084 E5C1                A  2209    	LD	BC,HL
+044086 DD27FD              A  2210    	LD	HL,(IX+%FFFFFFFD)
+044089 B7                  A  2211    	OR	A,A
+04408A ED42                A  2212    	SBC	HL,BC
+04408C CD 15 5A 04         A  2213    	CALL	__setflag
+044090 FA 49 40 04         A  2214    	JP	M,L_57
+044094                     A  2215    L_65:
                            A  2216    ;  194	            if(i < localLabelCounter) {
                            A  2217    .LINE 194
                            A  2218    
-044A91 ED4B 28 FA 07       A  2219    	LD	BC,(_localLabelCounter)
-044A96 CD 96 66 04         A  2220    	CALL	__stoiu
-044A9A E5C1                A  2221    	LD	BC,HL
-044A9C DD27FD              A  2222    	LD	HL,(IX+%FFFFFFFD)
-044A9F B7                  A  2223    	OR	A,A
-044AA0 ED42                A  2224    	SBC	HL,BC
-044AA2 CD 1D 64 04         A  2225    	CALL	__setflag
-044AA6 FA FD 4A 04         A  2226    	JP	M,L_63
-044AAA 18 6A               A  2227    	JR	L_66
+044094 ED4B 63 FD 06       A  2219    	LD	BC,(_localLabelCounter)
+044099 CD 82 5C 04         A  2220    	CALL	__stoiu
+04409D E5C1                A  2221    	LD	BC,HL
+04409F DD27FD              A  2222    	LD	HL,(IX+%FFFFFFFD)
+0440A2 B7                  A  2223    	OR	A,A
+0440A3 ED42                A  2224    	SBC	HL,BC
+0440A5 CD 15 5A 04         A  2225    	CALL	__setflag
+0440A9 FA 00 41 04         A  2226    	JP	M,L_63
+0440AD 18 6A               A  2227    	JR	L_66
                            A  2228    ;  195	                for(; i < localLabelCou
-044AAC                     A  2229    L_61:
+0440AF                     A  2229    L_61:
                            A  2230    .LINE 195
                            A  2231    
                            A  2232    ;  196	                    old_name = localLab
                            A  2233    .LINE 196
                            A  2234    
-044AAC DD27FD              A  2235    	LD	HL,(IX+%FFFFFFFD)
-044AAF 3E07                A  2236    	LD	A,%7
-044AB1 CD A9 6D 04         A  2237    	CALL	__imul_b
-044AB5 01 68 F8 07         A  2238    	LD	BC,_localLabelTable
-044AB9 09                  A  2239    	ADD	HL,BC
-044ABA DD2FEA              A  2240    	LD	(IX+%FFFFFFEA),HL
-044ABD DD31EA              A  2241    	LD	IY,(IX+%FFFFFFEA)
-044AC0 FD0700              A  2242    	LD	BC,(IY+%0)
-044AC3 DD0FF4              A  2243    	LD	(IX+%FFFFFFF4),BC
+0440AF DD27FD              A  2235    	LD	HL,(IX+%FFFFFFFD)
+0440B2 3E07                A  2236    	LD	A,%7
+0440B4 CD 9A 66 04         A  2237    	CALL	__imul_b
+0440B8 01 A3 FB 06         A  2238    	LD	BC,_localLabelTable
+0440BC 09                  A  2239    	ADD	HL,BC
+0440BD DD2FEA              A  2240    	LD	(IX+%FFFFFFEA),HL
+0440C0 DD31EA              A  2241    	LD	IY,(IX+%FFFFFFEA)
+0440C3 FD0700              A  2242    	LD	BC,(IY+%0)
+0440C6 DD0FF4              A  2243    	LD	(IX+%FFFFFFF4),BC
                            A  2244    ;  197	                    old_address = local
                            A  2245    .LINE 197
                            A  2246    
-044AC6 FD0703              A  2247    	LD	BC,(IY+%3)
-044AC9 FD7E06              A  2248    	LD	A,(IY+%6)
-044ACC DD0FED              A  2249    	LD	(IX+%FFFFFFED),BC
-044ACF DD77F0              A  2250    	LD	(IX+%FFFFFFF0),A
+0440C9 FD0703              A  2247    	LD	BC,(IY+%3)
+0440CC FD7E06              A  2248    	LD	A,(IY+%6)
+0440CF DD0FED              A  2249    	LD	(IX+%FFFFFFED),BC
+0440D2 DD77F0              A  2250    	LD	(IX+%FFFFFFF0),A
                            A  2251    ;  198	                    localLabelTable[i].
                            A  2252    .LINE 198
                            A  2253    
-044AD2 DD07FA              A  2254    	LD	BC,(IX+%FFFFFFFA)
-044AD5 FD0F00              A  2255    	LD	(IY+%0),BC
+0440D5 DD07FA              A  2254    	LD	BC,(IX+%FFFFFFFA)
+0440D8 FD0F00              A  2255    	LD	(IY+%0),BC
                            A  2256    ;  199	                    localLabelTable[i].
                            A  2257    .LINE 199
                            A  2258    
-044AD8 DD0709              A  2259    	LD	BC,(IX+%9)
-044ADB DD7E0C              A  2260    	LD	A,(IX+%C)
-044ADE FD0F03              A  2261    	LD	(IY+%3),BC
-044AE1 FD7706              A  2262    	LD	(IY+%6),A
+0440DB DD0709              A  2259    	LD	BC,(IX+%9)
+0440DE DD7E0C              A  2260    	LD	A,(IX+%C)
+0440E1 FD0F03              A  2261    	LD	(IY+%3),BC
+0440E4 FD7706              A  2262    	LD	(IY+%6),A
                            A  2263    ;  200	                    ptr = old_name;
                            A  2264    .LINE 200
                            A  2265    
-044AE4 DD07F4              A  2266    	LD	BC,(IX+%FFFFFFF4)
-044AE7 DD0FFA              A  2267    	LD	(IX+%FFFFFFFA),BC
+0440E7 DD07F4              A  2266    	LD	BC,(IX+%FFFFFFF4)
+0440EA DD0FFA              A  2267    	LD	(IX+%FFFFFFFA),BC
                            A  2268    ;  201	                    address = old_addre
                            A  2269    .LINE 201
                            A  2270    
-044AEA DD07ED              A  2271    	LD	BC,(IX+%FFFFFFED)
-044AED DD7EF0              A  2272    	LD	A,(IX+%FFFFFFF0)
-044AF0 DD0F09              A  2273    	LD	(IX+%9),BC
-044AF3 DD770C              A  2274    	LD	(IX+%C),A
-044AF6 DD07FD              A  2275    	LD	BC,(IX+%FFFFFFFD)
-044AF9 03                  A  2276    	INC	BC
-044AFA DD0FFD              A  2277    	LD	(IX+%FFFFFFFD),BC
+0440ED DD07ED              A  2271    	LD	BC,(IX+%FFFFFFED)
+0440F0 DD7EF0              A  2272    	LD	A,(IX+%FFFFFFF0)
+0440F3 DD0F09              A  2273    	LD	(IX+%9),BC
+0440F6 DD770C              A  2274    	LD	(IX+%C),A
+0440F9 DD07FD              A  2275    	LD	BC,(IX+%FFFFFFFD)
+0440FC 03                  A  2276    	INC	BC
+0440FD DD0FFD              A  2277    	LD	(IX+%FFFFFFFD),BC
                            A  2278    ;  202	                }
-044AFD                     A  2279    L_63:
+044100                     A  2279    L_63:
                            A  2280    .LINE 202
                            A  2281    
-044AFD ED4B 28 FA 07       A  2282    	LD	BC,(_localLabelCounter)
-044B02 CD 96 66 04         A  2283    	CALL	__stoiu
-044B06 E5C1                A  2284    	LD	BC,HL
-044B08 DD27FD              A  2285    	LD	HL,(IX+%FFFFFFFD)
-044B0B B7                  A  2286    	OR	A,A
-044B0C ED42                A  2287    	SBC	HL,BC
-044B0E CD 1D 64 04         A  2288    	CALL	__setflag
-044B12 FA AC 4A 04         A  2289    	JP	M,L_61
+044100 ED4B 63 FD 06       A  2282    	LD	BC,(_localLabelCounter)
+044105 CD 82 5C 04         A  2283    	CALL	__stoiu
+044109 E5C1                A  2284    	LD	BC,HL
+04410B DD27FD              A  2285    	LD	HL,(IX+%FFFFFFFD)
+04410E B7                  A  2286    	OR	A,A
+04410F ED42                A  2287    	SBC	HL,BC
+044111 CD 15 5A 04         A  2288    	CALL	__setflag
+044115 FA AF 40 04         A  2289    	JP	M,L_61
                            A  2290    ;  203	            }
-044B16                     A  2291    L_66:
+044119                     A  2291    L_66:
                            A  2292    .LINE 203
                            A  2293    
                            A  2294    ;  204	            localLabelTable[localLabelC
                            A  2295    .LINE 204
                            A  2296    
-044B16 ED4B 28 FA 07       A  2297    	LD	BC,(_localLabelCounter)
-044B1B CD 96 66 04         A  2298    	CALL	__stoiu
-044B1F 3E07                A  2299    	LD	A,%7
-044B21 CD A9 6D 04         A  2300    	CALL	__imul_b
-044B25 01 68 F8 07         A  2301    	LD	BC,_localLabelTable
-044B29 09                  A  2302    	ADD	HL,BC
-044B2A DD07FA              A  2303    	LD	BC,(IX+%FFFFFFFA)
-044B2D E5FDE1              A  2304    	LD	IY,HL
-044B30 FD0F00              A  2305    	LD	(IY+%0),BC
+044119 ED4B 63 FD 06       A  2297    	LD	BC,(_localLabelCounter)
+04411E CD 82 5C 04         A  2298    	CALL	__stoiu
+044122 3E07                A  2299    	LD	A,%7
+044124 CD 9A 66 04         A  2300    	CALL	__imul_b
+044128 01 A3 FB 06         A  2301    	LD	BC,_localLabelTable
+04412C 09                  A  2302    	ADD	HL,BC
+04412D DD07FA              A  2303    	LD	BC,(IX+%FFFFFFFA)
+044130 E5FDE1              A  2304    	LD	IY,HL
+044133 FD0F00              A  2305    	LD	(IY+%0),BC
                            A  2306    ;  205	            localLabelTable[localLabelC
                            A  2307    .LINE 205
                            A  2308    
-044B33 ED4B 28 FA 07       A  2309    	LD	BC,(_localLabelCounter)
-044B38 CD 96 66 04         A  2310    	CALL	__stoiu
-044B3C 3E07                A  2311    	LD	A,%7
-044B3E CD A9 6D 04         A  2312    	CALL	__imul_b
-044B42 01 68 F8 07         A  2313    	LD	BC,_localLabelTable
-044B46 09                  A  2314    	ADD	HL,BC
-044B47 DD0709              A  2315    	LD	BC,(IX+%9)
-044B4A DD7E0C              A  2316    	LD	A,(IX+%C)
-044B4D E5FDE1              A  2317    	LD	IY,HL
-044B50 FD0F03              A  2318    	LD	(IY+%3),BC
-044B53 FD7706              A  2319    	LD	(IY+%6),A
+044136 ED4B 63 FD 06       A  2309    	LD	BC,(_localLabelCounter)
+04413B CD 82 5C 04         A  2310    	CALL	__stoiu
+04413F 3E07                A  2311    	LD	A,%7
+044141 CD 9A 66 04         A  2312    	CALL	__imul_b
+044145 01 A3 FB 06         A  2313    	LD	BC,_localLabelTable
+044149 09                  A  2314    	ADD	HL,BC
+04414A DD0709              A  2315    	LD	BC,(IX+%9)
+04414D DD7E0C              A  2316    	LD	A,(IX+%C)
+044150 E5FDE1              A  2317    	LD	IY,HL
+044153 FD0F03              A  2318    	LD	(IY+%3),BC
+044156 FD7706              A  2319    	LD	(IY+%6),A
                            A  2320    ;  206	            localLabelCounter++;
                            A  2321    .LINE 206
                            A  2322    
-044B56 ED4B 28 FA 07       A  2323    	LD	BC,(_localLabelCounter)
-044B5B 03                  A  2324    	INC	BC
-044B5C 21 28 FA 07         A  2325    	LD	HL,_localLabelCounter
-044B60 71                  A  2326    	LD	(HL),C
-044B61 23                  A  2327    	INC	HL
-044B62 70                  A  2328    	LD	(HL),B
+044159 ED4B 63 FD 06       A  2323    	LD	BC,(_localLabelCounter)
+04415E 03                  A  2324    	INC	BC
+04415F 21 63 FD 06         A  2325    	LD	HL,_localLabelCounter
+044163 71                  A  2326    	LD	(HL),C
+044164 23                  A  2327    	INC	HL
+044165 70                  A  2328    	LD	(HL),B
                            A  2329    ;  207	            return true;
                            A  2330    .LINE 207
                            A  2331    
-044B63 3E01                A  2332    	LD	A,%1
-044B65 18 1B               A  2333    	JR	L_73
+044166 3E01                A  2332    	LD	A,%1
+044168 18 1B               A  2333    	JR	L_73
                            A  2334    ;  208	        }
                            A  2335    ;  209	        else error(message[ERROR_MAXLOC
-044B67                     A  2336    L_69:
+04416A                     A  2336    L_69:
                            A  2337    .LINE 209
                            A  2338    
-044B67 21 E9 71 04         A  2339    	LD	HL,_message+99
-044B6B ED07                A  2340    	LD	BC,(HL)
-044B6D C5                  A  2341    	PUSH	BC
-044B6E CD A1 58 04         A  2342    	CALL	_error
-044B72 C1                  A  2343    	POP	BC
+04416A 21 A4 67 04         A  2339    	LD	HL,_message+99
+04416E ED07                A  2340    	LD	BC,(HL)
+044170 C5                  A  2341    	PUSH	BC
+044171 CD A4 4E 04         A  2342    	CALL	_error
+044175 C1                  A  2343    	POP	BC
                            A  2344    ;  210	    }
                            A  2345    ;  211	    else error(message[ERROR_LABELDEFIN
                            A  2346    .LINE 211
                            A  2347    
-044B73 18 0C               A  2348    	JR	L_72
-044B75                     A  2349    L_71:
-044B75 21 E6 71 04         A  2350    	LD	HL,_message+96
-044B79 ED07                A  2351    	LD	BC,(HL)
-044B7B C5                  A  2352    	PUSH	BC
-044B7C CD A1 58 04         A  2353    	CALL	_error
-044B80 C1                  A  2354    	POP	BC
-044B81                     A  2355    L_72:
+044176 18 0C               A  2348    	JR	L_72
+044178                     A  2349    L_71:
+044178 21 A1 67 04         A  2350    	LD	HL,_message+96
+04417C ED07                A  2351    	LD	BC,(HL)
+04417E C5                  A  2352    	PUSH	BC
+04417F CD A4 4E 04         A  2353    	CALL	_error
+044183 C1                  A  2354    	POP	BC
+044184                     A  2355    L_72:
                            A  2356    ;  212	    return false;
                            A  2357    .LINE 212
                            A  2358    
-044B81 AF                  A  2359    	XOR	A,A
+044184 AF                  A  2359    	XOR	A,A
                            A  2360    ;  213	}
-044B82                     A  2361    L_73:
+044185                     A  2361    L_73:
                            A  2362    .LINE 213
                            A  2363    
-044B82 DDF9                A  2364    	LD	SP,IX
-044B84 DDE1                A  2365    	POP	IX
-044B86 C9                  A  2366    	RET	
+044185 DDF9                A  2364    	LD	SP,IX
+044187 DDE1                A  2365    	POP	IX
+044189 C9                  A  2366    	RET	
                            A  2367    
                            A  2368    
                            A  2369    ;**************************** _insertLocalLabel
@@ -2377,7 +2377,7 @@ PC     Object              I  Line    Source
                            A  2371    ;_localLabelTable                    STATIC    
                            A  2372    ;_strcmp                             IMPORT  --
                            A  2373    ;_strcpy                             IMPORT  --
-                           A  2374    ;_localLabelBuffer                   STATIC  65
+                           A  2374    ;_localLabelBuffer                   STATIC   4
                            A  2375    ;_localLabelBufferIndex              STATIC    
                            A  2376    ;_strlen                             IMPORT  --
                            A  2377    ;_localLabelCounter                  STATIC    
@@ -2400,7 +2400,7 @@ PC     Object              I  Line    Source
                            A  2394    .ENDFUNC "insertLocalLabel",213,"_insertLocalLa
                            A  2395    ;  214	
                            A  2396    ;  215	bool insertGlobalLabel(char *labelname,
-044B87                     A  2397    _insertGlobalLabel:
+04418A                     A  2397    _insertGlobalLabel:
                            A  2398    .DEFINE "_insertGlobalLabel"
                            A  2399    
                            A  2400    .VALUE _insertGlobalLabel
@@ -2487,186 +2487,186 @@ PC     Object              I  Line    Source
                            A  2481    
                            A  2482    .ENDEF
                            A  2483    
-044B87 DDE5                A  2484    	PUSH	IX
-044B89 DD210000 00         A  2485    	LD	IX,0
-044B8E DD39                A  2486    	ADD	IX,SP
-044B90 ED22EE              A  2487    	LEA	HL,IX+%FFFFFFEE
-044B93 F9                  A  2488    	LD	SP,HL
+04418A DDE5                A  2484    	PUSH	IX
+04418C DD210000 00         A  2485    	LD	IX,0
+044191 DD39                A  2486    	ADD	IX,SP
+044193 ED22EE              A  2487    	LEA	HL,IX+%FFFFFFEE
+044196 F9                  A  2488    	LD	SP,HL
                            A  2489    ;  216	    int index,i,try,len;
                            A  2490    ;  217	    label *tmp;
                            A  2491    ;  218	
                            A  2492    ;  219	    len = strlen(labelname);
                            A  2493    .LINE 219
                            A  2494    
-044B94 DD0706              A  2495    	LD	BC,(IX+%6)
-044B97 C5                  A  2496    	PUSH	BC
-044B98 CD 0D 67 04         A  2497    	CALL	_strlen
-044B9C C1                  A  2498    	POP	BC
-044B9D DD2FF7              A  2499    	LD	(IX+%FFFFFFF7),HL
+044197 DD0706              A  2495    	LD	BC,(IX+%6)
+04419A C5                  A  2496    	PUSH	BC
+04419B CD F9 5C 04         A  2497    	CALL	_strlen
+04419F C1                  A  2498    	POP	BC
+0441A0 DD2FF7              A  2499    	LD	(IX+%FFFFFFF7),HL
                            A  2500    ;  220	    // check space first
                            A  2501    ;  221	    if((globalLabelBufferIndex + len + 
                            A  2502    .LINE 221
                            A  2503    
-044BA0 ED4B 62 98 07       A  2504    	LD	BC,(_globalLabelBufferIndex)
-044BA5 CD 96 66 04         A  2505    	CALL	__stoiu
-044BA9 DD07F7              A  2506    	LD	BC,(IX+%FFFFFFF7)
-044BAC 09                  A  2507    	ADD	HL,BC
-044BAD E5FDE1              A  2508    	LD	IY,HL
-044BB0 ED0308              A  2509    	LEA	BC,IY+%8
-044BB3 21FF1F00            A  2510    	LD	HL,8191
-044BB7 B7                  A  2511    	OR	A,A
-044BB8 ED42                A  2512    	SBC	HL,BC
-044BBA 30 05               A  2513    	JR	NC,L_75
+0441A3 ED4B 9D 9B 06       A  2504    	LD	BC,(_globalLabelBufferIndex)
+0441A8 CD 82 5C 04         A  2505    	CALL	__stoiu
+0441AC DD07F7              A  2506    	LD	BC,(IX+%FFFFFFF7)
+0441AF 09                  A  2507    	ADD	HL,BC
+0441B0 E5FDE1              A  2508    	LD	IY,HL
+0441B3 ED0308              A  2509    	LEA	BC,IY+%8
+0441B6 21FF1F00            A  2510    	LD	HL,8191
+0441BA B7                  A  2511    	OR	A,A
+0441BB ED42                A  2512    	SBC	HL,BC
+0441BD 30 05               A  2513    	JR	NC,L_75
                            A  2514    ;  222	        return false; // no more space 
                            A  2515    .LINE 222
                            A  2516    
-044BBC AF                  A  2517    	XOR	A,A
-044BBD C3 99 4C 04         A  2518    	JR	L_83
-044BC1                     A  2519    L_75:
+0441BF AF                  A  2517    	XOR	A,A
+0441C0 C3 9C 42 04         A  2518    	JR	L_83
+0441C4                     A  2519    L_75:
                            A  2520    ;  223	    // allocate space in buffer for lab
                            A  2521    ;  224	    tmp = (label *)&globalLabelBuffer[g
                            A  2522    .LINE 224
                            A  2523    
-044BC1 ED4B 62 98 07       A  2524    	LD	BC,(_globalLabelBufferIndex)
-044BC6 CD 96 66 04         A  2525    	CALL	__stoiu
-044BCA 01 62 98 04         A  2526    	LD	BC,_globalLabelBuffer
-044BCE 09                  A  2527    	ADD	HL,BC
-044BCF DD2FFA              A  2528    	LD	(IX+%FFFFFFFA),HL
+0441C4 ED4B 9D 9B 06       A  2524    	LD	BC,(_globalLabelBufferIndex)
+0441C9 CD 82 5C 04         A  2525    	CALL	__stoiu
+0441CD 01 9D 8B 04         A  2526    	LD	BC,_globalLabelBuffer
+0441D1 09                  A  2527    	ADD	HL,BC
+0441D2 DD2FFA              A  2528    	LD	(IX+%FFFFFFFA),HL
                            A  2529    ;  225	    globalLabelBufferIndex += sizeof(la
                            A  2530    .LINE 225
                            A  2531    
-044BD2 FD2A 62 98 07       A  2532    	LD	IY,(_globalLabelBufferIndex)
-044BD7 ED0307              A  2533    	LEA	BC,IY+%7
-044BDA 21 62 98 07         A  2534    	LD	HL,_globalLabelBufferIndex
-044BDE 71                  A  2535    	LD	(HL),C
-044BDF 23                  A  2536    	INC	HL
-044BE0 70                  A  2537    	LD	(HL),B
+0441D5 FD2A 9D 9B 06       A  2532    	LD	IY,(_globalLabelBufferIndex)
+0441DA ED0307              A  2533    	LEA	BC,IY+%7
+0441DD 21 9D 9B 06         A  2534    	LD	HL,_globalLabelBufferIndex
+0441E1 71                  A  2535    	LD	(HL),C
+0441E2 23                  A  2536    	INC	HL
+0441E3 70                  A  2537    	LD	(HL),B
                            A  2538    ;  226	    // allocate space in buffer for str
                            A  2539    ;  227	    tmp->name = &globalLabelBuffer[glob
                            A  2540    .LINE 227
                            A  2541    
-044BE1 ED4B 62 98 07       A  2542    	LD	BC,(_globalLabelBufferIndex)
-044BE6 CD 96 66 04         A  2543    	CALL	__stoiu
-044BEA 01 62 98 04         A  2544    	LD	BC,_globalLabelBuffer
-044BEE 09                  A  2545    	ADD	HL,BC
-044BEF DD31FA              A  2546    	LD	IY,(IX+%FFFFFFFA)
-044BF2 FD2F00              A  2547    	LD	(IY+%0),HL
+0441E4 ED4B 9D 9B 06       A  2542    	LD	BC,(_globalLabelBufferIndex)
+0441E9 CD 82 5C 04         A  2543    	CALL	__stoiu
+0441ED 01 9D 8B 04         A  2544    	LD	BC,_globalLabelBuffer
+0441F1 09                  A  2545    	ADD	HL,BC
+0441F2 DD31FA              A  2546    	LD	IY,(IX+%FFFFFFFA)
+0441F5 FD2F00              A  2547    	LD	(IY+%0),HL
                            A  2548    ;  228	    globalLabelBufferIndex += len+1;
                            A  2549    .LINE 228
                            A  2550    
-044BF5 DD07F7              A  2551    	LD	BC,(IX+%FFFFFFF7)
-044BF8 2A 62 98 07         A  2552    	LD	HL,(_globalLabelBufferIndex)
-044BFC 4009                A  2553    	ADD.SIS	HL,BC
-044BFE 23                  A  2554    	INC	HL
-044BFF E5C1                A  2555    	LD	BC,HL
-044C01 21 62 98 07         A  2556    	LD	HL,_globalLabelBufferIndex
-044C05 71                  A  2557    	LD	(HL),C
-044C06 23                  A  2558    	INC	HL
-044C07 70                  A  2559    	LD	(HL),B
+0441F8 DD07F7              A  2551    	LD	BC,(IX+%FFFFFFF7)
+0441FB 2A 9D 9B 06         A  2552    	LD	HL,(_globalLabelBufferIndex)
+0441FF 4009                A  2553    	ADD.SIS	HL,BC
+044201 23                  A  2554    	INC	HL
+044202 E5C1                A  2555    	LD	BC,HL
+044204 21 9D 9B 06         A  2556    	LD	HL,_globalLabelBufferIndex
+044208 71                  A  2557    	LD	(HL),C
+044209 23                  A  2558    	INC	HL
+04420A 70                  A  2559    	LD	(HL),B
                            A  2560    ;  229	    strcpy(tmp->name, labelname);
                            A  2561    .LINE 229
                            A  2562    
-044C08 DD0706              A  2563    	LD	BC,(IX+%6)
-044C0B C5                  A  2564    	PUSH	BC
-044C0C FD0700              A  2565    	LD	BC,(IY+%0)
-044C0F C5                  A  2566    	PUSH	BC
-044C10 CD 6F 6E 04         A  2567    	CALL	_strcpy
-044C14 C1                  A  2568    	POP	BC
-044C15 C1                  A  2569    	POP	BC
+04420B DD0706              A  2563    	LD	BC,(IX+%6)
+04420E C5                  A  2564    	PUSH	BC
+04420F FD0700              A  2565    	LD	BC,(IY+%0)
+044212 C5                  A  2566    	PUSH	BC
+044213 CD EE 63 04         A  2567    	CALL	_strcpy
+044217 C1                  A  2568    	POP	BC
+044218 C1                  A  2569    	POP	BC
                            A  2570    ;  230	    tmp->address = address;
                            A  2571    .LINE 230
                            A  2572    
-044C16 DD0709              A  2573    	LD	BC,(IX+%9)
-044C19 DD7E0C              A  2574    	LD	A,(IX+%C)
-044C1C DD31FA              A  2575    	LD	IY,(IX+%FFFFFFFA)
-044C1F FD0F03              A  2576    	LD	(IY+%3),BC
-044C22 FD7706              A  2577    	LD	(IY+%6),A
+044219 DD0709              A  2573    	LD	BC,(IX+%9)
+04421C DD7E0C              A  2574    	LD	A,(IX+%C)
+04421F DD31FA              A  2575    	LD	IY,(IX+%FFFFFFFA)
+044222 FD0F03              A  2576    	LD	(IY+%3),BC
+044225 FD7706              A  2577    	LD	(IY+%6),A
                            A  2578    ;  231	
                            A  2579    ;  232	    index = hash(labelname, GLOBAL_LABE
                            A  2580    .LINE 232
                            A  2581    
-044C25 01002000            A  2582    	LD	BC,8192
-044C29 C5                  A  2583    	PUSH	BC
-044C2A DD0706              A  2584    	LD	BC,(IX+%6)
-044C2D C5                  A  2585    	PUSH	BC
-044C2E CD 35 3A 04         A  2586    	CALL	_hash
-044C32 C1                  A  2587    	POP	BC
-044C33 C1                  A  2588    	POP	BC
-044C34 DD2FEE              A  2589    	LD	(IX+%FFFFFFEE),HL
+044228 01002000            A  2582    	LD	BC,8192
+04422C C5                  A  2583    	PUSH	BC
+04422D DD0706              A  2584    	LD	BC,(IX+%6)
+044230 C5                  A  2585    	PUSH	BC
+044231 CD 38 30 04         A  2586    	CALL	_hash
+044235 C1                  A  2587    	POP	BC
+044236 C1                  A  2588    	POP	BC
+044237 DD2FEE              A  2589    	LD	(IX+%FFFFFFEE),HL
                            A  2590    ;  233	    for(i = 0; i < GLOBAL_LABEL_TABLE_S
                            A  2591    .LINE 233
                            A  2592    
-044C37 01000000            A  2593    	LD	BC,0
-044C3B DD0FFD              A  2594    	LD	(IX+%FFFFFFFD),BC
-044C3E 18 46               A  2595    	JR	L_81
-044C40                     A  2596    L_79:
+04423A 01000000            A  2593    	LD	BC,0
+04423E DD0FFD              A  2594    	LD	(IX+%FFFFFFFD),BC
+044241 18 46               A  2595    	JR	L_81
+044243                     A  2596    L_79:
                            A  2597    ;  234	        try = (i + index) % GLOBAL_LABE
                            A  2598    .LINE 234
                            A  2599    
-044C40 DD07EE              A  2600    	LD	BC,(IX+%FFFFFFEE)
-044C43 DD27FD              A  2601    	LD	HL,(IX+%FFFFFFFD)
-044C46 09                  A  2602    	ADD	HL,BC
-044C47 01002000            A  2603    	LD	BC,8192
-044C4B CD 2C 64 04         A  2604    	CALL	__irems
-044C4F DD2FF1              A  2605    	LD	(IX+%FFFFFFF1),HL
+044243 DD07EE              A  2600    	LD	BC,(IX+%FFFFFFEE)
+044246 DD27FD              A  2601    	LD	HL,(IX+%FFFFFFFD)
+044249 09                  A  2602    	ADD	HL,BC
+04424A 01002000            A  2603    	LD	BC,8192
+04424E CD 24 5A 04         A  2604    	CALL	__irems
+044252 DD2FF1              A  2605    	LD	(IX+%FFFFFFF1),HL
                            A  2606    ;  235	        if(globalLabelTable[try] == NUL
                            A  2607    .LINE 235
                            A  2608    
-044C52 E5C1                A  2609    	LD	BC,HL
-044C54 29                  A  2610    	ADD	HL,HL
-044C55 09                  A  2611    	ADD	HL,BC
-044C56 01 66 98 07         A  2612    	LD	BC,_globalLabelTable
-044C5A 09                  A  2613    	ADD	HL,BC
-044C5B DD2FF4              A  2614    	LD	(IX+%FFFFFFF4),HL
-044C5E ED27                A  2615    	LD	HL,(HL)
-044C60 CD E3 6A 04         A  2616    	CALL	__icmpzero
-044C64 20 19               A  2617    	JR	NZ,L_80
+044255 E5C1                A  2609    	LD	BC,HL
+044257 29                  A  2610    	ADD	HL,HL
+044258 09                  A  2611    	ADD	HL,BC
+044259 01 A1 9B 06         A  2612    	LD	BC,_globalLabelTable
+04425D 09                  A  2613    	ADD	HL,BC
+04425E DD2FF4              A  2614    	LD	(IX+%FFFFFFF4),HL
+044261 ED27                A  2615    	LD	HL,(HL)
+044263 CD CF 60 04         A  2616    	CALL	__icmpzero
+044267 20 19               A  2617    	JR	NZ,L_80
                            A  2618    ;  236	            globalLabelTable[try] = tmp
                            A  2619    .LINE 236
                            A  2620    
-044C66 DD27F4              A  2621    	LD	HL,(IX+%FFFFFFF4)
-044C69 DD07FA              A  2622    	LD	BC,(IX+%FFFFFFFA)
-044C6C ED0F                A  2623    	LD	(HL),BC
+044269 DD27F4              A  2621    	LD	HL,(IX+%FFFFFFF4)
+04426C DD07FA              A  2622    	LD	BC,(IX+%FFFFFFFA)
+04426F ED0F                A  2623    	LD	(HL),BC
                            A  2624    ;  237	            globalLabelCounter++;
                            A  2625    .LINE 237
                            A  2626    
-044C6E ED4B 66 F8 07       A  2627    	LD	BC,(_globalLabelCounter)
-044C73 03                  A  2628    	INC	BC
-044C74 21 66 F8 07         A  2629    	LD	HL,_globalLabelCounter
-044C78 71                  A  2630    	LD	(HL),C
-044C79 23                  A  2631    	INC	HL
-044C7A 70                  A  2632    	LD	(HL),B
+044271 ED4B A1 FB 06       A  2627    	LD	BC,(_globalLabelCounter)
+044276 03                  A  2628    	INC	BC
+044277 21 A1 FB 06         A  2629    	LD	HL,_globalLabelCounter
+04427B 71                  A  2630    	LD	(HL),C
+04427C 23                  A  2631    	INC	HL
+04427D 70                  A  2632    	LD	(HL),B
                            A  2633    ;  238	            return true;
                            A  2634    .LINE 238
                            A  2635    
-044C7B 3E01                A  2636    	LD	A,%1
-044C7D 18 1A               A  2637    	JR	L_83
+04427E 3E01                A  2636    	LD	A,%1
+044280 18 1A               A  2637    	JR	L_83
                            A  2638    ;  239	        } 
                            A  2639    ;  240	    }
-044C7F                     A  2640    L_80:
+044282                     A  2640    L_80:
                            A  2641    .LINE 240
                            A  2642    
-044C7F DD07FD              A  2643    	LD	BC,(IX+%FFFFFFFD)
-044C82 03                  A  2644    	INC	BC
-044C83 DD0FFD              A  2645    	LD	(IX+%FFFFFFFD),BC
-044C86                     A  2646    L_81:
-044C86 01002000            A  2647    	LD	BC,8192
-044C8A DD27FD              A  2648    	LD	HL,(IX+%FFFFFFFD)
-044C8D B7                  A  2649    	OR	A,A
-044C8E ED42                A  2650    	SBC	HL,BC
-044C90 CD 1D 64 04         A  2651    	CALL	__setflag
-044C94 FA 40 4C 04         A  2652    	JP	M,L_79
+044282 DD07FD              A  2643    	LD	BC,(IX+%FFFFFFFD)
+044285 03                  A  2644    	INC	BC
+044286 DD0FFD              A  2645    	LD	(IX+%FFFFFFFD),BC
+044289                     A  2646    L_81:
+044289 01002000            A  2647    	LD	BC,8192
+04428D DD27FD              A  2648    	LD	HL,(IX+%FFFFFFFD)
+044290 B7                  A  2649    	OR	A,A
+044291 ED42                A  2650    	SBC	HL,BC
+044293 CD 15 5A 04         A  2651    	CALL	__setflag
+044297 FA 43 42 04         A  2652    	JP	M,L_79
                            A  2653    ;  241	    return false;
                            A  2654    .LINE 241
                            A  2655    
-044C98 AF                  A  2656    	XOR	A,A
+04429B AF                  A  2656    	XOR	A,A
                            A  2657    ;  242	}
-044C99                     A  2658    L_83:
+04429C                     A  2658    L_83:
                            A  2659    .LINE 242
                            A  2660    
-044C99 DDF9                A  2661    	LD	SP,IX
-044C9B DDE1                A  2662    	POP	IX
-044C9D C9                  A  2663    	RET	
+04429C DDF9                A  2661    	LD	SP,IX
+04429E DDE1                A  2662    	POP	IX
+0442A0 C9                  A  2663    	RET	
                            A  2664    
                            A  2665    
                            A  2666    ;**************************** _insertGlobalLabe
@@ -2695,7 +2695,7 @@ PC     Object              I  Line    Source
                            A  2689    .ENDFUNC "insertGlobalLabel",242,"_insertGlobal
                            A  2690    ;  243	
                            A  2691    ;  244	void print_bufferspace(){
-044C9E                     A  2692    _print_bufferspace:
+0442A1                     A  2692    _print_bufferspace:
                            A  2693    .DEFINE "_print_bufferspace"
                            A  2694    
                            A  2695    .VALUE _print_bufferspace
@@ -2708,40 +2708,40 @@ PC     Object              I  Line    Source
                            A  2702    
                            A  2703    .BEGFUNC "print_bufferspace",244,"_print_buffer
                            A  2704    
-044C9E DDE5                A  2705    	PUSH	IX
-044CA0 DD210000 00         A  2706    	LD	IX,0
-044CA5 DD39                A  2707    	ADD	IX,SP
+0442A1 DDE5                A  2705    	PUSH	IX
+0442A3 DD210000 00         A  2706    	LD	IX,0
+0442A8 DD39                A  2707    	ADD	IX,SP
                            A  2708    ;  245	    printf("%d bytes available in label
                            A  2709    .LINE 245
                            A  2710    
-044CA7 01 9C 66 04         A  2711    	LD	BC,___print_uputch
-044CAB ED43 34 8C 04       A  2712    	LD	(___print_xputch),BC
-044CB0 ED4B 62 98 07       A  2713    	LD	BC,(_globalLabelBufferIndex)
-044CB5 CD 96 66 04         A  2714    	CALL	__stoiu
-044CB9 E5C1                A  2715    	LD	BC,HL
-044CBB 21000002            A  2716    	LD	HL,131072
-044CBF B7                  A  2717    	OR	A,A
-044CC0 ED42                A  2718    	SBC	HL,BC
-044CC2 E5C1                A  2719    	LD	BC,HL
-044CC4 CD 16 6E 04         A  2720    	CALL	__itol
-044CC8 C5D1                A  2721    	LD	DE,BC
-044CCA 4F                  A  2722    	LD	C,A
-044CCB 0600                A  2723    	LD	B,%0
-044CCD C5                  A  2724    	PUSH	BC
-044CCE D5                  A  2725    	PUSH	DE
-044CCF CD 76 67 04         A  2726    	CALL	__u_itoa
-044CD3 C1                  A  2727    	POP	BC
-044CD4 C1                  A  2728    	POP	BC
-044CD5 01 80 91 04         A  2729    	LD	BC,L__43
-044CD9 C5                  A  2730    	PUSH	BC
-044CDA CD 0E 65 04         A  2731    	CALL	___print_sendstring
-044CDE C1                  A  2732    	POP	BC
+0442AA 01 88 5C 04         A  2711    	LD	BC,___print_uputch
+0442AE ED43 EF 81 04       A  2712    	LD	(___print_xputch),BC
+0442B3 ED4B 9D 9B 06       A  2713    	LD	BC,(_globalLabelBufferIndex)
+0442B8 CD 82 5C 04         A  2714    	CALL	__stoiu
+0442BC E5C1                A  2715    	LD	BC,HL
+0442BE 21000002            A  2716    	LD	HL,131072
+0442C2 B7                  A  2717    	OR	A,A
+0442C3 ED42                A  2718    	SBC	HL,BC
+0442C5 E5C1                A  2719    	LD	BC,HL
+0442C7 CD 95 63 04         A  2720    	CALL	__itol
+0442CB C5D1                A  2721    	LD	DE,BC
+0442CD 4F                  A  2722    	LD	C,A
+0442CE 0600                A  2723    	LD	B,%0
+0442D0 C5                  A  2724    	PUSH	BC
+0442D1 D5                  A  2725    	PUSH	DE
+0442D2 CD 62 5D 04         A  2726    	CALL	__u_itoa
+0442D6 C1                  A  2727    	POP	BC
+0442D7 C1                  A  2728    	POP	BC
+0442D8 01 3B 87 04         A  2729    	LD	BC,L__43
+0442DC C5                  A  2730    	PUSH	BC
+0442DD CD FA 5A 04         A  2731    	CALL	___print_sendstring
+0442E1 C1                  A  2732    	POP	BC
                            A  2733    ;  246	}
                            A  2734    .LINE 246
                            A  2735    
-044CDF DDF9                A  2736    	LD	SP,IX
-044CE1 DDE1                A  2737    	POP	IX
-044CE3 C9                  A  2738    	RET	
+0442E2 DDF9                A  2736    	LD	SP,IX
+0442E4 DDE1                A  2737    	POP	IX
+0442E6 C9                  A  2738    	RET	
                            A  2739    
                            A  2740    
                            A  2741    ;**************************** _print_bufferspac
@@ -2759,16 +2759,16 @@ PC     Object              I  Line    Source
                            A  2753    
                            A  2754    .ENDFUNC "print_bufferspace",246,"_print_buffer
                            A  2755    	SEGMENT STRSECT
-049180                     A  2756    L__43:
-049180 20627974 65732061   A  2757    	DB	" bytes available in label buffer"
-049188 7661696C 61626C65 
-049190 20696E20 6C616265 
-049198 6C206275 66666572 
-0491A0 0A00                A  2758    	DB	10,0
+04873B                     A  2756    L__43:
+04873B 20627974 65732061   A  2757    	DB	" bytes available in label buffer"
+048743 7661696C 61626C65 
+04874B 20696E20 6C616265 
+048753 6C206275 66666572 
+04875B 0A00                A  2758    	DB	10,0
                            A  2759    	SEGMENT CODE
                            A  2760    ;  247	
                            A  2761    ;  248	label * findGlobalLabel(char *name){
-044CE4                     A  2762    _findGlobalLabel:
+0442E7                     A  2762    _findGlobalLabel:
                            A  2763    .DEFINE "_findGlobalLabel"
                            A  2764    
                            A  2765    .VALUE _findGlobalLabel
@@ -2825,116 +2825,116 @@ PC     Object              I  Line    Source
                            A  2816    
                            A  2817    .ENDEF
                            A  2818    
-044CE4 DDE5                A  2819    	PUSH	IX
-044CE6 DD210000 00         A  2820    	LD	IX,0
-044CEB DD39                A  2821    	ADD	IX,SP
-044CED ED22F4              A  2822    	LEA	HL,IX+%FFFFFFF4
-044CF0 F9                  A  2823    	LD	SP,HL
+0442E7 DDE5                A  2819    	PUSH	IX
+0442E9 DD210000 00         A  2820    	LD	IX,0
+0442EE DD39                A  2821    	ADD	IX,SP
+0442F0 ED22F4              A  2822    	LEA	HL,IX+%FFFFFFF4
+0442F3 F9                  A  2823    	LD	SP,HL
                            A  2824    ;  249	    int index,i,try;
                            A  2825    ;  250	
                            A  2826    ;  251	    index = hash(name, GLOBAL_LABEL_TAB
                            A  2827    .LINE 251
                            A  2828    
-044CF1 01002000            A  2829    	LD	BC,8192
-044CF5 C5                  A  2830    	PUSH	BC
-044CF6 DD0706              A  2831    	LD	BC,(IX+%6)
-044CF9 C5                  A  2832    	PUSH	BC
-044CFA CD 35 3A 04         A  2833    	CALL	_hash
-044CFE C1                  A  2834    	POP	BC
-044CFF C1                  A  2835    	POP	BC
-044D00 DD2FF4              A  2836    	LD	(IX+%FFFFFFF4),HL
+0442F4 01002000            A  2829    	LD	BC,8192
+0442F8 C5                  A  2830    	PUSH	BC
+0442F9 DD0706              A  2831    	LD	BC,(IX+%6)
+0442FC C5                  A  2832    	PUSH	BC
+0442FD CD 38 30 04         A  2833    	CALL	_hash
+044301 C1                  A  2834    	POP	BC
+044302 C1                  A  2835    	POP	BC
+044303 DD2FF4              A  2836    	LD	(IX+%FFFFFFF4),HL
                            A  2837    ;  252	    for(i = 0; i < GLOBAL_LABEL_TABLE_S
                            A  2838    .LINE 252
                            A  2839    
-044D03 01000000            A  2840    	LD	BC,0
-044D07 DD0FFA              A  2841    	LD	(IX+%FFFFFFFA),BC
-044D0A 18 5D               A  2842    	JR	L_92
-044D0C                     A  2843    L_90:
+044306 01000000            A  2840    	LD	BC,0
+04430A DD0FFA              A  2841    	LD	(IX+%FFFFFFFA),BC
+04430D 18 5D               A  2842    	JR	L_92
+04430F                     A  2843    L_90:
                            A  2844    ;  253	        try = (index + i) % GLOBAL_LABE
                            A  2845    .LINE 253
                            A  2846    
-044D0C DD07FA              A  2847    	LD	BC,(IX+%FFFFFFFA)
-044D0F DD27F4              A  2848    	LD	HL,(IX+%FFFFFFF4)
-044D12 09                  A  2849    	ADD	HL,BC
-044D13 01002000            A  2850    	LD	BC,8192
-044D17 CD 2C 64 04         A  2851    	CALL	__irems
-044D1B DD2FF7              A  2852    	LD	(IX+%FFFFFFF7),HL
+04430F DD07FA              A  2847    	LD	BC,(IX+%FFFFFFFA)
+044312 DD27F4              A  2848    	LD	HL,(IX+%FFFFFFF4)
+044315 09                  A  2849    	ADD	HL,BC
+044316 01002000            A  2850    	LD	BC,8192
+04431A CD 24 5A 04         A  2851    	CALL	__irems
+04431E DD2FF7              A  2852    	LD	(IX+%FFFFFFF7),HL
                            A  2853    ;  254	        if(globalLabelTable[try] == NUL
                            A  2854    .LINE 254
                            A  2855    
-044D1E E5C1                A  2856    	LD	BC,HL
-044D20 29                  A  2857    	ADD	HL,HL
-044D21 09                  A  2858    	ADD	HL,BC
-044D22 01 66 98 07         A  2859    	LD	BC,_globalLabelTable
-044D26 09                  A  2860    	ADD	HL,BC
-044D27 DD2FFD              A  2861    	LD	(IX+%FFFFFFFD),HL
-044D2A ED27                A  2862    	LD	HL,(HL)
-044D2C CD E3 6A 04         A  2863    	CALL	__icmpzero
-044D30 20 05               A  2864    	JR	NZ,L_89
+044321 E5C1                A  2856    	LD	BC,HL
+044323 29                  A  2857    	ADD	HL,HL
+044324 09                  A  2858    	ADD	HL,BC
+044325 01 A1 9B 06         A  2859    	LD	BC,_globalLabelTable
+044329 09                  A  2860    	ADD	HL,BC
+04432A DD2FFD              A  2861    	LD	(IX+%FFFFFFFD),HL
+04432D ED27                A  2862    	LD	HL,(HL)
+04432F CD CF 60 04         A  2863    	CALL	__icmpzero
+044333 20 05               A  2864    	JR	NZ,L_89
                            A  2865    ;  255	            return NULL;
                            A  2866    .LINE 255
                            A  2867    
-044D32 B7                  A  2868    	OR	A,A
-044D33 ED62                A  2869    	SBC	HL,HL
-044D35 18 47               A  2870    	JR	L_94
+044335 B7                  A  2868    	OR	A,A
+044336 ED62                A  2869    	SBC	HL,HL
+044338 18 47               A  2870    	JR	L_94
                            A  2871    ;  256	        }
-044D37                     A  2872    L_89:
+04433A                     A  2872    L_89:
                            A  2873    .LINE 256
                            A  2874    
                            A  2875    ;  257	        if(globalLabelTable[try] != NUL
                            A  2876    .LINE 257
                            A  2877    
-044D37 DD27FD              A  2878    	LD	HL,(IX+%FFFFFFFD)
-044D3A ED27                A  2879    	LD	HL,(HL)
-044D3C CD E3 6A 04         A  2880    	CALL	__icmpzero
-044D40 28 20               A  2881    	JR	Z,L_91
+04433A DD27FD              A  2878    	LD	HL,(IX+%FFFFFFFD)
+04433D ED27                A  2879    	LD	HL,(HL)
+04433F CD CF 60 04         A  2880    	CALL	__icmpzero
+044343 28 20               A  2881    	JR	Z,L_91
                            A  2882    ;  258	            strcmp(globalLabelTable[try
                            A  2883    .LINE 258
                            A  2884    
-044D42 DD0706              A  2885    	LD	BC,(IX+%6)
-044D45 C5                  A  2886    	PUSH	BC
-044D46 DD27FD              A  2887    	LD	HL,(IX+%FFFFFFFD)
-044D49 ED31                A  2888    	LD	IY,(HL)
-044D4B FD0700              A  2889    	LD	BC,(IY+%0)
-044D4E C5                  A  2890    	PUSH	BC
-044D4F CD 79 66 04         A  2891    	CALL	_strcmp
-044D53 C1                  A  2892    	POP	BC
-044D54 C1                  A  2893    	POP	BC
-044D55 CD E3 6A 04         A  2894    	CALL	__icmpzero
-044D59 20 07               A  2895    	JR	NZ,L_91
+044345 DD0706              A  2885    	LD	BC,(IX+%6)
+044348 C5                  A  2886    	PUSH	BC
+044349 DD27FD              A  2887    	LD	HL,(IX+%FFFFFFFD)
+04434C ED31                A  2888    	LD	IY,(HL)
+04434E FD0700              A  2889    	LD	BC,(IY+%0)
+044351 C5                  A  2890    	PUSH	BC
+044352 CD 65 5C 04         A  2891    	CALL	_strcmp
+044356 C1                  A  2892    	POP	BC
+044357 C1                  A  2893    	POP	BC
+044358 CD CF 60 04         A  2894    	CALL	__icmpzero
+04435C 20 07               A  2895    	JR	NZ,L_91
                            A  2896    ;  259	            return globalLabelTable[try
                            A  2897    .LINE 259
                            A  2898    
-044D5B DD27FD              A  2899    	LD	HL,(IX+%FFFFFFFD)
-044D5E ED27                A  2900    	LD	HL,(HL)
-044D60 18 1C               A  2901    	JR	L_94
+04435E DD27FD              A  2899    	LD	HL,(IX+%FFFFFFFD)
+044361 ED27                A  2900    	LD	HL,(HL)
+044363 18 1C               A  2901    	JR	L_94
                            A  2902    ;  260	        }
                            A  2903    ;  261	    }
-044D62                     A  2904    L_91:
+044365                     A  2904    L_91:
                            A  2905    .LINE 261
                            A  2906    
-044D62 DD07FA              A  2907    	LD	BC,(IX+%FFFFFFFA)
-044D65 03                  A  2908    	INC	BC
-044D66 DD0FFA              A  2909    	LD	(IX+%FFFFFFFA),BC
-044D69                     A  2910    L_92:
-044D69 01002000            A  2911    	LD	BC,8192
-044D6D DD27FA              A  2912    	LD	HL,(IX+%FFFFFFFA)
-044D70 B7                  A  2913    	OR	A,A
-044D71 ED42                A  2914    	SBC	HL,BC
-044D73 CD 1D 64 04         A  2915    	CALL	__setflag
-044D77 FA 0C 4D 04         A  2916    	JP	M,L_90
+044365 DD07FA              A  2907    	LD	BC,(IX+%FFFFFFFA)
+044368 03                  A  2908    	INC	BC
+044369 DD0FFA              A  2909    	LD	(IX+%FFFFFFFA),BC
+04436C                     A  2910    L_92:
+04436C 01002000            A  2911    	LD	BC,8192
+044370 DD27FA              A  2912    	LD	HL,(IX+%FFFFFFFA)
+044373 B7                  A  2913    	OR	A,A
+044374 ED42                A  2914    	SBC	HL,BC
+044376 CD 15 5A 04         A  2915    	CALL	__setflag
+04437A FA 0F 43 04         A  2916    	JP	M,L_90
                            A  2917    ;  262	    return NULL;
                            A  2918    .LINE 262
                            A  2919    
-044D7B B7                  A  2920    	OR	A,A
-044D7C ED62                A  2921    	SBC	HL,HL
+04437E B7                  A  2920    	OR	A,A
+04437F ED62                A  2921    	SBC	HL,HL
                            A  2922    ;  263	}
-044D7E                     A  2923    L_94:
+044381                     A  2923    L_94:
                            A  2924    .LINE 263
                            A  2925    
-044D7E DDF9                A  2926    	LD	SP,IX
-044D80 DDE1                A  2927    	POP	IX
-044D82 C9                  A  2928    	RET	
+044381 DDF9                A  2926    	LD	SP,IX
+044383 DDE1                A  2927    	POP	IX
+044385 C9                  A  2928    	RET	
                            A  2929    
                            A  2930    
                            A  2931    ;**************************** _findGlobalLabel 
@@ -2956,7 +2956,7 @@ PC     Object              I  Line    Source
                            A  2947    .ENDFUNC "findGlobalLabel",263,"_findGlobalLabe
                            A  2948    ;  264	
                            A  2949    ;  265	label *findLabel(char *name) {
-044D83                     A  2950    _findLabel:
+044386                     A  2950    _findLabel:
                            A  2951    .DEFINE "_findLabel"
                            A  2952    
                            A  2953    .VALUE _findLabel
@@ -2983,169 +2983,169 @@ PC     Object              I  Line    Source
                            A  2974    
                            A  2975    .ENDEF
                            A  2976    
-044D83 DDE5                A  2977    	PUSH	IX
-044D85 DD210000 00         A  2978    	LD	IX,0
-044D8A DD39                A  2979    	ADD	IX,SP
-044D8C C5                  A  2980    	PUSH	BC
-044D8D C5                  A  2981    	PUSH	BC
-044D8E C5                  A  2982    	PUSH	BC
+044386 DDE5                A  2977    	PUSH	IX
+044388 DD210000 00         A  2978    	LD	IX,0
+04438D DD39                A  2979    	ADD	IX,SP
+04438F C5                  A  2980    	PUSH	BC
+044390 C5                  A  2981    	PUSH	BC
+044391 C5                  A  2982    	PUSH	BC
                            A  2983    ;  266	    if(name[0] == '@') {
                            A  2984    .LINE 266
                            A  2985    
-044D8F DD2706              A  2986    	LD	HL,(IX+%6)
-044D92 7E                  A  2987    	LD	A,(HL)
-044D93 47                  A  2988    	LD	B,A
-044D94 17ED62              A  2989    	SEXT	HL
-044D97 68                  A  2990    	LD	L,B
-044D98 01400000            A  2991    	LD	BC,64
-044D9C B7                  A  2992    	OR	A,A
-044D9D ED42                A  2993    	SBC	HL,BC
-044D9F C2 64 4E 04         A  2994    	JR	NZ,L_108
+044392 DD2706              A  2986    	LD	HL,(IX+%6)
+044395 7E                  A  2987    	LD	A,(HL)
+044396 47                  A  2988    	LD	B,A
+044397 17ED62              A  2989    	SEXT	HL
+04439A 68                  A  2990    	LD	L,B
+04439B 01400000            A  2991    	LD	BC,64
+04439F B7                  A  2992    	OR	A,A
+0443A0 ED42                A  2993    	SBC	HL,BC
+0443A2 C2 67 44 04         A  2994    	JR	NZ,L_108
                            A  2995    ;  267	        
                            A  2996    ;  268	        if(((name[1] == 'f') || (name[1
                            A  2997    .LINE 268
                            A  2998    
-044DA3 DD0706              A  2999    	LD	BC,(IX+%6)
-044DA6 03                  A  3000    	INC	BC
-044DA7 DD0FFD              A  3001    	LD	(IX+%FFFFFFFD),BC
-044DAA DD0FFA              A  3002    	LD	(IX+%FFFFFFFA),BC
-044DAD C5E1                A  3003    	LD	HL,BC
-044DAF 7E                  A  3004    	LD	A,(HL)
-044DB0 47                  A  3005    	LD	B,A
-044DB1 17ED62              A  3006    	SEXT	HL
-044DB4 68                  A  3007    	LD	L,B
-044DB5 01660000            A  3008    	LD	BC,102
-044DB9 B7                  A  3009    	OR	A,A
-044DBA ED42                A  3010    	SBC	HL,BC
-044DBC 28 18               A  3011    	JR	Z,L_96
-044DBE DD07FD              A  3012    	LD	BC,(IX+%FFFFFFFD)
-044DC1 DD0FFA              A  3013    	LD	(IX+%FFFFFFFA),BC
-044DC4 DD27FD              A  3014    	LD	HL,(IX+%FFFFFFFD)
-044DC7 7E                  A  3015    	LD	A,(HL)
-044DC8 47                  A  3016    	LD	B,A
-044DC9 17ED62              A  3017    	SEXT	HL
-044DCC 68                  A  3018    	LD	L,B
-044DCD 016E0000            A  3019    	LD	BC,110
-044DD1 B7                  A  3020    	OR	A,A
-044DD2 ED42                A  3021    	SBC	HL,BC
-044DD4 20 2D               A  3022    	JR	NZ,L_105
-044DD6                     A  3023    L_96:
-044DD6 DD3106              A  3024    	LD	IY,(IX+%6)
-044DD9 FD7E02              A  3025    	LD	A,(IY+%2)
-044DDC B7                  A  3026    	OR	A,A
-044DDD 20 24               A  3027    	JR	NZ,L_105
+0443A6 DD0706              A  2999    	LD	BC,(IX+%6)
+0443A9 03                  A  3000    	INC	BC
+0443AA DD0FFD              A  3001    	LD	(IX+%FFFFFFFD),BC
+0443AD DD0FFA              A  3002    	LD	(IX+%FFFFFFFA),BC
+0443B0 C5E1                A  3003    	LD	HL,BC
+0443B2 7E                  A  3004    	LD	A,(HL)
+0443B3 47                  A  3005    	LD	B,A
+0443B4 17ED62              A  3006    	SEXT	HL
+0443B7 68                  A  3007    	LD	L,B
+0443B8 01660000            A  3008    	LD	BC,102
+0443BC B7                  A  3009    	OR	A,A
+0443BD ED42                A  3010    	SBC	HL,BC
+0443BF 28 18               A  3011    	JR	Z,L_96
+0443C1 DD07FD              A  3012    	LD	BC,(IX+%FFFFFFFD)
+0443C4 DD0FFA              A  3013    	LD	(IX+%FFFFFFFA),BC
+0443C7 DD27FD              A  3014    	LD	HL,(IX+%FFFFFFFD)
+0443CA 7E                  A  3015    	LD	A,(HL)
+0443CB 47                  A  3016    	LD	B,A
+0443CC 17ED62              A  3017    	SEXT	HL
+0443CF 68                  A  3018    	LD	L,B
+0443D0 016E0000            A  3019    	LD	BC,110
+0443D4 B7                  A  3020    	OR	A,A
+0443D5 ED42                A  3021    	SBC	HL,BC
+0443D7 20 2D               A  3022    	JR	NZ,L_105
+0443D9                     A  3023    L_96:
+0443D9 DD3106              A  3024    	LD	IY,(IX+%6)
+0443DC FD7E02              A  3025    	LD	A,(IY+%2)
+0443DF B7                  A  3026    	OR	A,A
+0443E0 20 24               A  3027    	JR	NZ,L_105
                            A  3028    ;  269	            if(an_next.defined) {
                            A  3029    .LINE 269
                            A  3030    
-044DDF 3A 56 98 04         A  3031    	LD	A,(_an_next)
-044DE3 B7                  A  3032    	OR	A,A
-044DE4 28 18               A  3033    	JR	Z,L_98
+0443E2 3A 91 8B 04         A  3031    	LD	A,(_an_next)
+0443E6 B7                  A  3032    	OR	A,A
+0443E7 28 18               A  3033    	JR	Z,L_98
                            A  3034    ;  270	                an_return.address = an_
                            A  3035    .LINE 270
                            A  3036    
-044DE6 ED4B 57 98 04       A  3037    	LD	BC,(_an_next+1)
-044DEB 3A 5A 98 04         A  3038    	LD	A,(_an_next+4)
-044DEF ED43 5E 98 04       A  3039    	LD	(_an_return+3),BC
-044DF4 32 61 98 04         A  3040    	LD	(_an_return+6),A
+0443E9 ED4B 92 8B 04       A  3037    	LD	BC,(_an_next+1)
+0443EE 3A 95 8B 04         A  3038    	LD	A,(_an_next+4)
+0443F2 ED43 99 8B 04       A  3039    	LD	(_an_return+3),BC
+0443F7 32 9C 8B 04         A  3040    	LD	(_an_return+6),A
                            A  3041    ;  271	                return &an_return;
                            A  3042    .LINE 271
                            A  3043    
-044DF8 21 5B 98 04         A  3044    	LD	HL,_an_return
-044DFC 18 6F               A  3045    	JR	L_109
+0443FB 21 96 8B 04         A  3044    	LD	HL,_an_return
+0443FF 18 6F               A  3045    	JR	L_109
                            A  3046    ;  272	            }
                            A  3047    ;  273	            else return NULL;
-044DFE                     A  3048    L_98:
+044401                     A  3048    L_98:
                            A  3049    .LINE 273
                            A  3050    
-044DFE B7                  A  3051    	OR	A,A
-044DFF ED62                A  3052    	SBC	HL,HL
-044E01 18 6A               A  3053    	JR	L_109
+044401 B7                  A  3051    	OR	A,A
+044402 ED62                A  3052    	SBC	HL,HL
+044404 18 6A               A  3053    	JR	L_109
                            A  3054    ;  274	        }
-044E03                     A  3055    L_105:
+044406                     A  3055    L_105:
                            A  3056    .LINE 274
                            A  3057    
                            A  3058    ;  275	        if(((name[1] == 'b') || (name[1
                            A  3059    .LINE 275
                            A  3060    
-044E03 DD07FA              A  3061    	LD	BC,(IX+%FFFFFFFA)
-044E06 DD0FF7              A  3062    	LD	(IX+%FFFFFFF7),BC
-044E09 C5E1                A  3063    	LD	HL,BC
-044E0B 7E                  A  3064    	LD	A,(HL)
-044E0C 47                  A  3065    	LD	B,A
-044E0D 17ED62              A  3066    	SEXT	HL
-044E10 68                  A  3067    	LD	L,B
-044E11 01620000            A  3068    	LD	BC,98
-044E15 B7                  A  3069    	OR	A,A
-044E16 ED42                A  3070    	SBC	HL,BC
-044E18 28 12               A  3071    	JR	Z,L_101
-044E1A DD27F7              A  3072    	LD	HL,(IX+%FFFFFFF7)
-044E1D 7E                  A  3073    	LD	A,(HL)
-044E1E 47                  A  3074    	LD	B,A
-044E1F 17ED62              A  3075    	SEXT	HL
-044E22 68                  A  3076    	LD	L,B
-044E23 01700000            A  3077    	LD	BC,112
-044E27 B7                  A  3078    	OR	A,A
-044E28 ED42                A  3079    	SBC	HL,BC
-044E2A 20 2D               A  3080    	JR	NZ,L_106
-044E2C                     A  3081    L_101:
-044E2C DD3106              A  3082    	LD	IY,(IX+%6)
-044E2F FD7E02              A  3083    	LD	A,(IY+%2)
-044E32 B7                  A  3084    	OR	A,A
-044E33 20 24               A  3085    	JR	NZ,L_106
+044406 DD07FA              A  3061    	LD	BC,(IX+%FFFFFFFA)
+044409 DD0FF7              A  3062    	LD	(IX+%FFFFFFF7),BC
+04440C C5E1                A  3063    	LD	HL,BC
+04440E 7E                  A  3064    	LD	A,(HL)
+04440F 47                  A  3065    	LD	B,A
+044410 17ED62              A  3066    	SEXT	HL
+044413 68                  A  3067    	LD	L,B
+044414 01620000            A  3068    	LD	BC,98
+044418 B7                  A  3069    	OR	A,A
+044419 ED42                A  3070    	SBC	HL,BC
+04441B 28 12               A  3071    	JR	Z,L_101
+04441D DD27F7              A  3072    	LD	HL,(IX+%FFFFFFF7)
+044420 7E                  A  3073    	LD	A,(HL)
+044421 47                  A  3074    	LD	B,A
+044422 17ED62              A  3075    	SEXT	HL
+044425 68                  A  3076    	LD	L,B
+044426 01700000            A  3077    	LD	BC,112
+04442A B7                  A  3078    	OR	A,A
+04442B ED42                A  3079    	SBC	HL,BC
+04442D 20 2D               A  3080    	JR	NZ,L_106
+04442F                     A  3081    L_101:
+04442F DD3106              A  3082    	LD	IY,(IX+%6)
+044432 FD7E02              A  3083    	LD	A,(IY+%2)
+044435 B7                  A  3084    	OR	A,A
+044436 20 24               A  3085    	JR	NZ,L_106
                            A  3086    ;  276	            if(an_prev.defined) {
                            A  3087    .LINE 276
                            A  3088    
-044E35 3A 51 98 04         A  3089    	LD	A,(_an_prev)
-044E39 B7                  A  3090    	OR	A,A
-044E3A 28 18               A  3091    	JR	Z,L_103
+044438 3A 8C 8B 04         A  3089    	LD	A,(_an_prev)
+04443C B7                  A  3090    	OR	A,A
+04443D 28 18               A  3091    	JR	Z,L_103
                            A  3092    ;  277	                an_return.address = an_
                            A  3093    .LINE 277
                            A  3094    
-044E3C ED4B 52 98 04       A  3095    	LD	BC,(_an_prev+1)
-044E41 3A 55 98 04         A  3096    	LD	A,(_an_prev+4)
-044E45 ED43 5E 98 04       A  3097    	LD	(_an_return+3),BC
-044E4A 32 61 98 04         A  3098    	LD	(_an_return+6),A
+04443F ED4B 8D 8B 04       A  3095    	LD	BC,(_an_prev+1)
+044444 3A 90 8B 04         A  3096    	LD	A,(_an_prev+4)
+044448 ED43 99 8B 04       A  3097    	LD	(_an_return+3),BC
+04444D 32 9C 8B 04         A  3098    	LD	(_an_return+6),A
                            A  3099    ;  278	                return &an_return;
                            A  3100    .LINE 278
                            A  3101    
-044E4E 21 5B 98 04         A  3102    	LD	HL,_an_return
-044E52 18 19               A  3103    	JR	L_109
+044451 21 96 8B 04         A  3102    	LD	HL,_an_return
+044455 18 19               A  3103    	JR	L_109
                            A  3104    ;  279	            }
                            A  3105    ;  280	            else return NULL;
-044E54                     A  3106    L_103:
+044457                     A  3106    L_103:
                            A  3107    .LINE 280
                            A  3108    
-044E54 B7                  A  3109    	OR	A,A
-044E55 ED62                A  3110    	SBC	HL,HL
-044E57 18 14               A  3111    	JR	L_109
+044457 B7                  A  3109    	OR	A,A
+044458 ED62                A  3110    	SBC	HL,HL
+04445A 18 14               A  3111    	JR	L_109
                            A  3112    ;  281	        }
-044E59                     A  3113    L_106:
+04445C                     A  3113    L_106:
                            A  3114    .LINE 281
                            A  3115    
                            A  3116    ;  282	        
                            A  3117    ;  283	        return findLocalLabel(name);
                            A  3118    .LINE 283
                            A  3119    
-044E59 DD0706              A  3120    	LD	BC,(IX+%6)
-044E5C C5                  A  3121    	PUSH	BC
-044E5D CD 9D 46 04         A  3122    	CALL	_findLocalLabel
-044E61 C1                  A  3123    	POP	BC
-044E62 18 09               A  3124    	JR	L_109
+04445C DD0706              A  3120    	LD	BC,(IX+%6)
+04445F C5                  A  3121    	PUSH	BC
+044460 CD A0 3C 04         A  3122    	CALL	_findLocalLabel
+044464 C1                  A  3123    	POP	BC
+044465 18 09               A  3124    	JR	L_109
                            A  3125    ;  284	    }
                            A  3126    ;  285	    else return findGlobalLabel(name);
-044E64                     A  3127    L_108:
+044467                     A  3127    L_108:
                            A  3128    .LINE 285
                            A  3129    
-044E64 DD0706              A  3130    	LD	BC,(IX+%6)
-044E67 C5                  A  3131    	PUSH	BC
-044E68 CD E4 4C 04         A  3132    	CALL	_findGlobalLabel
-044E6C C1                  A  3133    	POP	BC
-044E6D                     A  3134    L_109:
+044467 DD0706              A  3130    	LD	BC,(IX+%6)
+04446A C5                  A  3131    	PUSH	BC
+04446B CD E7 42 04         A  3132    	CALL	_findGlobalLabel
+04446F C1                  A  3133    	POP	BC
+044470                     A  3134    L_109:
                            A  3135    .LINE 286
                            A  3136    
-044E6D DDF9                A  3137    	LD	SP,IX
-044E6F DDE1                A  3138    	POP	IX
-044E71 C9                  A  3139    	RET	
+044470 DDF9                A  3137    	LD	SP,IX
+044472 DDE1                A  3138    	POP	IX
+044474 C9                  A  3139    	RET	
                            A  3140    
                            A  3141    
                            A  3142    ;**************************** _findLabel ******

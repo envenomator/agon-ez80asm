@@ -306,25 +306,25 @@
 .TYPE 13
 .ENDEF
 .ENDREC "NONAME5"
-.BEGREC "NONAME6",261
+.BEGREC "NONAME6",133
 .DEFINE "start"
 .VALUE 0
 .CLASS 8
-.DIM 256
+.DIM 128
 .TYPE 98
 .ENDEF
 .DEFINE "length"
-.VALUE 256
+.VALUE 128
 .CLASS 8
 .TYPE 12
 .ENDEF
 .DEFINE "next"
-.VALUE 257
+.VALUE 129
 .CLASS 8
 .TYPE 34
 .ENDEF
 .DEFINE "terminator"
-.VALUE 260
+.VALUE 132
 .CLASS 8
 .TYPE 2
 .ENDEF
@@ -812,7 +812,7 @@ _error:
 ;_global_errors                      IMPORT      2   variable
 ;_linenumber                         IMPORT      3   variable
 ;__u_itoa                            IMPORT  -----   function
-;_filename                           IMPORT    768   variable
+;_filename                           IMPORT    384   variable
 ;___print_sendstring                 IMPORT  -----   function
 ;___print_xputch                     IMPORT      3   variable
 ;___print_uputch                     IMPORT  -----   function
@@ -1264,7 +1264,7 @@ L_44:
 .LINE 94
 
 	XOR	A,A
-	LD	BC,260
+	LD	BC,132
 	LD	IY,(IX+%6)
 	CALL	__bstiy
 ;   95	        token->start[0] = 0;
@@ -1275,14 +1275,14 @@ L_44:
 .LINE 96
 
 	XOR	A,A
-	LD	BC,256
+	LD	BC,128
 	CALL	__bstiy
 ;   97	        token->next = NULL;
 .LINE 97
 
 	OR	A,A
 	SBC	HL,HL
-	LD	BC,257
+	LD	BC,129
 	CALL	__istiy
 ;   98	        return 0;
 .LINE 98
@@ -1530,7 +1530,7 @@ L_73:
 
 	LD	HL,(IX+%9)
 	LD	A,(HL)
-	LD	BC,260
+	LD	BC,132
 	LD	IY,(IX+%6)
 	CALL	__bstiy
 ;  132	            break;
@@ -1628,7 +1628,7 @@ L_91:
 	JR	NZ,L_93
 	OR	A,A
 	SBC	HL,HL
-	LD	BC,257
+	LD	BC,129
 	LD	IY,(IX+%6)
 	CALL	__istiy
 ;  148	    else token->next = src+1;
@@ -1638,7 +1638,7 @@ L_91:
 L_93:
 	LD	HL,(IX+%9)
 	INC	HL
-	LD	BC,257
+	LD	BC,129
 	LD	IY,(IX+%6)
 	CALL	__istiy
 L_94:
@@ -1646,7 +1646,7 @@ L_94:
 .LINE 149
 
 	LD	A,(IX+%FFFFFFFC)
-	LD	BC,256
+	LD	BC,128
 	LD	IY,(IX+%6)
 	CALL	__bstiy
 ;  150	    return index;
@@ -1798,7 +1798,7 @@ L_102:
 .LINE 163
 
 	XOR	A,A
-	LD	BC,260
+	LD	BC,132
 	LD	IY,(IX+%6)
 	CALL	__bstiy
 ;  164	        token->start[0] = 0;
@@ -1809,14 +1809,14 @@ L_102:
 .LINE 165
 
 	XOR	A,A
-	LD	BC,256
+	LD	BC,128
 	CALL	__bstiy
 ;  166	        token->next = NULL;
 .LINE 166
 
 	OR	A,A
 	SBC	HL,HL
-	LD	BC,257
+	LD	BC,129
 	CALL	__istiy
 ;  167	        return 0;
 .LINE 167
@@ -1926,7 +1926,7 @@ L_110:
 .LINE 176
 
 	LD	A,%21
-	LD	BC,260
+	LD	BC,132
 	LD	IY,(IX+%6)
 	CALL	__bstiy
 ;  177	                    break;
@@ -1943,7 +1943,7 @@ L_112:
 
 	LD	HL,(IX+%9)
 	LD	A,(HL)
-	LD	BC,260
+	LD	BC,132
 	LD	IY,(IX+%6)
 	CALL	__bstiy
 ;  181	            break;
@@ -2041,7 +2041,7 @@ L_128:
 	JR	NZ,L_130
 	OR	A,A
 	SBC	HL,HL
-	LD	BC,257
+	LD	BC,129
 	LD	IY,(IX+%6)
 	CALL	__istiy
 ;  197	    else token->next = src+1;
@@ -2051,7 +2051,7 @@ L_128:
 L_130:
 	LD	HL,(IX+%9)
 	INC	HL
-	LD	BC,257
+	LD	BC,129
 	LD	IY,(IX+%6)
 	CALL	__istiy
 L_131:
@@ -2059,7 +2059,7 @@ L_131:
 .LINE 198
 
 	LD	A,(IX+%FFFFFFFC)
-	LD	BC,256
+	LD	BC,128
 	LD	IY,(IX+%6)
 	CALL	__bstiy
 ;  199	    return index;
@@ -2299,7 +2299,6 @@ L_137:
 	ADD	HL,HL
 	ADD	HL,HL
 	ADD	HL,HL
-	ADD	HL,HL
 	LD	BC,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2319,7 +2318,7 @@ L_137:
 
 ;**************************** _reOpenFile ***************************
 ;Name                         Addr/Register   Size   Type
-;_filename                           IMPORT    768   variable
+;_filename                           IMPORT    384   variable
 ;_openFile                           IMPORT  -----   function
 ;_mos_fclose                         IMPORT  -----   function
 ;_filehandle                         IMPORT      6   variable
@@ -2370,10 +2369,8 @@ _prepare_filenames:
 
 	LD	BC,(IX+%6)
 	PUSH	BC
-	LD	BC,128
-	LD	HL,_filename
-	ADD	HL,BC
-	PUSH	HL
+	LD	BC,_filename+64
+	PUSH	BC
 	CALL	_strcpy
 	POP	BC
 	POP	BC
@@ -2382,7 +2379,7 @@ _prepare_filenames:
 
 	LD	BC,(IX+%6)
 	PUSH	BC
-	LD	BC,256
+	LD	BC,128
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2396,7 +2393,7 @@ _prepare_filenames:
 	PUSH	BC
 	LD	BC,46
 	PUSH	BC
-	LD	BC,256
+	LD	BC,128
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2407,11 +2404,11 @@ _prepare_filenames:
 ;  221	    strcpy(filename[FILE_LOCAL_LABELS], filename[FILE_OUTPUT]);
 .LINE 221
 
-	LD	BC,256
+	LD	BC,128
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
-	LD	BC,384
+	LD	BC,192
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2421,11 +2418,11 @@ _prepare_filenames:
 ;  222	    strcpy(filename[FILE_ANONYMOUS_LABELS],filename[FILE_OUTPUT]);
 .LINE 222
 
-	LD	BC,256
+	LD	BC,128
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
-	LD	BC,512
+	LD	BC,256
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2435,11 +2432,11 @@ _prepare_filenames:
 ;  223	    strcpy(filename[FILE_LISTING],filename[FILE_OUTPUT]);
 .LINE 223
 
-	LD	BC,256
+	LD	BC,128
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
-	LD	BC,640
+	LD	BC,320
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2451,7 +2448,7 @@ _prepare_filenames:
 
 	LD	BC,L__65
 	PUSH	BC
-	LD	BC,256
+	LD	BC,128
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2463,7 +2460,7 @@ _prepare_filenames:
 
 	LD	BC,L__66
 	PUSH	BC
-	LD	BC,384
+	LD	BC,192
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2475,7 +2472,7 @@ _prepare_filenames:
 
 	LD	BC,L__67
 	PUSH	BC
-	LD	BC,512
+	LD	BC,256
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2487,7 +2484,7 @@ _prepare_filenames:
 
 	LD	BC,L__68
 	PUSH	BC
-	LD	BC,640
+	LD	BC,320
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2506,7 +2503,7 @@ _prepare_filenames:
 ;Name                         Addr/Register   Size   Type
 ;_strcat                             IMPORT  -----   function
 ;_remove_ext                         IMPORT  -----   function
-;_filename                           IMPORT    768   variable
+;_filename                           IMPORT    384   variable
 ;_strcpy                             IMPORT  -----   function
 ;input_filename                        IX+6      3   parameter
 
@@ -2701,10 +2698,8 @@ _openfiles:
 
 	LD	BC,1
 	PUSH	BC
-	LD	BC,128
-	LD	HL,_filename
-	ADD	HL,BC
-	PUSH	HL
+	LD	BC,_filename+64
+	PUSH	BC
 	LD	BC,_filehandle
 	INC	BC
 	PUSH	BC
@@ -2730,7 +2725,7 @@ L_153:
 	JR	Z,L_157
 	LD	BC,10
 	PUSH	BC
-	LD	BC,256
+	LD	BC,128
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2758,7 +2753,7 @@ L_158:
 	JR	Z,L_162
 	LD	BC,10
 	PUSH	BC
-	LD	BC,384
+	LD	BC,192
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2786,7 +2781,7 @@ L_163:
 	JR	Z,L_167
 	LD	BC,10
 	PUSH	BC
-	LD	BC,512
+	LD	BC,256
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2814,7 +2809,7 @@ L_168:
 	JR	Z,L_172
 	LD	BC,10
 	PUSH	BC
-	LD	BC,640
+	LD	BC,320
 	LD	HL,_filename
 	ADD	HL,BC
 	PUSH	HL
@@ -2858,7 +2853,7 @@ L_176:
 ;Name                         Addr/Register   Size   Type
 ;_closeAllFiles                      IMPORT  -----   function
 ;_filehandle                         IMPORT      6   variable
-;_filename                           IMPORT    768   variable
+;_filename                           IMPORT    384   variable
 ;_openFile                           IMPORT  -----   function
 ;temp174                              IX-16      3   variable
 ;temp169                              IX-13      3   variable

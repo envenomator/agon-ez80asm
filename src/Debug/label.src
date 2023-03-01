@@ -164,25 +164,25 @@
 .TYPE 14
 .ENDEF
 .ENDREC "NONAME4"
-.BEGREC "NONAME5",261
+.BEGREC "NONAME5",133
 .DEFINE "start"
 .VALUE 0
 .CLASS 8
-.DIM 256
+.DIM 128
 .TYPE 98
 .ENDEF
 .DEFINE "length"
-.VALUE 256
+.VALUE 128
 .CLASS 8
 .TYPE 12
 .ENDEF
 .DEFINE "next"
-.VALUE 257
+.VALUE 129
 .CLASS 8
 .TYPE 34
 .ENDEF
 .DEFINE "terminator"
-.VALUE 260
+.VALUE 132
 .CLASS 8
 .TYPE 2
 .ENDEF
@@ -441,12 +441,12 @@ _globalLabelBuffer:
 .TYPE 98
 .ENDEF
 _localLabelBuffer:
-	DS	65536
+	DS	4096
 .DEFINE "localLabelBuffer"
 .ALIAS "_localLabelBuffer"
 .CLASS 83
 .VALUE _localLabelBuffer
-.DIM 65536
+.DIM 4096
 .TYPE 98
 .ENDEF
 _globalLabelBufferIndex:
@@ -1548,7 +1548,7 @@ L_36:
 ;Name                         Addr/Register   Size   Type
 ;_localLabelTable                    STATIC    448   variable
 ;_localLabelCounter                  STATIC      2   variable
-;_localLabelBuffer                   STATIC  65536   variable
+;_localLabelBuffer                   STATIC   4096   variable
 ;_localLabelBufferIndex              STATIC      2   variable
 ;_agon_fwrite                        IMPORT  -----   function
 ;delta                                 IX-5      2   variable
@@ -1746,7 +1746,7 @@ L_43:
 ;Name                         Addr/Register   Size   Type
 ;_localLabelTable                    STATIC    448   variable
 ;_localLabelCounter                  STATIC      2   variable
-;_localLabelBuffer                   STATIC  65536   variable
+;_localLabelBuffer                   STATIC   4096   variable
 ;_localLabelBufferIndex              STATIC      2   variable
 ;_agon_fread                         IMPORT  -----   function
 ;delta                                 IX-5      2   variable
@@ -2128,7 +2128,7 @@ L_52:
 	ADD	HL,BC
 	LD	BC,HL
 	INC	BC
-	LD	HL,65535
+	LD	HL,4095
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
@@ -2371,7 +2371,7 @@ L_73:
 ;_localLabelTable                    STATIC    448   variable
 ;_strcmp                             IMPORT  -----   function
 ;_strcpy                             IMPORT  -----   function
-;_localLabelBuffer                   STATIC  65536   variable
+;_localLabelBuffer                   STATIC   4096   variable
 ;_localLabelBufferIndex              STATIC      2   variable
 ;_strlen                             IMPORT  -----   function
 ;_localLabelCounter                  STATIC      2   variable

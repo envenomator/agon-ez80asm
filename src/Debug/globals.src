@@ -308,13 +308,13 @@
 .ENDREC "NONAME5"
 	SEGMENT BSS
 _filename:
-	DS	768
+	DS	384
 .DEFINE "filename"
 .ALIAS "_filename"
 .CLASS 83
 .VALUE _filename
 .DIM 6
-.DIM 128
+.DIM 64
 .TYPE 866
 .ENDEF
 _filehandle:

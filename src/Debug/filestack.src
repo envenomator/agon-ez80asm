@@ -306,7 +306,7 @@
 .TYPE 13
 .ENDEF
 .ENDREC "NONAME5"
-.BEGREC "NONAME6",131
+.BEGREC "NONAME6",67
 .DEFINE "linenumber"
 .VALUE 0
 .CLASS 8
@@ -320,36 +320,36 @@
 .DEFINE "filename"
 .VALUE 3
 .CLASS 8
-.DIM 128
+.DIM 64
 .TYPE 98
 .ENDEF
 .ENDREC "NONAME6"
-.BEGREC "NONAME7",261
+.BEGREC "NONAME7",133
 .DEFINE "start"
 .VALUE 0
 .CLASS 8
-.DIM 256
+.DIM 128
 .TYPE 98
 .ENDEF
 .DEFINE "length"
-.VALUE 256
+.VALUE 128
 .CLASS 8
 .TYPE 12
 .ENDEF
 .DEFINE "next"
-.VALUE 257
+.VALUE 129
 .CLASS 8
 .TYPE 34
 .ENDEF
 .DEFINE "terminator"
-.VALUE 260
+.VALUE 132
 .CLASS 8
 .TYPE 2
 .ENDEF
 .ENDREC "NONAME7"
 	SEGMENT BSS
 __filestack:
-	DS	524
+	DS	268
 .DEFINE "_filestack"
 .ALIAS "__filestack"
 .CLASS 83
@@ -499,7 +499,7 @@ _filestackPush:
 	LD	A,(__filestackCount)
 	UEXT	HL
 	LD	L,A
-	LD	A,%83
+	LD	A,%43
 	CALL	__imul_b
 	LD	BC,__filestack
 	ADD	HL,BC
@@ -524,7 +524,7 @@ _filestackPush:
 	LD	A,(__filestackCount)
 	UEXT	HL
 	LD	L,A
-	LD	A,%83
+	LD	A,%43
 	CALL	__imul_b
 	LD	BC,__filestack
 	ADD	HL,BC
@@ -572,7 +572,7 @@ L_6:
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
 ;_strcpy                             IMPORT  -----   function
-;__filestack                         STATIC    524   variable
+;__filestack                         STATIC    268   variable
 ;__filestackCount                    STATIC      1   variable
 ;fs                                    IX+6      3   parameter
 
@@ -631,7 +631,7 @@ _filestackPop:
 
 	UEXT	HL
 	LD	L,A
-	LD	A,%83
+	LD	A,%43
 	CALL	__imul_b
 	LD	BC,__filestack
 	ADD	HL,BC
@@ -646,7 +646,7 @@ _filestackPop:
 	LD	A,(__filestackCount)
 	UEXT	HL
 	LD	L,A
-	LD	A,%83
+	LD	A,%43
 	CALL	__imul_b
 	LD	BC,__filestack
 	ADD	HL,BC
@@ -660,7 +660,7 @@ _filestackPop:
 	LD	A,(__filestackCount)
 	UEXT	HL
 	LD	L,A
-	LD	A,%83
+	LD	A,%43
 	CALL	__imul_b
 	ADD	HL,BC
 	LD	IY,HL
@@ -695,7 +695,7 @@ L_10:
 ;**************************** _filestackPop ***************************
 ;Name                         Addr/Register   Size   Type
 ;_strcpy                             IMPORT  -----   function
-;__filestack                         STATIC    524   variable
+;__filestack                         STATIC    268   variable
 ;__filestackCount                    STATIC      1   variable
 ;fs                                    IX+6      3   parameter
 

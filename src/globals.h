@@ -5,9 +5,8 @@
 #include <stdint.h>
 #include "instruction.h"
 
-#define DBBUFFERSIZE 256
 #define LINEMAX         128
-#define FILENAMEMAXLENGTH 128
+#define FILENAMEMAXLENGTH 64
 #define FILES               5+1 // +current
 
 enum {

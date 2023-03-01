@@ -380,30 +380,30 @@
 .TYPE 13
 .ENDEF
 .ENDREC "NONAME10"
-.BEGREC "NONAME11",261
+.BEGREC "NONAME11",133
 .DEFINE "start"
 .VALUE 0
 .CLASS 8
-.DIM 256
+.DIM 128
 .TYPE 98
 .ENDEF
 .DEFINE "length"
-.VALUE 256
+.VALUE 128
 .CLASS 8
 .TYPE 12
 .ENDEF
 .DEFINE "next"
-.VALUE 257
+.VALUE 129
 .CLASS 8
 .TYPE 34
 .ENDEF
 .DEFINE "terminator"
-.VALUE 260
+.VALUE 132
 .CLASS 8
 .TYPE 2
 .ENDEF
 .ENDREC "NONAME11"
-.BEGREC "NONAME12",131
+.BEGREC "NONAME12",67
 .DEFINE "linenumber"
 .VALUE 0
 .CLASS 8
@@ -417,7 +417,7 @@
 .DEFINE "filename"
 .VALUE 3
 .CLASS 8
-.DIM 128
+.DIM 64
 .TYPE 98
 .ENDEF
 .ENDREC "NONAME12"
@@ -929,7 +929,7 @@ _getLabelValue:
 
 .CLASS 65
 
-.VALUE -279
+.VALUE -151
 
 .TAG "NONAME11"
 
@@ -940,7 +940,7 @@ _getLabelValue:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-279
+	LD	HL,-151
 	ADD	HL,SP
 	LD	SP,HL
 ;   70	    int32_t total, tmp;
@@ -982,7 +982,7 @@ L_43:
 	LD	BC,(IX+%FFFFFFF4)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-279
+	LD	BC,-151
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -993,7 +993,7 @@ L_43:
 .LINE 81
 
 	LD	HL,IX
-	LD	BC,-279
+	LD	BC,-151
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -1005,7 +1005,7 @@ L_43:
 .LINE 82
 
 	LD	HL,IX
-	LD	BC,-279
+	LD	BC,-151
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -1031,7 +1031,7 @@ L_27:
 .LINE 85
 
 	LD	HL,IX
-	LD	BC,-279
+	LD	BC,-151
 	ADD	HL,BC
 	LD	(IX+%FFFFFFF1),HL
 	LD	A,(HL)
@@ -1205,7 +1205,7 @@ L_42:
 ;_findLabel                          IMPORT  -----   function
 ;_notEmpty                           IMPORT  -----   function
 ;_getOperatorToken                   IMPORT  -----   function
-;token                               IX-279    261   variable
+;token                               IX-151    133   variable
 ;lbl                                  IX-18      3   variable
 ;G_1                                  IX-15      3   variable
 ;ptr                                  IX-12      3   variable
@@ -1215,7 +1215,7 @@ L_42:
 ;string                                IX+6      3   parameter
 
 
-; Stack Frame Size: 288 (bytes)
+; Stack Frame Size: 160 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -2895,7 +2895,7 @@ _parseLine:
 
 .CLASS 65
 
-.VALUE -268
+.VALUE -140
 
 .TAG "NONAME11"
 
@@ -2906,7 +2906,7 @@ _parseLine:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-268
+	LD	HL,-140
 	ADD	HL,SP
 	LD	SP,HL
 ;  375	    uint8_t x;
@@ -3058,7 +3058,7 @@ L_178:
 	LD	BC,(IX+%6)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3142,7 +3142,7 @@ L_185:
 	LD	BC,(IX+%6)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3209,7 +3209,7 @@ L_192:
 .LINE 430
 
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3230,7 +3230,7 @@ L_192:
 	LD	BC,(IX+%FFFFFFF5)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3297,7 +3297,7 @@ L_199:
 .LINE 446
 
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	(IX+%FFFFFFF9),HL
 	LD	A,(HL)
@@ -3393,7 +3393,7 @@ L_207:
 ;  460	                if(token.start[0] == '.') {
 .LINE 460
 
-	LD	HL,-268
+	LD	HL,-140
 	LD	BC,IX
 	ADD	HL,BC
 	LD	A,(HL)
@@ -3460,7 +3460,7 @@ L_208:
 	LD	BC,(IX+%FFFFFFF5)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3505,7 +3505,7 @@ L_210:
 	LD	BC,(IX+%FFFFFFF5)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3541,7 +3541,7 @@ L_213:
 .LINE 485
 
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3570,7 +3570,7 @@ L_216:
 .LINE 489
 
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3626,7 +3626,7 @@ L_217:
 	LD	BC,(IX+%FFFFFFF5)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3697,7 +3697,7 @@ L_221:
 	LD	BC,(IX+%FFFFFFF5)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3719,7 +3719,7 @@ L_224:
 .LINE 512
 
 	LD	HL,IX
-	LD	BC,-268
+	LD	BC,-140
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -3791,7 +3791,7 @@ L_227:
 ;_operand2                           IMPORT     16   variable
 ;_operand1                           IMPORT     16   variable
 ;_currentline                        IMPORT    264   variable
-;token                               IX-268    261   variable
+;token                               IX-140    133   variable
 ;G_4                                   IX-7      3   variable
 ;done                                  IX-4      1   variable
 ;x                                     IX-3      1   variable
@@ -3800,7 +3800,7 @@ L_227:
 ;src                                   IX+6      3   parameter
 
 
-; Stack Frame Size: 277 (bytes)
+; Stack Frame Size: 149 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -7305,7 +7305,7 @@ _parse_asm_single_immediate:
 
 .CLASS 65
 
-.VALUE -261
+.VALUE -133
 
 .TAG "NONAME11"
 
@@ -7316,7 +7316,7 @@ _parse_asm_single_immediate:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-261
+	LD	HL,-133
 	ADD	HL,SP
 	LD	SP,HL
 ;  948	    tokentype token;
@@ -7335,7 +7335,7 @@ _parse_asm_single_immediate:
 	LD	BC,(_currentline+3)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-261
+	LD	BC,-133
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7347,7 +7347,7 @@ _parse_asm_single_immediate:
 .LINE 952
 
 	LD	HL,IX
-	LD	BC,-261
+	LD	BC,-133
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7361,7 +7361,7 @@ _parse_asm_single_immediate:
 	LD	BC,1
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-261
+	LD	BC,-133
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7427,10 +7427,10 @@ L_485:
 ;_notEmpty                           IMPORT  -----   function
 ;_getLineToken                       IMPORT  -----   function
 ;_currentline                        IMPORT    264   variable
-;token                               IX-261    261   variable
+;token                               IX-133    133   variable
 
 
-; Stack Frame Size: 267 (bytes)
+; Stack Frame Size: 139 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -7456,7 +7456,7 @@ _parse_asm_keyval_pair:
 
 .CLASS 65
 
-.VALUE -261
+.VALUE -133
 
 .TAG "NONAME11"
 
@@ -7467,7 +7467,7 @@ _parse_asm_keyval_pair:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-261
+	LD	HL,-133
 	ADD	HL,SP
 	LD	SP,HL
 ;  963	    tokentype token;
@@ -7486,7 +7486,7 @@ _parse_asm_keyval_pair:
 	LD	BC,(_currentline+3)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-261
+	LD	BC,-133
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7498,7 +7498,7 @@ _parse_asm_keyval_pair:
 .LINE 967
 
 	LD	HL,IX
-	LD	BC,-261
+	LD	BC,-133
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7521,7 +7521,7 @@ _parse_asm_keyval_pair:
 	LD	BC,(IX+%FFFFFFFC)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-261
+	LD	BC,-133
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7533,7 +7533,7 @@ _parse_asm_keyval_pair:
 .LINE 970
 
 	LD	HL,IX
-	LD	BC,-261
+	LD	BC,-133
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7547,7 +7547,7 @@ _parse_asm_keyval_pair:
 	LD	BC,1
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-261
+	LD	BC,-133
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7614,10 +7614,10 @@ L_492:
 ;_strcpy                             IMPORT  -----   function
 ;_getLineToken                       IMPORT  -----   function
 ;_currentline                        IMPORT    264   variable
-;token                               IX-261    261   variable
+;token                               IX-133    133   variable
 
 
-; Stack Frame Size: 267 (bytes)
+; Stack Frame Size: 139 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -7643,7 +7643,7 @@ _handle_asm_db:
 
 .CLASS 65
 
-.VALUE -264
+.VALUE -136
 
 .TAG "NONAME11"
 
@@ -7654,7 +7654,7 @@ _handle_asm_db:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-264
+	LD	HL,-136
 	ADD	HL,SP
 	LD	SP,HL
 ;  982	    tokentype token;
@@ -7703,7 +7703,7 @@ L_506:
 	LD	BC,(_currentline+3)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-264
+	LD	BC,-136
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7715,7 +7715,7 @@ L_506:
 .LINE 991
 
 	LD	HL,IX
-	LD	BC,-264
+	LD	BC,-136
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7727,7 +7727,7 @@ L_506:
 .LINE 992
 
 	LD	HL,IX
-	LD	BC,-264
+	LD	BC,-136
 	ADD	HL,BC
 	LD	(IX+%FFFFFFFD),HL
 	LD	A,(HL)
@@ -7868,11 +7868,11 @@ L_510:
 ;_currentline                        IMPORT    264   variable
 ;_address                            IMPORT      4   variable
 ;_pass                               IMPORT      3   variable
-;token                               IX-264    261   variable
+;token                               IX-136    133   variable
 ;G_23                                  IX-3      3   variable
 
 
-; Stack Frame Size: 270 (bytes)
+; Stack Frame Size: 142 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -7920,7 +7920,7 @@ _handle_asm_dw:
 
 .CLASS 65
 
-.VALUE -264
+.VALUE -136
 
 .TAG "NONAME11"
 
@@ -7931,7 +7931,7 @@ _handle_asm_dw:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-264
+	LD	HL,-136
 	ADD	HL,SP
 	LD	SP,HL
 ; 1015	    label *lbl;
@@ -7980,7 +7980,7 @@ L_527:
 	LD	BC,(_currentline+3)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-264
+	LD	BC,-136
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -7992,7 +7992,7 @@ L_527:
 .LINE 1024
 
 	LD	HL,IX
-	LD	BC,-264
+	LD	BC,-136
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -8004,7 +8004,7 @@ L_527:
 .LINE 1025
 
 	LD	HL,IX
-	LD	BC,-264
+	LD	BC,-136
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -8029,7 +8029,7 @@ L_513:
 	LD	BC,1
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-264
+	LD	BC,-136
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -8167,12 +8167,12 @@ L_531:
 ;_currentline                        IMPORT    264   variable
 ;_address                            IMPORT      4   variable
 ;_pass                               IMPORT      3   variable
-;token                               IX-264    261   variable
+;token                               IX-136    133   variable
 ;lbl                                   IX-3      3   variable
 ;longword                              IX+6      1   parameter
 
 
-; Stack Frame Size: 273 (bytes)
+; Stack Frame Size: 145 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -8210,7 +8210,7 @@ _handle_asm_equ:
 
 .CLASS 65
 
-.VALUE -264
+.VALUE -136
 
 .TAG "NONAME11"
 
@@ -8221,7 +8221,7 @@ _handle_asm_equ:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-264
+	LD	HL,-136
 	ADD	HL,SP
 	LD	SP,HL
 ; 1048	    label *lbl;
@@ -8241,7 +8241,7 @@ _handle_asm_equ:
 	LD	BC,(_currentline+3)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-264
+	LD	BC,-136
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -8253,7 +8253,7 @@ _handle_asm_equ:
 .LINE 1053
 
 	LD	HL,IX
-	LD	BC,-264
+	LD	BC,-136
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -8313,7 +8313,7 @@ L_539:
 	CALL	__icmpzero
 	JR	Z,L_537
 	LD	HL,IX
-	LD	BC,-264
+	LD	BC,-136
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -8373,11 +8373,11 @@ L_544:
 ;_notEmpty                           IMPORT  -----   function
 ;_getLineToken                       IMPORT  -----   function
 ;_currentline                        IMPORT    264   variable
-;token                               IX-264    261   variable
+;token                               IX-136    133   variable
 ;lbl                                   IX-3      3   variable
 
 
-; Stack Frame Size: 270 (bytes)
+; Stack Frame Size: 142 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -8649,7 +8649,7 @@ _handle_asm_include:
 
 .CLASS 65
 
-.VALUE -134
+.VALUE -70
 
 .TAG "NONAME12"
 
@@ -8661,7 +8661,7 @@ _handle_asm_include:
 
 .CLASS 65
 
-.VALUE -395
+.VALUE -203
 
 .TAG "NONAME11"
 
@@ -8672,7 +8672,7 @@ _handle_asm_include:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-398
+	LD	HL,-206
 	ADD	HL,SP
 	LD	SP,HL
 ; 1095	    tokentype token;
@@ -8691,7 +8691,7 @@ _handle_asm_include:
 	LD	BC,(_currentline+3)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-395
+	LD	BC,-203
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -8703,7 +8703,7 @@ _handle_asm_include:
 .LINE 1099
 
 	LD	HL,IX
-	LD	BC,-395
+	LD	BC,-203
 	ADD	HL,BC
 	LD	(IX+%FFFFFFFD),HL
 	LD	A,(HL)
@@ -8728,50 +8728,40 @@ _handle_asm_include:
 ; 1101	            fsi.linenumber = linenumber;
 .LINE 1101
 
-	LD	BC,(_linenumber)
-	LEA	IY,IX+%FFFFFF80
-	LD	(IY+%FFFFFFFA),C
-	LD	(IY+%FFFFFFFB),B
+	LD	HL,(_linenumber)
+	LD	(IX+%FFFFFFBA),L
+	LD	(IX+%FFFFFFBB),H
 ; 1102	            fsi.fp = filehandle[FILE_CURRENT];
 .LINE 1102
 
 	LD	A,(_filehandle)
-	LD	(IY+%FFFFFFFC),A
+	LD	(IX+%FFFFFFBC),A
 ; 1103	            strcpy(fsi.filename, filename[FILE_CURRENT]);
 .LINE 1103
 
 	LD	BC,_filename
 	PUSH	BC
-	LD	HL,IX
-	LD	BC,-131
-	ADD	HL,BC
-	LD	BC,HL
-	PUSH	BC
+	PEA	IX+%FFFFFFBD
 	CALL	_strcpy
 	POP	BC
 	POP	BC
 ; 1104	            filestackPush(&fsi);
 .LINE 1104
 
-	LD	HL,IX
-	LD	BC,-134
-	ADD	HL,BC
-	LD	BC,HL
-	PUSH	BC
+	PEA	IX+%FFFFFFBA
 	CALL	_filestackPush
 	POP	BC
 ; 1105	            filehandle[FILE_CURRENT] = mos_fopen(token.start+1, fa_read);
 .LINE 1105
 
-	LD	HL,(IX+%FFFFFFFD)
-	INC	HL
-	LD	BC,-398
-	CALL	__istix
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LEA	IY,IX+%FFFFFF80
+	LD	(IY+%FFFFFFB2),BC
 	LD	BC,1
 	PUSH	BC
-	LD	BC,-398
-	CALL	__ildix
-	PUSH	HL
+	LD	BC,(IY+%FFFFFFB2)
+	PUSH	BC
 	CALL	_mos_fopen
 	POP	BC
 	POP	BC
@@ -8779,9 +8769,9 @@ _handle_asm_include:
 ; 1106	            strcpy(filename[FILE_CURRENT], token.start+1);
 .LINE 1106
 
-	LD	BC,-398
-	CALL	__ildix
-	PUSH	HL
+	LEA	IY,IX+%FFFFFF80
+	LD	BC,(IY+%FFFFFFB2)
+	PUSH	BC
 	LD	BC,_filename
 	PUSH	BC
 	CALL	_strcpy
@@ -8796,11 +8786,7 @@ _handle_asm_include:
 ; 1108	                filestackPop(&fsi);
 .LINE 1108
 
-	LD	HL,IX
-	LD	BC,-134
-	ADD	HL,BC
-	LD	BC,HL
-	PUSH	BC
+	PEA	IX+%FFFFFFBA
 	CALL	_filestackPop
 	POP	BC
 ; 1109	                error(message[ERROR_INCLUDEFILE]);
@@ -8835,8 +8821,7 @@ L_564:
 ; 1114	        if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
 .LINE 1114
 
-	LEA	IY,IX+%FFFFFF80
-	LD	A,(IY+%FFFFFFF9)
+	LD	A,(IX+%FFFFFFB9)
 	OR	A,A
 	JR	Z,L_567
 	LD	HL,_message+87
@@ -8872,19 +8857,19 @@ L_567:
 ;_filestackPop                       IMPORT  -----   function
 ;_mos_fopen                          IMPORT  -----   function
 ;_filestackPush                      IMPORT  -----   function
-;_filename                           IMPORT    768   variable
+;_filename                           IMPORT    384   variable
 ;_strcpy                             IMPORT  -----   function
 ;_filehandle                         IMPORT      6   variable
 ;_linenumber                         IMPORT      3   variable
 ;_strlen                             IMPORT  -----   function
 ;_getLineToken                       IMPORT  -----   function
 ;_currentline                        IMPORT    264   variable
-;token                               IX-395    261   variable
-;fsi                                 IX-134    131   variable
+;token                               IX-203    133   variable
+;fsi                                  IX-70     67   variable
 ;G_25                                  IX-3      3   variable
 
 
-; Stack Frame Size: 404 (bytes)
+; Stack Frame Size: 212 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -8942,7 +8927,7 @@ _handle_asm_blk:
 
 .CLASS 65
 
-.VALUE -270
+.VALUE -142
 
 .TAG "NONAME11"
 
@@ -8953,7 +8938,7 @@ _handle_asm_blk:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-270
+	LD	HL,-142
 	ADD	HL,SP
 	LD	SP,HL
 ; 1122	    uint16_t num;
@@ -9006,7 +8991,7 @@ L_589:
 	LD	BC,(_currentline+3)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-270
+	LD	BC,-142
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -9018,7 +9003,7 @@ L_589:
 .LINE 1133
 
 	LD	HL,IX
-	LD	BC,-270
+	LD	BC,-142
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -9032,7 +9017,7 @@ L_589:
 	LD	BC,1
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-270
+	LD	BC,-142
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -9056,7 +9041,7 @@ L_589:
 	LD	BC,(IX+%FFFFFFF3)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-270
+	LD	BC,-142
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -9068,7 +9053,7 @@ L_589:
 .LINE 1138
 
 	LD	HL,IX
-	LD	BC,-270
+	LD	BC,-142
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -9080,7 +9065,7 @@ L_589:
 .LINE 1139
 
 	LD	HL,IX
-	LD	BC,-270
+	LD	BC,-142
 	ADD	HL,BC
 	LD	(IX+%FFFFFFF7),HL
 	LD	A,(HL)
@@ -9291,14 +9276,14 @@ L_590:
 ;_currentline                        IMPORT    264   variable
 ;_address                            IMPORT      4   variable
 ;_pass                               IMPORT      3   variable
-;token                               IX-270    261   variable
+;token                               IX-142    133   variable
 ;G_27                                  IX-9      3   variable
 ;num                                   IX-6      2   variable
 ;val                                   IX-4      4   variable
 ;width                                 IX+6      1   parameter
 
 
-; Stack Frame Size: 279 (bytes)
+; Stack Frame Size: 151 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -10280,7 +10265,7 @@ _assemble:
 
 .CLASS 65
 
-.VALUE -132
+.VALUE -68
 
 .TAG "NONAME12"
 
@@ -10292,7 +10277,7 @@ _assemble:
 
 .CLASS 65
 
-.VALUE -260
+.VALUE -196
 
 .DIM 128
 
@@ -10303,7 +10288,7 @@ _assemble:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-260
+	LD	HL,-196
 	ADD	HL,SP
 	LD	SP,HL
 ; 1299	    char line[LINEMAX];
@@ -10328,10 +10313,8 @@ _assemble:
 ; 1306	    strcpy(filename[FILE_CURRENT], filename[FILE_INPUT]);
 .LINE 1306
 
-	LD	BC,128
-	LD	HL,_filename
-	ADD	HL,BC
-	PUSH	HL
+	LD	BC,_filename+64
+	PUSH	BC
 	LD	BC,_filename
 	PUSH	BC
 	CALL	_strcpy
@@ -10372,7 +10355,7 @@ L_646:
 .LINE 1315
 
 	LD	HL,IX
-	LD	BC,-260
+	LD	BC,-196
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -10398,7 +10381,7 @@ L_645:
 	LD	BC,128
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-260
+	LD	BC,-196
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -10426,34 +10409,25 @@ L_645:
 ; 1324	            incfiles = filestackPop(&fsitem);
 .LINE 1324
 
-	LD	HL,IX
-	LD	BC,-132
-	ADD	HL,BC
-	LD	BC,HL
-	PUSH	BC
+	PEA	IX+%FFFFFFBC
 	CALL	_filestackPop
 	POP	BC
 	LD	(IX+%FFFFFFFF),A
 ; 1325	            linenumber = fsitem.linenumber;
 .LINE 1325
 
-	LEA	IY,IX+%FFFFFF80
-	LD	BC,(IY+%FFFFFFFC)
+	LD	BC,(IX+%FFFFFFBC)
 	CALL	__stoiu
 	LD	(_linenumber),HL
 ; 1326	            filehandle[FILE_CURRENT] = fsitem.fp;
 .LINE 1326
 
-	LD	A,(IY+%FFFFFFFE)
+	LD	A,(IX+%FFFFFFBE)
 	LD	(_filehandle),A
 ; 1327	            strcpy(filename[FILE_CURRENT], fsitem.filename);
 .LINE 1327
 
-	LD	HL,IX
-	LD	BC,-129
-	ADD	HL,BC
-	LD	BC,HL
-	PUSH	BC
+	PEA	IX+%FFFFFFBF
 	LD	BC,_filename
 	PUSH	BC
 	CALL	_strcpy
@@ -10612,7 +10586,7 @@ L_657:
 .LINE 1353
 
 	LD	HL,IX
-	LD	BC,-260
+	LD	BC,-196
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -10622,7 +10596,7 @@ L_657:
 .LINE 1354
 
 	LD	HL,IX
-	LD	BC,-260
+	LD	BC,-196
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -10660,7 +10634,7 @@ L_656:
 	LD	BC,128
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-260
+	LD	BC,-196
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -10688,34 +10662,25 @@ L_656:
 ; 1364	            incfiles = filestackPop(&fsitem);
 .LINE 1364
 
-	LD	HL,IX
-	LD	BC,-132
-	ADD	HL,BC
-	LD	BC,HL
-	PUSH	BC
+	PEA	IX+%FFFFFFBC
 	CALL	_filestackPop
 	POP	BC
 	LD	(IX+%FFFFFFFF),A
 ; 1365	            linenumber = fsitem.linenumber;
 .LINE 1365
 
-	LEA	IY,IX+%FFFFFF80
-	LD	BC,(IY+%FFFFFFFC)
+	LD	BC,(IX+%FFFFFFBC)
 	CALL	__stoiu
 	LD	(_linenumber),HL
 ; 1366	            filehandle[FILE_CURRENT] = fsitem.fp;
 .LINE 1366
 
-	LD	A,(IY+%FFFFFFFE)
+	LD	A,(IX+%FFFFFFBE)
 	LD	(_filehandle),A
 ; 1367	            strcpy(filename[FILE_CURRENT], fsitem.filename);
 .LINE 1367
 
-	LD	HL,IX
-	LD	BC,-129
-	ADD	HL,BC
-	LD	BC,HL
-	PUSH	BC
+	PEA	IX+%FFFFFFBF
 	LD	BC,_filename
 	PUSH	BC
 	CALL	_strcpy
@@ -10769,16 +10734,16 @@ L_664:
 ;___print_sendstring                 IMPORT  -----   function
 ;___print_xputch                     IMPORT      3   variable
 ;___print_uputch                     IMPORT  -----   function
-;_filename                           IMPORT    768   variable
+;_filename                           IMPORT    384   variable
 ;_strcpy                             IMPORT  -----   function
 ;_filehandle                         IMPORT      6   variable
 ;_global_errors                      IMPORT      2   variable
-;line                                IX-260    128   variable
-;fsitem                              IX-132    131   variable
+;line                                IX-196    128   variable
+;fsitem                               IX-68     67   variable
 ;incfiles                              IX-1      1   variable
 
 
-; Stack Frame Size: 266 (bytes)
+; Stack Frame Size: 202 (bytes)
 ;       Spill Code: -1 (instruction)
 
 
@@ -10867,8 +10832,6 @@ L__294:
 	XREF __lshru:ROM
 	XREF __stoiu:ROM
 	XREF __itol:ROM
-	XREF __ildix:ROM
-	XREF __istix:ROM
 	XREF __setflag:ROM
 	XREF __scmpzero:ROM
 	XREF __icmpzero:ROM

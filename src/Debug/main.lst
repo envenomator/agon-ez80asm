@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     14:26:44     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:29:18     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -360,25 +360,25 @@ PC     Object              I  Line    Source
                            A   356    .TYPE 13
                            A   357    .ENDEF
                            A   358    .ENDREC "NONAME8"
-                           A   359    .BEGREC "NONAME9",261
+                           A   359    .BEGREC "NONAME9",133
                            A   360    .DEFINE "start"
                            A   361    .VALUE 0
                            A   362    .CLASS 8
-                           A   363    .DIM 256
+                           A   363    .DIM 128
                            A   364    .TYPE 98
                            A   365    .ENDEF
                            A   366    .DEFINE "length"
-                           A   367    .VALUE 256
+                           A   367    .VALUE 128
                            A   368    .CLASS 8
                            A   369    .TYPE 12
                            A   370    .ENDEF
                            A   371    .DEFINE "next"
-                           A   372    .VALUE 257
+                           A   372    .VALUE 129
                            A   373    .CLASS 8
                            A   374    .TYPE 34
                            A   375    .ENDEF
                            A   376    .DEFINE "terminator"
-                           A   377    .VALUE 260
+                           A   377    .VALUE 132
                            A   378    .CLASS 8
                            A   379    .TYPE 2
                            A   380    .ENDEF
@@ -465,16 +465,16 @@ PC     Object              I  Line    Source
 0400EA DD2706              A   461    	LD	HL,(IX+%6)
 0400ED B7                  A   462    	OR	A,A
 0400EE ED42                A   463    	SBC	HL,BC
-0400F0 CD 1D 64 04         A   464    	CALL	__setflag
+0400F0 CD 15 5A 04         A   464    	CALL	__setflag
 0400F4 F2 12 01 04         A   465    	JP	P,L_1
                            A   466    ;   14	        printf("Usage: asm <filename> [
                            A   467    .LINE 14
                            A   468    
-0400F8 01 9C 66 04         A   469    	LD	BC,___print_uputch
-0400FC ED43 34 8C 04       A   470    	LD	(___print_xputch),BC
-040101 01 B7 8C 04         A   471    	LD	BC,L__1
+0400F8 01 88 5C 04         A   469    	LD	BC,___print_uputch
+0400FC ED43 EF 81 04       A   470    	LD	(___print_xputch),BC
+040101 01 72 82 04         A   471    	LD	BC,L__1
 040105 C5                  A   472    	PUSH	BC
-040106 CD 0E 65 04         A   473    	CALL	___print_sendstring
+040106 CD FA 5A 04         A   473    	CALL	___print_sendstring
 04010A C1                  A   474    	POP	BC
                            A   475    ;   15	        return 0;
                            A   476    .LINE 15
@@ -494,12 +494,12 @@ PC     Object              I  Line    Source
 040115 ED2303              A   490    	LEA	HL,IY+%3
 040118 ED07                A   491    	LD	BC,(HL)
 04011A C5                  A   492    	PUSH	BC
-04011B CD 75 5E 04         A   493    	CALL	_prepare_filenames
+04011B CD 77 54 04         A   493    	CALL	_prepare_filenames
 04011F C1                  A   494    	POP	BC
                            A   495    ;   19	    if(!openfiles()) return 0;
                            A   496    .LINE 19
                            A   497    
-040120 CD 0C 60 04         A   498    	CALL	_openfiles
+040120 CD 09 56 04         A   498    	CALL	_openfiles
 040124 B7                  A   499    	OR	A,A
 040125 20 07               A   500    	JR	NZ,L_3
 040127 B7                  A   501    	OR	A,A
@@ -511,7 +511,7 @@ PC     Object              I  Line    Source
                            A   507    .LINE 21
                            A   508    
 04012E AF                  A   509    	XOR	A,A
-04012F 32 11 97 04         A   510    	LD	(_debug_enabled),A
+04012F 32 4C 8A 04         A   510    	LD	(_debug_enabled),A
                            A   511    ;   22	    if((argc == 3) && (strcmp(argv[2], 
                            A   512    .LINE 22
                            A   513    
@@ -528,19 +528,19 @@ PC     Object              I  Line    Source
 040144 DD77FF              A   524    	LD	(IX+%FFFFFFFF),A
 040147 B7                  A   525    	OR	A,A
 040148 20 20               A   526    	JR	NZ,L_8
-04014A 01 D4 8C 04         A   527    	LD	BC,L__7
+04014A 01 8F 82 04         A   527    	LD	BC,L__7
 04014E C5                  A   528    	PUSH	BC
 04014F DD3109              A   529    	LD	IY,(IX+%9)
 040152 ED2306              A   530    	LEA	HL,IY+%6
 040155 ED07                A   531    	LD	BC,(HL)
 040157 C5                  A   532    	PUSH	BC
-040158 CD 79 66 04         A   533    	CALL	_strcmp
+040158 CD 65 5C 04         A   533    	CALL	_strcmp
 04015C C1                  A   534    	POP	BC
 04015D C1                  A   535    	POP	BC
-04015E CD E3 6A 04         A   536    	CALL	__icmpzero
+04015E CD CF 60 04         A   536    	CALL	__icmpzero
 040162 20 06               A   537    	JR	NZ,L_8
 040164 3E01                A   538    	LD	A,%1
-040166 32 11 97 04         A   539    	LD	(_debug_enabled),A
+040166 32 4C 8A 04         A   539    	LD	(_debug_enabled),A
 04016A                     A   540    L_8:
                            A   541    ;   23	    if((argc == 3) && (strcmp(argv[2], 
                            A   542    .LINE 23
@@ -548,55 +548,55 @@ PC     Object              I  Line    Source
 04016A DD7EFF              A   544    	LD	A,(IX+%FFFFFFFF)
 04016D B7                  A   545    	OR	A,A
 04016E 20 20               A   546    	JR	NZ,L_9
-040170 01 D7 8C 04         A   547    	LD	BC,L__10
+040170 01 92 82 04         A   547    	LD	BC,L__10
 040174 C5                  A   548    	PUSH	BC
 040175 DD3109              A   549    	LD	IY,(IX+%9)
 040178 ED2306              A   550    	LEA	HL,IY+%6
 04017B ED07                A   551    	LD	BC,(HL)
 04017D C5                  A   552    	PUSH	BC
-04017E CD 79 66 04         A   553    	CALL	_strcmp
+04017E CD 65 5C 04         A   553    	CALL	_strcmp
 040182 C1                  A   554    	POP	BC
 040183 C1                  A   555    	POP	BC
-040184 CD E3 6A 04         A   556    	CALL	__icmpzero
+040184 CD CF 60 04         A   556    	CALL	__icmpzero
 040188 20 06               A   557    	JR	NZ,L_9
 04018A 3E01                A   558    	LD	A,%1
-04018C 32 12 97 04         A   559    	LD	(_consolelist_enabled),A
+04018C 32 4D 8A 04         A   559    	LD	(_consolelist_enabled),A
 040190                     A   560    L_9:
                            A   561    ;   24	
                            A   562    ;   25	    // Init tables
                            A   563    ;   26	    initGlobalLabelTable();
                            A   564    .LINE 26
                            A   565    
-040190 CD 13 45 04         A   566    	CALL	_initGlobalLabelTable
+040190 CD 16 3B 04         A   566    	CALL	_initGlobalLabelTable
                            A   567    ;   27	    initLocalLabelTable();
                            A   568    .LINE 27
                            A   569    
-040194 CD 89 45 04         A   570    	CALL	_initLocalLabelTable
+040194 CD 8C 3B 04         A   570    	CALL	_initLocalLabelTable
                            A   571    ;   28	    initAnonymousLabelTable();
                            A   572    .LINE 28
                            A   573    
-040198 CD 68 45 04         A   574    	CALL	_initAnonymousLabelTable
+040198 CD 6B 3B 04         A   574    	CALL	_initAnonymousLabelTable
                            A   575    ;   29	
                            A   576    ;   30	    // Assemble input to output
                            A   577    ;   31	    assemble();
                            A   578    .LINE 31
                            A   579    
-04019C CD 7B 36 04         A   580    	CALL	_assemble
+04019C CD A9 2C 04         A   580    	CALL	_assemble
                            A   581    ;   32	    if(global_errors) {
                            A   582    .LINE 32
                            A   583    
-0401A0 2A 22 97 04         A   584    	LD	HL,(_global_errors)
-0401A4 CD 89 6E 04         A   585    	CALL	__scmpzero
+0401A0 2A 5D 8A 04         A   584    	LD	HL,(_global_errors)
+0401A4 CD 08 64 04         A   585    	CALL	__scmpzero
 0401A8 28 15               A   586    	JR	Z,L_11
                            A   587    ;   33	        //remove(filename[FILE_OUTPUT])
                            A   588    ;   34	        printf("Error in input\n\r");
                            A   589    .LINE 34
                            A   590    
-0401AA 01 9C 66 04         A   591    	LD	BC,___print_uputch
-0401AE ED43 34 8C 04       A   592    	LD	(___print_xputch),BC
-0401B3 01 DA 8C 04         A   593    	LD	BC,L__13
+0401AA 01 88 5C 04         A   591    	LD	BC,___print_uputch
+0401AE ED43 EF 81 04       A   592    	LD	(___print_xputch),BC
+0401B3 01 95 82 04         A   593    	LD	BC,L__13
 0401B7 C5                  A   594    	PUSH	BC
-0401B8 CD 0E 65 04         A   595    	CALL	___print_sendstring
+0401B8 CD FA 5A 04         A   595    	CALL	___print_sendstring
 0401BC C1                  A   596    	POP	BC
                            A   597    ;   35	    }
                            A   598    ;   36	    else printf("%d bytes\n\r", totalsi
@@ -604,27 +604,27 @@ PC     Object              I  Line    Source
                            A   600    
 0401BD 18 27               A   601    	JR	L_12
 0401BF                     A   602    L_11:
-0401BF 01 9C 66 04         A   603    	LD	BC,___print_uputch
-0401C3 ED43 34 8C 04       A   604    	LD	(___print_xputch),BC
-0401C8 3A 21 97 04         A   605    	LD	A,(_totalsize+3)
+0401BF 01 88 5C 04         A   603    	LD	BC,___print_uputch
+0401C3 ED43 EF 81 04       A   604    	LD	(___print_xputch),BC
+0401C8 3A 5C 8A 04         A   605    	LD	A,(_totalsize+3)
 0401CC 4F                  A   606    	LD	C,A
 0401CD 0600                A   607    	LD	B,%0
 0401CF C5                  A   608    	PUSH	BC
-0401D0 ED4B 1E 97 04       A   609    	LD	BC,(_totalsize)
+0401D0 ED4B 59 8A 04       A   609    	LD	BC,(_totalsize)
 0401D5 C5                  A   610    	PUSH	BC
-0401D6 CD 76 67 04         A   611    	CALL	__u_itoa
+0401D6 CD 62 5D 04         A   611    	CALL	__u_itoa
 0401DA C1                  A   612    	POP	BC
 0401DB C1                  A   613    	POP	BC
-0401DC 01 EB 8C 04         A   614    	LD	BC,L__14
+0401DC 01 A6 82 04         A   614    	LD	BC,L__14
 0401E0 C5                  A   615    	PUSH	BC
-0401E1 CD 0E 65 04         A   616    	CALL	___print_sendstring
+0401E1 CD FA 5A 04         A   616    	CALL	___print_sendstring
 0401E5 C1                  A   617    	POP	BC
 0401E6                     A   618    L_12:
                            A   619    ;   37	 
                            A   620    ;   38	    closeAllFiles();   
                            A   621    .LINE 38
                            A   622    
-0401E6 CD 68 5F 04         A   623    	CALL	_closeAllFiles
+0401E6 CD 65 55 04         A   623    	CALL	_closeAllFiles
                            A   624    ;   39	    return 0;
                            A   625    .LINE 39
                            A   626    
@@ -667,25 +667,25 @@ PC     Object              I  Line    Source
                            A   663    
                            A   664    .ENDFUNC "main",40,"_main"
                            A   665    	SEGMENT STRSECT
-048CB7                     A   666    L__1:
-048CB7 55736167 653A2061   A   667    	DB	"Usage: asm <filename> [-l]"
-048CBF 736D203C 66696C65 
-048CC7 6E616D65 3E205B2D 
-048CCF 6C5D 
-048CD1 0A0D00              A   668    	DB	10,13,0
-048CD4                     A   669    L__7:
-048CD4 2D64                A   670    	DB	"-d"
-048CD6 00                  A   671    	DB	0
-048CD7                     A   672    L__10:
-048CD7 2D6C                A   673    	DB	"-l"
-048CD9 00                  A   674    	DB	0
-048CDA                     A   675    L__13:
-048CDA 4572726F 7220696E   A   676    	DB	"Error in input"
-048CE2 20696E70 7574 
-048CE8 0A0D00              A   677    	DB	10,13,0
-048CEB                     A   678    L__14:
-048CEB 20627974 6573       A   679    	DB	" bytes"
-048CF1 0A0D00              A   680    	DB	10,13,0
+048272                     A   666    L__1:
+048272 55736167 653A2061   A   667    	DB	"Usage: asm <filename> [-l]"
+04827A 736D203C 66696C65 
+048282 6E616D65 3E205B2D 
+04828A 6C5D 
+04828C 0A0D00              A   668    	DB	10,13,0
+04828F                     A   669    L__7:
+04828F 2D64                A   670    	DB	"-d"
+048291 00                  A   671    	DB	0
+048292                     A   672    L__10:
+048292 2D6C                A   673    	DB	"-l"
+048294 00                  A   674    	DB	0
+048295                     A   675    L__13:
+048295 4572726F 7220696E   A   676    	DB	"Error in input"
+04829D 20696E70 7574 
+0482A3 0A0D00              A   677    	DB	10,13,0
+0482A6                     A   678    L__14:
+0482A6 20627974 6573       A   679    	DB	" bytes"
+0482AC 0A0D00              A   680    	DB	10,13,0
                            A   681    	XREF _assemble:ROM
                            A   682    	XREF _initLocalLabelTable:ROM
                            A   683    	XREF _initAnonymousLabelTable:ROM
