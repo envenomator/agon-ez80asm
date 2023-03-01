@@ -243,13 +243,15 @@ void parse_operand(char *string, operand *operand) {
                             return;
                         case '+':
                         case '-':
-                            if(isdigit(*ptr)) {
+                            //if(isdigit(*ptr)) {
                                 operand->reg = R_IX;
                                 operand->displacement_provided = true;
-                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr,true);
-                                else operand->displacement = (int16_t) str2num(ptr,true);
+                                //if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr,true);
+                                //else operand->displacement = (int16_t) str2num(ptr,true);
+                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getLabelValue(ptr);
+                                else operand->displacement = (int16_t) getLabelValue(ptr);
                                 return;
-                            }
+                            //}
                             break;
                         default:
                             break;
@@ -269,13 +271,15 @@ void parse_operand(char *string, operand *operand) {
                             return;
                         case '+':
                         case '-':
-                            if(isdigit(*ptr)) {
+                            //if(isdigit(*ptr)) {
                                 operand->reg = R_IY;
                                 operand->displacement_provided = true;
-                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr,true);
-                                else operand->displacement = (int16_t) str2num(ptr,true);
+                                //if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr,true);
+                                //else operand->displacement = (int16_t) str2num(ptr,true);
+                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getLabelValue(ptr);
+                                else operand->displacement = (int16_t) getLabelValue(ptr);
                                 return;
-                            }
+                            //}
                             break;
                         default:
                             break;
