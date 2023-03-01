@@ -572,7 +572,7 @@ operandlist operands_rsmix[] = {
     {OPTYPE_NONE, OPTYPE_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7E, S_NONE},
 };
 operandlist operands_rst[] = {
-    {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_N,      TRANSFORM_NONE, 0x00, 0xC7, S_S1L0},
+    {OPTYPE_N, OPTYPE_NONE,             false, TRANSFORM_N,      TRANSFORM_NONE, 0x00, 0xC7, S_SISLIL},
 };
 operandlist operands_sbc[] = {
     {OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x9E, S_S1L0},
