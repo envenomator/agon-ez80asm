@@ -20,11 +20,16 @@ uint16_t globalLabelBufferIndex;
 uint16_t localLabelBufferIndex;
 
 // tables
-label* globalLabelTable[GLOBAL_LABEL_TABLE_SIZE];
+label* globalLabelTable[GLOBAL_LABEL_TABLE_SIZE]; // hash table
 uint16_t globalLabelCounter;
-label localLabelTable[LOCAL_LABEL_TABLE_SIZE];
+label localLabelTable[LOCAL_LABEL_TABLE_SIZE]; // indexed table
 uint16_t localLabelCounter;
 
+void printLocalLabelTable(void) {
+    int i;
+    printf("\r\nLocal table (%d entries):\n\r",localLabelCounter);
+    for(i = 0; i < localLabelCounter; i++) printf("%08x - %s\n\r", localLabelTable[i].address, localLabelTable[i].name);
+}
 uint16_t getGlobalLabelCount(void) {
     return globalLabelCounter;
 }
@@ -86,19 +91,38 @@ label * findLocalLabel(char *key){
     else return NULL;
 }
 
+/*
+size_t agon_specialfwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
+    size_t n, s, result = 0;
+    char *target = (char *)ptr;
+
+    printf("\r\n");
+    for(n = 0; n < nmemb; n++) {
+        for(s = 0; s < size; s++) {
+            //mos_fputc(filehandle[fileid], (*(char *)ptr));
+            printf("%02x:",*target);
+            target++;
+            result++;
+        }
+    }
+    printf("\r\n");
+
+    return result;
+}*/
 void writeLocalLabels(void) {
     int i;
     uint16_t delta;
     // number of bytes in the string buffer
-    agon_fwrite(&localLabelBufferIndex, 1, sizeof(localLabelBufferIndex), FILE_LOCAL_LABELS);
+    agon_fwrite(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
     // the actual bytes from the string buffer
-    if(localLabelBufferIndex) agon_fwrite(localLabelBuffer, 1, localLabelBufferIndex, FILE_LOCAL_LABELS);
+    if(localLabelBufferIndex) agon_fwrite(localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
     // the number of labels
-    agon_fwrite(&localLabelCounter, 1, sizeof(localLabelCounter), FILE_LOCAL_LABELS);
+    agon_fwrite(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
     for(i = 0; i < localLabelCounter; i++) {
         delta = localLabelTable[i].name - localLabelBuffer;
-        agon_fwrite(&delta, 1, sizeof(delta), FILE_LOCAL_LABELS);
-        agon_fwrite(&localLabelTable[i].address, 1, sizeof(int32_t), FILE_LOCAL_LABELS);
+        agon_fwrite(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
+        agon_fwrite(&localLabelTable[i].address, 4, 1, FILE_LOCAL_LABELS);
+        //printf("W: index %d, counter %d, delta %d, address %08x\r\n",localLabelBufferIndex, localLabelCounter, delta, localLabelTable[i].address);
     }
 }
 
@@ -111,8 +135,10 @@ void readLocalLabels(void) {
     agon_fread(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
     for(i = 0; i < localLabelCounter; i++) {
         agon_fread(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
-        agon_fread(&localLabelTable[i].address, sizeof(int32_t), 1, FILE_LOCAL_LABELS);
+        agon_fread(&localLabelTable[i].address, 4, 1, FILE_LOCAL_LABELS);
         localLabelTable[i].name = localLabelBuffer + delta;
+        //printf("R: index %d, counter %d, delta %d, address %08x\r\n",localLabelBufferIndex, localLabelCounter, delta, localLabelTable[i].address);
+        //printf("R: index %d, counter %d, delta %d, address %08x\r\n",localLabelBufferIndex, localLabelCounter, delta, localLabelTable[i].address);
     }
 }
 

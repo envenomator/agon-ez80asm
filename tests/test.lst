@@ -1,8 +1,7 @@
 PC      Output            Line   Source
-000000                    0001   .assume adl=1
-000000                    0002   .org $0010
-000010                    0003   label: .equ label2
-000010                    0004   @1:
-000010  3E 10             0005       ld a, @1
-000012                    0006   label2:
-000012  3E 12             0007       ld a, label
+000000                    0001       .assume adl=1
+000000                    0002   label:
+000000  78                0003       ld a,b
+000001  3E 00             0004       ld a,label
+000003                    0005   
+

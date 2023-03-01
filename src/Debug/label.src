@@ -523,95 +523,17 @@ _localLabelCounter:
 ;   20	uint16_t localLabelBufferIndex;
 ;   21	
 ;   22	// tables
-;   23	label* globalLabelTable[GLOBAL_LABEL_TABLE_SIZE];
+;   23	label* globalLabelTable[GLOBAL_LABEL_TABLE_SIZE]; // hash table
 ;   24	uint16_t globalLabelCounter;
-;   25	label localLabelTable[LOCAL_LABEL_TABLE_SIZE];
+;   25	label localLabelTable[LOCAL_LABEL_TABLE_SIZE]; // indexed table
 ;   26	uint16_t localLabelCounter;
 	SEGMENT CODE
 ;   27	
-;   28	uint16_t getGlobalLabelCount(void) {
-_getGlobalLabelCount:
-.DEFINE "_getGlobalLabelCount"
+;   28	void printLocalLabelTable(void) {
+_printLocalLabelTable:
+.DEFINE "_printLocalLabelTable"
 
-.VALUE _getGlobalLabelCount
-
-.CLASS 2
-
-.TYPE 77
-
-.ENDEF
-
-.BEGFUNC "getGlobalLabelCount",28,"_getGlobalLabelCount"
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-;   29	    return globalLabelCounter;
-.LINE 29
-
-	LD	HL,(_globalLabelCounter)
-;   30	}
-.LINE 30
-
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _getGlobalLabelCount ***************************
-;Name                         Addr/Register   Size   Type
-;_globalLabelCounter                 STATIC      2   variable
-
-
-; Stack Frame Size: 6 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-.ENDFUNC "getGlobalLabelCount",30,"_getGlobalLabelCount"
-;   31	uint16_t getLocalLabelCount(void) {
-_getLocalLabelCount:
-.DEFINE "_getLocalLabelCount"
-
-.VALUE _getLocalLabelCount
-
-.CLASS 2
-
-.TYPE 77
-
-.ENDEF
-
-.BEGFUNC "getLocalLabelCount",31,"_getLocalLabelCount"
-
-	PUSH	IX
-	LD	IX,0
-	ADD	IX,SP
-;   32	    return localLabelCounter;
-.LINE 32
-
-	LD	HL,(_localLabelCounter)
-;   33	}
-.LINE 33
-
-	LD	SP,IX
-	POP	IX
-	RET	
-
-
-;**************************** _getLocalLabelCount ***************************
-;Name                         Addr/Register   Size   Type
-;_localLabelCounter                  STATIC      2   variable
-
-
-; Stack Frame Size: 6 (bytes)
-;       Spill Code: 0 (instruction)
-
-
-.ENDFUNC "getLocalLabelCount",33,"_getLocalLabelCount"
-;   34	void initGlobalLabelTable(void) {
-_initGlobalLabelTable:
-.DEFINE "_initGlobalLabelTable"
-
-.VALUE _initGlobalLabelTable
+.VALUE _printLocalLabelTable
 
 .CLASS 2
 
@@ -619,9 +541,9 @@ _initGlobalLabelTable:
 
 .ENDEF
 
-.BEGFUNC "initGlobalLabelTable",34,"_initGlobalLabelTable"
+.BEGFUNC "printLocalLabelTable",28,"_printLocalLabelTable"
 
-.LINE 34
+.LINE 28
 
 .DEFINE "i"
 
@@ -637,31 +559,262 @@ _initGlobalLabelTable:
 	LD	IX,0
 	ADD	IX,SP
 	PUSH	BC
-;   35	    int i;
-;   36	
-;   37	    globalLabelBufferIndex = 0;
+	PUSH	BC
+;   29	    int i;
+;   30	    printf("\r\nLocal table (%d entries):\n\r",localLabelCounter);
+.LINE 30
+
+	LD	BC,___print_uputch
+	LD	(___print_xputch),BC
+	LD	BC,L__0
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+	LD	BC,(_localLabelCounter)
+	CALL	__stoiu
+	LD	BC,HL
+	CALL	__itol
+	LD	DE,BC
+	LD	C,A
+	LD	B,%0
+	PUSH	BC
+	PUSH	DE
+	CALL	__u_itoa
+	POP	BC
+	POP	BC
+	LD	BC,L__1
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+;   31	    for(i = 0; i < localLabelCounter; i++) printf("%08x - %s\n\r", localLabelTable[i].address, localLabelTable[i].name);
+.LINE 31
+
+	LD	BC,0
+	LD	(IX+%FFFFFFFD),BC
+	JR	L_3
+L_1:
+	LD	HL,(IX+%FFFFFFFD)
+	LD	A,%7
+	CALL	__imul_b
+	LD	BC,_localLabelTable
+	ADD	HL,BC
+	LD	(IX+%FFFFFFFA),HL
+	LD	BC,___print_uputch
+	LD	(___print_xputch),BC
+	LD	A,%8
+	LD	(___print_fmt+5),A
+	LD	A,%40
+	LD	(___print_fmt+1),A
+	LD	A,%78
+	LD	(___print_fmt+4),A
+	LD	IY,(IX+%FFFFFFFA)
+	LD	BC,(IY+%3)
+	LD	A,(IY+%6)
+	LD	H,%0
+	LD	L,A
+	PUSH	HL
+	PUSH	BC
+	CALL	__u_uitoa
+	POP	BC
+	POP	BC
+	LD	BC,L__2
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+	LD	IY,(IX+%FFFFFFFA)
+	LD	BC,(IY+%0)
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+	LD	BC,L__3
+	PUSH	BC
+	CALL	___print_sendstring
+	POP	BC
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+L_3:
+	LD	BC,(_localLabelCounter)
+	CALL	__stoiu
+	LD	BC,HL
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	CALL	__setflag
+	JP	M,L_1
+;   32	}
+.LINE 32
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _printLocalLabelTable ***************************
+;Name                         Addr/Register   Size   Type
+;__u_uitoa                           IMPORT  -----   function
+;___print_fmt                        IMPORT     19   variable
+;_localLabelTable                    STATIC    448   variable
+;_localLabelCounter                  STATIC      2   variable
+;__u_itoa                            IMPORT  -----   function
+;___print_sendstring                 IMPORT  -----   function
+;___print_xputch                     IMPORT      3   variable
+;___print_uputch                     IMPORT  -----   function
+;i                                     IX-3      3   variable
+
+
+; Stack Frame Size: 12 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "printLocalLabelTable",32,"_printLocalLabelTable"
+	SEGMENT STRSECT
+L__0:
+	DB	13,10
+	DB	"Local table ("
+	DB	0
+L__1:
+	DB	" entries):"
+	DB	10,13,0
+L__2:
+	DB	" - "
+	DB	0
+L__3:
+	DB	10,13,0
+	SEGMENT CODE
+;   33	uint16_t getGlobalLabelCount(void) {
+_getGlobalLabelCount:
+.DEFINE "_getGlobalLabelCount"
+
+.VALUE _getGlobalLabelCount
+
+.CLASS 2
+
+.TYPE 77
+
+.ENDEF
+
+.BEGFUNC "getGlobalLabelCount",33,"_getGlobalLabelCount"
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   34	    return globalLabelCounter;
+.LINE 34
+
+	LD	HL,(_globalLabelCounter)
+;   35	}
+.LINE 35
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _getGlobalLabelCount ***************************
+;Name                         Addr/Register   Size   Type
+;_globalLabelCounter                 STATIC      2   variable
+
+
+; Stack Frame Size: 6 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "getGlobalLabelCount",35,"_getGlobalLabelCount"
+;   36	uint16_t getLocalLabelCount(void) {
+_getLocalLabelCount:
+.DEFINE "_getLocalLabelCount"
+
+.VALUE _getLocalLabelCount
+
+.CLASS 2
+
+.TYPE 77
+
+.ENDEF
+
+.BEGFUNC "getLocalLabelCount",36,"_getLocalLabelCount"
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+;   37	    return localLabelCounter;
 .LINE 37
+
+	LD	HL,(_localLabelCounter)
+;   38	}
+.LINE 38
+
+	LD	SP,IX
+	POP	IX
+	RET	
+
+
+;**************************** _getLocalLabelCount ***************************
+;Name                         Addr/Register   Size   Type
+;_localLabelCounter                  STATIC      2   variable
+
+
+; Stack Frame Size: 6 (bytes)
+;       Spill Code: 0 (instruction)
+
+
+.ENDFUNC "getLocalLabelCount",38,"_getLocalLabelCount"
+;   39	void initGlobalLabelTable(void) {
+_initGlobalLabelTable:
+.DEFINE "_initGlobalLabelTable"
+
+.VALUE _initGlobalLabelTable
+
+.CLASS 2
+
+.TYPE 65
+
+.ENDEF
+
+.BEGFUNC "initGlobalLabelTable",39,"_initGlobalLabelTable"
+
+.LINE 39
+
+.DEFINE "i"
+
+.CLASS 65
+
+.VALUE -3
+
+.TYPE 4
+
+.ENDEF
+
+	PUSH	IX
+	LD	IX,0
+	ADD	IX,SP
+	PUSH	BC
+;   40	    int i;
+;   41	
+;   42	    globalLabelBufferIndex = 0;
+.LINE 42
 
 	LD	HL,_globalLabelBufferIndex
 	LD	(HL),%0
 	INC	HL
 	LD	(HL),%0
-;   38	    globalLabelCounter = 0;
-.LINE 38
+;   43	    globalLabelCounter = 0;
+.LINE 43
 
 	LD	HL,_globalLabelCounter
 	LD	(HL),%0
 	INC	HL
 	LD	(HL),%0
-;   39	    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
-.LINE 39
+;   44	    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
+.LINE 44
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFD),BC
-	JR	L_5
-L_3:
-;   40	        globalLabelTable[i] = NULL;
-.LINE 40
+	JR	L_10
+L_8:
+;   45	        globalLabelTable[i] = NULL;
+.LINE 45
 
 	LD	HL,(IX+%FFFFFFFD)
 	LD	BC,HL
@@ -674,18 +827,18 @@ L_3:
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
 	LD	(IX+%FFFFFFFD),BC
-;   41	    }
-L_5:
-.LINE 41
+;   46	    }
+L_10:
+.LINE 46
 
 	LD	BC,8192
 	LD	HL,(IX+%FFFFFFFD)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_3
-;   42	}
-.LINE 42
+	JP	M,L_8
+;   47	}
+.LINE 47
 
 	LD	SP,IX
 	POP	IX
@@ -704,9 +857,9 @@ L_5:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "initGlobalLabelTable",42,"_initGlobalLabelTable"
-;   43	
-;   44	void initAnonymousLabelTable(void) {
+.ENDFUNC "initGlobalLabelTable",47,"_initGlobalLabelTable"
+;   48	
+;   49	void initAnonymousLabelTable(void) {
 _initAnonymousLabelTable:
 .DEFINE "_initAnonymousLabelTable"
 
@@ -718,28 +871,28 @@ _initAnonymousLabelTable:
 
 .ENDEF
 
-.BEGFUNC "initAnonymousLabelTable",44,"_initAnonymousLabelTable"
+.BEGFUNC "initAnonymousLabelTable",49,"_initAnonymousLabelTable"
 
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-;   45	    an_prev.defined = false;
-.LINE 45
+;   50	    an_prev.defined = false;
+.LINE 50
 
 	XOR	A,A
 	LD	(_an_prev),A
-;   46	    an_next.defined = false;
-.LINE 46
+;   51	    an_next.defined = false;
+.LINE 51
 
 	XOR	A,A
 	LD	(_an_next),A
-;   47	    an_return.name = NULL;
-.LINE 47
+;   52	    an_return.name = NULL;
+.LINE 52
 
 	LD	BC,0
 	LD	(_an_return),BC
-;   48	}
-.LINE 48
+;   53	}
+.LINE 53
 
 	LD	SP,IX
 	POP	IX
@@ -757,9 +910,9 @@ _initAnonymousLabelTable:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "initAnonymousLabelTable",48,"_initAnonymousLabelTable"
-;   49	
-;   50	void initLocalLabelTable(void) {
+.ENDFUNC "initAnonymousLabelTable",53,"_initAnonymousLabelTable"
+;   54	
+;   55	void initLocalLabelTable(void) {
 _initLocalLabelTable:
 .DEFINE "_initLocalLabelTable"
 
@@ -771,9 +924,9 @@ _initLocalLabelTable:
 
 .ENDEF
 
-.BEGFUNC "initLocalLabelTable",50,"_initLocalLabelTable"
+.BEGFUNC "initLocalLabelTable",55,"_initLocalLabelTable"
 
-.LINE 50
+.LINE 55
 
 .DEFINE "i"
 
@@ -789,31 +942,31 @@ _initLocalLabelTable:
 	LD	IX,0
 	ADD	IX,SP
 	PUSH	BC
-;   51	    int i;
-;   52	
-;   53	    localLabelBufferIndex = 0;
-.LINE 53
+;   56	    int i;
+;   57	
+;   58	    localLabelBufferIndex = 0;
+.LINE 58
 
 	LD	HL,_localLabelBufferIndex
 	LD	(HL),%0
 	INC	HL
 	LD	(HL),%0
-;   54	    localLabelCounter = 0;
-.LINE 54
+;   59	    localLabelCounter = 0;
+.LINE 59
 
 	LD	HL,_localLabelCounter
 	LD	(HL),%0
 	INC	HL
 	LD	(HL),%0
-;   55	    for(i = 0; i < LOCAL_LABEL_TABLE_SIZE; i++) {
-.LINE 55
+;   60	    for(i = 0; i < LOCAL_LABEL_TABLE_SIZE; i++) {
+.LINE 60
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFD),BC
-	JR	L_11
-L_9:
-;   56	        localLabelTable[i].name = NULL;
-.LINE 56
+	JR	L_16
+L_14:
+;   61	        localLabelTable[i].name = NULL;
+.LINE 61
 
 	LD	HL,(IX+%FFFFFFFD)
 	LD	A,%7
@@ -826,18 +979,18 @@ L_9:
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
 	LD	(IX+%FFFFFFFD),BC
-;   57	    }
-L_11:
-.LINE 57
+;   62	    }
+L_16:
+.LINE 62
 
 	LD	BC,64
 	LD	HL,(IX+%FFFFFFFD)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_9
-;   58	}
-.LINE 58
+	JP	M,L_14
+;   63	}
+.LINE 63
 
 	LD	SP,IX
 	POP	IX
@@ -856,9 +1009,9 @@ L_11:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "initLocalLabelTable",58,"_initLocalLabelTable"
-;   59	
-;   60	void clearLocalLabels(void) {
+.ENDFUNC "initLocalLabelTable",63,"_initLocalLabelTable"
+;   64	
+;   65	void clearLocalLabels(void) {
 _clearLocalLabels:
 .DEFINE "_clearLocalLabels"
 
@@ -870,27 +1023,27 @@ _clearLocalLabels:
 
 .ENDEF
 
-.BEGFUNC "clearLocalLabels",60,"_clearLocalLabels"
+.BEGFUNC "clearLocalLabels",65,"_clearLocalLabels"
 
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-;   61	    localLabelBufferIndex = 0;
-.LINE 61
+;   66	    localLabelBufferIndex = 0;
+.LINE 66
 
 	LD	HL,_localLabelBufferIndex
 	LD	(HL),%0
 	INC	HL
 	LD	(HL),%0
-;   62	    localLabelCounter = 0;
-.LINE 62
+;   67	    localLabelCounter = 0;
+.LINE 67
 
 	LD	HL,_localLabelCounter
 	LD	(HL),%0
 	INC	HL
 	LD	(HL),%0
-;   63	}
-.LINE 63
+;   68	}
+.LINE 68
 
 	LD	SP,IX
 	POP	IX
@@ -907,9 +1060,9 @@ _clearLocalLabels:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "clearLocalLabels",63,"_clearLocalLabels"
-;   64	
-;   65	int findLocalLabelIndex(char *key) {
+.ENDFUNC "clearLocalLabels",68,"_clearLocalLabels"
+;   69	
+;   70	int findLocalLabelIndex(char *key) {
 _findLocalLabelIndex:
 .DEFINE "_findLocalLabelIndex"
 
@@ -921,9 +1074,9 @@ _findLocalLabelIndex:
 
 .ENDEF
 
-.BEGFUNC "findLocalLabelIndex",65,"_findLocalLabelIndex"
+.BEGFUNC "findLocalLabelIndex",70,"_findLocalLabelIndex"
 
-.LINE 65
+.LINE 70
 
 .DEFINE "key"
 
@@ -980,24 +1133,24 @@ _findLocalLabelIndex:
 	ADD	IX,SP
 	LEA	HL,IX+%FFFFFFF4
 	LD	SP,HL
-;   66	    int base = 0;
-.LINE 66
+;   71	    int base = 0;
+.LINE 71
 
 	LD	BC,0
 	LD	(IX+%FFFFFFF4),BC
-;   67		int lim, cmp;
-;   68	    int p;
-;   69	
-;   70		for (lim = localLabelCounter; lim != 0; lim >>= 1) {
-.LINE 70
+;   72		int lim, cmp;
+;   73	    int p;
+;   74	
+;   75		for (lim = localLabelCounter; lim != 0; lim >>= 1) {
+.LINE 75
 
 	LD	BC,(_localLabelCounter)
 	CALL	__stoiu
 	LD	(IX+%FFFFFFFD),HL
-	JR	L_20
-L_18:
-;   71			p = base + (lim >> 1);
-.LINE 71
+	JR	L_25
+L_23:
+;   76			p = base + (lim >> 1);
+.LINE 76
 
 	LD	HL,(IX+%FFFFFFFD)
 	LD	A,%1
@@ -1005,8 +1158,8 @@ L_18:
 	LD	BC,(IX+%FFFFFFF4)
 	ADD	HL,BC
 	LD	(IX+%FFFFFFFA),HL
-;   72			cmp = strcmp(key,localLabelTable[p].name);
-.LINE 72
+;   77			cmp = strcmp(key,localLabelTable[p].name);
+.LINE 77
 
 	LD	A,%7
 	CALL	__imul_b
@@ -1021,19 +1174,19 @@ L_18:
 	POP	BC
 	POP	BC
 	LD	(IX+%FFFFFFF7),HL
-;   73			if (cmp == 0)
-.LINE 73
+;   78			if (cmp == 0)
+.LINE 78
 
 	CALL	__icmpzero
-	JR	NZ,L_17
-;   74				return p;
-.LINE 74
+	JR	NZ,L_22
+;   79				return p;
+.LINE 79
 
 	LD	HL,(IX+%FFFFFFFA)
-	JR	L_22
-L_17:
-;   75			if (cmp > 0) {
-.LINE 75
+	JR	L_27
+L_22:
+;   80			if (cmp > 0) {
+.LINE 80
 
 	LD	BC,(IX+%FFFFFFF7)
 	OR	A,A
@@ -1041,39 +1194,39 @@ L_17:
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	P,L_19
-;   76				base = p + 1;
-.LINE 76
+	JP	P,L_24
+;   81				base = p + 1;
+.LINE 81
 
 	LD	BC,(IX+%FFFFFFFA)
 	INC	BC
 	LD	(IX+%FFFFFFF4),BC
-;   77				lim--;
-.LINE 77
+;   82				lim--;
+.LINE 82
 
 	LD	BC,(IX+%FFFFFFFD)
 	DEC	BC
 	LD	(IX+%FFFFFFFD),BC
-;   78			}
-;   79		}
-L_19:
-.LINE 79
+;   83			}
+;   84		}
+L_24:
+.LINE 84
 
 	LD	HL,(IX+%FFFFFFFD)
 	LD	A,%1
 	CALL	__ishrs_b
 	LD	(IX+%FFFFFFFD),HL
-L_20:
+L_25:
 	LD	HL,(IX+%FFFFFFFD)
 	CALL	__icmpzero
-	JR	NZ,L_18
-;   80		return (LOCAL_LABEL_TABLE_SIZE);
-.LINE 80
+	JR	NZ,L_23
+;   85		return (LOCAL_LABEL_TABLE_SIZE);
+.LINE 85
 
 	LD	HL,64
-;   81	}
-L_22:
-.LINE 81
+;   86	}
+L_27:
+.LINE 86
 
 	LD	SP,IX
 	POP	IX
@@ -1096,9 +1249,9 @@ L_22:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "findLocalLabelIndex",81,"_findLocalLabelIndex"
-;   82	
-;   83	label * findLocalLabel(char *key){
+.ENDFUNC "findLocalLabelIndex",86,"_findLocalLabelIndex"
+;   87	
+;   88	label * findLocalLabel(char *key){
 _findLocalLabel:
 .DEFINE "_findLocalLabel"
 
@@ -1112,9 +1265,9 @@ _findLocalLabel:
 
 .ENDEF
 
-.BEGFUNC "findLocalLabel",83,"_findLocalLabel"
+.BEGFUNC "findLocalLabel",88,"_findLocalLabel"
 
-.LINE 83
+.LINE 88
 
 .DEFINE "key"
 
@@ -1140,38 +1293,38 @@ _findLocalLabel:
 	LD	IX,0
 	ADD	IX,SP
 	PUSH	BC
-;   84	    int p = findLocalLabelIndex(key);
-.LINE 84
+;   89	    int p = findLocalLabelIndex(key);
+.LINE 89
 
 	LD	BC,(IX+%6)
 	PUSH	BC
 	CALL	_findLocalLabelIndex
 	POP	BC
 	LD	(IX+%FFFFFFFD),HL
-;   85	    if(p < LOCAL_LABEL_TABLE_SIZE) return &localLabelTable[p];
-.LINE 85
+;   90	    if(p < LOCAL_LABEL_TABLE_SIZE) return &localLabelTable[p];
+.LINE 90
 
 	LD	BC,64
 	LD	HL,(IX+%FFFFFFFD)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	P,L_24
+	JP	P,L_29
 	LD	HL,(IX+%FFFFFFFD)
 	LD	A,%7
 	CALL	__imul_b
 	LD	BC,_localLabelTable
 	ADD	HL,BC
-	JR	L_25
-;   86	    else return NULL;
-L_24:
-.LINE 86
+	JR	L_30
+;   91	    else return NULL;
+L_29:
+.LINE 91
 
 	OR	A,A
 	SBC	HL,HL
-;   87	}
-L_25:
-.LINE 87
+;   92	}
+L_30:
+.LINE 92
 
 	LD	SP,IX
 	POP	IX
@@ -1189,9 +1342,27 @@ L_25:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "findLocalLabel",87,"_findLocalLabel"
-;   88	
-;   89	void writeLocalLabels(void) {
+.ENDFUNC "findLocalLabel",92,"_findLocalLabel"
+;   93	
+;   94	/*
+;   95	size_t agon_specialfwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
+;   96	    size_t n, s, result = 0;
+;   97	    char *target = (char *)ptr;
+;   98	
+;   99	    printf("\r\n");
+;  100	    for(n = 0; n < nmemb; n++) {
+;  101	        for(s = 0; s < size; s++) {
+;  102	            //mos_fputc(filehandle[fileid], (*(char *)ptr));
+;  103	            printf("%02x:",*target);
+;  104	            target++;
+;  105	            result++;
+;  106	        }
+;  107	    }
+;  108	    printf("\r\n");
+;  109	
+;  110	    return result;
+;  111	}*/
+;  112	void writeLocalLabels(void) {
 _writeLocalLabels:
 .DEFINE "_writeLocalLabels"
 
@@ -1203,9 +1374,9 @@ _writeLocalLabels:
 
 .ENDEF
 
-.BEGFUNC "writeLocalLabels",89,"_writeLocalLabels"
+.BEGFUNC "writeLocalLabels",112,"_writeLocalLabels"
 
-.LINE 89
+.LINE 112
 
 .DEFINE "i"
 
@@ -1233,17 +1404,17 @@ _writeLocalLabels:
 	PUSH	BC
 	DEC	SP
 	DEC	SP
-;   90	    int i;
-;   91	    uint16_t delta;
-;   92	    // number of bytes in the string buffer
-;   93	    agon_fwrite(&localLabelBufferIndex, 1, sizeof(localLabelBufferIndex), FILE_LOCAL_LABELS);
-.LINE 93
+;  113	    int i;
+;  114	    uint16_t delta;
+;  115	    // number of bytes in the string buffer
+;  116	    agon_fwrite(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
+.LINE 116
 
 	LD	BC,3
 	PUSH	BC
-	LD	BC,2
-	PUSH	BC
 	LD	BC,1
+	PUSH	BC
+	LD	BC,2
 	PUSH	BC
 	LD	BC,_localLabelBufferIndex
 	PUSH	BC
@@ -1252,20 +1423,20 @@ _writeLocalLabels:
 	POP	BC
 	POP	BC
 	POP	BC
-;   94	    // the actual bytes from the string buffer
-;   95	    if(localLabelBufferIndex) agon_fwrite(localLabelBuffer, 1, localLabelBufferIndex, FILE_LOCAL_LABELS);
-.LINE 95
+;  117	    // the actual bytes from the string buffer
+;  118	    if(localLabelBufferIndex) agon_fwrite(localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
+.LINE 118
 
 	LD	HL,(_localLabelBufferIndex)
 	CALL	__scmpzero
-	JR	Z,L_27
+	JR	Z,L_32
 	LD	BC,3
+	PUSH	BC
+	LD	BC,1
 	PUSH	BC
 	LD	BC,(_localLabelBufferIndex)
 	CALL	__stoiu
 	PUSH	HL
-	LD	BC,1
-	PUSH	BC
 	LD	BC,_localLabelBuffer
 	PUSH	BC
 	CALL	_agon_fwrite
@@ -1273,16 +1444,16 @@ _writeLocalLabels:
 	POP	BC
 	POP	BC
 	POP	BC
-L_27:
-;   96	    // the number of labels
-;   97	    agon_fwrite(&localLabelCounter, 1, sizeof(localLabelCounter), FILE_LOCAL_LABELS);
-.LINE 97
+L_32:
+;  119	    // the number of labels
+;  120	    agon_fwrite(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
+.LINE 120
 
 	LD	BC,3
 	PUSH	BC
-	LD	BC,2
-	PUSH	BC
 	LD	BC,1
+	PUSH	BC
+	LD	BC,2
 	PUSH	BC
 	LD	BC,_localLabelCounter
 	PUSH	BC
@@ -1291,15 +1462,15 @@ L_27:
 	POP	BC
 	POP	BC
 	POP	BC
-;   98	    for(i = 0; i < localLabelCounter; i++) {
-.LINE 98
+;  121	    for(i = 0; i < localLabelCounter; i++) {
+.LINE 121
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFD),BC
-	JR	L_31
-L_29:
-;   99	        delta = localLabelTable[i].name - localLabelBuffer;
-.LINE 99
+	JR	L_36
+L_34:
+;  122	        delta = localLabelTable[i].name - localLabelBuffer;
+.LINE 122
 
 	LD	HL,(IX+%FFFFFFFD)
 	LD	A,%7
@@ -1313,14 +1484,14 @@ L_29:
 	SBC	HL,BC
 	LD	(IX+%FFFFFFFB),L
 	LD	(IX+%FFFFFFFC),H
-;  100	        agon_fwrite(&delta, 1, sizeof(delta), FILE_LOCAL_LABELS);
-.LINE 100
+;  123	        agon_fwrite(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
+.LINE 123
 
 	LD	BC,3
 	PUSH	BC
-	LD	BC,2
-	PUSH	BC
 	LD	BC,1
+	PUSH	BC
+	LD	BC,2
 	PUSH	BC
 	PEA	IX+%FFFFFFFB
 	CALL	_agon_fwrite
@@ -1328,14 +1499,14 @@ L_29:
 	POP	BC
 	POP	BC
 	POP	BC
-;  101	        agon_fwrite(&localLabelTable[i].address, 1, sizeof(int32_t), FILE_LOCAL_LABELS);
-.LINE 101
+;  124	        agon_fwrite(&localLabelTable[i].address, 4, 1, FILE_LOCAL_LABELS);
+.LINE 124
 
 	LD	BC,3
 	PUSH	BC
-	LD	BC,4
-	PUSH	BC
 	LD	BC,1
+	PUSH	BC
+	LD	BC,4
 	PUSH	BC
 	LD	HL,(IX+%FFFFFFFD)
 	LD	A,%7
@@ -1352,9 +1523,10 @@ L_29:
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
 	LD	(IX+%FFFFFFFD),BC
-;  102	    }
-L_31:
-.LINE 102
+;  125	        //printf("W: index %d, counter %d, delta %d, address %08x\r\n",localLabelBufferIndex, localLabelCounter, delta, localLabelTable[i].address);
+;  126	    }
+L_36:
+.LINE 126
 
 	LD	BC,(_localLabelCounter)
 	CALL	__stoiu
@@ -1363,9 +1535,9 @@ L_31:
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_29
-;  103	}
-.LINE 103
+	JP	M,L_34
+;  127	}
+.LINE 127
 
 	LD	SP,IX
 	POP	IX
@@ -1387,9 +1559,9 @@ L_31:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "writeLocalLabels",103,"_writeLocalLabels"
-;  104	
-;  105	void readLocalLabels(void) {
+.ENDFUNC "writeLocalLabels",127,"_writeLocalLabels"
+;  128	
+;  129	void readLocalLabels(void) {
 _readLocalLabels:
 .DEFINE "_readLocalLabels"
 
@@ -1401,9 +1573,9 @@ _readLocalLabels:
 
 .ENDEF
 
-.BEGFUNC "readLocalLabels",105,"_readLocalLabels"
+.BEGFUNC "readLocalLabels",129,"_readLocalLabels"
 
-.LINE 105
+.LINE 129
 
 .DEFINE "i"
 
@@ -1431,11 +1603,11 @@ _readLocalLabels:
 	PUSH	BC
 	DEC	SP
 	DEC	SP
-;  106	    int i;
-;  107	    uint16_t delta;
-;  108	
-;  109	    agon_fread(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
-.LINE 109
+;  130	    int i;
+;  131	    uint16_t delta;
+;  132	
+;  133	    agon_fread(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
+.LINE 133
 
 	LD	BC,3
 	PUSH	BC
@@ -1450,12 +1622,12 @@ _readLocalLabels:
 	POP	BC
 	POP	BC
 	POP	BC
-;  110	    if(localLabelBufferIndex) agon_fread(&localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
-.LINE 110
+;  134	    if(localLabelBufferIndex) agon_fread(&localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
+.LINE 134
 
 	LD	HL,(_localLabelBufferIndex)
 	CALL	__scmpzero
-	JR	Z,L_34
+	JR	Z,L_39
 	LD	BC,3
 	PUSH	BC
 	LD	BC,1
@@ -1470,9 +1642,9 @@ _readLocalLabels:
 	POP	BC
 	POP	BC
 	POP	BC
-L_34:
-;  111	    agon_fread(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
-.LINE 111
+L_39:
+;  135	    agon_fread(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
+.LINE 135
 
 	LD	BC,3
 	PUSH	BC
@@ -1487,15 +1659,15 @@ L_34:
 	POP	BC
 	POP	BC
 	POP	BC
-;  112	    for(i = 0; i < localLabelCounter; i++) {
-.LINE 112
+;  136	    for(i = 0; i < localLabelCounter; i++) {
+.LINE 136
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFD),BC
-	JR	L_38
-L_36:
-;  113	        agon_fread(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
-.LINE 113
+	JR	L_43
+L_41:
+;  137	        agon_fread(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
+.LINE 137
 
 	LD	BC,3
 	PUSH	BC
@@ -1509,8 +1681,8 @@ L_36:
 	POP	BC
 	POP	BC
 	POP	BC
-;  114	        agon_fread(&localLabelTable[i].address, sizeof(int32_t), 1, FILE_LOCAL_LABELS);
-.LINE 114
+;  138	        agon_fread(&localLabelTable[i].address, 4, 1, FILE_LOCAL_LABELS);
+.LINE 138
 
 	LD	BC,3
 	PUSH	BC
@@ -1530,8 +1702,8 @@ L_36:
 	POP	BC
 	POP	BC
 	POP	BC
-;  115	        localLabelTable[i].name = localLabelBuffer + delta;
-.LINE 115
+;  139	        localLabelTable[i].name = localLabelBuffer + delta;
+.LINE 139
 
 	LD	BC,(IX+%FFFFFFFB)
 	CALL	__stoiu
@@ -1548,9 +1720,11 @@ L_36:
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
 	LD	(IX+%FFFFFFFD),BC
-;  116	    }
-L_38:
-.LINE 116
+;  140	        //printf("R: index %d, counter %d, delta %d, address %08x\r\n",localLabelBufferIndex, localLabelCounter, delta, localLabelTable[i].address);
+;  141	        //printf("R: index %d, counter %d, delta %d, address %08x\r\n",localLabelBufferIndex, localLabelCounter, delta, localLabelTable[i].address);
+;  142	    }
+L_43:
+.LINE 142
 
 	LD	BC,(_localLabelCounter)
 	CALL	__stoiu
@@ -1559,9 +1733,9 @@ L_38:
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_36
-;  117	}
-.LINE 117
+	JP	M,L_41
+;  143	}
+.LINE 143
 
 	LD	SP,IX
 	POP	IX
@@ -1583,9 +1757,9 @@ L_38:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "readLocalLabels",117,"_readLocalLabels"
-;  118	
-;  119	void writeAnonymousLabel(int32_t address) {
+.ENDFUNC "readLocalLabels",143,"_readLocalLabels"
+;  144	
+;  145	void writeAnonymousLabel(int32_t address) {
 _writeAnonymousLabel:
 .DEFINE "_writeAnonymousLabel"
 
@@ -1597,9 +1771,9 @@ _writeAnonymousLabel:
 
 .ENDEF
 
-.BEGFUNC "writeAnonymousLabel",119,"_writeAnonymousLabel"
+.BEGFUNC "writeAnonymousLabel",145,"_writeAnonymousLabel"
 
-.LINE 119
+.LINE 145
 
 .DEFINE "address"
 
@@ -1614,8 +1788,8 @@ _writeAnonymousLabel:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-;  120	    agon_fwrite(&address, 1, sizeof(address), FILE_ANONYMOUS_LABELS);
-.LINE 120
+;  146	    agon_fwrite(&address, 1, sizeof(address), FILE_ANONYMOUS_LABELS);
+.LINE 146
 
 	LD	BC,4
 	PUSH	BC
@@ -1628,8 +1802,8 @@ _writeAnonymousLabel:
 	POP	BC
 	POP	BC
 	POP	BC
-;  121	}
-.LINE 121
+;  147	}
+.LINE 147
 
 	LD	SP,IX
 	POP	IX
@@ -1646,9 +1820,9 @@ _writeAnonymousLabel:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "writeAnonymousLabel",121,"_writeAnonymousLabel"
-;  122	
-;  123	void readAnonymousLabel(void) {
+.ENDFUNC "writeAnonymousLabel",147,"_writeAnonymousLabel"
+;  148	
+;  149	void readAnonymousLabel(void) {
 _readAnonymousLabel:
 .DEFINE "_readAnonymousLabel"
 
@@ -1660,9 +1834,9 @@ _readAnonymousLabel:
 
 .ENDEF
 
-.BEGFUNC "readAnonymousLabel",123,"_readAnonymousLabel"
+.BEGFUNC "readAnonymousLabel",149,"_readAnonymousLabel"
 
-.LINE 123
+.LINE 149
 
 .DEFINE "address"
 
@@ -1679,10 +1853,10 @@ _readAnonymousLabel:
 	ADD	IX,SP
 	PUSH	BC
 	DEC	SP
-;  124	    int32_t address;
-;  125	
-;  126	    if(agon_fread(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS)) {
-.LINE 126
+;  150	    int32_t address;
+;  151	
+;  152	    if(agon_fread(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS)) {
+.LINE 152
 
 	LD	BC,4
 	PUSH	BC
@@ -1697,68 +1871,68 @@ _readAnonymousLabel:
 	POP	BC
 	POP	BC
 	CALL	__icmpzero
-	JR	Z,L_44
-;  127	        if(an_next.defined) {
-.LINE 127
+	JR	Z,L_49
+;  153	        if(an_next.defined) {
+.LINE 153
 
 	LD	A,(_an_next)
 	OR	A,A
-	JR	Z,L_42
-;  128	            an_prev.address = an_next.address;
-.LINE 128
+	JR	Z,L_47
+;  154	            an_prev.address = an_next.address;
+.LINE 154
 
 	LD	BC,(_an_next+1)
 	LD	A,(_an_next+4)
 	LD	(_an_prev+1),BC
 	LD	(_an_prev+4),A
-;  129	            an_prev.defined = true;
-.LINE 129
+;  155	            an_prev.defined = true;
+.LINE 155
 
 	LD	A,%1
 	LD	(_an_prev),A
-;  130	        }
-L_42:
-.LINE 130
+;  156	        }
+L_47:
+.LINE 156
 
-;  131	        an_next.address = address;
-.LINE 131
+;  157	        an_next.address = address;
+.LINE 157
 
 	LD	BC,(IX+%FFFFFFFC)
 	LD	(_an_next+1),BC
 	LD	A,(IX+%FFFFFFFF)
 	LD	(_an_next+4),A
-;  132	        an_next.defined = true;            
-.LINE 132
+;  158	        an_next.defined = true;            
+.LINE 158
 
 	LD	A,%1
 	LD	(_an_next),A
-;  133	    }
-;  134	    else { // last label already read
-.LINE 134
+;  159	    }
+;  160	    else { // last label already read
+.LINE 160
 
-	JR	L_45
-L_44:
-;  135	        an_prev.address = an_next.address;
-.LINE 135
+	JR	L_50
+L_49:
+;  161	        an_prev.address = an_next.address;
+.LINE 161
 
 	LD	BC,(_an_next+1)
 	LD	A,(_an_next+4)
 	LD	(_an_prev+1),BC
 	LD	(_an_prev+4),A
-;  136	        an_prev.defined = true;
-.LINE 136
+;  162	        an_prev.defined = true;
+.LINE 162
 
 	LD	A,%1
 	LD	(_an_prev),A
-;  137	        an_next.defined = false;
-.LINE 137
+;  163	        an_next.defined = false;
+.LINE 163
 
 	XOR	A,A
 	LD	(_an_next),A
-;  138	    }
-;  139	}
-L_45:
-.LINE 139
+;  164	    }
+;  165	}
+L_50:
+.LINE 165
 
 	LD	SP,IX
 	POP	IX
@@ -1777,9 +1951,9 @@ L_45:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "readAnonymousLabel",139,"_readAnonymousLabel"
-;  140	
-;  141	bool insertLocalLabel(char *labelname, int32_t address) {
+.ENDFUNC "readAnonymousLabel",165,"_readAnonymousLabel"
+;  166	
+;  167	bool insertLocalLabel(char *labelname, int32_t address) {
 _insertLocalLabel:
 .DEFINE "_insertLocalLabel"
 
@@ -1791,9 +1965,9 @@ _insertLocalLabel:
 
 .ENDEF
 
-.BEGFUNC "insertLocalLabel",141,"_insertLocalLabel"
+.BEGFUNC "insertLocalLabel",167,"_insertLocalLabel"
 
-.LINE 141
+.LINE 167
 
 .DEFINE "labelname"
 
@@ -1880,73 +2054,73 @@ _insertLocalLabel:
 	ADD	IX,SP
 	LEA	HL,IX+%FFFFFFEA
 	LD	SP,HL
-;  142	    int len,i;
-;  143	    int p;
-;  144	    char *ptr;
-;  145	    char *old_name;
-;  146	    int32_t old_address;
-;  147	
-;  148	    if(labelname[1] == 0) {
-.LINE 148
+;  168	    int len,i;
+;  169	    int p;
+;  170	    char *ptr;
+;  171	    char *old_name;
+;  172	    int32_t old_address;
+;  173	
+;  174	    if(labelname[1] == 0) {
+.LINE 174
 
 	LD	HL,(IX+%6)
 	INC	HL
 	LD	A,(HL)
 	OR	A,A
-	JR	NZ,L_47
-;  149	        error(message[ERROR_INVALIDLABEL]);
-.LINE 149
+	JR	NZ,L_52
+;  175	        error(message[ERROR_INVALIDLABEL]);
+.LINE 175
 
 	LD	HL,_message+12
 	LD	BC,(HL)
 	PUSH	BC
 	CALL	_error
 	POP	BC
-;  150	        return false;
-.LINE 150
+;  176	        return false;
+.LINE 176
 
 	XOR	A,A
-	JR	L_68
-;  151	    }
-L_47:
-.LINE 151
+	JR	L_73
+;  177	    }
+L_52:
+.LINE 177
 
-;  152	    p = findLocalLabelIndex(labelname);
-.LINE 152
+;  178	    p = findLocalLabelIndex(labelname);
+.LINE 178
 
 	LD	BC,(IX+%6)
 	PUSH	BC
 	CALL	_findLocalLabelIndex
 	POP	BC
 	LD	(IX+%FFFFFFF1),HL
-;  153	
-;  154	    if(p >= LOCAL_LABEL_TABLE_SIZE) {
-.LINE 154
+;  179	
+;  180	    if(p >= LOCAL_LABEL_TABLE_SIZE) {
+.LINE 180
 
 	LD	BC,64
 	LD	HL,(IX+%FFFFFFF1)
 	OR	A,A
 	SBC	HL,BC
-	JP	M,L_66
-;  155	        if(localLabelCounter < LOCAL_LABEL_TABLE_SIZE) {
-.LINE 155
+	JP	M,L_71
+;  181	        if(localLabelCounter < LOCAL_LABEL_TABLE_SIZE) {
+.LINE 181
 
 	LD.LIS	BC,64
 	LD	HL,(_localLabelCounter)
 	OR	A,A
 	SBC.SIS	HL,BC
-	JR	NC,L_64
-;  156	            len = strlen(labelname);
-.LINE 156
+	JR	NC,L_69
+;  182	            len = strlen(labelname);
+.LINE 182
 
 	LD	BC,(IX+%6)
 	PUSH	BC
 	CALL	_strlen
 	POP	BC
 	LD	(IX+%FFFFFFF7),HL
-;  157	            // check space first
-;  158	            if((localLabelBufferIndex + len + 1) > LOCAL_LABEL_BUFFERSIZE -1)
-.LINE 158
+;  183	            // check space first
+;  184	            if((localLabelBufferIndex + len + 1) > LOCAL_LABEL_BUFFERSIZE -1)
+.LINE 184
 
 	LD	BC,(_localLabelBufferIndex)
 	CALL	__stoiu
@@ -1958,24 +2132,24 @@ L_47:
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	P,L_49
-;  159	                return false; // no more space in buffer
-.LINE 159
+	JP	P,L_54
+;  185	                return false; // no more space in buffer
+.LINE 185
 
 	XOR	A,A
-	JR	L_68
-L_49:
-;  160	            // allocate space in buffer for string
-;  161	            ptr = &localLabelBuffer[localLabelBufferIndex];
-.LINE 161
+	JR	L_73
+L_54:
+;  186	            // allocate space in buffer for string
+;  187	            ptr = &localLabelBuffer[localLabelBufferIndex];
+.LINE 187
 
 	LD	BC,(_localLabelBufferIndex)
 	CALL	__stoiu
 	LD	BC,_localLabelBuffer
 	ADD	HL,BC
 	LD	(IX+%FFFFFFFA),HL
-;  162	            localLabelBufferIndex += len + 1;
-.LINE 162
+;  188	            localLabelBufferIndex += len + 1;
+.LINE 188
 
 	LD	BC,(IX+%FFFFFFF7)
 	LD	HL,(_localLabelBufferIndex)
@@ -1986,8 +2160,8 @@ L_49:
 	LD	(HL),C
 	INC	HL
 	LD	(HL),B
-;  163	            strcpy(ptr, labelname);
-.LINE 163
+;  189	            strcpy(ptr, labelname);
+.LINE 189
 
 	LD	BC,(IX+%6)
 	PUSH	BC
@@ -1996,16 +2170,16 @@ L_49:
 	CALL	_strcpy
 	POP	BC
 	POP	BC
-;  164	
-;  165	            for(i = 0; i < localLabelCounter; i++) {
-.LINE 165
+;  190	
+;  191	            for(i = 0; i < localLabelCounter; i++) {
+.LINE 191
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFD),BC
-	JR	L_54
-L_52:
-;  166	                if(strcmp(labelname, localLabelTable[i].name) < 0) break;
-.LINE 166
+	JR	L_59
+L_57:
+;  192	                if(strcmp(labelname, localLabelTable[i].name) < 0) break;
+.LINE 192
 
 	LD	HL,(IX+%FFFFFFFD)
 	LD	A,%7
@@ -2022,13 +2196,13 @@ L_52:
 	POP	BC
 	CALL	__icmpzero
 	CALL	__setflag
-	JP	M,L_60
+	JP	M,L_65
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
 	LD	(IX+%FFFFFFFD),BC
-;  167	            }
-L_54:
-.LINE 167
+;  193	            }
+L_59:
+.LINE 193
 
 	LD	BC,(_localLabelCounter)
 	CALL	__stoiu
@@ -2037,10 +2211,10 @@ L_54:
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_52
-L_60:
-;  168	            if(i < localLabelCounter) {
-.LINE 168
+	JP	M,L_57
+L_65:
+;  194	            if(i < localLabelCounter) {
+.LINE 194
 
 	LD	BC,(_localLabelCounter)
 	CALL	__stoiu
@@ -2049,14 +2223,14 @@ L_60:
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_58
-	JR	L_61
-;  169	                for(; i < localLabelCounter; i++ ) {
-L_56:
-.LINE 169
+	JP	M,L_63
+	JR	L_66
+;  195	                for(; i < localLabelCounter; i++ ) {
+L_61:
+.LINE 195
 
-;  170	                    old_name = localLabelTable[i].name;
-.LINE 170
+;  196	                    old_name = localLabelTable[i].name;
+.LINE 196
 
 	LD	HL,(IX+%FFFFFFFD)
 	LD	A,%7
@@ -2067,32 +2241,32 @@ L_56:
 	LD	IY,(IX+%FFFFFFEA)
 	LD	BC,(IY+%0)
 	LD	(IX+%FFFFFFF4),BC
-;  171	                    old_address = localLabelTable[i].address;
-.LINE 171
+;  197	                    old_address = localLabelTable[i].address;
+.LINE 197
 
 	LD	BC,(IY+%3)
 	LD	A,(IY+%6)
 	LD	(IX+%FFFFFFED),BC
 	LD	(IX+%FFFFFFF0),A
-;  172	                    localLabelTable[i].name = ptr;
-.LINE 172
+;  198	                    localLabelTable[i].name = ptr;
+.LINE 198
 
 	LD	BC,(IX+%FFFFFFFA)
 	LD	(IY+%0),BC
-;  173	                    localLabelTable[i].address = address;
-.LINE 173
+;  199	                    localLabelTable[i].address = address;
+.LINE 199
 
 	LD	BC,(IX+%9)
 	LD	A,(IX+%C)
 	LD	(IY+%3),BC
 	LD	(IY+%6),A
-;  174	                    ptr = old_name;
-.LINE 174
+;  200	                    ptr = old_name;
+.LINE 200
 
 	LD	BC,(IX+%FFFFFFF4)
 	LD	(IX+%FFFFFFFA),BC
-;  175	                    address = old_address;
-.LINE 175
+;  201	                    address = old_address;
+.LINE 201
 
 	LD	BC,(IX+%FFFFFFED)
 	LD	A,(IX+%FFFFFFF0)
@@ -2101,9 +2275,9 @@ L_56:
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
 	LD	(IX+%FFFFFFFD),BC
-;  176	                }
-L_58:
-.LINE 176
+;  202	                }
+L_63:
+.LINE 202
 
 	LD	BC,(_localLabelCounter)
 	CALL	__stoiu
@@ -2112,13 +2286,13 @@ L_58:
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_56
-;  177	            }
-L_61:
-.LINE 177
+	JP	M,L_61
+;  203	            }
+L_66:
+.LINE 203
 
-;  178	            localLabelTable[localLabelCounter].name = ptr;
-.LINE 178
+;  204	            localLabelTable[localLabelCounter].name = ptr;
+.LINE 204
 
 	LD	BC,(_localLabelCounter)
 	CALL	__stoiu
@@ -2129,8 +2303,8 @@ L_61:
 	LD	BC,(IX+%FFFFFFFA)
 	LD	IY,HL
 	LD	(IY+%0),BC
-;  179	            localLabelTable[localLabelCounter].address = address;
-.LINE 179
+;  205	            localLabelTable[localLabelCounter].address = address;
+.LINE 205
 
 	LD	BC,(_localLabelCounter)
 	CALL	__stoiu
@@ -2143,8 +2317,8 @@ L_61:
 	LD	IY,HL
 	LD	(IY+%3),BC
 	LD	(IY+%6),A
-;  180	            localLabelCounter++;
-.LINE 180
+;  206	            localLabelCounter++;
+.LINE 206
 
 	LD	BC,(_localLabelCounter)
 	INC	BC
@@ -2152,40 +2326,40 @@ L_61:
 	LD	(HL),C
 	INC	HL
 	LD	(HL),B
-;  181	            return true;
-.LINE 181
+;  207	            return true;
+.LINE 207
 
 	LD	A,%1
-	JR	L_68
-;  182	        }
-;  183	        else error(message[ERROR_MAXLOCALLABELS]);
-L_64:
-.LINE 183
+	JR	L_73
+;  208	        }
+;  209	        else error(message[ERROR_MAXLOCALLABELS]);
+L_69:
+.LINE 209
 
 	LD	HL,_message+99
 	LD	BC,(HL)
 	PUSH	BC
 	CALL	_error
 	POP	BC
-;  184	    }
-;  185	    else error(message[ERROR_LABELDEFINED]);
-.LINE 185
+;  210	    }
+;  211	    else error(message[ERROR_LABELDEFINED]);
+.LINE 211
 
-	JR	L_67
-L_66:
+	JR	L_72
+L_71:
 	LD	HL,_message+96
 	LD	BC,(HL)
 	PUSH	BC
 	CALL	_error
 	POP	BC
-L_67:
-;  186	    return false;
-.LINE 186
+L_72:
+;  212	    return false;
+.LINE 212
 
 	XOR	A,A
-;  187	}
-L_68:
-.LINE 187
+;  213	}
+L_73:
+.LINE 213
 
 	LD	SP,IX
 	POP	IX
@@ -2217,9 +2391,9 @@ L_68:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "insertLocalLabel",187,"_insertLocalLabel"
-;  188	
-;  189	bool insertGlobalLabel(char *labelname, int32_t address){
+.ENDFUNC "insertLocalLabel",213,"_insertLocalLabel"
+;  214	
+;  215	bool insertGlobalLabel(char *labelname, int32_t address){
 _insertGlobalLabel:
 .DEFINE "_insertGlobalLabel"
 
@@ -2231,9 +2405,9 @@ _insertGlobalLabel:
 
 .ENDEF
 
-.BEGFUNC "insertGlobalLabel",189,"_insertGlobalLabel"
+.BEGFUNC "insertGlobalLabel",215,"_insertGlobalLabel"
 
-.LINE 189
+.LINE 215
 
 .DEFINE "labelname"
 
@@ -2312,20 +2486,20 @@ _insertGlobalLabel:
 	ADD	IX,SP
 	LEA	HL,IX+%FFFFFFEE
 	LD	SP,HL
-;  190	    int index,i,try,len;
-;  191	    label *tmp;
-;  192	
-;  193	    len = strlen(labelname);
-.LINE 193
+;  216	    int index,i,try,len;
+;  217	    label *tmp;
+;  218	
+;  219	    len = strlen(labelname);
+.LINE 219
 
 	LD	BC,(IX+%6)
 	PUSH	BC
 	CALL	_strlen
 	POP	BC
 	LD	(IX+%FFFFFFF7),HL
-;  194	    // check space first
-;  195	    if((globalLabelBufferIndex + len + 1 + sizeof(label)) > GLOBAL_LABEL_TABLE_SIZE-1)
-.LINE 195
+;  220	    // check space first
+;  221	    if((globalLabelBufferIndex + len + 1 + sizeof(label)) > GLOBAL_LABEL_TABLE_SIZE-1)
+.LINE 221
 
 	LD	BC,(_globalLabelBufferIndex)
 	CALL	__stoiu
@@ -2336,24 +2510,24 @@ _insertGlobalLabel:
 	LD	HL,8191
 	OR	A,A
 	SBC	HL,BC
-	JR	NC,L_70
-;  196	        return false; // no more space in buffer 
-.LINE 196
+	JR	NC,L_75
+;  222	        return false; // no more space in buffer 
+.LINE 222
 
 	XOR	A,A
-	JR	L_78
-L_70:
-;  197	    // allocate space in buffer for label struct
-;  198	    tmp = (label *)&globalLabelBuffer[globalLabelBufferIndex];
-.LINE 198
+	JR	L_83
+L_75:
+;  223	    // allocate space in buffer for label struct
+;  224	    tmp = (label *)&globalLabelBuffer[globalLabelBufferIndex];
+.LINE 224
 
 	LD	BC,(_globalLabelBufferIndex)
 	CALL	__stoiu
 	LD	BC,_globalLabelBuffer
 	ADD	HL,BC
 	LD	(IX+%FFFFFFFA),HL
-;  199	    globalLabelBufferIndex += sizeof(label);
-.LINE 199
+;  225	    globalLabelBufferIndex += sizeof(label);
+.LINE 225
 
 	LD	IY,(_globalLabelBufferIndex)
 	LEA	BC,IY+%7
@@ -2361,9 +2535,9 @@ L_70:
 	LD	(HL),C
 	INC	HL
 	LD	(HL),B
-;  200	    // allocate space in buffer for string and store it to buffer
-;  201	    tmp->name = &globalLabelBuffer[globalLabelBufferIndex];
-.LINE 201
+;  226	    // allocate space in buffer for string and store it to buffer
+;  227	    tmp->name = &globalLabelBuffer[globalLabelBufferIndex];
+.LINE 227
 
 	LD	BC,(_globalLabelBufferIndex)
 	CALL	__stoiu
@@ -2371,8 +2545,8 @@ L_70:
 	ADD	HL,BC
 	LD	IY,(IX+%FFFFFFFA)
 	LD	(IY+%0),HL
-;  202	    globalLabelBufferIndex += len+1;
-.LINE 202
+;  228	    globalLabelBufferIndex += len+1;
+.LINE 228
 
 	LD	BC,(IX+%FFFFFFF7)
 	LD	HL,(_globalLabelBufferIndex)
@@ -2383,8 +2557,8 @@ L_70:
 	LD	(HL),C
 	INC	HL
 	LD	(HL),B
-;  203	    strcpy(tmp->name, labelname);
-.LINE 203
+;  229	    strcpy(tmp->name, labelname);
+.LINE 229
 
 	LD	BC,(IX+%6)
 	PUSH	BC
@@ -2393,17 +2567,17 @@ L_70:
 	CALL	_strcpy
 	POP	BC
 	POP	BC
-;  204	    tmp->address = address;
-.LINE 204
+;  230	    tmp->address = address;
+.LINE 230
 
 	LD	BC,(IX+%9)
 	LD	A,(IX+%C)
 	LD	IY,(IX+%FFFFFFFA)
 	LD	(IY+%3),BC
 	LD	(IY+%6),A
-;  205	
-;  206	    index = hash(labelname, GLOBAL_LABEL_TABLE_SIZE);
-.LINE 206
+;  231	
+;  232	    index = hash(labelname, GLOBAL_LABEL_TABLE_SIZE);
+.LINE 232
 
 	LD	BC,8192
 	PUSH	BC
@@ -2413,15 +2587,15 @@ L_70:
 	POP	BC
 	POP	BC
 	LD	(IX+%FFFFFFEE),HL
-;  207	    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++) {
-.LINE 207
+;  233	    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++) {
+.LINE 233
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFD),BC
-	JR	L_76
-L_74:
-;  208	        try = (i + index) % GLOBAL_LABEL_TABLE_SIZE;
-.LINE 208
+	JR	L_81
+L_79:
+;  234	        try = (i + index) % GLOBAL_LABEL_TABLE_SIZE;
+.LINE 234
 
 	LD	BC,(IX+%FFFFFFEE)
 	LD	HL,(IX+%FFFFFFFD)
@@ -2429,8 +2603,8 @@ L_74:
 	LD	BC,8192
 	CALL	__irems
 	LD	(IX+%FFFFFFF1),HL
-;  209	        if(globalLabelTable[try] == NULL){
-.LINE 209
+;  235	        if(globalLabelTable[try] == NULL){
+.LINE 235
 
 	LD	BC,HL
 	ADD	HL,HL
@@ -2440,15 +2614,15 @@ L_74:
 	LD	(IX+%FFFFFFF4),HL
 	LD	HL,(HL)
 	CALL	__icmpzero
-	JR	NZ,L_75
-;  210	            globalLabelTable[try] = tmp;
-.LINE 210
+	JR	NZ,L_80
+;  236	            globalLabelTable[try] = tmp;
+.LINE 236
 
 	LD	HL,(IX+%FFFFFFF4)
 	LD	BC,(IX+%FFFFFFFA)
 	LD	(HL),BC
-;  211	            globalLabelCounter++;
-.LINE 211
+;  237	            globalLabelCounter++;
+.LINE 237
 
 	LD	BC,(_globalLabelCounter)
 	INC	BC
@@ -2456,33 +2630,33 @@ L_74:
 	LD	(HL),C
 	INC	HL
 	LD	(HL),B
-;  212	            return true;
-.LINE 212
+;  238	            return true;
+.LINE 238
 
 	LD	A,%1
-	JR	L_78
-;  213	        } 
-;  214	    }
-L_75:
-.LINE 214
+	JR	L_83
+;  239	        } 
+;  240	    }
+L_80:
+.LINE 240
 
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
 	LD	(IX+%FFFFFFFD),BC
-L_76:
+L_81:
 	LD	BC,8192
 	LD	HL,(IX+%FFFFFFFD)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_74
-;  215	    return false;
-.LINE 215
+	JP	M,L_79
+;  241	    return false;
+.LINE 241
 
 	XOR	A,A
-;  216	}
-L_78:
-.LINE 216
+;  242	}
+L_83:
+.LINE 242
 
 	LD	SP,IX
 	POP	IX
@@ -2512,9 +2686,9 @@ L_78:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "insertGlobalLabel",216,"_insertGlobalLabel"
-;  217	
-;  218	void print_bufferspace(){
+.ENDFUNC "insertGlobalLabel",242,"_insertGlobalLabel"
+;  243	
+;  244	void print_bufferspace(){
 _print_bufferspace:
 .DEFINE "_print_bufferspace"
 
@@ -2526,13 +2700,13 @@ _print_bufferspace:
 
 .ENDEF
 
-.BEGFUNC "print_bufferspace",218,"_print_bufferspace"
+.BEGFUNC "print_bufferspace",244,"_print_bufferspace"
 
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-;  219	    printf("%d bytes available in label buffer\n", GLOBAL_LABEL_BUFFERSIZE - globalLabelBufferIndex );
-.LINE 219
+;  245	    printf("%d bytes available in label buffer\n", GLOBAL_LABEL_BUFFERSIZE - globalLabelBufferIndex );
+.LINE 245
 
 	LD	BC,___print_uputch
 	LD	(___print_xputch),BC
@@ -2552,12 +2726,12 @@ _print_bufferspace:
 	CALL	__u_itoa
 	POP	BC
 	POP	BC
-	LD	BC,L__37
+	LD	BC,L__43
 	PUSH	BC
 	CALL	___print_sendstring
 	POP	BC
-;  220	}
-.LINE 220
+;  246	}
+.LINE 246
 
 	LD	SP,IX
 	POP	IX
@@ -2577,14 +2751,14 @@ _print_bufferspace:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "print_bufferspace",220,"_print_bufferspace"
+.ENDFUNC "print_bufferspace",246,"_print_bufferspace"
 	SEGMENT STRSECT
-L__37:
+L__43:
 	DB	" bytes available in label buffer"
 	DB	10,0
 	SEGMENT CODE
-;  221	
-;  222	label * findGlobalLabel(char *name){
+;  247	
+;  248	label * findGlobalLabel(char *name){
 _findGlobalLabel:
 .DEFINE "_findGlobalLabel"
 
@@ -2598,9 +2772,9 @@ _findGlobalLabel:
 
 .ENDEF
 
-.BEGFUNC "findGlobalLabel",222,"_findGlobalLabel"
+.BEGFUNC "findGlobalLabel",248,"_findGlobalLabel"
 
-.LINE 222
+.LINE 248
 
 .DEFINE "name"
 
@@ -2647,10 +2821,10 @@ _findGlobalLabel:
 	ADD	IX,SP
 	LEA	HL,IX+%FFFFFFF4
 	LD	SP,HL
-;  223	    int index,i,try;
-;  224	
-;  225	    index = hash(name, GLOBAL_LABEL_TABLE_SIZE);
-.LINE 225
+;  249	    int index,i,try;
+;  250	
+;  251	    index = hash(name, GLOBAL_LABEL_TABLE_SIZE);
+.LINE 251
 
 	LD	BC,8192
 	PUSH	BC
@@ -2660,15 +2834,15 @@ _findGlobalLabel:
 	POP	BC
 	POP	BC
 	LD	(IX+%FFFFFFF4),HL
-;  226	    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
-.LINE 226
+;  252	    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
+.LINE 252
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFA),BC
-	JR	L_87
-L_85:
-;  227	        try = (index + i) % GLOBAL_LABEL_TABLE_SIZE;
-.LINE 227
+	JR	L_92
+L_90:
+;  253	        try = (index + i) % GLOBAL_LABEL_TABLE_SIZE;
+.LINE 253
 
 	LD	BC,(IX+%FFFFFFFA)
 	LD	HL,(IX+%FFFFFFF4)
@@ -2676,8 +2850,8 @@ L_85:
 	LD	BC,8192
 	CALL	__irems
 	LD	(IX+%FFFFFFF7),HL
-;  228	        if(globalLabelTable[try] == NULL){
-.LINE 228
+;  254	        if(globalLabelTable[try] == NULL){
+.LINE 254
 
 	LD	BC,HL
 	ADD	HL,HL
@@ -2687,26 +2861,26 @@ L_85:
 	LD	(IX+%FFFFFFFD),HL
 	LD	HL,(HL)
 	CALL	__icmpzero
-	JR	NZ,L_84
-;  229	            return NULL;
-.LINE 229
+	JR	NZ,L_89
+;  255	            return NULL;
+.LINE 255
 
 	OR	A,A
 	SBC	HL,HL
-	JR	L_89
-;  230	        }
-L_84:
-.LINE 230
+	JR	L_94
+;  256	        }
+L_89:
+.LINE 256
 
-;  231	        if(globalLabelTable[try] != NULL &&
-.LINE 231
+;  257	        if(globalLabelTable[try] != NULL &&
+.LINE 257
 
 	LD	HL,(IX+%FFFFFFFD)
 	LD	HL,(HL)
 	CALL	__icmpzero
-	JR	Z,L_86
-;  232	            strcmp(globalLabelTable[try]->name,name) == 0){
-.LINE 232
+	JR	Z,L_91
+;  258	            strcmp(globalLabelTable[try]->name,name) == 0){
+.LINE 258
 
 	LD	BC,(IX+%6)
 	PUSH	BC
@@ -2718,36 +2892,36 @@ L_84:
 	POP	BC
 	POP	BC
 	CALL	__icmpzero
-	JR	NZ,L_86
-;  233	            return globalLabelTable[try];
-.LINE 233
+	JR	NZ,L_91
+;  259	            return globalLabelTable[try];
+.LINE 259
 
 	LD	HL,(IX+%FFFFFFFD)
 	LD	HL,(HL)
-	JR	L_89
-;  234	        }
-;  235	    }
-L_86:
-.LINE 235
+	JR	L_94
+;  260	        }
+;  261	    }
+L_91:
+.LINE 261
 
 	LD	BC,(IX+%FFFFFFFA)
 	INC	BC
 	LD	(IX+%FFFFFFFA),BC
-L_87:
+L_92:
 	LD	BC,8192
 	LD	HL,(IX+%FFFFFFFA)
 	OR	A,A
 	SBC	HL,BC
 	CALL	__setflag
-	JP	M,L_85
-;  236	    return NULL;
-.LINE 236
+	JP	M,L_90
+;  262	    return NULL;
+.LINE 262
 
 	OR	A,A
 	SBC	HL,HL
-;  237	}
-L_89:
-.LINE 237
+;  263	}
+L_94:
+.LINE 263
 
 	LD	SP,IX
 	POP	IX
@@ -2770,9 +2944,9 @@ L_89:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "findGlobalLabel",237,"_findGlobalLabel"
-;  238	
-;  239	label *findLabel(char *name) {
+.ENDFUNC "findGlobalLabel",263,"_findGlobalLabel"
+;  264	
+;  265	label *findLabel(char *name) {
 _findLabel:
 .DEFINE "_findLabel"
 
@@ -2786,9 +2960,9 @@ _findLabel:
 
 .ENDEF
 
-.BEGFUNC "findLabel",239,"_findLabel"
+.BEGFUNC "findLabel",265,"_findLabel"
 
-.LINE 239
+.LINE 265
 
 .DEFINE "name"
 
@@ -2806,8 +2980,8 @@ _findLabel:
 	PUSH	BC
 	PUSH	BC
 	PUSH	BC
-;  240	    if(name[0] == '@') {
-.LINE 240
+;  266	    if(name[0] == '@') {
+.LINE 266
 
 	LD	HL,(IX+%6)
 	LD	A,(HL)
@@ -2817,10 +2991,10 @@ _findLabel:
 	LD	BC,64
 	OR	A,A
 	SBC	HL,BC
-	JR	NZ,L_103
-;  241	        
-;  242	        if(((name[1] == 'f') || (name[1] == 'n')) && name[2] == 0) {
-.LINE 242
+	JR	NZ,L_108
+;  267	        
+;  268	        if(((name[1] == 'f') || (name[1] == 'n')) && name[2] == 0) {
+.LINE 268
 
 	LD	BC,(IX+%6)
 	INC	BC
@@ -2834,7 +3008,7 @@ _findLabel:
 	LD	BC,102
 	OR	A,A
 	SBC	HL,BC
-	JR	Z,L_91
+	JR	Z,L_96
 	LD	BC,(IX+%FFFFFFFD)
 	LD	(IX+%FFFFFFFA),BC
 	LD	HL,(IX+%FFFFFFFD)
@@ -2845,44 +3019,44 @@ _findLabel:
 	LD	BC,110
 	OR	A,A
 	SBC	HL,BC
-	JR	NZ,L_100
-L_91:
+	JR	NZ,L_105
+L_96:
 	LD	IY,(IX+%6)
 	LD	A,(IY+%2)
 	OR	A,A
-	JR	NZ,L_100
-;  243	            if(an_next.defined) {
-.LINE 243
+	JR	NZ,L_105
+;  269	            if(an_next.defined) {
+.LINE 269
 
 	LD	A,(_an_next)
 	OR	A,A
-	JR	Z,L_93
-;  244	                an_return.address = an_next.address;
-.LINE 244
+	JR	Z,L_98
+;  270	                an_return.address = an_next.address;
+.LINE 270
 
 	LD	BC,(_an_next+1)
 	LD	A,(_an_next+4)
 	LD	(_an_return+3),BC
 	LD	(_an_return+6),A
-;  245	                return &an_return;
-.LINE 245
+;  271	                return &an_return;
+.LINE 271
 
 	LD	HL,_an_return
-	JR	L_104
-;  246	            }
-;  247	            else return NULL;
-L_93:
-.LINE 247
+	JR	L_109
+;  272	            }
+;  273	            else return NULL;
+L_98:
+.LINE 273
 
 	OR	A,A
 	SBC	HL,HL
-	JR	L_104
-;  248	        }
-L_100:
-.LINE 248
+	JR	L_109
+;  274	        }
+L_105:
+.LINE 274
 
-;  249	        if(((name[1] == 'b') || (name[1] == 'p')) && name[2] == 0) {
-.LINE 249
+;  275	        if(((name[1] == 'b') || (name[1] == 'p')) && name[2] == 0) {
+.LINE 275
 
 	LD	BC,(IX+%FFFFFFFA)
 	LD	(IX+%FFFFFFF7),BC
@@ -2894,7 +3068,7 @@ L_100:
 	LD	BC,98
 	OR	A,A
 	SBC	HL,BC
-	JR	Z,L_96
+	JR	Z,L_101
 	LD	HL,(IX+%FFFFFFF7)
 	LD	A,(HL)
 	LD	B,A
@@ -2903,62 +3077,62 @@ L_100:
 	LD	BC,112
 	OR	A,A
 	SBC	HL,BC
-	JR	NZ,L_101
-L_96:
+	JR	NZ,L_106
+L_101:
 	LD	IY,(IX+%6)
 	LD	A,(IY+%2)
 	OR	A,A
-	JR	NZ,L_101
-;  250	            if(an_prev.defined) {
-.LINE 250
+	JR	NZ,L_106
+;  276	            if(an_prev.defined) {
+.LINE 276
 
 	LD	A,(_an_prev)
 	OR	A,A
-	JR	Z,L_98
-;  251	                an_return.address = an_prev.address;
-.LINE 251
+	JR	Z,L_103
+;  277	                an_return.address = an_prev.address;
+.LINE 277
 
 	LD	BC,(_an_prev+1)
 	LD	A,(_an_prev+4)
 	LD	(_an_return+3),BC
 	LD	(_an_return+6),A
-;  252	                return &an_return;
-.LINE 252
+;  278	                return &an_return;
+.LINE 278
 
 	LD	HL,_an_return
-	JR	L_104
-;  253	            }
-;  254	            else return NULL;
-L_98:
-.LINE 254
+	JR	L_109
+;  279	            }
+;  280	            else return NULL;
+L_103:
+.LINE 280
 
 	OR	A,A
 	SBC	HL,HL
-	JR	L_104
-;  255	        }
-L_101:
-.LINE 255
+	JR	L_109
+;  281	        }
+L_106:
+.LINE 281
 
-;  256	        
-;  257	        return findLocalLabel(name);
-.LINE 257
+;  282	        
+;  283	        return findLocalLabel(name);
+.LINE 283
 
 	LD	BC,(IX+%6)
 	PUSH	BC
 	CALL	_findLocalLabel
 	POP	BC
-	JR	L_104
-;  258	    }
-;  259	    else return findGlobalLabel(name);
-L_103:
-.LINE 259
+	JR	L_109
+;  284	    }
+;  285	    else return findGlobalLabel(name);
+L_108:
+.LINE 285
 
 	LD	BC,(IX+%6)
 	PUSH	BC
 	CALL	_findGlobalLabel
 	POP	BC
-L_104:
-.LINE 260
+L_109:
+.LINE 286
 
 	LD	SP,IX
 	POP	IX
@@ -2981,7 +3155,7 @@ L_104:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "findLabel",260,"_findLabel"
+.ENDFUNC "findLabel",286,"_findLabel"
 	XREF _message:ROM
 	XREF _agon_fread:ROM
 	XREF _agon_fwrite:ROM
@@ -2990,10 +3164,12 @@ L_104:
 	XREF _strlen:ROM
 	XREF _strcmp:ROM
 	XREF _strcpy:ROM
+	XREF __u_uitoa:ROM
 	XREF __u_itoa:ROM
 	XREF ___print_sendstring:ROM
 	XREF ___print_xputch:ROM
 	XREF ___print_uputch:ROM
+	XREF ___print_fmt:ROM
 	XREF __irems:ROM
 	XREF __stoiu:ROM
 	XREF __itol:ROM
@@ -3019,6 +3195,7 @@ L_104:
 	XDEF _initGlobalLabelTable
 	XDEF _getLocalLabelCount
 	XDEF _getGlobalLabelCount
+	XDEF _printLocalLabelTable
 	XDEF _localLabelCounter
 	XDEF _localLabelTable
 	XDEF _globalLabelCounter

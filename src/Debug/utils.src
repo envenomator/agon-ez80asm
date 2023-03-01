@@ -751,7 +751,7 @@ _error:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-;   46	    printf("\"%s\" - line %d - %s\n", filename[FILE_CURRENT], linenumber, msg);
+;   46	    printf("\"%s\" - line %d - %s\n\r", filename[FILE_CURRENT], linenumber, msg);
 .LINE 46
 
 	LD	BC,___print_uputch
@@ -786,9 +786,9 @@ _error:
 	PUSH	BC
 	CALL	___print_sendstring
 	POP	BC
-	LD	BC,10
+	LD	BC,L__16
 	PUSH	BC
-	CALL	___print_uputch
+	CALL	___print_sendstring
 	POP	BC
 ;   47	    global_errors++;
 .LINE 47
@@ -831,6 +831,8 @@ L__14:
 L__15:
 	DB	" - "
 	DB	0
+L__16:
+	DB	10,13,0
 	SEGMENT CODE
 ;   49	
 ;   50	void trimRight(char *str) {
@@ -1317,7 +1319,7 @@ L_82:
 	LD	HL,(IX+%FFFFFFF7)
 	CALL	__seqcaseD
 	JP	(HL)
-L__27:
+L__28:
 	DW	3
 	DW	0
 	DB	0
@@ -1343,7 +1345,7 @@ L_46:
 	LD	L,B
 	CALL	__case8D
 	JP	(HL)
-L__28:
+L__29:
 	DW	2
 	DB	34
 	DW24	L_52	
@@ -2163,12 +2165,12 @@ _openFile:
 	LD	A,%1
 	JR	L_135
 L_134:
-;  207	    printf("Error opening \"%s\"\n", name);
+;  207	    printf("Error opening \"%s\"\n\r", name);
 .LINE 207
 
 	LD	BC,___print_uputch
 	LD	(___print_xputch),BC
-	LD	BC,L__59
+	LD	BC,L__60
 	PUSH	BC
 	CALL	___print_sendstring
 	POP	BC
@@ -2176,7 +2178,7 @@ L_134:
 	PUSH	BC
 	CALL	___print_sendstring
 	POP	BC
-	LD	BC,L__60
+	LD	BC,L__61
 	PUSH	BC
 	CALL	___print_sendstring
 	POP	BC
@@ -2210,12 +2212,12 @@ L_135:
 
 .ENDFUNC "openFile",209,"_openFile"
 	SEGMENT STRSECT
-L__59:
+L__60:
 	DB	"Error opening \""
 	DB	0
-L__60:
+L__61:
 	DB	"\""
-	DB	10,0
+	DB	10,13,0
 	SEGMENT CODE
 ;  210	
 ;  211	bool reOpenFile(uint8_t number, uint8_t mode) {
@@ -2447,7 +2449,7 @@ _prepare_filenames:
 ;  224	    strcat(filename[FILE_OUTPUT], ".bin");
 .LINE 224
 
-	LD	BC,L__64
+	LD	BC,L__65
 	PUSH	BC
 	LD	BC,256
 	LD	HL,_filename
@@ -2459,7 +2461,7 @@ _prepare_filenames:
 ;  225	    strcat(filename[FILE_LOCAL_LABELS], ".lcllbls");
 .LINE 225
 
-	LD	BC,L__65
+	LD	BC,L__66
 	PUSH	BC
 	LD	BC,384
 	LD	HL,_filename
@@ -2471,7 +2473,7 @@ _prepare_filenames:
 ;  226	    strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
 .LINE 226
 
-	LD	BC,L__66
+	LD	BC,L__67
 	PUSH	BC
 	LD	BC,512
 	LD	HL,_filename
@@ -2483,7 +2485,7 @@ _prepare_filenames:
 ;  227	    strcat(filename[FILE_LISTING], ".lst");
 .LINE 227
 
-	LD	BC,L__67
+	LD	BC,L__68
 	PUSH	BC
 	LD	BC,640
 	LD	HL,_filename
@@ -2515,16 +2517,16 @@ _prepare_filenames:
 
 .ENDFUNC "prepare_filenames",228,"_prepare_filenames"
 	SEGMENT STRSECT
-L__64:
+L__65:
 	DB	".bin"
 	DB	0
-L__65:
+L__66:
 	DB	".lcllbls"
 	DB	0
-L__66:
+L__67:
 	DB	".anonlbls"
 	DB	0
-L__67:
+L__68:
 	DB	".lst"
 	DB	0
 	SEGMENT CODE
@@ -2929,11 +2931,21 @@ _agon_fgets:
 
 .ENDEF
 
+.DEFINE "eof"
+
+.CLASS 65
+
+.VALUE -4
+
+.TYPE 12
+
+.ENDEF
+
 .DEFINE "c"
 
 .CLASS 65
 
-.VALUE -6
+.VALUE -7
 
 .TYPE 4
 
@@ -2942,58 +2954,43 @@ _agon_fgets:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LEA	HL,IX+%FFFFFFF4
+	LEA	HL,IX+%FFFFFFF3
 	LD	SP,HL
 ;  255		int c;
 ;  256		char *cs;
-;  257	
+;  257		bool eof;
 ;  258	    c = 0;
 .LINE 258
 
 	LD	BC,0
-	LD	(IX+%FFFFFFFA),BC
+	LD	(IX+%FFFFFFF9),BC
 ;  259		cs = s;
 .LINE 259
 
 	LD	BC,(IX+%6)
 	LD	(IX+%FFFFFFFD),BC
-;  260		while (--size > 0 && (c = mos_fgetc(filehandle[fileid])) != EOF)
-.LINE 260
-
-	JR	L_181
-L_182:
-;  261			if ((*cs++ = c) == '\n')
+;  260	
+;  261		do {
+L_181:
 .LINE 261
 
-	LD	BC,(IX+%FFFFFFFD)
-	LD	(IX+%FFFFFFF4),BC
-	LD	A,(IX+%FFFFFFFA)
-	LD	HL,BC
-	LD	(HL),A
-	LD	BC,(IX+%FFFFFFFD)
-	INC	BC
-	LD	(IX+%FFFFFFFD),BC
-	LD	HL,(IX+%FFFFFFF4)
-	LD	A,(HL)
-	LD	B,A
-	SEXT	HL
-	LD	L,B
-	LD	BC,10
-	OR	A,A
-	SBC	HL,BC
-	JR	Z,L_183
-;  262				break;
-L_181:
+;  262			eof = mos_feof(filehandle[fileid]);
 .LINE 262
 
-	LD	BC,(IX+%9)
-	DEC	BC
-	LD	(IX+%9),BC
-	OR	A,A
-	SBC	HL,HL
-	OR	A,A
-	SBC	HL,BC
-	JP	P,L_183
+	LD	A,(IX+%C)
+	UEXT	HL
+	LD	L,A
+	LD	BC,_filehandle
+	ADD	HL,BC
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_feof
+	POP	BC
+	LD	(IX+%FFFFFFFC),A
+;  263			c = mos_fgetc(filehandle[fileid]);
+.LINE 263
+
 	LD	A,(IX+%C)
 	UEXT	HL
 	LD	L,A
@@ -3008,41 +3005,66 @@ L_181:
 	LD	A,B
 	SEXT	HL
 	LD	L,B
-	LD	(IX+%FFFFFFFA),HL
-	LD	BC,16777215
-	LD	HL,(IX+%FFFFFFFA)
+	LD	(IX+%FFFFFFF9),HL
+;  264			if((*cs++ = c) == '\n') break;		
+.LINE 264
+
+	LD	BC,(IX+%FFFFFFFD)
+	LD	(IX+%FFFFFFF3),BC
+	LD	A,(IX+%FFFFFFF9)
+	LD	HL,BC
+	LD	(HL),A
+	LD	BC,(IX+%FFFFFFFD)
+	INC	BC
+	LD	(IX+%FFFFFFFD),BC
+	LD	HL,(IX+%FFFFFFF3)
+	LD	A,(HL)
+	LD	B,A
+	SEXT	HL
+	LD	L,B
+	LD	BC,10
 	OR	A,A
 	SBC	HL,BC
-	JR	NZ,L_182
+	JR	Z,L_183
+;  265		}
+;  266		while(--size > 0 && !eof);
+.LINE 266
+
+	LD	BC,(IX+%9)
+	DEC	BC
+	LD	(IX+%9),BC
+	OR	A,A
+	SBC	HL,HL
+	OR	A,A
+	SBC	HL,BC
+	JP	P,L_183
+	LD	A,(IX+%FFFFFFFC)
+	OR	A,A
+	JR	Z,L_181
 L_183:
-;  263		*cs = '\0';
-.LINE 263
+;  267		
+;  268		*cs = '\0';
+.LINE 268
 
 	LD	HL,(IX+%FFFFFFFD)
 	LD	(HL),%0
-;  264		return (c == EOF && cs == s) ? NULL : s;
-.LINE 264
+;  269	
+;  270		return (eof) ? NULL : s;
+.LINE 270
 
-	LD	BC,16777215
-	LD	HL,(IX+%FFFFFFFA)
+	LD	A,(IX+%FFFFFFFC)
 	OR	A,A
-	SBC	HL,BC
-	JR	NZ,L_187
-	LD	BC,(IX+%6)
-	LD	HL,(IX+%FFFFFFFD)
-	OR	A,A
-	SBC	HL,BC
-	JR	NZ,L_187
+	JR	Z,L_186
 	LD	BC,0
-	LD	(IX+%FFFFFFF7),BC
-	JR	L_188
-L_187:
+	LD	(IX+%FFFFFFF6),BC
+	JR	L_187
+L_186:
 	LD	BC,(IX+%6)
-	LD	(IX+%FFFFFFF7),BC
-L_188:
-	LD	HL,(IX+%FFFFFFF7)
-;  265	}
-.LINE 265
+	LD	(IX+%FFFFFFF6),BC
+L_187:
+	LD	HL,(IX+%FFFFFFF6)
+;  271	}
+.LINE 271
 
 	LD	SP,IX
 	POP	IX
@@ -3051,23 +3073,25 @@ L_188:
 
 ;**************************** _agon_fgets ***************************
 ;Name                         Addr/Register   Size   Type
-;_filehandle                         IMPORT      6   variable
 ;_mos_fgetc                          IMPORT  -----   function
-;temp185                               IX-9      3   variable
-;c                                     IX-6      3   variable
+;_filehandle                         IMPORT      6   variable
+;_mos_feof                           IMPORT  -----   function
+;temp184                              IX-10      3   variable
+;c                                     IX-7      3   variable
+;eof                                   IX-4      1   variable
 ;cs                                    IX-3      3   variable
 ;fileid                               IX+12      1   parameter
 ;size                                  IX+9      3   parameter
 ;s                                     IX+6      3   parameter
 
 
-; Stack Frame Size: 27 (bytes)
+; Stack Frame Size: 28 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "agon_fgets",265,"_agon_fgets"
-;  266	
-;  267	int agon_fputs(char *s, uint8_t fileid) {
+.ENDFUNC "agon_fgets",271,"_agon_fgets"
+;  272	
+;  273	int agon_fputs(char *s, uint8_t fileid) {
 _agon_fputs:
 .DEFINE "_agon_fputs"
 
@@ -3079,9 +3103,9 @@ _agon_fputs:
 
 .ENDEF
 
-.BEGFUNC "agon_fputs",267,"_agon_fputs"
+.BEGFUNC "agon_fputs",273,"_agon_fputs"
 
-.LINE 267
+.LINE 273
 
 .DEFINE "s"
 
@@ -3117,18 +3141,18 @@ _agon_fputs:
 	LD	IX,0
 	ADD	IX,SP
 	PUSH	BC
-;  268	    int number = 0;
-.LINE 268
+;  274	    int number = 0;
+.LINE 274
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFD),BC
-;  269	    while(*s) {
-.LINE 269
+;  275	    while(*s) {
+.LINE 275
 
-	JR	L_192
-L_193:
-;  270	        mos_fputc(filehandle[fileid], *s);
-.LINE 270
+	JR	L_191
+L_192:
+;  276	        mos_fputc(filehandle[fileid], *s);
+.LINE 276
 
 	LD	HL,(IX+%6)
 	LD	C,(HL)
@@ -3145,32 +3169,32 @@ L_193:
 	CALL	_mos_fputc
 	POP	BC
 	POP	BC
-;  271	        number++;
-.LINE 271
+;  277	        number++;
+.LINE 277
 
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
 	LD	(IX+%FFFFFFFD),BC
-;  272	        s++;
-.LINE 272
+;  278	        s++;
+.LINE 278
 
 	LD	BC,(IX+%6)
 	INC	BC
 	LD	(IX+%6),BC
-;  273	    }
-L_192:
-.LINE 273
+;  279	    }
+L_191:
+.LINE 279
 
 	LD	HL,(IX+%6)
 	LD	A,(HL)
 	OR	A,A
-	JR	NZ,L_193
-;  274	    return number;
-.LINE 274
+	JR	NZ,L_192
+;  280	    return number;
+.LINE 280
 
 	LD	HL,(IX+%FFFFFFFD)
-;  275	}
-.LINE 275
+;  281	}
+.LINE 281
 
 	LD	SP,IX
 	POP	IX
@@ -3190,9 +3214,9 @@ L_192:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "agon_fputs",275,"_agon_fputs"
-;  276	
-;  277	size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
+.ENDFUNC "agon_fputs",281,"_agon_fputs"
+;  282	
+;  283	size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
 _agon_fwrite:
 .DEFINE "_agon_fwrite"
 
@@ -3204,9 +3228,9 @@ _agon_fwrite:
 
 .ENDEF
 
-.BEGFUNC "agon_fwrite",277,"_agon_fwrite"
+.BEGFUNC "agon_fwrite",283,"_agon_fwrite"
 
-.LINE 277
+.LINE 283
 
 .DEFINE "ptr"
 
@@ -3278,35 +3302,50 @@ _agon_fwrite:
 
 .ENDEF
 
+.DEFINE "t"
+
+.CLASS 65
+
+.VALUE -12
+
+.TYPE 34
+
+.ENDEF
+
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	PUSH	BC
-	PUSH	BC
-	PUSH	BC
-;  278	    size_t n, s, result = 0;
-.LINE 278
+	LEA	HL,IX+%FFFFFFF4
+	LD	SP,HL
+;  284	    size_t n, s, result = 0;
+.LINE 284
 
 	LD	BC,0
 	LD	(IX+%FFFFFFF7),BC
-;  279	
-;  280	    for(n = 0; n < nmemb; n++) {
-.LINE 280
+;  285	    char *t = (char *)ptr;
+.LINE 285
 
+	LD	BC,(IX+%6)
+	LD	(IX+%FFFFFFF4),BC
+;  286	
+;  287	    for(n = 0; n < nmemb; n++) {
+.LINE 287
+
+	LD	BC,0
 	LD	(IX+%FFFFFFFD),BC
-	JR	L_205
-L_203:
-;  281	        for(s = 0; s < size; s++) {
-.LINE 281
+	JR	L_204
+L_202:
+;  288	        for(s = 0; s < size; s++) {
+.LINE 288
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFA),BC
-	JR	L_202
-L_200:
-;  282	            mos_fputc(filehandle[fileid], (*(char *)ptr));
-.LINE 282
+	JR	L_201
+L_199:
+;  289	            mos_fputc(filehandle[fileid], (*t));
+.LINE 289
 
-	LD	HL,(IX+%6)
+	LD	HL,(IX+%FFFFFFF4)
 	LD	C,(HL)
 	LD	B,%0
 	PUSH	BC
@@ -3321,13 +3360,14 @@ L_200:
 	CALL	_mos_fputc
 	POP	BC
 	POP	BC
-;  283	            ptr++;
-.LINE 283
+;  290	            t++;
+.LINE 290
 
-	LD	BC,(IX+%6)
-	LD	(IX+%6),BC
-;  284	            result++;
-.LINE 284
+	LD	BC,(IX+%FFFFFFF4)
+	INC	BC
+	LD	(IX+%FFFFFFF4),BC
+;  291	            result++;
+.LINE 291
 
 	LD	BC,(IX+%FFFFFFF7)
 	INC	BC
@@ -3335,33 +3375,33 @@ L_200:
 	LD	BC,(IX+%FFFFFFFA)
 	INC	BC
 	LD	(IX+%FFFFFFFA),BC
-;  285	        }
-L_202:
-.LINE 285
+;  292	        }
+L_201:
+.LINE 292
 
 	LD	BC,(IX+%9)
 	LD	HL,(IX+%FFFFFFFA)
 	OR	A,A
 	SBC	HL,BC
-	JR	C,L_200
+	JR	C,L_199
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
 	LD	(IX+%FFFFFFFD),BC
-;  286	    }
-L_205:
-.LINE 286
+;  293	    }
+L_204:
+.LINE 293
 
 	LD	BC,(IX+%C)
 	LD	HL,(IX+%FFFFFFFD)
 	OR	A,A
 	SBC	HL,BC
-	JR	C,L_203
-;  287	    return result;
-.LINE 287
+	JR	C,L_202
+;  294	    return result;
+.LINE 294
 
 	LD	HL,(IX+%FFFFFFF7)
-;  288	}
-.LINE 288
+;  295	}
+.LINE 295
 
 	LD	SP,IX
 	POP	IX
@@ -3372,6 +3412,7 @@ L_205:
 ;Name                         Addr/Register   Size   Type
 ;_filehandle                         IMPORT      6   variable
 ;_mos_fputc                          IMPORT  -----   function
+;t                                    IX-12      3   variable
 ;result                                IX-9      3   variable
 ;s                                     IX-6      3   variable
 ;n                                     IX-3      3   variable
@@ -3381,13 +3422,13 @@ L_205:
 ;ptr                                   IX+6      3   parameter
 
 
-; Stack Frame Size: 27 (bytes)
+; Stack Frame Size: 30 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "agon_fwrite",288,"_agon_fwrite"
-;  289	
-;  290	size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
+.ENDFUNC "agon_fwrite",295,"_agon_fwrite"
+;  296	
+;  297	size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
 _agon_fread:
 .DEFINE "_agon_fread"
 
@@ -3399,9 +3440,9 @@ _agon_fread:
 
 .ENDEF
 
-.BEGFUNC "agon_fread",290,"_agon_fread"
+.BEGFUNC "agon_fread",297,"_agon_fread"
 
-.LINE 290
+.LINE 297
 
 .DEFINE "ptr"
 
@@ -3473,33 +3514,48 @@ _agon_fread:
 
 .ENDEF
 
+.DEFINE "t"
+
+.CLASS 65
+
+.VALUE -12
+
+.TYPE 34
+
+.ENDEF
+
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	PUSH	BC
-	PUSH	BC
-	PUSH	BC
-;  291	    size_t n, s, result = 0;
-.LINE 291
+	LEA	HL,IX+%FFFFFFF4
+	LD	SP,HL
+;  298	    size_t n, s, result = 0;
+.LINE 298
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFD),BC
-;  292	
-;  293	    for(n = 0; n < nmemb; n++) {
-.LINE 293
+;  299	    char *t = (char *)ptr;
+.LINE 299
 
+	LD	BC,(IX+%6)
+	LD	(IX+%FFFFFFF4),BC
+;  300	
+;  301	    for(n = 0; n < nmemb; n++) {
+.LINE 301
+
+	LD	BC,0
 	LD	(IX+%FFFFFFF7),BC
-	JR	L_219
-L_217:
-;  294	        for(s = 0; s < size; s++) {
-.LINE 294
+	JR	L_218
+L_216:
+;  302	        for(s = 0; s < size; s++) {
+.LINE 302
 
 	LD	BC,0
 	LD	(IX+%FFFFFFFA),BC
-	JR	L_216
-L_214:
-;  295	            if((*(char *)ptr = mos_fgetc(filehandle[fileid])) == EOF) {
-.LINE 295
+	JR	L_215
+L_213:
+;  303	            *t = mos_fgetc(filehandle[fileid]);
+.LINE 303
 
 	LD	A,(IX+%F)
 	UEXT	HL
@@ -3511,38 +3567,40 @@ L_214:
 	PUSH	BC
 	CALL	_mos_fgetc
 	POP	BC
-	LD	HL,(IX+%6)
+	LD	HL,(IX+%FFFFFFF4)
 	LD	(HL),A
-	LD	HL,(IX+%6)
-	LD	A,(HL)
-	LD	B,A
-	SEXT	HL
-	LD	L,B
-	LD	BC,16777215
-	OR	A,A
-	SBC	HL,BC
-	JR	NZ,L_212
-;  296	                *(char *)ptr = 0;
-.LINE 296
+;  304	                if(mos_feof(filehandle[fileid])) {
+.LINE 304
 
-	LD	HL,(IX+%6)
-	LD	(HL),%0
-;  297	                return result;
-.LINE 297
+	LD	A,(IX+%F)
+	UEXT	HL
+	LD	L,A
+	LD	BC,_filehandle
+	ADD	HL,BC
+	LD	C,(HL)
+	LD	B,%0
+	PUSH	BC
+	CALL	_mos_feof
+	POP	BC
+	OR	A,A
+	JR	Z,L_211
+;  305	                return result;
+.LINE 305
 
 	LD	HL,(IX+%FFFFFFFD)
-	JR	L_221
-;  298	            }
-L_212:
-.LINE 298
+	JR	L_220
+;  306	            }
+L_211:
+.LINE 306
 
-;  299	            ptr++;
-.LINE 299
+;  307	            t++;
+.LINE 307
 
-	LD	BC,(IX+%6)
-	LD	(IX+%6),BC
-;  300	            result++;
-.LINE 300
+	LD	BC,(IX+%FFFFFFF4)
+	INC	BC
+	LD	(IX+%FFFFFFF4),BC
+;  308	            result++;
+.LINE 308
 
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
@@ -3550,34 +3608,34 @@ L_212:
 	LD	BC,(IX+%FFFFFFFA)
 	INC	BC
 	LD	(IX+%FFFFFFFA),BC
-;  301	        }
-L_216:
-.LINE 301
+;  309	        }
+L_215:
+.LINE 309
 
 	LD	BC,(IX+%9)
 	LD	HL,(IX+%FFFFFFFA)
 	OR	A,A
 	SBC	HL,BC
-	JR	C,L_214
+	JR	C,L_213
 	LD	BC,(IX+%FFFFFFF7)
 	INC	BC
 	LD	(IX+%FFFFFFF7),BC
-;  302	    }
-L_219:
-.LINE 302
+;  310	    }
+L_218:
+.LINE 310
 
 	LD	BC,(IX+%C)
 	LD	HL,(IX+%FFFFFFF7)
 	OR	A,A
 	SBC	HL,BC
-	JR	C,L_217
-;  303	    return result;
-.LINE 303
+	JR	C,L_216
+;  311	    return result;
+.LINE 311
 
 	LD	HL,(IX+%FFFFFFFD)
-;  304	}
-L_221:
-.LINE 304
+;  312	}
+L_220:
+.LINE 312
 
 	LD	SP,IX
 	POP	IX
@@ -3586,8 +3644,10 @@ L_221:
 
 ;**************************** _agon_fread ***************************
 ;Name                         Addr/Register   Size   Type
+;_mos_feof                           IMPORT  -----   function
 ;_filehandle                         IMPORT      6   variable
 ;_mos_fgetc                          IMPORT  -----   function
+;t                                    IX-12      3   variable
 ;n                                     IX-9      3   variable
 ;s                                     IX-6      3   variable
 ;result                                IX-3      3   variable
@@ -3597,13 +3657,13 @@ L_221:
 ;ptr                                   IX+6      3   parameter
 
 
-; Stack Frame Size: 27 (bytes)
+; Stack Frame Size: 30 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "agon_fread",304,"_agon_fread"
-;  305	
-;  306	int strcasecmp (char *s1, char *s2) {
+.ENDFUNC "agon_fread",312,"_agon_fread"
+;  313	
+;  314	int strcasecmp (char *s1, char *s2) {
 _strcasecmp:
 .DEFINE "_strcasecmp"
 
@@ -3615,9 +3675,9 @@ _strcasecmp:
 
 .ENDEF
 
-.BEGFUNC "strcasecmp",306,"_strcasecmp"
+.BEGFUNC "strcasecmp",314,"_strcasecmp"
 
-.LINE 306
+.LINE 314
 
 .DEFINE "s1"
 
@@ -3674,37 +3734,37 @@ _strcasecmp:
 	ADD	IX,SP
 	LEA	HL,IX+%FFFFFFED
 	LD	SP,HL
-;  307	  const unsigned char *p1 = (const unsigned char *) s1;
-.LINE 307
+;  315	  const unsigned char *p1 = (const unsigned char *) s1;
+.LINE 315
 
 	LD	BC,(IX+%6)
 	LD	(IX+%FFFFFFFD),BC
-;  308	  const unsigned char *p2 = (const unsigned char *) s2;
-.LINE 308
+;  316	  const unsigned char *p2 = (const unsigned char *) s2;
+.LINE 316
 
 	LD	BC,(IX+%9)
 	LD	(IX+%FFFFFFFA),BC
-;  309	  int result;
-;  310	  if (p1 == p2)
-.LINE 310
+;  317	  int result;
+;  318	  if (p1 == p2)
+.LINE 318
 
 	LD	BC,(IX+%9)
 	LD	HL,(IX+%6)
 	OR	A,A
 	SBC	HL,BC
-	JR	NZ,L_226
-;  311	    return 0;
-.LINE 311
+	JR	NZ,L_225
+;  319	    return 0;
+.LINE 319
 
 	OR	A,A
 	SBC	HL,HL
-	JR	L_230
-;  312	  while ((result = tolower(*p1) - tolower(*p2++)) == 0)
-.LINE 312
+	JR	L_229
+;  320	  while ((result = tolower(*p1) - tolower(*p2++)) == 0)
+.LINE 320
 
-L_227:
-;  313	    if (*p1++ == '\0')
-.LINE 313
+L_226:
+;  321	    if (*p1++ == '\0')
+.LINE 321
 
 	LD	BC,(IX+%FFFFFFFD)
 	LD	(IX+%FFFFFFF4),BC
@@ -3714,10 +3774,10 @@ L_227:
 	LD	HL,(IX+%FFFFFFF4)
 	LD	A,(HL)
 	OR	A,A
-	JR	Z,L_229
-;  314	      break;
-L_226:
-.LINE 314
+	JR	Z,L_228
+;  322	      break;
+L_225:
+.LINE 322
 
 	LD	BC,(IX+%FFFFFFFA)
 	LD	(IX+%FFFFFFF1),BC
@@ -3749,14 +3809,14 @@ L_226:
 	SBC	HL,DE
 	LD	(IX+%FFFFFFF7),HL
 	CALL	__icmpzero
-	JR	Z,L_227
-L_229:
-;  315	  return result;
-.LINE 315
+	JR	Z,L_226
+L_228:
+;  323	  return result;
+.LINE 323
 
 	LD	HL,(IX+%FFFFFFF7)
-L_230:
-.LINE 316
+L_229:
+.LINE 324
 
 	LD	SP,IX
 	POP	IX
@@ -3777,7 +3837,8 @@ L_230:
 ;       Spill Code: 0 (instruction)
 
 
-.ENDFUNC "strcasecmp",316,"_strcasecmp"
+.ENDFUNC "strcasecmp",324,"_strcasecmp"
+	XREF _mos_feof:ROM
 	XREF _mos_fputc:ROM
 	XREF _mos_fgetc:ROM
 	XREF _mos_fclose:ROM

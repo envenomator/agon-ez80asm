@@ -331,12 +331,12 @@
 .ENDREC "NONAME6"
 	SEGMENT BSS
 __listLine:
-	DS	256
+	DS	128
 .DEFINE "_listLine"
 .ALIAS "__listLine"
 .CLASS 83
 .VALUE __listLine
-.DIM 256
+.DIM 128
 .TYPE 98
 .ENDEF
 __listAddress:
@@ -414,22 +414,23 @@ __listHeader:
 	DB	99
 	DB	101
 	DB	10
+	DB	13
 	DB	0
 .DEFINE "_listHeader"
 .ALIAS "__listHeader"
 .CLASS 69
 .VALUE __listHeader
-.DIM 41
+.DIM 42
 .TYPE 98
 .ENDEF
 	SEGMENT BSS
 _buffer:
-	DS	320
+	DS	160
 .DEFINE "buffer"
 .ALIAS "_buffer"
 .CLASS 83
 .VALUE _buffer
-.DIM 320
+.DIM 160
 .TYPE 98
 .ENDEF
 ;    1	#include <stdio.h>
@@ -445,9 +446,9 @@ _buffer:
 ;   11	uint8_t _listObjectCount;
 ;   12	bool _listFirstline = true;
 ;   13	
-;   14	char _listHeader[] = "PC      Output            Line   Source\n";
+;   14	char _listHeader[] = "PC      Output            Line   Source\n\r";
 ;   15	
-;   16	char buffer[LINEMAX + 64];
+;   16	char buffer[LINEMAX + 32];
 	SEGMENT CODE
 ;   17	
 ;   18	void listInit(bool console) {
@@ -543,16 +544,16 @@ L_1:
 ;**************************** _listInit ***************************
 ;Name                         Addr/Register   Size   Type
 ;__listObjectCount                   STATIC      1   variable
-;__listLine                          STATIC    256   variable
+;__listLine                          STATIC    128   variable
 ;__listFirstline                     STATIC      1   variable
 ;___print_uputch                     IMPORT  -----   function
 ;_agon_fputs                         IMPORT  -----   function
-;__listHeader                        STATIC     41   variable
+;__listHeader                        STATIC     42   variable
 ;___print_sendstring                 IMPORT  -----   function
 ;___print_xputch                     IMPORT      3   variable
 ;___print_sputch                     IMPORT  -----   function
 ;___print_out                        IMPORT      3   variable
-;_buffer                             STATIC    320   variable
+;_buffer                             STATIC    160   variable
 ;console                               IX+6      1   parameter
 
 
@@ -634,7 +635,7 @@ _listStartLine:
 ;__listAddress                       STATIC      4   variable
 ;_address                            IMPORT      4   variable
 ;_trimRight                          IMPORT  -----   function
-;__listLine                          STATIC    256   variable
+;__listLine                          STATIC    128   variable
 ;_strcpy                             IMPORT  -----   function
 ;line                                  IX+6      3   parameter
 
@@ -1002,7 +1003,7 @@ L_23:
 	LD	A,(IX+%FFFFFFFF)
 	OR	A,A
 	JR	NZ,L_28
-;   68	            sprintf(buffer, "%04d   %s\n",linenumber, _listLine);
+;   68	            sprintf(buffer, "%04d   %s\n\r",linenumber, _listLine);
 .LINE 68
 
 	LD	BC,_buffer
@@ -1031,9 +1032,9 @@ L_23:
 	PUSH	BC
 	CALL	___print_sendstring
 	POP	BC
-	LD	BC,10
+	LD	BC,L__17
 	PUSH	BC
-	CALL	___print_sputch
+	CALL	___print_sendstring
 	POP	BC
 	LD	BC,0
 	PUSH	BC
@@ -1067,16 +1068,16 @@ L_23:
 
 	JR	L_31
 L_28:
-;   73	            sprintf(buffer, "\n");
+;   73	            sprintf(buffer, "\n\r");
 .LINE 73
 
 	LD	BC,_buffer
 	LD	(___print_out),BC
 	LD	BC,___print_sputch
 	LD	(___print_xputch),BC
-	LD	BC,10
+	LD	BC,L__19
 	PUSH	BC
-	CALL	___print_sputch
+	CALL	___print_sendstring
 	POP	BC
 	LD	BC,0
 	PUSH	BC
@@ -1124,7 +1125,7 @@ L_32:
 
 ;**************************** _listEndLine ***************************
 ;Name                         Addr/Register   Size   Type
-;__listLine                          STATIC    256   variable
+;__listLine                          STATIC    128   variable
 ;_linenumber                         IMPORT      3   variable
 ;__u_itoa                            IMPORT  -----   function
 ;__listObjects                       STATIC    256   variable
@@ -1137,7 +1138,7 @@ L_32:
 ;___print_xputch                     IMPORT      3   variable
 ;___print_sputch                     IMPORT  -----   function
 ;___print_out                        IMPORT      3   variable
-;_buffer                             STATIC    320   variable
+;_buffer                             STATIC    160   variable
 ;__listObjectCount                   STATIC      1   variable
 ;i                                     IX-4      1   variable
 ;objectnum                             IX-3      1   variable
@@ -1164,6 +1165,10 @@ L__12:
 L__16:
 	DB	"   "
 	DB	0
+L__17:
+	DB	10,13,0
+L__19:
+	DB	10,13,0
 	SEGMENT CODE
 ;   79	
 ;   80	void listEmit8bit(uint8_t value) {

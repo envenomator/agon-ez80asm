@@ -4,7 +4,7 @@ Copyright (C) 1999-2008 Zilog, Inc. All Rights Reserved
 
 LINK MAP:
 
-DATE:      Tue Feb 28 21:42:24 2023
+DATE:      Wed Mar 01 14:26:44 2023
 PROCESSOR: assembler
 FILES:     .\init.obj             .\main.obj             .\vdp.obj              
            .\mos-interface.obj
@@ -59,105 +59,105 @@ SEGMENTS WITHIN SPACE:
 
 RAM                               Type        Base         Top      Size
 ------------------ ------------------- ----------- ----------- ---------
-BSS                normal data            D:0490DE    D:07FC75    36b98h
-CODE               normal data            D:040000    D:047051     7052h
-DATA               normal data            D:047052    D:048BCB     1b7ah
-STRSECT            normal data            D:048BCC    D:0490DD      512h
+BSS                normal data            D:0491FE    D:07FC75    36a78h
+CODE               normal data            D:040000    D:04713B     713ch
+DATA               normal data            D:04713C    D:048CB6     1b7bh
+STRSECT            normal data            D:048CB7    D:0491FD      547h
 
 SEGMENTS WITHIN MODULES:
 ========================
 
-Module: ..\assemble.c (File: assemble.obj) Version: 1:0 02/28/2023 21:42:23
+Module: ..\assemble.c (File: assemble.obj) Version: 1:0 03/01/2023 14:26:42
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: CODE                              D:040DED    D:043907     2b1bh
-    Segment: STRSECT                           D:048C06    D:048C34       2fh
+    Segment: STRSECT                           D:048CF4    D:048D26       33h
 
 
-Module: ..\filestack.c (File: filestack.obj) Version: 1:0 02/28/2023 21:42:23
+Module: ..\filestack.c (File: filestack.obj) Version: 1:0 03/01/2023 14:26:42
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: BSS                               D:0490DE    D:0492EA      20dh
+    Segment: BSS                               D:0491FE    D:04940A      20dh
     Segment: CODE                              D:043908    D:043A34      12dh
 
 
-Module: ..\globals.c (File: globals.obj) Version: 1:0 02/28/2023 21:42:23
+Module: ..\globals.c (File: globals.obj) Version: 1:0 03/01/2023 14:26:42
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: BSS                               D:0492EB    D:049730      446h
-    Segment: DATA                              D:04709C    D:047116       7bh
-    Segment: STRSECT                           D:048C35    D:049069      435h
+    Segment: BSS                               D:04940B    D:049850      446h
+    Segment: DATA                              D:047186    D:047200       7bh
+    Segment: STRSECT                           D:048D27    D:04915B      435h
 
 
-Module: ..\hash.c (File: hash.obj) Version: 1:0 02/28/2023 21:42:23
+Module: ..\hash.c (File: hash.obj) Version: 1:0 03/01/2023 14:26:42
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: CODE                              D:043A35    D:043A82       4eh
 
 
-Module: ..\instruction.c (File: instruction.obj) Version: 1:0 02/28/2023 21:42:23
+Module: ..\instruction.c (File: instruction.obj) Version: 1:0 03/01/2023 14:26:43
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: CODE                              D:043A83    D:04441C      99ah
-    Segment: DATA                              D:047117    D:048B1E     1a08h
+    Segment: DATA                              D:047201    D:048C08     1a08h
 
 
-Module: ..\label.c (File: label.obj) Version: 1:0 02/28/2023 21:42:24
-
-    Name                                           Base         Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: BSS                               D:049731    D:07F909    361d9h
-    Segment: CODE                              D:04441D    D:044D9F      983h
-    Segment: STRSECT                           D:04906A    D:04908B       22h
-
-
-Module: ..\listing.c (File: listing.obj) Version: 1:0 02/28/2023 21:42:24
+Module: ..\label.c (File: label.obj) Version: 1:0 03/01/2023 14:26:43
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: BSS                               D:07F90A    D:07FC4E      345h
-    Segment: CODE                              D:044DA0    D:045170      3d1h
-    Segment: DATA                              D:048B1F    D:048B48       2ah
-    Segment: STRSECT                           D:04908C    D:04909F       14h
+    Segment: BSS                               D:049851    D:07FA29    361d9h
+    Segment: CODE                              D:04441D    D:044E71      a55h
+    Segment: STRSECT                           D:04915C    D:0491A1       46h
 
 
-Module: ..\main.c (File: main.obj) Version: 1:0 02/28/2023 21:42:22
+Module: ..\listing.c (File: listing.obj) Version: 1:0 03/01/2023 14:26:43
+
+    Name                                           Base         Top      Size
+    --------------------------------------- ----------- ----------- ---------
+    Segment: BSS                               D:07FA2A    D:07FC4E      225h
+    Segment: CODE                              D:044E72    D:045242      3d1h
+    Segment: DATA                              D:048C09    D:048C33       2bh
+    Segment: STRSECT                           D:0491A2    D:0491BB       1ah
+
+
+Module: ..\main.c (File: main.obj) Version: 1:0 03/01/2023 14:26:41
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: CODE                              D:0400DC    D:0401F1      116h
-    Segment: STRSECT                           D:048BCC    D:048C05       3ah
+    Segment: STRSECT                           D:048CB7    D:048CF3       3dh
 
 
 Module: ..\src\boot\common\zsldevinitdummy.asm (File: zsldevinitdummy.obj) Version: 1:0 10/11/2019 10:10:12
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0462F5    D:0462F5        1h
+    Segment: CODE                              D:0463DF    D:0463DF        1h
 
 
-Module: ..\str2num.c (File: str2num.obj) Version: 1:0 02/28/2023 21:42:24
+Module: ..\str2num.c (File: str2num.obj) Version: 1:0 03/01/2023 14:26:43
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: BSS                               D:07FC4F    D:07FC4F        1h
-    Segment: CODE                              D:045171    D:045714      5a4h
+    Segment: CODE                              D:045243    D:0457E6      5a4h
 
 
-Module: ..\utils.c (File: utils.obj) Version: 1:0 02/28/2023 21:42:24
+Module: ..\utils.c (File: utils.obj) Version: 1:0 03/01/2023 14:26:43
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:045715    D:0462F4      be0h
-    Segment: STRSECT                           D:0490A0    D:0490DD       3eh
+    Segment: CODE                              D:0457E7    D:0463DE      bf8h
+    Segment: STRSECT                           D:0491BC    D:0491FD       42h
 
 
-Module: ..\vdp.c (File: vdp.obj) Version: 1:0 02/28/2023 21:42:22
+Module: ..\vdp.c (File: vdp.obj) Version: 1:0 03/01/2023 14:26:42
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
@@ -168,266 +168,266 @@ Module: .\rtl\common\abs.c (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:34
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0465CF    D:0465F7       29h
+    Segment: CODE                              D:0466B9    D:0466E1       29h
 
 
 Module: .\rtl\common\bstiy.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:30
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:047046    D:047051        ch
+    Segment: CODE                              D:047130    D:04713B        ch
 
 
 Module: .\rtl\common\case8D.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:35
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046D49    D:046D82       3ah
+    Segment: CODE                              D:046E33    D:046E6C       3ah
 
 
 Module: .\rtl\common\iand.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:30
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046DAC    D:046DC6       1bh
+    Segment: CODE                              D:046E96    D:046EB0       1bh
 
 
 Module: .\rtl\common\icmpzero.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:34
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0469F9    D:046A04        ch
+    Segment: CODE                              D:046AE3    D:046AEE        ch
 
 
 Module: .\rtl\common\idivs.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:30
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046C86    D:046CBE       39h
+    Segment: CODE                              D:046D70    D:046DA8       39h
 
 
 Module: .\rtl\common\idivu.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:30
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:04666B    D:04668B       21h
+    Segment: CODE                              D:046755    D:046775       21h
 
 
 Module: .\rtl\common\ildix.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:30
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:047031    D:04703C        ch
+    Segment: CODE                              D:04711B    D:047126        ch
 
 
 Module: .\rtl\common\imulu.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:30
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046CBF    D:046D06       48h
+    Segment: CODE                              D:046DA9    D:046DF0       48h
 
 
 Module: .\rtl\common\indcall.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:30
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046D83    D:046D84        2h
+    Segment: CODE                              D:046E6D    D:046E6E        2h
 
 
 Module: .\rtl\common\ineg.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:30
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:04632A    D:046332        9h
+    Segment: CODE                              D:046414    D:04641C        9h
 
 
 Module: .\rtl\common\inot.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:30
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046E69    D:046E72        ah
+    Segment: CODE                              D:046F53    D:046F5C        ah
 
 
 Module: .\rtl\common\ior.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:30
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0469DE    D:0469F8       1bh
+    Segment: CODE                              D:046AC8    D:046AE2       1bh
 
 
 Module: .\rtl\common\irems.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046342    D:046379       38h
+    Segment: CODE                              D:04642C    D:046463       38h
 
 
 Module: .\rtl\common\iremu.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:04641B    D:046423        9h
+    Segment: CODE                              D:046505    D:04650D        9h
 
 
 Module: .\rtl\common\isdigit.c (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:36
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046A05    D:046A2D       29h
+    Segment: CODE                              D:046AEF    D:046B17       29h
 
 
 Module: .\rtl\common\ishrs.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0463B5    D:0463D9       25h
+    Segment: CODE                              D:04649F    D:0464C3       25h
 
 
 Module: .\rtl\common\ishru.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046D07    D:046D2B       25h
+    Segment: CODE                              D:046DF1    D:046E15       25h
 
 
 Module: .\rtl\common\isspace.c (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:38
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046A2E    D:046A56       29h
+    Segment: CODE                              D:046B18    D:046B40       29h
 
 
 Module: .\rtl\common\istix.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046403    D:04640E        ch
+    Segment: CODE                              D:0464ED    D:0464F8        ch
 
 
 Module: .\rtl\common\istiy.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:04640F    D:04641A        ch
+    Segment: CODE                              D:0464F9    D:046504        ch
 
 
 Module: .\rtl\common\isupper.c (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:38
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046E18    D:046E40       29h
+    Segment: CODE                              D:046F02    D:046F2A       29h
 
 
 Module: .\rtl\common\isxdigit.c (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:38
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0463DA    D:046402       29h
+    Segment: CODE                              D:0464C4    D:0464EC       29h
 
 
 Module: .\rtl\common\itol.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046D2C    D:046D32        7h
+    Segment: CODE                              D:046E16    D:046E1C        7h
 
 
 Module: .\rtl\common\ladd.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046315    D:046329       15h
+    Segment: CODE                              D:0463FF    D:046413       15h
 
 
 Module: .\rtl\common\land.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:04703D    D:047045        9h
+    Segment: CODE                              D:047127    D:04712F        9h
 
 
 Module: .\rtl\common\lcmpu.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046D33    D:046D48       16h
+    Segment: CODE                              D:046E1D    D:046E32       16h
 
 
 Module: .\rtl\common\lcmpzero.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:34
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046657    D:04666A       14h
+    Segment: CODE                              D:046741    D:046754       14h
 
 
 Module: .\rtl\common\ldivu.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:04694F    D:046984       36h
+    Segment: CODE                              D:046A39    D:046A6E       36h
 
 
 Module: .\rtl\common\lneg.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:31
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046942    D:04694E        dh
+    Segment: CODE                              D:046A2C    D:046A38        dh
 
 
 Module: .\rtl\common\lnot.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:32
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046E5F    D:046E68        ah
+    Segment: CODE                              D:046F49    D:046F52        ah
 
 
 Module: .\rtl\common\lor.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:32
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0469D5    D:0469DD        9h
+    Segment: CODE                              D:046ABF    D:046AC7        9h
 
 
 Module: .\rtl\common\lremu.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:32
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046DD6    D:046DE5       10h
+    Segment: CODE                              D:046EC0    D:046ECF       10h
 
 
 Module: .\rtl\common\lshl.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:32
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046DC7    D:046DD5        fh
+    Segment: CODE                              D:046EB1    D:046EBF        fh
 
 
 Module: .\rtl\common\lshrs.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:32
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046985    D:0469A6       22h
+    Segment: CODE                              D:046A6F    D:046A90       22h
 
 
 Module: .\rtl\common\lshru.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:32
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0469B3    D:0469D4       22h
+    Segment: CODE                              D:046A9D    D:046ABE       22h
 
 
 Module: .\rtl\common\lsub.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:32
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0469A7    D:0469B2        ch
+    Segment: CODE                              D:046A91    D:046A9C        ch
 
 
 Module: .\rtl\common\maptab.c (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:39
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: DATA                              D:048B4C    D:048BCB       80h
+    Segment: DATA                              D:048C37    D:048CB6       80h
 
 
 Module: .\rtl\common\print_globals.c (Library: crtSD.lib) Version: 1:0 10/11/2019 10:09:01
@@ -435,271 +435,271 @@ Module: .\rtl\common\print_globals.c (Library: crtSD.lib) Version: 1:0 10/11/201
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: BSS                               D:07FC50    D:07FC75       26h
-    Segment: DATA                              D:048B49    D:048B4B        3h
+    Segment: DATA                              D:048C34    D:048C36        3h
 
 
 Module: .\rtl\common\print_putch.c (Library: crtSD.lib) Version: 1:0 10/11/2019 10:09:01
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046E41    D:046E5E       1eh
+    Segment: CODE                              D:046F2B    D:046F48       1eh
 
 
 Module: .\rtl\common\print_putstring.c (Library: crtSD.lib) Version: 1:0 10/11/2019 10:09:01
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046424    D:04658E      16bh
+    Segment: CODE                              D:04650E    D:046678      16bh
 
 
 Module: .\rtl\common\print_send.c (Library: crtSD.lib) Version: 1:0 10/11/2019 10:09:02
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046A57    D:046C0E      1b8h
+    Segment: CODE                              D:046B41    D:046CF8      1b8h
 
 
 Module: .\rtl\common\print_sputch.c (Library: crtSD.lib) Version: 1:0 10/11/2019 10:09:01
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0465F8    D:046622       2bh
+    Segment: CODE                              D:0466E2    D:04670C       2bh
 
 
 Module: .\rtl\common\print_uputch.c (Library: crtSD.lib) Version: 1:0 10/11/2019 10:09:01
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0465B2    D:0465CE       1dh
+    Segment: CODE                              D:04669C    D:0466B8       1dh
 
 
 Module: .\rtl\common\scmpzero.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:34
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046D9F    D:046DAB        dh
+    Segment: CODE                              D:046E89    D:046E95        dh
 
 
 Module: .\rtl\common\seqcaseD.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:34
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:04637A    D:0463B4       3bh
+    Segment: CODE                              D:046464    D:04649E       3bh
 
 
 Module: .\rtl\common\setflag.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:34
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046333    D:046341        fh
+    Segment: CODE                              D:04641D    D:04642B        fh
 
 
 Module: .\rtl\common\stoiu.asm (Library: chelpD.lib) Version: 1:0 10/11/2019 10:09:33
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0465AC    D:0465B1        6h
+    Segment: CODE                              D:046696    D:04669B        6h
 
 
 Module: .\rtl\common\tolower.c (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:41
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046DE6    D:046E17       32h
+    Segment: CODE                              D:046ED0    D:046F01       32h
 
 
 Module: .\rtl\common\uitoa.c (Library: crtSD.lib) Version: 1:0 10/11/2019 10:09:03
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:04668C    D:0466AD       22h
+    Segment: CODE                              D:046776    D:046797       22h
 
 
 Module: .\rtl\common\ultoa.c (Library: crtSD.lib) Version: 1:0 10/11/2019 10:09:03
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0466AE    D:046941      294h
+    Segment: CODE                              D:046798    D:046A2B      294h
 
 
 Module: .\rtl\common\ureverse.c (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:43
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046C0F    D:046C85       77h
+    Segment: CODE                              D:046CF9    D:046D6F       77h
 
 
 Module: .\rtl\common\uuitoa.c (Library: crtSD.lib) Version: 1:0 10/11/2019 10:09:04
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046638    D:046656       1fh
+    Segment: CODE                              D:046722    D:046740       1fh
 
 
 Module: .\rtl\common\uultoa.c (Library: crtSD.lib) Version: 1:0 10/11/2019 10:09:05
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046E98    D:047030      199h
+    Segment: CODE                              D:046F82    D:04711A      199h
 
 
 Module: .\strcat.asm (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:44
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046E73    D:046E97       25h
+    Segment: CODE                              D:046F5D    D:046F81       25h
 
 
 Module: .\strcmp.asm (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:44
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:04658F    D:0465AB       1dh
+    Segment: CODE                              D:046679    D:046695       1dh
 
 
 Module: .\strcpy.asm (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:44
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046D85    D:046D9E       1ah
+    Segment: CODE                              D:046E6F    D:046E88       1ah
 
 
 Module: .\strlen.asm (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:44
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:046623    D:046637       15h
+    Segment: CODE                              D:04670D    D:046721       15h
 
 
 Module: .\strrchr.asm (Library: crtD.lib) Version: 1:0 10/11/2019 10:08:44
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                              D:0462F6    D:046314       1fh
+    Segment: CODE                              D:0463E0    D:0463FE       1fh
 
 
-Module: C:\source\agon-ez80asm\src\init.asm (File: init.obj) Version: 1:0 02/28/2023 21:42:22
+Module: C:\source\agon-ez80asm\src\init.asm (File: init.obj) Version: 1:0 03/01/2023 14:26:41
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: CODE                              D:040000    D:0400DB       dch
-    Segment: DATA                              D:047052    D:047081       30h
+    Segment: DATA                              D:04713C    D:04716B       30h
 
 
-Module: C:\source\agon-ez80asm\src\mos-interface.asm (File: mos-interface.obj) Version: 1:0 02/28/2023 21:42:22
+Module: C:\source\agon-ez80asm\src\mos-interface.asm (File: mos-interface.obj) Version: 1:0 03/01/2023 14:26:41
 
     Name                                           Base         Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: CODE                              D:040CEC    D:040DEC      101h
-    Segment: DATA                              D:047082    D:04709B       1ah
+    Segment: DATA                              D:04716C    D:047185       1ah
 
 EXTERNAL DEFINITIONS:
 =====================
 
 Symbol                               Address Module          Segment
 -------------------------------- ----------- --------------- --------------------------------
-___maptab                           D:048B4C maptab          DATA                            
+___maptab                           D:048C37 maptab          DATA                            
 ___print_buff                       D:07FC50 print_globals   BSS                             
 ___print_fmt                        D:07FC5E print_globals   BSS                             
 ___print_leading_char               D:07FC72 print_globals   BSS                             
 ___print_len                        D:07FC71 print_globals   BSS                             
 ___print_out                        D:07FC73 print_globals   BSS                             
-___print_putch                      D:046E41 print_putch     CODE                            
-___print_send                       D:046A57 print_send      CODE                            
-___print_sendstring                 D:046424 print_putstring CODE                            
-___print_sputch                     D:0465F8 print_sputch    CODE                            
-___print_uputch                     D:0465B2 print_uputch    CODE                            
-___print_xputch                     D:048B49 print_globals   DATA                            
-__bstiy                             D:047046 bstiy           CODE                            
-__case8D                            D:046D49 case8D          CODE                            
-__close_periphdevice                D:0462F5 zsldevinitdummy CODE                            
-__filestack                         D:0490DE filestack       BSS                             
-__filestackCount                    D:0492EA filestack       BSS                             
-__iand                              D:046DAC iand            CODE                            
-__icmpzero                          D:0469F9 icmpzero        CODE                            
-__idivs                             D:046C86 idivs           CODE                            
-__idivu                             D:04666B idivu           CODE                            
-__idvrmu                            D:046675 idivu           CODE                            
-__ildix                             D:047031 ildix           CODE                            
-__imul_b                            D:046CBF imulu           CODE                            
-__imuls                             D:046CCB imulu           CODE                            
-__imulu                             D:046CCB imulu           CODE                            
-__indcall                           D:046D83 indcall         CODE                            
-__ineg                              D:04632A ineg            CODE                            
-__inot                              D:046E69 inot            CODE                            
-__ior                               D:0469DE ior             CODE                            
-__irems                             D:046342 irems           CODE                            
-__iremu                             D:04641B iremu           CODE                            
-__ishrs                             D:0463BD ishrs           CODE                            
-__ishrs_b                           D:0463B5 ishrs           CODE                            
-__ishru                             D:046D0F ishru           CODE                            
-__ishru_b                           D:046D07 ishru           CODE                            
-__istix                             D:046403 istix           CODE                            
-__istiy                             D:04640F istiy           CODE                            
-__itol                              D:046D2C itol            CODE                            
-__ladd                              D:046324 ladd            CODE                            
-__ladd_b                            D:046315 ladd            CODE                            
-__land                              D:04703D land            CODE                            
-__lcmps                             D:046D33 lcmpu           CODE                            
-__lcmpu                             D:046D33 lcmpu           CODE                            
-__lcmpzero                          D:046657 lcmpzero        CODE                            
-__ldivu                             D:04694F ldivu           CODE                            
-__ldvrmu                            D:046961 ldivu           CODE                            
-__len_bss                           00036B98 (User Defined)
-__listAddress                       D:07FA0A listing         BSS                             
-__listFirstline                     D:048B1F listing         DATA                            
-__listHeader                        D:048B20 listing         DATA                            
-__listLine                          D:07F90A listing         BSS                             
-__listObjectCount                   D:07FB0E listing         BSS                             
-__listObjects                       D:07FA0E listing         BSS                             
-__lneg                              D:046942 lneg            CODE                            
-__lnot                              D:046E5F lnot            CODE                            
-__lor                               D:0469D5 lor             CODE                            
-__low_bss                           000490DE (User Defined)
-__lremu                             D:046DD6 lremu           CODE                            
-__lshl                              D:046DC7 lshl            CODE                            
-__lshrs                             D:046985 lshrs           CODE                            
-__lshru                             D:0469B3 lshru           CODE                            
-__lsub                              D:0469A7 lsub            CODE                            
-__open_periphdevice                 D:0462F5 zsldevinitdummy CODE                            
+___print_putch                      D:046F2B print_putch     CODE                            
+___print_send                       D:046B41 print_send      CODE                            
+___print_sendstring                 D:04650E print_putstring CODE                            
+___print_sputch                     D:0466E2 print_sputch    CODE                            
+___print_uputch                     D:04669C print_uputch    CODE                            
+___print_xputch                     D:048C34 print_globals   DATA                            
+__bstiy                             D:047130 bstiy           CODE                            
+__case8D                            D:046E33 case8D          CODE                            
+__close_periphdevice                D:0463DF zsldevinitdummy CODE                            
+__filestack                         D:0491FE filestack       BSS                             
+__filestackCount                    D:04940A filestack       BSS                             
+__iand                              D:046E96 iand            CODE                            
+__icmpzero                          D:046AE3 icmpzero        CODE                            
+__idivs                             D:046D70 idivs           CODE                            
+__idivu                             D:046755 idivu           CODE                            
+__idvrmu                            D:04675F idivu           CODE                            
+__ildix                             D:04711B ildix           CODE                            
+__imul_b                            D:046DA9 imulu           CODE                            
+__imuls                             D:046DB5 imulu           CODE                            
+__imulu                             D:046DB5 imulu           CODE                            
+__indcall                           D:046E6D indcall         CODE                            
+__ineg                              D:046414 ineg            CODE                            
+__inot                              D:046F53 inot            CODE                            
+__ior                               D:046AC8 ior             CODE                            
+__irems                             D:04642C irems           CODE                            
+__iremu                             D:046505 iremu           CODE                            
+__ishrs                             D:0464A7 ishrs           CODE                            
+__ishrs_b                           D:04649F ishrs           CODE                            
+__ishru                             D:046DF9 ishru           CODE                            
+__ishru_b                           D:046DF1 ishru           CODE                            
+__istix                             D:0464ED istix           CODE                            
+__istiy                             D:0464F9 istiy           CODE                            
+__itol                              D:046E16 itol            CODE                            
+__ladd                              D:04640E ladd            CODE                            
+__ladd_b                            D:0463FF ladd            CODE                            
+__land                              D:047127 land            CODE                            
+__lcmps                             D:046E1D lcmpu           CODE                            
+__lcmpu                             D:046E1D lcmpu           CODE                            
+__lcmpzero                          D:046741 lcmpzero        CODE                            
+__ldivu                             D:046A39 ldivu           CODE                            
+__ldvrmu                            D:046A4B ldivu           CODE                            
+__len_bss                           00036A78 (User Defined)
+__listAddress                       D:07FAAA listing         BSS                             
+__listFirstline                     D:048C09 listing         DATA                            
+__listHeader                        D:048C0A listing         DATA                            
+__listLine                          D:07FA2A listing         BSS                             
+__listObjectCount                   D:07FBAE listing         BSS                             
+__listObjects                       D:07FAAE listing         BSS                             
+__lneg                              D:046A2C lneg            CODE                            
+__lnot                              D:046F49 lnot            CODE                            
+__lor                               D:046ABF lor             CODE                            
+__low_bss                           000491FE (User Defined)
+__lremu                             D:046EC0 lremu           CODE                            
+__lshl                              D:046EB1 lshl            CODE                            
+__lshrs                             D:046A6F lshrs           CODE                            
+__lshru                             D:046A9D lshru           CODE                            
+__lsub                              D:046A91 lsub            CODE                            
+__open_periphdevice                 D:0463DF zsldevinitdummy CODE                            
 __putch                             D:040CEC mos-interface   CODE                            
-__scmpzero                          D:046D9F scmpzero        CODE                            
-__seqcaseD                          D:04637A seqcaseD        CODE                            
-__setflag                           D:046333 setflag         CODE                            
-__sneg                              D:04632A ineg            CODE                            
-__snot                              D:046E69 inot            CODE                            
-__stoiu                             D:0465AC stoiu           CODE                            
-__u_itoa                            D:04668C uitoa           CODE                            
-__u_ltoa                            D:0466AE ultoa           CODE                            
-__u_reverse                         D:046C0F ureverse        CODE                            
-__u_uitoa                           D:046638 uuitoa          CODE                            
-__u_ultoa                           D:046E98 uultoa          CODE                            
+__scmpzero                          D:046E89 scmpzero        CODE                            
+__seqcaseD                          D:046464 seqcaseD        CODE                            
+__setflag                           D:04641D setflag         CODE                            
+__sneg                              D:046414 ineg            CODE                            
+__snot                              D:046F53 inot            CODE                            
+__stoiu                             D:046696 stoiu           CODE                            
+__u_itoa                            D:046776 uitoa           CODE                            
+__u_ltoa                            D:046798 ultoa           CODE                            
+__u_reverse                         D:046CF9 ureverse        CODE                            
+__u_uitoa                           D:046722 uuitoa          CODE                            
+__u_ultoa                           D:046F82 uultoa          CODE                            
 _a_match                            D:043CEA instruction     CODE                            
-_abs                                D:0465CF abs             CODE                            
-_address                            D:0495FA globals         BSS                             
+_abs                                D:0466B9 abs             CODE                            
+_address                            D:04971A globals         BSS                             
 _adl_action                         D:041EA6 assemble        CODE                            
-_adlmode                            D:049604 globals         BSS                             
+_adlmode                            D:049724 globals         BSS                             
 _advanceLocalLabel                  D:040E2C assemble        CODE                            
 _af_match                           D:043FE9 instruction     CODE                            
-_agon_fgets                         D:046067 utils           CODE                            
-_agon_fputs                         D:046116 utils           CODE                            
-_agon_fread                         D:0461DA utils           CODE                            
-_agon_fwrite                        D:046163 utils           CODE                            
-_an_next                            D:049736 label           BSS                             
-_an_prev                            D:049731 label           BSS                             
-_an_return                          D:04973B label           BSS                             
+_agon_fgets                         D:046139 utils           CODE                            
+_agon_fputs                         D:0461E7 utils           CODE                            
+_agon_fread                         D:0462B7 utils           CODE                            
+_agon_fwrite                        D:046234 utils           CODE                            
+_an_next                            D:049856 label           BSS                             
+_an_prev                            D:049851 label           BSS                             
+_an_return                          D:04985B label           BSS                             
 _assemble                           D:04367B assemble        CODE                            
 _b_match                            D:043FB5 instruction     CODE                            
-_buffer                             D:07FB0F listing         BSS                             
+_buffer                             D:07FBAF listing         BSS                             
 _cc_match                           D:043AEC instruction     CODE                            
 _cca_match                          D:04415F instruction     CODE                            
-_clearLocalLabels                   D:044512 label           CODE                            
-_close_periphdevice                 D:0462F5 zsldevinitdummy CODE                            
-_closeAllFiles                      D:045E96 utils           CODE                            
-_consolelist_enabled                D:0495F2 globals         BSS                             
-_currentline                        D:049605 globals         BSS                             
+_clearLocalLabels                   D:0445E4 label           CODE                            
+_close_periphdevice                 D:0463DF zsldevinitdummy CODE                            
+_closeAllFiles                      D:045F68 utils           CODE                            
+_consolelist_enabled                D:049712 globals         BSS                             
+_currentline                        D:049725 globals         BSS                             
 _de_match                           D:04400B instruction     CODE                            
-_debug_enabled                      D:0495F1 globals         BSS                             
+_debug_enabled                      D:049711 globals         BSS                             
 _definelabel                        D:041C09 assemble        CODE                            
 _emit_16bit                         D:04279A assemble        CODE                            
 _emit_24bit                         D:0427CB assemble        CODE                            
@@ -711,36 +711,36 @@ _emit_instruction                   D:042344 assemble        CODE
 _emit_quotedstring                  D:0428BC assemble        CODE                            
 _empty_operand                      D:040DED assemble        CODE                            
 _err_str2num                        D:07FC4F str2num         BSS                             
-_error                              D:0457CF utils           CODE                            
-_filehandle                         D:0495EB globals         BSS                             
-_filename                           D:0492EB globals         BSS                             
+_error                              D:0458A1 utils           CODE                            
+_filehandle                         D:04970B globals         BSS                             
+_filename                           D:04940B globals         BSS                             
 _filestackCount                     D:04391B filestack       CODE                            
 _filestackInit                      D:043908 filestack       CODE                            
 _filestackPop                       D:0439B4 filestack       CODE                            
 _filestackPush                      D:04392D filestack       CODE                            
-_findGlobalLabel                    D:044C12 label           CODE                            
-_findLabel                          D:044CB1 label           CODE                            
-_findLocalLabel                     D:0445CB label           CODE                            
-_findLocalLabelIndex                D:044532 label           CODE                            
+_findGlobalLabel                    D:044CE4 label           CODE                            
+_findLabel                          D:044D83 label           CODE                            
+_findLocalLabel                     D:04469D label           CODE                            
+_findLocalLabelIndex                D:044604 label           CODE                            
 _get_ddfd_prefix                    D:042042 assemble        CODE                            
 _get_escaped_char                   D:042860 assemble        CODE                            
 _get_immediate_size                 D:041EEB assemble        CODE                            
 _getADLsuffix                       D:041CFD assemble        CODE                            
 _getAsciiValue                      D:040E64 assemble        CODE                            
 _getch                              D:040D04 mos-interface   CODE                            
-_getGlobalLabelCount                D:04441D label           CODE                            
+_getGlobalLabelCount                D:0444EF label           CODE                            
 _getLabelValue                      D:040F50 assemble        CODE                            
-_getLineToken                       D:0458FE utils           CODE                            
-_getLocalLabelCount                 D:04442F label           CODE                            
-_getOperatorToken                   D:045B39 utils           CODE                            
+_getLineToken                       D:0459D0 utils           CODE                            
+_getLocalLabelCount                 D:044501 label           CODE                            
+_getOperatorToken                   D:045C0B utils           CODE                            
 _getsysvar_cursorX                  D:040D2A mos-interface   CODE                            
 _getsysvar_cursorY                  D:040D36 mos-interface   CODE                            
 _getsysvar_scrchar                  D:040D42 mos-interface   CODE                            
-_global_errors                      D:049602 globals         BSS                             
-_globalLabelBuffer                  D:049742 label           BSS                             
-_globalLabelBufferIndex             D:079742 label           BSS                             
-_globalLabelCounter                 D:07F746 label           BSS                             
-_globalLabelTable                   D:079746 label           BSS                             
+_global_errors                      D:049722 globals         BSS                             
+_globalLabelBuffer                  D:049862 label           BSS                             
+_globalLabelBufferIndex             D:079862 label           BSS                             
+_globalLabelCounter                 D:07F866 label           BSS                             
+_globalLabelTable                   D:079866 label           BSS                             
 _handle_asm_adl                     D:042EAA assemble        CODE                            
 _handle_asm_align                   D:0432BB assemble        CODE                            
 _handle_asm_blk                     D:0430EA assemble        CODE                            
@@ -765,40 +765,40 @@ _indirect_mmn_match                 D:043C82 instruction     CODE
 _indirect_n_match                   D:044061 instruction     CODE                            
 _indirect_rr_match                  D:043DD5 instruction     CODE                            
 _indirect_sp_match                  D:043EC9 instruction     CODE                            
-_initAnonymousLabelTable            D:044496 label           CODE                            
-_initGlobalLabelTable               D:044441 label           CODE                            
-_initLocalLabelTable                D:0444B7 label           CODE                            
-_insertGlobalLabel                  D:044AB5 label           CODE                            
-_insertLocalLabel                   D:0448B9 label           CODE                            
+_initAnonymousLabelTable            D:044568 label           CODE                            
+_initGlobalLabelTable               D:044513 label           CODE                            
+_initLocalLabelTable                D:044589 label           CODE                            
+_insertGlobalLabel                  D:044B87 label           CODE                            
+_insertLocalLabel                   D:04498B label           CODE                            
 _instruction_table_lookup           D:04438E instruction     CODE                            
-_instructions                       D:04836B instruction     DATA                            
+_instructions                       D:048455 instruction     DATA                            
 _ir_match                           D:043B00 instruction     CODE                            
-_isdigit                            D:046A05 isdigit         CODE                            
-_isEmpty                            D:04579B utils           CODE                            
-_isspace                            D:046A2E isspace         CODE                            
-_isupper                            D:046E18 isupper         CODE                            
-_isxdigit                           D:0463DA isxdigit        CODE                            
+_isdigit                            D:046AEF isdigit         CODE                            
+_isEmpty                            D:04586D utils           CODE                            
+_isspace                            D:046B18 isspace         CODE                            
+_isupper                            D:046F02 isupper         CODE                            
+_isxdigit                           D:0464C4 isxdigit        CODE                            
 _ix_match                           D:0441E6 instruction     CODE                            
 _ixd_match                          D:04425A instruction     CODE                            
 _ixy_match                          D:043B55 instruction     CODE                            
 _ixyd_match                         D:043BAB instruction     CODE                            
 _iy_match                           D:044220 instruction     CODE                            
 _iyd_match                          D:044294 instruction     CODE                            
-_linenumber                         D:0495F4 globals         BSS                             
-_lineNumberNeedsReset               D:0495F3 globals         BSS                             
-_listEmit8bit                       D:045149 listing         CODE                            
-_listEndLine                        D:044E4A listing         CODE                            
-_listInit                           D:044DA0 listing         CODE                            
-_listStartLine                      D:044E0C listing         CODE                            
-_localLabelBuffer                   D:069742 label           BSS                             
-_localLabelBufferIndex              D:079744 label           BSS                             
-_localLabelCounter                  D:07F908 label           BSS                             
-_localLabelTable                    D:07F748 label           BSS                             
+_linenumber                         D:049714 globals         BSS                             
+_lineNumberNeedsReset               D:049713 globals         BSS                             
+_listEmit8bit                       D:04521B listing         CODE                            
+_listEndLine                        D:044F1C listing         CODE                            
+_listInit                           D:044E72 listing         CODE                            
+_listStartLine                      D:044EDE listing         CODE                            
+_localLabelBuffer                   D:069862 label           BSS                             
+_localLabelBufferIndex              D:079864 label           BSS                             
+_localLabelCounter                  D:07FA28 label           BSS                             
+_localLabelTable                    D:07F868 label           BSS                             
 _main                               D:0400DC main            CODE                            
 _mb_match                           D:043F71 instruction     CODE                            
-_message                            D:04709C globals         DATA                            
+_message                            D:047186 globals         DATA                            
 _mmn_match                          D:043C4E instruction     CODE                            
-_mos102_setvector_fingerprint       D:047082 mos-interface   DATA                            
+_mos102_setvector_fingerprint       D:04716C mos-interface   DATA                            
 _mos_del                            D:040DBD mos-interface   CODE                            
 _mos_fclose                         D:040D66 mos-interface   CODE                            
 _mos_feof                           D:040DA8 mos-interface   CODE                            
@@ -808,150 +808,151 @@ _mos_fputc                          D:040D90 mos-interface   CODE
 _mos_save                           D:040DD2 mos-interface   CODE                            
 _n_match                            D:043CB6 instruction     CODE                            
 _none_match                         D:043A83 instruction     CODE                            
-_notEmpty                           D:0457B5 utils           CODE                            
+_notEmpty                           D:045887 utils           CODE                            
 _nselect_match                      D:04402D instruction     CODE                            
-_open_periphdevice                  D:0462F5 zsldevinitdummy CODE                            
-_openFile                           D:045CEF utils           CODE                            
-_openfiles                          D:045F3A utils           CODE                            
-_operand1                           D:04970D globals         BSS                             
-_operand2                           D:04971D globals         BSS                             
-_operands_adc                       D:0471FB instruction     DATA                            
-_operands_add                       D:04726B instruction     DATA                            
-_operands_and                       D:0472FB instruction     DATA                            
-_operands_bit                       D:04739B instruction     DATA                            
-_operands_call                      D:0473CB instruction     DATA                            
-_operands_ccf                       D:0473EB instruction     DATA                            
-_operands_cp                        D:0473FB instruction     DATA                            
-_operands_cpd                       D:04749B instruction     DATA                            
-_operands_cpdr                      D:0474AB instruction     DATA                            
-_operands_cpi                       D:0474BB instruction     DATA                            
-_operands_cpir                      D:0474CB instruction     DATA                            
-_operands_cpl                       D:0474DB instruction     DATA                            
-_operands_daa                       D:0474EB instruction     DATA                            
-_operands_dec                       D:0474FB instruction     DATA                            
-_operands_di                        D:04756B instruction     DATA                            
-_operands_djnz                      D:04757B instruction     DATA                            
-_operands_ei                        D:04758B instruction     DATA                            
-_operands_ex                        D:04759B instruction     DATA                            
-_operands_exx                       D:0475DB instruction     DATA                            
-_operands_halt                      D:0475EB instruction     DATA                            
-_operands_im                        D:0475FB instruction     DATA                            
-_operands_in                        D:04760B instruction     DATA                            
-_operands_in0                       D:04763B instruction     DATA                            
-_operands_inc                       D:04764B instruction     DATA                            
-_operands_ind                       D:0476BB instruction     DATA                            
-_operands_ind2                      D:0476CB instruction     DATA                            
-_operands_ind2r                     D:0476DB instruction     DATA                            
-_operands_indm                      D:0476EB instruction     DATA                            
-_operands_indmr                     D:0476FB instruction     DATA                            
-_operands_indr                      D:04770B instruction     DATA                            
-_operands_indrx                     D:04771B instruction     DATA                            
-_operands_ini                       D:04772B instruction     DATA                            
-_operands_ini2                      D:04773B instruction     DATA                            
-_operands_ini2r                     D:04774B instruction     DATA                            
-_operands_inim                      D:04775B instruction     DATA                            
-_operands_inimr                     D:04776B instruction     DATA                            
-_operands_inir                      D:04777B instruction     DATA                            
-_operands_inirx                     D:04778B instruction     DATA                            
-_operands_jp                        D:04779B instruction     DATA                            
-_operands_jr                        D:0477DB instruction     DATA                            
-_operands_ld                        D:0477FB instruction     DATA                            
-_operands_ldd                       D:047B8B instruction     DATA                            
-_operands_lddr                      D:047B9B instruction     DATA                            
-_operands_ldi                       D:047BAB instruction     DATA                            
-_operands_ldir                      D:047BBB instruction     DATA                            
-_operands_lea                       D:047BCB instruction     DATA                            
-_operands_mlt                       D:047C2B instruction     DATA                            
-_operands_neg                       D:047C4B instruction     DATA                            
-_operands_nop                       D:047C5B instruction     DATA                            
-_operands_or                        D:047C6B instruction     DATA                            
-_operands_otd2r                     D:047D0B instruction     DATA                            
-_operands_otdm                      D:047D1B instruction     DATA                            
-_operands_otdmr                     D:047D2B instruction     DATA                            
-_operands_otdr                      D:047D3B instruction     DATA                            
-_operands_otdrx                     D:047D4B instruction     DATA                            
-_operands_oti2r                     D:047D5B instruction     DATA                            
-_operands_otim                      D:047D6B instruction     DATA                            
-_operands_otimr                     D:047D7B instruction     DATA                            
-_operands_otir                      D:047D8B instruction     DATA                            
-_operands_otirx                     D:047D9B instruction     DATA                            
-_operands_out                       D:047DAB instruction     DATA                            
-_operands_out0                      D:047DDB instruction     DATA                            
-_operands_outd                      D:047DEB instruction     DATA                            
-_operands_outd2                     D:047DFB instruction     DATA                            
-_operands_outi                      D:047E0B instruction     DATA                            
-_operands_outi2                     D:047E1B instruction     DATA                            
-_operands_pea                       D:047E2B instruction     DATA                            
-_operands_pop                       D:047E4B instruction     DATA                            
-_operands_push                      D:047E7B instruction     DATA                            
-_operands_res                       D:047EAB instruction     DATA                            
-_operands_ret                       D:047EDB instruction     DATA                            
-_operands_reti                      D:047EFB instruction     DATA                            
-_operands_retn                      D:047F0B instruction     DATA                            
-_operands_rl                        D:047F1B instruction     DATA                            
-_operands_rla                       D:047F4B instruction     DATA                            
-_operands_rlc                       D:047F5B instruction     DATA                            
-_operands_rlca                      D:047F8B instruction     DATA                            
-_operands_rld                       D:047F9B instruction     DATA                            
-_operands_rr                        D:047FAB instruction     DATA                            
-_operands_rra                       D:047FDB instruction     DATA                            
-_operands_rrc                       D:047FEB instruction     DATA                            
-_operands_rrca                      D:04801B instruction     DATA                            
-_operands_rrd                       D:04802B instruction     DATA                            
-_operands_rsmix                     D:04803B instruction     DATA                            
-_operands_rst                       D:04804B instruction     DATA                            
-_operands_sbc                       D:04805B instruction     DATA                            
-_operands_scf                       D:0480CB instruction     DATA                            
-_operands_set                       D:0480DB instruction     DATA                            
-_operands_sla                       D:04810B instruction     DATA                            
-_operands_slp                       D:04813B instruction     DATA                            
-_operands_sra                       D:04814B instruction     DATA                            
-_operands_srl                       D:04817B instruction     DATA                            
-_operands_stmix                     D:0481AB instruction     DATA                            
-_operands_sub                       D:0481BB instruction     DATA                            
-_operands_tst                       D:04825B instruction     DATA                            
-_operands_tstio                     D:0482BB instruction     DATA                            
-_operands_xor                       D:0482CB instruction     DATA                            
-_output                             D:04972D globals         BSS                             
+_open_periphdevice                  D:0463DF zsldevinitdummy CODE                            
+_openFile                           D:045DC1 utils           CODE                            
+_openfiles                          D:04600C utils           CODE                            
+_operand1                           D:04982D globals         BSS                             
+_operand2                           D:04983D globals         BSS                             
+_operands_adc                       D:0472E5 instruction     DATA                            
+_operands_add                       D:047355 instruction     DATA                            
+_operands_and                       D:0473E5 instruction     DATA                            
+_operands_bit                       D:047485 instruction     DATA                            
+_operands_call                      D:0474B5 instruction     DATA                            
+_operands_ccf                       D:0474D5 instruction     DATA                            
+_operands_cp                        D:0474E5 instruction     DATA                            
+_operands_cpd                       D:047585 instruction     DATA                            
+_operands_cpdr                      D:047595 instruction     DATA                            
+_operands_cpi                       D:0475A5 instruction     DATA                            
+_operands_cpir                      D:0475B5 instruction     DATA                            
+_operands_cpl                       D:0475C5 instruction     DATA                            
+_operands_daa                       D:0475D5 instruction     DATA                            
+_operands_dec                       D:0475E5 instruction     DATA                            
+_operands_di                        D:047655 instruction     DATA                            
+_operands_djnz                      D:047665 instruction     DATA                            
+_operands_ei                        D:047675 instruction     DATA                            
+_operands_ex                        D:047685 instruction     DATA                            
+_operands_exx                       D:0476C5 instruction     DATA                            
+_operands_halt                      D:0476D5 instruction     DATA                            
+_operands_im                        D:0476E5 instruction     DATA                            
+_operands_in                        D:0476F5 instruction     DATA                            
+_operands_in0                       D:047725 instruction     DATA                            
+_operands_inc                       D:047735 instruction     DATA                            
+_operands_ind                       D:0477A5 instruction     DATA                            
+_operands_ind2                      D:0477B5 instruction     DATA                            
+_operands_ind2r                     D:0477C5 instruction     DATA                            
+_operands_indm                      D:0477D5 instruction     DATA                            
+_operands_indmr                     D:0477E5 instruction     DATA                            
+_operands_indr                      D:0477F5 instruction     DATA                            
+_operands_indrx                     D:047805 instruction     DATA                            
+_operands_ini                       D:047815 instruction     DATA                            
+_operands_ini2                      D:047825 instruction     DATA                            
+_operands_ini2r                     D:047835 instruction     DATA                            
+_operands_inim                      D:047845 instruction     DATA                            
+_operands_inimr                     D:047855 instruction     DATA                            
+_operands_inir                      D:047865 instruction     DATA                            
+_operands_inirx                     D:047875 instruction     DATA                            
+_operands_jp                        D:047885 instruction     DATA                            
+_operands_jr                        D:0478C5 instruction     DATA                            
+_operands_ld                        D:0478E5 instruction     DATA                            
+_operands_ldd                       D:047C75 instruction     DATA                            
+_operands_lddr                      D:047C85 instruction     DATA                            
+_operands_ldi                       D:047C95 instruction     DATA                            
+_operands_ldir                      D:047CA5 instruction     DATA                            
+_operands_lea                       D:047CB5 instruction     DATA                            
+_operands_mlt                       D:047D15 instruction     DATA                            
+_operands_neg                       D:047D35 instruction     DATA                            
+_operands_nop                       D:047D45 instruction     DATA                            
+_operands_or                        D:047D55 instruction     DATA                            
+_operands_otd2r                     D:047DF5 instruction     DATA                            
+_operands_otdm                      D:047E05 instruction     DATA                            
+_operands_otdmr                     D:047E15 instruction     DATA                            
+_operands_otdr                      D:047E25 instruction     DATA                            
+_operands_otdrx                     D:047E35 instruction     DATA                            
+_operands_oti2r                     D:047E45 instruction     DATA                            
+_operands_otim                      D:047E55 instruction     DATA                            
+_operands_otimr                     D:047E65 instruction     DATA                            
+_operands_otir                      D:047E75 instruction     DATA                            
+_operands_otirx                     D:047E85 instruction     DATA                            
+_operands_out                       D:047E95 instruction     DATA                            
+_operands_out0                      D:047EC5 instruction     DATA                            
+_operands_outd                      D:047ED5 instruction     DATA                            
+_operands_outd2                     D:047EE5 instruction     DATA                            
+_operands_outi                      D:047EF5 instruction     DATA                            
+_operands_outi2                     D:047F05 instruction     DATA                            
+_operands_pea                       D:047F15 instruction     DATA                            
+_operands_pop                       D:047F35 instruction     DATA                            
+_operands_push                      D:047F65 instruction     DATA                            
+_operands_res                       D:047F95 instruction     DATA                            
+_operands_ret                       D:047FC5 instruction     DATA                            
+_operands_reti                      D:047FE5 instruction     DATA                            
+_operands_retn                      D:047FF5 instruction     DATA                            
+_operands_rl                        D:048005 instruction     DATA                            
+_operands_rla                       D:048035 instruction     DATA                            
+_operands_rlc                       D:048045 instruction     DATA                            
+_operands_rlca                      D:048075 instruction     DATA                            
+_operands_rld                       D:048085 instruction     DATA                            
+_operands_rr                        D:048095 instruction     DATA                            
+_operands_rra                       D:0480C5 instruction     DATA                            
+_operands_rrc                       D:0480D5 instruction     DATA                            
+_operands_rrca                      D:048105 instruction     DATA                            
+_operands_rrd                       D:048115 instruction     DATA                            
+_operands_rsmix                     D:048125 instruction     DATA                            
+_operands_rst                       D:048135 instruction     DATA                            
+_operands_sbc                       D:048145 instruction     DATA                            
+_operands_scf                       D:0481B5 instruction     DATA                            
+_operands_set                       D:0481C5 instruction     DATA                            
+_operands_sla                       D:0481F5 instruction     DATA                            
+_operands_slp                       D:048225 instruction     DATA                            
+_operands_sra                       D:048235 instruction     DATA                            
+_operands_srl                       D:048265 instruction     DATA                            
+_operands_stmix                     D:048295 instruction     DATA                            
+_operands_sub                       D:0482A5 instruction     DATA                            
+_operands_tst                       D:048345 instruction     DATA                            
+_operands_tstio                     D:0483A5 instruction     DATA                            
+_operands_xor                       D:0483B5 instruction     DATA                            
+_output                             D:04984D globals         BSS                             
 _parse_asm_keyval_pair              D:042A6F assemble        CODE                            
 _parse_asm_single_immediate         D:0429CE assemble        CODE                            
 _parse_operand                      D:0410EA assemble        CODE                            
 _parseLine                          D:04180A assemble        CODE                            
-_pass                               D:0495F7 globals         BSS                             
+_pass                               D:049717 globals         BSS                             
 _passInitialize                     D:043618 assemble        CODE                            
-_permittype_matchlist               D:047117 instruction     DATA                            
+_permittype_matchlist               D:047201 instruction     DATA                            
 _prefix_ddfd_suffix                 D:04207B assemble        CODE                            
-_prepare_filenames                  D:045DA3 utils           CODE                            
-_print_bufferspace                  D:044BCC label           CODE                            
+_prepare_filenames                  D:045E75 utils           CODE                            
+_print_bufferspace                  D:044C9E label           CODE                            
+_printLocalLabelTable               D:04441D label           CODE                            
 _processDelayedLineNumberReset      D:043658 assemble        CODE                            
 _processInstructions                D:04351D assemble        CODE                            
 _putch                              D:040CEC mos-interface   CODE                            
 _r_match                            D:043F03 instruction     CODE                            
 _raeonly_match                      D:044342 instruction     CODE                            
-_readAnonymousLabel                 D:044836 label           CODE                            
-_readLocalLabels                    D:04470E label           CODE                            
+_readAnonymousLabel                 D:044908 label           CODE                            
+_readLocalLabels                    D:0447E0 label           CODE                            
 _refreshlocalLabels                 D:041CBB assemble        CODE                            
 _reg_r_match                        D:043F4F instruction     CODE                            
-_remove_ext                         D:045715 utils           CODE                            
-_reOpenFile                         D:045D43 utils           CODE                            
+_remove_ext                         D:0457E7 utils           CODE                            
+_reOpenFile                         D:045E15 utils           CODE                            
 _rr_match                           D:043D80 instruction     CODE                            
 _rxy_match                          D:043E2A instruction     CODE                            
 _sp_match                           D:043E8F instruction     CODE                            
-_split_suffix                       D:04588F utils           CODE                            
-_str2bin                            D:045171 str2num         CODE                            
-_str2dec                            D:0452B6 str2num         CODE                            
-_str2hex                            D:045203 str2num         CODE                            
-_str2num                            D:04536C str2num         CODE                            
-_strcasecmp                         D:046269 utils           CODE                            
-_strcat                             D:046E73 strcat          CODE                            
-_strcmp                             D:04658F strcmp          CODE                            
-_strcpy                             D:046D85 strcpy          CODE                            
-_strlen                             D:046623 strlen          CODE                            
-_strrchr                            D:0462F6 strrchr         CODE                            
-_tolower                            D:046DE6 tolower         CODE                            
-_totalsize                          D:0495FE globals         BSS                             
+_split_suffix                       D:045961 utils           CODE                            
+_str2bin                            D:045243 str2num         CODE                            
+_str2dec                            D:045388 str2num         CODE                            
+_str2hex                            D:0452D5 str2num         CODE                            
+_str2num                            D:04543E str2num         CODE                            
+_strcasecmp                         D:046353 utils           CODE                            
+_strcat                             D:046F5D strcat          CODE                            
+_strcmp                             D:046679 strcmp          CODE                            
+_strcpy                             D:046E6F strcpy          CODE                            
+_strlen                             D:04670D strlen          CODE                            
+_strrchr                            D:0463E0 strrchr         CODE                            
+_tolower                            D:046ED0 tolower         CODE                            
+_totalsize                          D:04971E globals         BSS                             
 _transform_instruction              D:0420EB assemble        CODE                            
-_trimRight                          D:045841 utils           CODE                            
+_trimRight                          D:045913 utils           CODE                            
 _vdp_asciiCodeAt                    D:040BD3 vdp             CODE                            
 _vdp_bgcolour                       D:0403C7 vdp             CODE                            
 _vdp_bitmapCreateSolidColor         D:040784 vdp             CODE                            
@@ -1007,10 +1008,10 @@ _vdp_spriteShowSelected             D:04097E vdp             CODE
 _waitvblank                         D:040D19 mos-interface   CODE                            
 _write16bit                         D:0401F2 vdp             CODE                            
 _write32bit                         D:040225 vdp             CODE                            
-_writeAnonymousLabel                D:044812 label           CODE                            
-_writeLocalLabels                   D:04460B label           CODE                            
+_writeAnonymousLabel                D:0448E4 label           CODE                            
+_writeLocalLabels                   D:0446DD label           CODE                            
 
-411 external symbol(s).
+412 external symbol(s).
 
 SYMBOL CROSS REFERENCE:
 =======================
@@ -1026,6 +1027,7 @@ ___print_buff                     Defined     .\rtl\common\print_globals.c
                                   Referenced  .\rtl\common\print_send.c
                                   Referenced  .\rtl\common\uultoa.c
 ___print_fmt                      Defined     .\rtl\common\print_globals.c
+                                  Referenced  ..\label.c
                                   Referenced  ..\listing.c
                                   Referenced  .\rtl\common\print_putstring.c
                                   Referenced  .\rtl\common\ultoa.c
@@ -1232,6 +1234,7 @@ __u_reverse                       Defined     .\rtl\common\ureverse.c
                                   Referenced  .\rtl\common\ultoa.c
                                   Referenced  .\rtl\common\uultoa.c
 __u_uitoa                         Defined     .\rtl\common\uuitoa.c
+                                  Referenced  ..\label.c
                                   Referenced  ..\listing.c
 __u_ultoa                         Defined     .\rtl\common\uultoa.c
                                   Referenced  .\rtl\common\uuitoa.c
@@ -1432,6 +1435,7 @@ _mos_fclose                       Defined     C:\source\agon-ez80asm\src\mos-int
                                   Referenced  ..\assemble.c
                                   Referenced  ..\utils.c
 _mos_feof                         Defined     C:\source\agon-ez80asm\src\mos-interface.asm
+                                  Referenced  ..\utils.c
 _mos_fgetc                        Defined     C:\source\agon-ez80asm\src\mos-interface.asm
                                   Referenced  ..\utils.c
 _mos_fopen                        Defined     C:\source\agon-ez80asm\src\mos-interface.asm
@@ -1565,6 +1569,7 @@ _prefix_ddfd_suffix               Defined     ..\assemble.c
 _prepare_filenames                Defined     ..\utils.c
                                   Referenced  ..\main.c
 _print_bufferspace                Defined     ..\label.c
+_printLocalLabelTable             Defined     ..\label.c
 _processDelayedLineNumberReset    Defined     ..\assemble.c
 _processInstructions              Defined     ..\assemble.c
 _putch                            Defined     C:\source\agon-ez80asm\src\mos-interface.asm
@@ -1689,8 +1694,8 @@ _writeLocalLabels                 Defined     ..\label.c
 
 OUTPUT CHECKSUM
 ===============
-ez80asm.hex          36122A
-ez80asm.lod          36122A
+ez80asm.hex          36262C
+ez80asm.lod          36262C
 
 
 

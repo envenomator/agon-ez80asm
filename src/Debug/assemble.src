@@ -10292,9 +10292,9 @@ _assemble:
 
 .CLASS 65
 
-.VALUE -388
+.VALUE -260
 
-.DIM 256
+.DIM 128
 
 .TYPE 98
 
@@ -10303,7 +10303,7 @@ _assemble:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-388
+	LD	HL,-260
 	ADD	HL,SP
 	LD	SP,HL
 ; 1299	    char line[LINEMAX];
@@ -10340,7 +10340,7 @@ _assemble:
 ; 1307	
 ; 1308	    // Assemble in two passes
 ; 1309	    // Pass 1
-; 1310	    printf("Pass 1...\n");
+; 1310	    printf("Pass 1...\n\r");
 .LINE 1310
 
 	LD	BC,___print_uputch
@@ -10372,7 +10372,7 @@ L_646:
 .LINE 1315
 
 	LD	HL,IX
-	LD	BC,-388
+	LD	BC,-260
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -10386,16 +10386,19 @@ L_646:
 .LINE 1317
 
 	CALL	_processDelayedLineNumberReset
-; 1318	        }
+; 1318	
+; 1319	            //printLocalLabelTable();
+; 1320	
+; 1321	        }
 L_645:
-.LINE 1318
+.LINE 1321
 
 	LD	BC,0
 	PUSH	BC
-	LD	BC,256
+	LD	BC,128
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-388
+	LD	BC,-260
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -10405,14 +10408,14 @@ L_645:
 	POP	BC
 	CALL	__icmpzero
 	JR	NZ,L_646
-; 1319	        if(filestackCount()) {
-.LINE 1319
+; 1322	        if(filestackCount()) {
+.LINE 1322
 
 	CALL	_filestackCount
 	OR	A,A
 	JR	Z,L_648
-; 1320	            mos_fclose(filehandle[FILE_CURRENT]);
-.LINE 1320
+; 1323	            mos_fclose(filehandle[FILE_CURRENT]);
+.LINE 1323
 
 	LD	A,(_filehandle)
 	LD	C,A
@@ -10420,8 +10423,8 @@ L_645:
 	PUSH	BC
 	CALL	_mos_fclose
 	POP	BC
-; 1321	            incfiles = filestackPop(&fsitem);
-.LINE 1321
+; 1324	            incfiles = filestackPop(&fsitem);
+.LINE 1324
 
 	LD	HL,IX
 	LD	BC,-132
@@ -10431,20 +10434,20 @@ L_645:
 	CALL	_filestackPop
 	POP	BC
 	LD	(IX+%FFFFFFFF),A
-; 1322	            linenumber = fsitem.linenumber;
-.LINE 1322
+; 1325	            linenumber = fsitem.linenumber;
+.LINE 1325
 
 	LEA	IY,IX+%FFFFFF80
 	LD	BC,(IY+%FFFFFFFC)
 	CALL	__stoiu
 	LD	(_linenumber),HL
-; 1323	            filehandle[FILE_CURRENT] = fsitem.fp;
-.LINE 1323
+; 1326	            filehandle[FILE_CURRENT] = fsitem.fp;
+.LINE 1326
 
 	LD	A,(IY+%FFFFFFFE)
 	LD	(_filehandle),A
-; 1324	            strcpy(filename[FILE_CURRENT], fsitem.filename);
-.LINE 1324
+; 1327	            strcpy(filename[FILE_CURRENT], fsitem.filename);
+.LINE 1327
 
 	LD	HL,IX
 	LD	BC,-129
@@ -10456,27 +10459,27 @@ L_645:
 	CALL	_strcpy
 	POP	BC
 	POP	BC
-; 1325	        }
-; 1326	        else incfiles = false;
-.LINE 1326
+; 1328	        }
+; 1329	        else incfiles = false;
+.LINE 1329
 
 	JR	L_651
 L_648:
 	LD	(IX+%FFFFFFFF),%0
-; 1327	    }
-; 1328	    while(incfiles);
+; 1330	    }
+; 1331	    while(incfiles);
 L_651:
-.LINE 1328
+.LINE 1331
 
 	LD	A,(IX+%FFFFFFFF)
 	OR	A,A
 	JR	NZ,L_645
-; 1329	    writeLocalLabels();
-.LINE 1329
+; 1332	    writeLocalLabels();
+.LINE 1332
 
 	CALL	_writeLocalLabels
-; 1330	    if(global_errors) return false;
-.LINE 1330
+; 1333	    if(global_errors) return false;
+.LINE 1333
 
 	LD	HL,(_global_errors)
 	CALL	__scmpzero
@@ -10484,9 +10487,9 @@ L_651:
 	XOR	A,A
 	JR	L_664
 L_654:
-; 1331	
-; 1332	    printf("%d lines\n", linenumber);
-.LINE 1332
+; 1334	
+; 1335	    printf("%d lines\n\r", linenumber);
+.LINE 1335
 
 	LD	BC,___print_uputch
 	LD	(___print_xputch),BC
@@ -10504,8 +10507,8 @@ L_654:
 	PUSH	BC
 	CALL	___print_sendstring
 	POP	BC
-; 1333	    printf("%d labels\n", getGlobalLabelCount());
-.LINE 1333
+; 1336	    printf("%d labels\n\r", getGlobalLabelCount());
+.LINE 1336
 
 	LD	BC,___print_uputch
 	LD	(___print_xputch),BC
@@ -10526,10 +10529,10 @@ L_654:
 	PUSH	BC
 	CALL	___print_sendstring
 	POP	BC
-; 1334	
-; 1335	    // Pass 2
-; 1336	    printf("Pass 2...\n");
-.LINE 1336
+; 1337	
+; 1338	    // Pass 2
+; 1339	    printf("Pass 2...\n\r");
+.LINE 1339
 
 	LD	BC,___print_uputch
 	LD	(___print_xputch),BC
@@ -10537,9 +10540,9 @@ L_654:
 	PUSH	BC
 	CALL	___print_sendstring
 	POP	BC
-; 1337	    //rewind(filehandle[FILE_INPUT]);
-; 1338	    reOpenFile(FILE_INPUT, fa_read);
-.LINE 1338
+; 1340	    //rewind(filehandle[FILE_INPUT]);
+; 1341	    reOpenFile(FILE_INPUT, fa_read);
+.LINE 1341
 
 	LD	BC,1
 	PUSH	BC
@@ -10547,9 +10550,9 @@ L_654:
 	CALL	_reOpenFile
 	POP	BC
 	POP	BC
-; 1339	    //rewind(filehandle[FILE_LOCAL_LABELS]);
-; 1340	    reOpenFile(FILE_LOCAL_LABELS, fa_read);
-.LINE 1340
+; 1342	    //rewind(filehandle[FILE_LOCAL_LABELS]);
+; 1343	    reOpenFile(FILE_LOCAL_LABELS, fa_read);
+.LINE 1343
 
 	LD	BC,1
 	PUSH	BC
@@ -10558,9 +10561,9 @@ L_654:
 	CALL	_reOpenFile
 	POP	BC
 	POP	BC
-; 1341	    //rewind(filehandle[FILE_ANONYMOUS_LABELS]);
-; 1342	    reOpenFile(FILE_ANONYMOUS_LABELS, fa_read);
-.LINE 1342
+; 1344	    //rewind(filehandle[FILE_ANONYMOUS_LABELS]);
+; 1345	    reOpenFile(FILE_ANONYMOUS_LABELS, fa_read);
+.LINE 1345
 
 	LD	BC,1
 	PUSH	BC
@@ -10569,15 +10572,15 @@ L_654:
 	CALL	_reOpenFile
 	POP	BC
 	POP	BC
-; 1343	    passInitialize(2);
-.LINE 1343
+; 1346	    passInitialize(2);
+.LINE 1346
 
 	LD	BC,2
 	PUSH	BC
 	CALL	_passInitialize
 	POP	BC
-; 1344	    listInit(consolelist_enabled);
-.LINE 1344
+; 1347	    listInit(consolelist_enabled);
+.LINE 1347
 
 	LD	A,(_consolelist_enabled)
 	LD	C,A
@@ -10585,56 +10588,56 @@ L_654:
 	PUSH	BC
 	CALL	_listInit
 	POP	BC
-; 1345	    readLocalLabels();
-.LINE 1345
+; 1348	    readLocalLabels();
+.LINE 1348
 
 	CALL	_readLocalLabels
-; 1346	    readAnonymousLabel();
-.LINE 1346
+; 1349	    readAnonymousLabel();
+.LINE 1349
 
 	CALL	_readAnonymousLabel
-; 1347	    do {
-; 1348	        while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
-.LINE 1348
+; 1350	    do {
+; 1351	        while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
+.LINE 1351
 
 	JR	L_656
 L_657:
-; 1349	            linenumber++;
-.LINE 1349
+; 1352	            linenumber++;
+.LINE 1352
 
 	LD	BC,(_linenumber)
 	INC	BC
 	LD	(_linenumber),BC
-; 1350	            listStartLine(line);
-.LINE 1350
+; 1353	            listStartLine(line);
+.LINE 1353
 
 	LD	HL,IX
-	LD	BC,-388
+	LD	BC,-260
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
 	CALL	_listStartLine
 	POP	BC
-; 1351	            parseLine(line);
-.LINE 1351
+; 1354	            parseLine(line);
+.LINE 1354
 
 	LD	HL,IX
-	LD	BC,-388
+	LD	BC,-260
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
 	CALL	_parseLine
 	POP	BC
-; 1352	            refreshlocalLabels();
-.LINE 1352
+; 1355	            refreshlocalLabels();
+.LINE 1355
 
 	CALL	_refreshlocalLabels
-; 1353	            processInstructions();
-.LINE 1353
+; 1356	            processInstructions();
+.LINE 1356
 
 	CALL	_processInstructions
-; 1354	            listEndLine(consolelist_enabled);
-.LINE 1354
+; 1357	            listEndLine(consolelist_enabled);
+.LINE 1357
 
 	LD	A,(_consolelist_enabled)
 	LD	C,A
@@ -10642,20 +10645,22 @@ L_657:
 	PUSH	BC
 	CALL	_listEndLine
 	POP	BC
-; 1355	            processDelayedLineNumberReset();
-.LINE 1355
+; 1358	            processDelayedLineNumberReset();
+.LINE 1358
 
 	CALL	_processDelayedLineNumberReset
-; 1356	        }
+; 1359	
+; 1360	            //printLocalLabelTable();
+; 1361	        }
 L_656:
-.LINE 1356
+.LINE 1361
 
 	LD	BC,0
 	PUSH	BC
-	LD	BC,256
+	LD	BC,128
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-388
+	LD	BC,-260
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -10665,14 +10670,14 @@ L_656:
 	POP	BC
 	CALL	__icmpzero
 	JR	NZ,L_657
-; 1357	        if(filestackCount()) {
-.LINE 1357
+; 1362	        if(filestackCount()) {
+.LINE 1362
 
 	CALL	_filestackCount
 	OR	A,A
 	JR	Z,L_659
-; 1358	            mos_fclose(filehandle[FILE_CURRENT]);
-.LINE 1358
+; 1363	            mos_fclose(filehandle[FILE_CURRENT]);
+.LINE 1363
 
 	LD	A,(_filehandle)
 	LD	C,A
@@ -10680,8 +10685,8 @@ L_656:
 	PUSH	BC
 	CALL	_mos_fclose
 	POP	BC
-; 1359	            incfiles = filestackPop(&fsitem);
-.LINE 1359
+; 1364	            incfiles = filestackPop(&fsitem);
+.LINE 1364
 
 	LD	HL,IX
 	LD	BC,-132
@@ -10691,20 +10696,20 @@ L_656:
 	CALL	_filestackPop
 	POP	BC
 	LD	(IX+%FFFFFFFF),A
-; 1360	            linenumber = fsitem.linenumber;
-.LINE 1360
+; 1365	            linenumber = fsitem.linenumber;
+.LINE 1365
 
 	LEA	IY,IX+%FFFFFF80
 	LD	BC,(IY+%FFFFFFFC)
 	CALL	__stoiu
 	LD	(_linenumber),HL
-; 1361	            filehandle[FILE_CURRENT] = fsitem.fp;
-.LINE 1361
+; 1366	            filehandle[FILE_CURRENT] = fsitem.fp;
+.LINE 1366
 
 	LD	A,(IY+%FFFFFFFE)
 	LD	(_filehandle),A
-; 1362	            strcpy(filename[FILE_CURRENT], fsitem.filename);
-.LINE 1362
+; 1367	            strcpy(filename[FILE_CURRENT], fsitem.filename);
+.LINE 1367
 
 	LD	HL,IX
 	LD	BC,-129
@@ -10716,28 +10721,28 @@ L_656:
 	CALL	_strcpy
 	POP	BC
 	POP	BC
-; 1363	        }
-; 1364	        else incfiles = false;
-.LINE 1364
+; 1368	        }
+; 1369	        else incfiles = false;
+.LINE 1369
 
 	JR	L_662
 L_659:
 	LD	(IX+%FFFFFFFF),%0
-; 1365	    }
-; 1366	    while(incfiles);
+; 1370	    }
+; 1371	    while(incfiles);
 L_662:
-.LINE 1366
+.LINE 1371
 
 	LD	A,(IX+%FFFFFFFF)
 	OR	A,A
 	JR	NZ,L_656
-; 1367	    return true;
-.LINE 1367
+; 1372	    return true;
+.LINE 1372
 
 	LD	A,%1
-; 1368	}
+; 1373	}
 L_664:
-.LINE 1368
+.LINE 1373
 
 	LD	SP,IX
 	POP	IX
@@ -10768,29 +10773,29 @@ L_664:
 ;_strcpy                             IMPORT  -----   function
 ;_filehandle                         IMPORT      6   variable
 ;_global_errors                      IMPORT      2   variable
-;line                                IX-388    256   variable
+;line                                IX-260    128   variable
 ;fsitem                              IX-132    131   variable
 ;incfiles                              IX-1      1   variable
 
 
-; Stack Frame Size: 394 (bytes)
+; Stack Frame Size: 266 (bytes)
 ;       Spill Code: -1 (instruction)
 
 
-.ENDFUNC "assemble",1368,"_assemble"
+.ENDFUNC "assemble",1373,"_assemble"
 	SEGMENT STRSECT
 L__287:
 	DB	"Pass 1..."
-	DB	10,0
+	DB	10,13,0
 L__292:
 	DB	" lines"
-	DB	10,0
+	DB	10,13,0
 L__293:
 	DB	" labels"
-	DB	10,0
+	DB	10,13,0
 L__294:
 	DB	"Pass 2..."
-	DB	10,0
+	DB	10,13,0
 	XREF _mos_fclose:ROM
 	XREF _mos_fopen:ROM
 	XREF _filestackPop:ROM

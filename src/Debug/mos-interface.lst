@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED28-Feb-23     21:42:25     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     14:26:44     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -321,11 +321,11 @@ PC     Object              I  Line    Source
 040DEC C9                  A   194    	ret
                            A   195    
                            A   196    	SEGMENT DATA
-047082                     A   197    _mos102_setvector_fingerprint:
-047082 FDE5FD21 000000FD   A   198    	DB FDh,E5h,FDh,21h,00h,00h,00h,FDh,39h,F5h,
-04708A 39F5ED57 F5F30100 
-047092 00000602 FD4E06ED 
-04709A 4C21 
+04716C                     A   197    _mos102_setvector_fingerprint:
+04716C FDE5FD21 000000FD   A   198    	DB FDh,E5h,FDh,21h,00h,00h,00h,FDh,39h,F5h,
+047174 39F5ED57 F5F30100 
+04717C 00000602 FD4E06ED 
+047184 4C21 
                            A   199    
                            A   200    end
 

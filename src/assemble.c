@@ -1307,7 +1307,7 @@ bool assemble(void){
 
     // Assemble in two passes
     // Pass 1
-    printf("Pass 1...\n");
+    printf("Pass 1...\n\r");
     passInitialize(1);
     do {
         while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
@@ -1315,6 +1315,9 @@ bool assemble(void){
             parseLine(line);
             processInstructions();
             processDelayedLineNumberReset();
+
+            //printLocalLabelTable();
+
         }
         if(filestackCount()) {
             mos_fclose(filehandle[FILE_CURRENT]);
@@ -1329,11 +1332,11 @@ bool assemble(void){
     writeLocalLabels();
     if(global_errors) return false;
 
-    printf("%d lines\n", linenumber);
-    printf("%d labels\n", getGlobalLabelCount());
+    printf("%d lines\n\r", linenumber);
+    printf("%d labels\n\r", getGlobalLabelCount());
 
     // Pass 2
-    printf("Pass 2...\n");
+    printf("Pass 2...\n\r");
     //rewind(filehandle[FILE_INPUT]);
     reOpenFile(FILE_INPUT, fa_read);
     //rewind(filehandle[FILE_LOCAL_LABELS]);
@@ -1353,6 +1356,8 @@ bool assemble(void){
             processInstructions();
             listEndLine(consolelist_enabled);
             processDelayedLineNumberReset();
+
+            //printLocalLabelTable();
         }
         if(filestackCount()) {
             mos_fclose(filehandle[FILE_CURRENT]);

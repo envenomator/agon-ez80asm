@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED28-Feb-23     21:42:25     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     14:26:44     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -413,7 +413,7 @@ PC     Object              I  Line    Source
                            A   409    ;   18	// transform a binary string to a uint3
                            A   410    ;   19	// string must end with 0 and contain o
                            A   411    ;   20	int32_t str2bin(char *string) {
-045171                     A   412    _str2bin:
+045243                     A   412    _str2bin:
                            A   413    .DEFINE "_str2bin"
                            A   414    
                            A   415    .VALUE _str2bin
@@ -458,106 +458,106 @@ PC     Object              I  Line    Source
                            A   454    
                            A   455    .ENDEF
                            A   456    
-045171 DDE5                A   457    	PUSH	IX
-045173 DD210000 00         A   458    	LD	IX,0
-045178 DD39                A   459    	ADD	IX,SP
-04517A C5                  A   460    	PUSH	BC
-04517B C5                  A   461    	PUSH	BC
-04517C 3B                  A   462    	DEC	SP
-04517D 3B                  A   463    	DEC	SP
+045243 DDE5                A   457    	PUSH	IX
+045245 DD210000 00         A   458    	LD	IX,0
+04524A DD39                A   459    	ADD	IX,SP
+04524C C5                  A   460    	PUSH	BC
+04524D C5                  A   461    	PUSH	BC
+04524E 3B                  A   462    	DEC	SP
+04524F 3B                  A   463    	DEC	SP
                            A   464    ;   21	    int32_t result = 0;
                            A   465    .LINE 21
                            A   466    
-04517E 01000000            A   467    	LD	BC,0
-045182 AF                  A   468    	XOR	A,A
-045183 DD0FFB              A   469    	LD	(IX+%FFFFFFFB),BC
-045186 DD77FE              A   470    	LD	(IX+%FFFFFFFE),A
+045250 01000000            A   467    	LD	BC,0
+045254 AF                  A   468    	XOR	A,A
+045255 DD0FFB              A   469    	LD	(IX+%FFFFFFFB),BC
+045258 DD77FE              A   470    	LD	(IX+%FFFFFFFE),A
                            A   471    ;   22	    uint8_t x = 0;
                            A   472    .LINE 22
                            A   473    
-045189 DD36FF00            A   474    	LD	(IX+%FFFFFFFF),%0
+04525B DD36FF00            A   474    	LD	(IX+%FFFFFFFF),%0
                            A   475    ;   23	
                            A   476    ;   24	    while(*string) {
                            A   477    .LINE 24
                            A   478    
-04518D 18 62               A   479    	JR	L_5
-04518F                     A   480    L_6:
+04525F 18 62               A   479    	JR	L_5
+045261                     A   480    L_6:
                            A   481    ;   25	        if((*string == '0') || (*string
                            A   482    .LINE 25
                            A   483    
-04518F DD2706              A   484    	LD	HL,(IX+%6)
-045192 7E                  A   485    	LD	A,(HL)
-045193 47                  A   486    	LD	B,A
-045194 17ED62              A   487    	SEXT	HL
-045197 68                  A   488    	LD	L,B
-045198 01300000            A   489    	LD	BC,48
-04519C B7                  A   490    	OR	A,A
-04519D ED42                A   491    	SBC	HL,BC
-04519F 28 12               A   492    	JR	Z,L_1
-0451A1 DD2706              A   493    	LD	HL,(IX+%6)
-0451A4 7E                  A   494    	LD	A,(HL)
-0451A5 47                  A   495    	LD	B,A
-0451A6 17ED62              A   496    	SEXT	HL
-0451A9 68                  A   497    	LD	L,B
-0451AA 01310000            A   498    	LD	BC,49
-0451AE B7                  A   499    	OR	A,A
-0451AF ED42                A   500    	SBC	HL,BC
-0451B1 20 0B               A   501    	JR	NZ,L_2
-0451B3                     A   502    L_1:
-0451B3 DD2706              A   503    	LD	HL,(IX+%6)
-0451B6 7E                  A   504    	LD	A,(HL)
-0451B7 D630                A   505    	SUB	A,%30
-0451B9 DD77FF              A   506    	LD	(IX+%FFFFFFFF),A
+045261 DD2706              A   484    	LD	HL,(IX+%6)
+045264 7E                  A   485    	LD	A,(HL)
+045265 47                  A   486    	LD	B,A
+045266 17ED62              A   487    	SEXT	HL
+045269 68                  A   488    	LD	L,B
+04526A 01300000            A   489    	LD	BC,48
+04526E B7                  A   490    	OR	A,A
+04526F ED42                A   491    	SBC	HL,BC
+045271 28 12               A   492    	JR	Z,L_1
+045273 DD2706              A   493    	LD	HL,(IX+%6)
+045276 7E                  A   494    	LD	A,(HL)
+045277 47                  A   495    	LD	B,A
+045278 17ED62              A   496    	SEXT	HL
+04527B 68                  A   497    	LD	L,B
+04527C 01310000            A   498    	LD	BC,49
+045280 B7                  A   499    	OR	A,A
+045281 ED42                A   500    	SBC	HL,BC
+045283 20 0B               A   501    	JR	NZ,L_2
+045285                     A   502    L_1:
+045285 DD2706              A   503    	LD	HL,(IX+%6)
+045288 7E                  A   504    	LD	A,(HL)
+045289 D630                A   505    	SUB	A,%30
+04528B DD77FF              A   506    	LD	(IX+%FFFFFFFF),A
                            A   507    ;   26	        else err_str2num = true;
                            A   508    .LINE 26
                            A   509    
-0451BC 18 06               A   510    	JR	L_3
-0451BE                     A   511    L_2:
-0451BE 3E01                A   512    	LD	A,%1
-0451C0 32 4F FC 07         A   513    	LD	(_err_str2num),A
-0451C4                     A   514    L_3:
+04528E 18 06               A   510    	JR	L_3
+045290                     A   511    L_2:
+045290 3E01                A   512    	LD	A,%1
+045292 32 4F FC 07         A   513    	LD	(_err_str2num),A
+045296                     A   514    L_3:
                            A   515    ;   27	        result = (result << 1) | x;
                            A   516    .LINE 27
                            A   517    
-0451C4 DD07FB              A   518    	LD	BC,(IX+%FFFFFFFB)
-0451C7 DD7EFE              A   519    	LD	A,(IX+%FFFFFFFE)
-0451CA 2E01                A   520    	LD	L,%1
-0451CC CD C7 6D 04         A   521    	CALL	__lshl
-0451D0 DD0FF8              A   522    	LD	(IX+%FFFFFFF8),BC
-0451D3 5F                  A   523    	LD	E,A
-0451D4 B7ED62              A   524    	UEXT	HL
-0451D7 DD6EFF              A   525    	LD	L,(IX+%FFFFFFFF)
-0451DA E5C1                A   526    	LD	BC,HL
-0451DC 7C                  A   527    	LD	A,H
-0451DD DD27F8              A   528    	LD	HL,(IX+%FFFFFFF8)
-0451E0 CD D5 69 04         A   529    	CALL	__lor
-0451E4 DD2FFB              A   530    	LD	(IX+%FFFFFFFB),HL
-0451E7 DD73FE              A   531    	LD	(IX+%FFFFFFFE),E
+045296 DD07FB              A   518    	LD	BC,(IX+%FFFFFFFB)
+045299 DD7EFE              A   519    	LD	A,(IX+%FFFFFFFE)
+04529C 2E01                A   520    	LD	L,%1
+04529E CD B1 6E 04         A   521    	CALL	__lshl
+0452A2 DD0FF8              A   522    	LD	(IX+%FFFFFFF8),BC
+0452A5 5F                  A   523    	LD	E,A
+0452A6 B7ED62              A   524    	UEXT	HL
+0452A9 DD6EFF              A   525    	LD	L,(IX+%FFFFFFFF)
+0452AC E5C1                A   526    	LD	BC,HL
+0452AE 7C                  A   527    	LD	A,H
+0452AF DD27F8              A   528    	LD	HL,(IX+%FFFFFFF8)
+0452B2 CD BF 6A 04         A   529    	CALL	__lor
+0452B6 DD2FFB              A   530    	LD	(IX+%FFFFFFFB),HL
+0452B9 DD73FE              A   531    	LD	(IX+%FFFFFFFE),E
                            A   532    ;   28	        string++;
                            A   533    .LINE 28
                            A   534    
-0451EA DD0706              A   535    	LD	BC,(IX+%6)
-0451ED 03                  A   536    	INC	BC
-0451EE DD0F06              A   537    	LD	(IX+%6),BC
+0452BC DD0706              A   535    	LD	BC,(IX+%6)
+0452BF 03                  A   536    	INC	BC
+0452C0 DD0F06              A   537    	LD	(IX+%6),BC
                            A   538    ;   29	    }
-0451F1                     A   539    L_5:
+0452C3                     A   539    L_5:
                            A   540    .LINE 29
                            A   541    
-0451F1 DD2706              A   542    	LD	HL,(IX+%6)
-0451F4 7E                  A   543    	LD	A,(HL)
-0451F5 B7                  A   544    	OR	A,A
-0451F6 20 97               A   545    	JR	NZ,L_6
+0452C3 DD2706              A   542    	LD	HL,(IX+%6)
+0452C6 7E                  A   543    	LD	A,(HL)
+0452C7 B7                  A   544    	OR	A,A
+0452C8 20 97               A   545    	JR	NZ,L_6
                            A   546    ;   30	    return result;
                            A   547    .LINE 30
                            A   548    
-0451F8 DD27FB              A   549    	LD	HL,(IX+%FFFFFFFB)
-0451FB DD5EFE              A   550    	LD	E,(IX+%FFFFFFFE)
+0452CA DD27FB              A   549    	LD	HL,(IX+%FFFFFFFB)
+0452CD DD5EFE              A   550    	LD	E,(IX+%FFFFFFFE)
                            A   551    ;   31	}
                            A   552    .LINE 31
                            A   553    
-0451FE DDF9                A   554    	LD	SP,IX
-045200 DDE1                A   555    	POP	IX
-045202 C9                  A   556    	RET	
+0452D0 DDF9                A   554    	LD	SP,IX
+0452D2 DDE1                A   555    	POP	IX
+0452D4 C9                  A   556    	RET	
                            A   557    
                            A   558    
                            A   559    ;**************************** _str2bin ********
@@ -577,7 +577,7 @@ PC     Object              I  Line    Source
                            A   573    ;   33	// transform a hex string to a uint32_t
                            A   574    ;   34	// string must end with 0 and contain o
                            A   575    ;   35	int32_t str2hex(char *string) {
-045203                     A   576    _str2hex:
+0452D5                     A   576    _str2hex:
                            A   577    .DEFINE "_str2hex"
                            A   578    
                            A   579    .VALUE _str2hex
@@ -632,125 +632,125 @@ PC     Object              I  Line    Source
                            A   628    
                            A   629    .ENDEF
                            A   630    
-045203 DDE5                A   631    	PUSH	IX
-045205 DD210000 00         A   632    	LD	IX,0
-04520A DD39                A   633    	ADD	IX,SP
-04520C C5                  A   634    	PUSH	BC
-04520D C5                  A   635    	PUSH	BC
-04520E C5                  A   636    	PUSH	BC
+0452D5 DDE5                A   631    	PUSH	IX
+0452D7 DD210000 00         A   632    	LD	IX,0
+0452DC DD39                A   633    	ADD	IX,SP
+0452DE C5                  A   634    	PUSH	BC
+0452DF C5                  A   635    	PUSH	BC
+0452E0 C5                  A   636    	PUSH	BC
                            A   637    ;   36	    int32_t result = 0;
                            A   638    .LINE 36
                            A   639    
-04520F 01000000            A   640    	LD	BC,0
-045213 AF                  A   641    	XOR	A,A
-045214 DD0FFA              A   642    	LD	(IX+%FFFFFFFA),BC
-045217 DD77FD              A   643    	LD	(IX+%FFFFFFFD),A
+0452E1 01000000            A   640    	LD	BC,0
+0452E5 AF                  A   641    	XOR	A,A
+0452E6 DD0FFA              A   642    	LD	(IX+%FFFFFFFA),BC
+0452E9 DD77FD              A   643    	LD	(IX+%FFFFFFFD),A
                            A   644    ;   37	    char c;
                            A   645    ;   38	    uint8_t x = 0;
                            A   646    .LINE 38
                            A   647    
-04521A DD36FE00            A   648    	LD	(IX+%FFFFFFFE),%0
+0452EC DD36FE00            A   648    	LD	(IX+%FFFFFFFE),%0
                            A   649    ;   39	
                            A   650    ;   40	    while(*string) {
                            A   651    .LINE 40
                            A   652    
-04521E C3 A2 52 04         A   653    	JR	L_17
-045222                     A   654    L_18:
+0452F0 C3 74 53 04         A   653    	JR	L_17
+0452F4                     A   654    L_18:
                            A   655    ;   41	        c = *string;
                            A   656    .LINE 41
                            A   657    
-045222 DD2706              A   658    	LD	HL,(IX+%6)
-045225 7E                  A   659    	LD	A,(HL)
-045226 DD77FF              A   660    	LD	(IX+%FFFFFFFF),A
+0452F4 DD2706              A   658    	LD	HL,(IX+%6)
+0452F7 7E                  A   659    	LD	A,(HL)
+0452F8 DD77FF              A   660    	LD	(IX+%FFFFFFFF),A
                            A   661    ;   42	        if((c >= '0') && (c <= '9')) { 
                            A   662    .LINE 42
                            A   663    
-045229 FE30                A   664    	CP	A,%30
-04522B FA 46 52 04         A   665    	JP	M,L_14
-04522F 3E39                A   666    	LD	A,%39
-045231 DDBEFF              A   667    	CP	A,(IX+%FFFFFFFF)
-045234 CD 33 63 04         A   668    	CALL	__setflag
-045238 FA 46 52 04         A   669    	JP	M,L_14
-04523C DD7EFF              A   670    	LD	A,(IX+%FFFFFFFF)
-04523F D630                A   671    	SUB	A,%30
-045241 DD77FE              A   672    	LD	(IX+%FFFFFFFE),A
+0452FB FE30                A   664    	CP	A,%30
+0452FD FA 18 53 04         A   665    	JP	M,L_14
+045301 3E39                A   666    	LD	A,%39
+045303 DDBEFF              A   667    	CP	A,(IX+%FFFFFFFF)
+045306 CD 1D 64 04         A   668    	CALL	__setflag
+04530A FA 18 53 04         A   669    	JP	M,L_14
+04530E DD7EFF              A   670    	LD	A,(IX+%FFFFFFFF)
+045311 D630                A   671    	SUB	A,%30
+045313 DD77FE              A   672    	LD	(IX+%FFFFFFFE),A
                            A   673    ;   43	        else {
                            A   674    .LINE 43
                            A   675    
-045244 18 2F               A   676    	JR	L_15
-045246                     A   677    L_14:
+045316 18 2F               A   676    	JR	L_15
+045318                     A   677    L_14:
                            A   678    ;   44	            c = c & 0xDF ; // toupper()
                            A   679    .LINE 44
                            A   680    
-045246 DD7EFF              A   681    	LD	A,(IX+%FFFFFFFF)
-045249 CBAF                A   682    	RES	%5,A
-04524B DD77FF              A   683    	LD	(IX+%FFFFFFFF),A
+045318 DD7EFF              A   681    	LD	A,(IX+%FFFFFFFF)
+04531B CBAF                A   682    	RES	%5,A
+04531D DD77FF              A   683    	LD	(IX+%FFFFFFFF),A
                            A   684    ;   45	            if((c >= 'A') && (c <= 'F')
                            A   685    .LINE 45
                            A   686    
-04524E FE41                A   687    	CP	A,%41
-045250 CD 33 63 04         A   688    	CALL	__setflag
-045254 FA 6F 52 04         A   689    	JP	M,L_12
-045258 3E46                A   690    	LD	A,%46
-04525A DDBEFF              A   691    	CP	A,(IX+%FFFFFFFF)
-04525D CD 33 63 04         A   692    	CALL	__setflag
-045261 FA 6F 52 04         A   693    	JP	M,L_12
-045265 DD7EFF              A   694    	LD	A,(IX+%FFFFFFFF)
-045268 C6C9                A   695    	ADD	A,%FFFFFFC9
-04526A DD77FE              A   696    	LD	(IX+%FFFFFFFE),A
+045320 FE41                A   687    	CP	A,%41
+045322 CD 1D 64 04         A   688    	CALL	__setflag
+045326 FA 41 53 04         A   689    	JP	M,L_12
+04532A 3E46                A   690    	LD	A,%46
+04532C DDBEFF              A   691    	CP	A,(IX+%FFFFFFFF)
+04532F CD 1D 64 04         A   692    	CALL	__setflag
+045333 FA 41 53 04         A   693    	JP	M,L_12
+045337 DD7EFF              A   694    	LD	A,(IX+%FFFFFFFF)
+04533A C6C9                A   695    	ADD	A,%FFFFFFC9
+04533C DD77FE              A   696    	LD	(IX+%FFFFFFFE),A
                            A   697    ;   46	        else err_str2num = true;
                            A   698    .LINE 46
                            A   699    
-04526D 18 06               A   700    	JR	L_15
-04526F                     A   701    L_12:
-04526F 3E01                A   702    	LD	A,%1
-045271 32 4F FC 07         A   703    	LD	(_err_str2num),A
+04533F 18 06               A   700    	JR	L_15
+045341                     A   701    L_12:
+045341 3E01                A   702    	LD	A,%1
+045343 32 4F FC 07         A   703    	LD	(_err_str2num),A
                            A   704    ;   47	        }
-045275                     A   705    L_15:
+045347                     A   705    L_15:
                            A   706    .LINE 47
                            A   707    
                            A   708    ;   48	        result = (result << 4) | x;
                            A   709    .LINE 48
                            A   710    
-045275 DD07FA              A   711    	LD	BC,(IX+%FFFFFFFA)
-045278 DD7EFD              A   712    	LD	A,(IX+%FFFFFFFD)
-04527B 2E04                A   713    	LD	L,%4
-04527D CD C7 6D 04         A   714    	CALL	__lshl
-045281 DD0FF7              A   715    	LD	(IX+%FFFFFFF7),BC
-045284 5F                  A   716    	LD	E,A
-045285 B7ED62              A   717    	UEXT	HL
-045288 DD6EFE              A   718    	LD	L,(IX+%FFFFFFFE)
-04528B E5C1                A   719    	LD	BC,HL
-04528D 7C                  A   720    	LD	A,H
-04528E DD27F7              A   721    	LD	HL,(IX+%FFFFFFF7)
-045291 CD D5 69 04         A   722    	CALL	__lor
-045295 DD2FFA              A   723    	LD	(IX+%FFFFFFFA),HL
-045298 DD73FD              A   724    	LD	(IX+%FFFFFFFD),E
+045347 DD07FA              A   711    	LD	BC,(IX+%FFFFFFFA)
+04534A DD7EFD              A   712    	LD	A,(IX+%FFFFFFFD)
+04534D 2E04                A   713    	LD	L,%4
+04534F CD B1 6E 04         A   714    	CALL	__lshl
+045353 DD0FF7              A   715    	LD	(IX+%FFFFFFF7),BC
+045356 5F                  A   716    	LD	E,A
+045357 B7ED62              A   717    	UEXT	HL
+04535A DD6EFE              A   718    	LD	L,(IX+%FFFFFFFE)
+04535D E5C1                A   719    	LD	BC,HL
+04535F 7C                  A   720    	LD	A,H
+045360 DD27F7              A   721    	LD	HL,(IX+%FFFFFFF7)
+045363 CD BF 6A 04         A   722    	CALL	__lor
+045367 DD2FFA              A   723    	LD	(IX+%FFFFFFFA),HL
+04536A DD73FD              A   724    	LD	(IX+%FFFFFFFD),E
                            A   725    ;   49	        string++;
                            A   726    .LINE 49
                            A   727    
-04529B DD0706              A   728    	LD	BC,(IX+%6)
-04529E 03                  A   729    	INC	BC
-04529F DD0F06              A   730    	LD	(IX+%6),BC
+04536D DD0706              A   728    	LD	BC,(IX+%6)
+045370 03                  A   729    	INC	BC
+045371 DD0F06              A   730    	LD	(IX+%6),BC
                            A   731    ;   50	    }
-0452A2                     A   732    L_17:
+045374                     A   732    L_17:
                            A   733    .LINE 50
                            A   734    
-0452A2 DD2706              A   735    	LD	HL,(IX+%6)
-0452A5 7E                  A   736    	LD	A,(HL)
-0452A6 B7                  A   737    	OR	A,A
-0452A7 C2 22 52 04         A   738    	JR	NZ,L_18
+045374 DD2706              A   735    	LD	HL,(IX+%6)
+045377 7E                  A   736    	LD	A,(HL)
+045378 B7                  A   737    	OR	A,A
+045379 C2 F4 52 04         A   738    	JR	NZ,L_18
                            A   739    ;   51	    return result;
                            A   740    .LINE 51
                            A   741    
-0452AB DD27FA              A   742    	LD	HL,(IX+%FFFFFFFA)
-0452AE DD5EFD              A   743    	LD	E,(IX+%FFFFFFFD)
+04537D DD27FA              A   742    	LD	HL,(IX+%FFFFFFFA)
+045380 DD5EFD              A   743    	LD	E,(IX+%FFFFFFFD)
                            A   744    ;   52	}
                            A   745    .LINE 52
                            A   746    
-0452B1 DDF9                A   747    	LD	SP,IX
-0452B3 DDE1                A   748    	POP	IX
-0452B5 C9                  A   749    	RET	
+045383 DDF9                A   747    	LD	SP,IX
+045385 DDE1                A   748    	POP	IX
+045387 C9                  A   749    	RET	
                            A   750    
                            A   751    
                            A   752    ;**************************** _str2hex ********
@@ -771,7 +771,7 @@ PC     Object              I  Line    Source
                            A   767    ;   54	// transform a hex string to a uint32_t
                            A   768    ;   55	// string must end with 0 and contain o
                            A   769    ;   56	int32_t str2dec(char *string) {
-0452B6                     A   770    _str2dec:
+045388                     A   770    _str2dec:
                            A   771    .DEFINE "_str2dec"
                            A   772    
                            A   773    .VALUE _str2dec
@@ -816,112 +816,112 @@ PC     Object              I  Line    Source
                            A   812    
                            A   813    .ENDEF
                            A   814    
-0452B6 DDE5                A   815    	PUSH	IX
-0452B8 DD210000 00         A   816    	LD	IX,0
-0452BD DD39                A   817    	ADD	IX,SP
-0452BF ED22F5              A   818    	LEA	HL,IX+%FFFFFFF5
-0452C2 F9                  A   819    	LD	SP,HL
+045388 DDE5                A   815    	PUSH	IX
+04538A DD210000 00         A   816    	LD	IX,0
+04538F DD39                A   817    	ADD	IX,SP
+045391 ED22F5              A   818    	LEA	HL,IX+%FFFFFFF5
+045394 F9                  A   819    	LD	SP,HL
                            A   820    ;   57	    int32_t result = 0;
                            A   821    .LINE 57
                            A   822    
-0452C3 01000000            A   823    	LD	BC,0
-0452C7 AF                  A   824    	XOR	A,A
-0452C8 DD0FFB              A   825    	LD	(IX+%FFFFFFFB),BC
-0452CB DD77FE              A   826    	LD	(IX+%FFFFFFFE),A
+045395 01000000            A   823    	LD	BC,0
+045399 AF                  A   824    	XOR	A,A
+04539A DD0FFB              A   825    	LD	(IX+%FFFFFFFB),BC
+04539D DD77FE              A   826    	LD	(IX+%FFFFFFFE),A
                            A   827    ;   58	    uint8_t x = 0;
                            A   828    .LINE 58
                            A   829    
-0452CE DD36FF00            A   830    	LD	(IX+%FFFFFFFF),%0
+0453A0 DD36FF00            A   830    	LD	(IX+%FFFFFFFF),%0
                            A   831    ;   59	
                            A   832    ;   60	    while(*string) {
                            A   833    .LINE 60
                            A   834    
-0452D2 C3 58 53 04         A   835    	JR	L_26
-0452D6                     A   836    L_27:
+0453A4 C3 2A 54 04         A   835    	JR	L_26
+0453A8                     A   836    L_27:
                            A   837    ;   61	        if((*string >= '0') && (*string
                            A   838    .LINE 61
                            A   839    
-0452D6 DD2706              A   840    	LD	HL,(IX+%6)
-0452D9 7E                  A   841    	LD	A,(HL)
-0452DA 47                  A   842    	LD	B,A
-0452DB 17ED62              A   843    	SEXT	HL
-0452DE 68                  A   844    	LD	L,B
-0452DF 01300000            A   845    	LD	BC,48
-0452E3 B7                  A   846    	OR	A,A
-0452E4 ED42                A   847    	SBC	HL,BC
-0452E6 FA 0F 53 04         A   848    	JP	M,L_23
-0452EA DD2706              A   849    	LD	HL,(IX+%6)
-0452ED 7E                  A   850    	LD	A,(HL)
-0452EE 47                  A   851    	LD	B,A
-0452EF 17ED62              A   852    	SEXT	HL
-0452F2 68                  A   853    	LD	L,B
-0452F3 E5C1                A   854    	LD	BC,HL
-0452F5 21390000            A   855    	LD	HL,57
-0452F9 B7                  A   856    	OR	A,A
-0452FA ED42                A   857    	SBC	HL,BC
-0452FC CD 33 63 04         A   858    	CALL	__setflag
-045300 FA 0F 53 04         A   859    	JP	M,L_23
-045304 DD2706              A   860    	LD	HL,(IX+%6)
-045307 7E                  A   861    	LD	A,(HL)
-045308 D630                A   862    	SUB	A,%30
-04530A DD77FF              A   863    	LD	(IX+%FFFFFFFF),A
+0453A8 DD2706              A   840    	LD	HL,(IX+%6)
+0453AB 7E                  A   841    	LD	A,(HL)
+0453AC 47                  A   842    	LD	B,A
+0453AD 17ED62              A   843    	SEXT	HL
+0453B0 68                  A   844    	LD	L,B
+0453B1 01300000            A   845    	LD	BC,48
+0453B5 B7                  A   846    	OR	A,A
+0453B6 ED42                A   847    	SBC	HL,BC
+0453B8 FA E1 53 04         A   848    	JP	M,L_23
+0453BC DD2706              A   849    	LD	HL,(IX+%6)
+0453BF 7E                  A   850    	LD	A,(HL)
+0453C0 47                  A   851    	LD	B,A
+0453C1 17ED62              A   852    	SEXT	HL
+0453C4 68                  A   853    	LD	L,B
+0453C5 E5C1                A   854    	LD	BC,HL
+0453C7 21390000            A   855    	LD	HL,57
+0453CB B7                  A   856    	OR	A,A
+0453CC ED42                A   857    	SBC	HL,BC
+0453CE CD 1D 64 04         A   858    	CALL	__setflag
+0453D2 FA E1 53 04         A   859    	JP	M,L_23
+0453D6 DD2706              A   860    	LD	HL,(IX+%6)
+0453D9 7E                  A   861    	LD	A,(HL)
+0453DA D630                A   862    	SUB	A,%30
+0453DC DD77FF              A   863    	LD	(IX+%FFFFFFFF),A
                            A   864    ;   62	        else err_str2num = true;
                            A   865    .LINE 62
                            A   866    
-04530D 18 06               A   867    	JR	L_24
-04530F                     A   868    L_23:
-04530F 3E01                A   869    	LD	A,%1
-045311 32 4F FC 07         A   870    	LD	(_err_str2num),A
-045315                     A   871    L_24:
+0453DF 18 06               A   867    	JR	L_24
+0453E1                     A   868    L_23:
+0453E1 3E01                A   869    	LD	A,%1
+0453E3 32 4F FC 07         A   870    	LD	(_err_str2num),A
+0453E7                     A   871    L_24:
                            A   872    ;   63	        result = ((result << 1) + (resu
                            A   873    .LINE 63
                            A   874    
-045315 DD07FB              A   875    	LD	BC,(IX+%FFFFFFFB)
-045318 DD7EFE              A   876    	LD	A,(IX+%FFFFFFFE)
-04531B 2E01                A   877    	LD	L,%1
-04531D CD C7 6D 04         A   878    	CALL	__lshl
-045321 DD0FF5              A   879    	LD	(IX+%FFFFFFF5),BC
-045324 5F                  A   880    	LD	E,A
-045325 DD07FB              A   881    	LD	BC,(IX+%FFFFFFFB)
-045328 DD7EFE              A   882    	LD	A,(IX+%FFFFFFFE)
-04532B 2E03                A   883    	LD	L,%3
-04532D CD C7 6D 04         A   884    	CALL	__lshl
-045331 DD27F5              A   885    	LD	HL,(IX+%FFFFFFF5)
-045334 CD 24 63 04         A   886    	CALL	__ladd
-045338 DD2FF8              A   887    	LD	(IX+%FFFFFFF8),HL
-04533B B7ED62              A   888    	UEXT	HL
-04533E DD6EFF              A   889    	LD	L,(IX+%FFFFFFFF)
-045341 E5C1                A   890    	LD	BC,HL
-045343 7C                  A   891    	LD	A,H
-045344 DD27F8              A   892    	LD	HL,(IX+%FFFFFFF8)
-045347 CD 24 63 04         A   893    	CALL	__ladd
-04534B DD2FFB              A   894    	LD	(IX+%FFFFFFFB),HL
-04534E DD73FE              A   895    	LD	(IX+%FFFFFFFE),E
+0453E7 DD07FB              A   875    	LD	BC,(IX+%FFFFFFFB)
+0453EA DD7EFE              A   876    	LD	A,(IX+%FFFFFFFE)
+0453ED 2E01                A   877    	LD	L,%1
+0453EF CD B1 6E 04         A   878    	CALL	__lshl
+0453F3 DD0FF5              A   879    	LD	(IX+%FFFFFFF5),BC
+0453F6 5F                  A   880    	LD	E,A
+0453F7 DD07FB              A   881    	LD	BC,(IX+%FFFFFFFB)
+0453FA DD7EFE              A   882    	LD	A,(IX+%FFFFFFFE)
+0453FD 2E03                A   883    	LD	L,%3
+0453FF CD B1 6E 04         A   884    	CALL	__lshl
+045403 DD27F5              A   885    	LD	HL,(IX+%FFFFFFF5)
+045406 CD 0E 64 04         A   886    	CALL	__ladd
+04540A DD2FF8              A   887    	LD	(IX+%FFFFFFF8),HL
+04540D B7ED62              A   888    	UEXT	HL
+045410 DD6EFF              A   889    	LD	L,(IX+%FFFFFFFF)
+045413 E5C1                A   890    	LD	BC,HL
+045415 7C                  A   891    	LD	A,H
+045416 DD27F8              A   892    	LD	HL,(IX+%FFFFFFF8)
+045419 CD 0E 64 04         A   893    	CALL	__ladd
+04541D DD2FFB              A   894    	LD	(IX+%FFFFFFFB),HL
+045420 DD73FE              A   895    	LD	(IX+%FFFFFFFE),E
                            A   896    ;   64	        string++;
                            A   897    .LINE 64
                            A   898    
-045351 DD0706              A   899    	LD	BC,(IX+%6)
-045354 03                  A   900    	INC	BC
-045355 DD0F06              A   901    	LD	(IX+%6),BC
+045423 DD0706              A   899    	LD	BC,(IX+%6)
+045426 03                  A   900    	INC	BC
+045427 DD0F06              A   901    	LD	(IX+%6),BC
                            A   902    ;   65	    }
-045358                     A   903    L_26:
+04542A                     A   903    L_26:
                            A   904    .LINE 65
                            A   905    
-045358 DD2706              A   906    	LD	HL,(IX+%6)
-04535B 7E                  A   907    	LD	A,(HL)
-04535C B7                  A   908    	OR	A,A
-04535D C2 D6 52 04         A   909    	JR	NZ,L_27
+04542A DD2706              A   906    	LD	HL,(IX+%6)
+04542D 7E                  A   907    	LD	A,(HL)
+04542E B7                  A   908    	OR	A,A
+04542F C2 A8 53 04         A   909    	JR	NZ,L_27
                            A   910    ;   66	    return result;
                            A   911    .LINE 66
                            A   912    
-045361 DD27FB              A   913    	LD	HL,(IX+%FFFFFFFB)
-045364 DD5EFE              A   914    	LD	E,(IX+%FFFFFFFE)
+045433 DD27FB              A   913    	LD	HL,(IX+%FFFFFFFB)
+045436 DD5EFE              A   914    	LD	E,(IX+%FFFFFFFE)
                            A   915    ;   67	}
                            A   916    .LINE 67
                            A   917    
-045367 DDF9                A   918    	LD	SP,IX
-045369 DDE1                A   919    	POP	IX
-04536B C9                  A   920    	RET	
+045439 DDF9                A   918    	LD	SP,IX
+04543B DDE1                A   919    	POP	IX
+04543D C9                  A   920    	RET	
                            A   921    
                            A   922    
                            A   923    ;**************************** _str2dec ********
@@ -944,7 +944,7 @@ PC     Object              I  Line    Source
                            A   940    ;   72	// HEX:     0x..., ...h, $...
                            A   941    ;   73	// DECIMAL ...
                            A   942    ;   74	int32_t str2num(char *string, bool erro
-04536C                     A   943    _str2num:
+04543E                     A   943    _str2num:
                            A   944    .DEFINE "_str2num"
                            A   945    
                            A   946    .VALUE _str2num
@@ -1019,793 +1019,793 @@ PC     Object              I  Line    Source
                            A  1015    
                            A  1016    .ENDEF
                            A  1017    
-04536C DDE5                A  1018    	PUSH	IX
-04536E DD210000 00         A  1019    	LD	IX,0
-045373 DD39                A  1020    	ADD	IX,SP
-045375 ED22EC              A  1021    	LEA	HL,IX+%FFFFFFEC
-045378 F9                  A  1022    	LD	SP,HL
+04543E DDE5                A  1018    	PUSH	IX
+045440 DD210000 00         A  1019    	LD	IX,0
+045445 DD39                A  1020    	ADD	IX,SP
+045447 ED22EC              A  1021    	LEA	HL,IX+%FFFFFFEC
+04544A F9                  A  1022    	LD	SP,HL
                            A  1023    ;   75	    char *ptr = string;
                            A  1024    .LINE 75
                            A  1025    
-045379 DD0706              A  1026    	LD	BC,(IX+%6)
-04537C DD0FFD              A  1027    	LD	(IX+%FFFFFFFD),BC
+04544B DD0706              A  1026    	LD	BC,(IX+%6)
+04544E DD0FFD              A  1027    	LD	(IX+%FFFFFFFD),BC
                            A  1028    ;   76	    char *start = string;
                            A  1029    .LINE 76
                            A  1030    
-04537F DD0706              A  1031    	LD	BC,(IX+%6)
-045382 DD0FF5              A  1032    	LD	(IX+%FFFFFFF5),BC
+045451 DD0706              A  1031    	LD	BC,(IX+%6)
+045454 DD0FF5              A  1032    	LD	(IX+%FFFFFFF5),BC
                            A  1033    ;   77	    int32_t result = 0;
                            A  1034    .LINE 77
                            A  1035    
-045385 01000000            A  1036    	LD	BC,0
-045389 AF                  A  1037    	XOR	A,A
-04538A DD0FF8              A  1038    	LD	(IX+%FFFFFFF8),BC
-04538D DD77FB              A  1039    	LD	(IX+%FFFFFFFB),A
+045457 01000000            A  1036    	LD	BC,0
+04545B AF                  A  1037    	XOR	A,A
+04545C DD0FF8              A  1038    	LD	(IX+%FFFFFFF8),BC
+04545F DD77FB              A  1039    	LD	(IX+%FFFFFFFB),A
                            A  1040    ;   78	    uint8_t state = BASESELECT;
                            A  1041    .LINE 78
                            A  1042    
-045390 DD36FC00            A  1043    	LD	(IX+%FFFFFFFC),%0
+045462 DD36FC00            A  1043    	LD	(IX+%FFFFFFFC),%0
                            A  1044    ;   79	
                            A  1045    ;   80	    err_str2num = false;
                            A  1046    .LINE 80
                            A  1047    
-045394 AF                  A  1048    	XOR	A,A
-045395 32 4F FC 07         A  1049    	LD	(_err_str2num),A
+045466 AF                  A  1048    	XOR	A,A
+045467 32 4F FC 07         A  1049    	LD	(_err_str2num),A
                            A  1050    ;   81	
                            A  1051    ;   82	    while(1) {
-045399                     A  1052    L_106:
+04546B                     A  1052    L_106:
                            A  1053    .LINE 82
                            A  1054    
                            A  1055    ;   83	        switch(state) {
                            A  1056    .LINE 83
                            A  1057    
-045399 DD7EFC              A  1058    	LD	A,(IX+%FFFFFFFC)
-04539C B7ED62              A  1059    	UEXT	HL
-04539F 6F                  A  1060    	LD	L,A
-0453A0 CD 7A 63 04         A  1061    	CALL	__seqcaseD
-0453A4 E9                  A  1062    	JP	(HL)
-0453A5                     A  1063    L__14:
-0453A5 0600                A  1064    	DW	6
-0453A7 0000                A  1065    	DW	0
-0453A9 00                  A  1066    	DB	0
-0453AA C85304              A  1067    	DW24	L_31	
+04546B DD7EFC              A  1058    	LD	A,(IX+%FFFFFFFC)
+04546E B7ED62              A  1059    	UEXT	HL
+045471 6F                  A  1060    	LD	L,A
+045472 CD 64 64 04         A  1061    	CALL	__seqcaseD
+045476 E9                  A  1062    	JP	(HL)
+045477                     A  1063    L__14:
+045477 0600                A  1064    	DW	6
+045479 0000                A  1065    	DW	0
+04547B 00                  A  1066    	DB	0
+04547C 9A5404              A  1067    	DW24	L_31	
                            A  1068    
-0453AD CD5404              A  1069    	DW24	L_54	
+04547F 9F5504              A  1069    	DW24	L_54	
                            A  1070    
-0453B0 AE5504              A  1071    	DW24	L_72	
+045482 805604              A  1071    	DW24	L_72	
                            A  1072    
-0453B3 E05504              A  1073    	DW24	L_79	
+045485 B25604              A  1073    	DW24	L_79	
                            A  1074    
-0453B6 BF5304              A  1075    	DW24	L_30	
+045488 915404              A  1075    	DW24	L_30	
                            A  1076    
-0453B9 F05604              A  1077    	DW24	L_101	
+04548B C25704              A  1077    	DW24	L_101	
                            A  1078    
-0453BC 995304              A  1079    	DW24	L_106	
+04548E 6B5404              A  1079    	DW24	L_106	
                            A  1080    
                            A  1081    ;   84	            case(DONE):
-0453BF                     A  1082    L_30:
+045491                     A  1082    L_30:
                            A  1083    .LINE 84
                            A  1084    
                            A  1085    ;   85	                return result;
                            A  1086    .LINE 85
                            A  1087    
-0453BF B7                  A  1088    	OR	A,A
-0453C0 ED62                A  1089    	SBC	HL,HL
-0453C2 1E00                A  1090    	LD	E,%0
-0453C4 C3 10 57 04         A  1091    	JR	L_107
+045491 B7                  A  1088    	OR	A,A
+045492 ED62                A  1089    	SBC	HL,HL
+045494 1E00                A  1090    	LD	E,%0
+045496 C3 E2 57 04         A  1091    	JR	L_107
                            A  1092    ;   86	                break;
                            A  1093    ;   87	            case(BASESELECT):
-0453C8                     A  1094    L_31:
+04549A                     A  1094    L_31:
                            A  1095    .LINE 87
                            A  1096    
                            A  1097    ;   88	                switch(*ptr) {
                            A  1098    .LINE 88
                            A  1099    
-0453C8 DD27FD              A  1100    	LD	HL,(IX+%FFFFFFFD)
-0453CB 7E                  A  1101    	LD	A,(HL)
-0453CC 47                  A  1102    	LD	B,A
-0453CD 17ED62              A  1103    	SEXT	HL
-0453D0 68                  A  1104    	LD	L,B
-0453D1 CD 49 6D 04         A  1105    	CALL	__case8D
-0453D5 E9                  A  1106    	JP	(HL)
-0453D6                     A  1107    L__15:
-0453D6 0500                A  1108    	DW	5
-0453D8 00                  A  1109    	DB	0
-0453D9 A05404              A  1110    	DW24	L_49	
+04549A DD27FD              A  1100    	LD	HL,(IX+%FFFFFFFD)
+04549D 7E                  A  1101    	LD	A,(HL)
+04549E 47                  A  1102    	LD	B,A
+04549F 17ED62              A  1103    	SEXT	HL
+0454A2 68                  A  1104    	LD	L,B
+0454A3 CD 33 6E 04         A  1105    	CALL	__case8D
+0454A7 E9                  A  1106    	JP	(HL)
+0454A8                     A  1107    L__15:
+0454A8 0500                A  1108    	DW	5
+0454AA 00                  A  1109    	DB	0
+0454AB 725504              A  1110    	DW24	L_49	
                            A  1111    
-0453DC 23                  A  1112    	DB	35
-0453DD EF5304              A  1113    	DW24	L_33	
+0454AE 23                  A  1112    	DB	35
+0454AF C15404              A  1113    	DW24	L_33	
                            A  1114    
-0453E0 24                  A  1115    	DB	36
-0453E1 EF5304              A  1116    	DW24	L_32	
+0454B2 24                  A  1115    	DB	36
+0454B3 C15404              A  1116    	DW24	L_32	
                            A  1117    
-0453E4 25                  A  1118    	DB	37
-0453E5 405404              A  1119    	DW24	L_40	
+0454B6 25                  A  1118    	DB	37
+0454B7 125504              A  1119    	DW24	L_40	
                            A  1120    
-0453E8 30                  A  1121    	DB	48
-0453E9 915404              A  1122    	DW24	L_47	
+0454BA 30                  A  1121    	DB	48
+0454BB 635504              A  1122    	DW24	L_47	
                            A  1123    
-0453EC A85404              A  1124    	DW24	L_50	
+0454BE 7A5504              A  1124    	DW24	L_50	
                            A  1125    
                            A  1126    ;   89	                    case '$':
-0453EF                     A  1127    L_32:
+0454C1                     A  1127    L_32:
                            A  1128    .LINE 89
                            A  1129    
                            A  1130    ;   90	                    case '#':
-0453EF                     A  1131    L_33:
+0454C1                     A  1131    L_33:
                            A  1132    .LINE 90
                            A  1133    
                            A  1134    ;   91	                        if(strlen(ptr+1
                            A  1135    .LINE 91
                            A  1136    
-0453EF DD07FD              A  1137    	LD	BC,(IX+%FFFFFFFD)
-0453F2 03                  A  1138    	INC	BC
-0453F3 DD0FF2              A  1139    	LD	(IX+%FFFFFFF2),BC
-0453F6 C5                  A  1140    	PUSH	BC
-0453F7 CD 23 66 04         A  1141    	CALL	_strlen
-0453FB C1                  A  1142    	POP	BC
-0453FC CD F9 69 04         A  1143    	CALL	__icmpzero
-045400 28 32               A  1144    	JR	Z,L_38
+0454C1 DD07FD              A  1137    	LD	BC,(IX+%FFFFFFFD)
+0454C4 03                  A  1138    	INC	BC
+0454C5 DD0FF2              A  1139    	LD	(IX+%FFFFFFF2),BC
+0454C8 C5                  A  1140    	PUSH	BC
+0454C9 CD 0D 67 04         A  1141    	CALL	_strlen
+0454CD C1                  A  1142    	POP	BC
+0454CE CD E3 6A 04         A  1143    	CALL	__icmpzero
+0454D2 28 32               A  1144    	JR	Z,L_38
                            A  1145    ;   92	                            result = st
                            A  1146    .LINE 92
                            A  1147    
-045402 DD07F2              A  1148    	LD	BC,(IX+%FFFFFFF2)
-045405 C5                  A  1149    	PUSH	BC
-045406 CD 03 52 04         A  1150    	CALL	_str2hex
-04540A C1                  A  1151    	POP	BC
-04540B DD2FF8              A  1152    	LD	(IX+%FFFFFFF8),HL
-04540E DD73FB              A  1153    	LD	(IX+%FFFFFFFB),E
+0454D4 DD07F2              A  1148    	LD	BC,(IX+%FFFFFFF2)
+0454D7 C5                  A  1149    	PUSH	BC
+0454D8 CD D5 52 04         A  1150    	CALL	_str2hex
+0454DC C1                  A  1151    	POP	BC
+0454DD DD2FF8              A  1152    	LD	(IX+%FFFFFFF8),HL
+0454E0 DD73FB              A  1153    	LD	(IX+%FFFFFFFB),E
                            A  1154    ;   93	                            if(err_str2
                            A  1155    .LINE 93
                            A  1156    
-045411 3A 4F FC 07         A  1157    	LD	A,(_err_str2num)
-045415 B7                  A  1158    	OR	A,A
-045416 28 12               A  1159    	JR	Z,L_36
-045418 DD7E09              A  1160    	LD	A,(IX+%9)
-04541B B7                  A  1161    	OR	A,A
-04541C 28 0C               A  1162    	JR	Z,L_36
-04541E 21 A5 70 04         A  1163    	LD	HL,_message+9
-045422 ED07                A  1164    	LD	BC,(HL)
-045424 C5                  A  1165    	PUSH	BC
-045425 CD CF 57 04         A  1166    	CALL	_error
-045429 C1                  A  1167    	POP	BC
-04542A                     A  1168    L_36:
+0454E3 3A 4F FC 07         A  1157    	LD	A,(_err_str2num)
+0454E7 B7                  A  1158    	OR	A,A
+0454E8 28 12               A  1159    	JR	Z,L_36
+0454EA DD7E09              A  1160    	LD	A,(IX+%9)
+0454ED B7                  A  1161    	OR	A,A
+0454EE 28 0C               A  1162    	JR	Z,L_36
+0454F0 21 8F 71 04         A  1163    	LD	HL,_message+9
+0454F4 ED07                A  1164    	LD	BC,(HL)
+0454F6 C5                  A  1165    	PUSH	BC
+0454F7 CD A1 58 04         A  1166    	CALL	_error
+0454FB C1                  A  1167    	POP	BC
+0454FC                     A  1168    L_36:
                            A  1169    ;   94	                            return resu
                            A  1170    .LINE 94
                            A  1171    
-04542A DD27F8              A  1172    	LD	HL,(IX+%FFFFFFF8)
-04542D DD5EFB              A  1173    	LD	E,(IX+%FFFFFFFB)
-045430 C3 10 57 04         A  1174    	JR	L_107
+0454FC DD27F8              A  1172    	LD	HL,(IX+%FFFFFFF8)
+0454FF DD5EFB              A  1173    	LD	E,(IX+%FFFFFFFB)
+045502 C3 E2 57 04         A  1174    	JR	L_107
                            A  1175    ;   95	                        }
                            A  1176    ;   96	                        else {
-045434                     A  1177    L_38:
+045506                     A  1177    L_38:
                            A  1178    .LINE 96
                            A  1179    
                            A  1180    ;   97	                            state = ERR
                            A  1181    .LINE 97
                            A  1182    
-045434 DD36FC05            A  1183    	LD	(IX+%FFFFFFFC),%5
+045506 DD36FC05            A  1183    	LD	(IX+%FFFFFFFC),%5
                            A  1184    ;   98	                            errorhalt =
                            A  1185    .LINE 98
                            A  1186    
-045438 DD360901            A  1187    	LD	(IX+%9),%1
+04550A DD360901            A  1187    	LD	(IX+%9),%1
                            A  1188    ;   99	                        }
                            A  1189    ;  100	                        break;
                            A  1190    .LINE 100
                            A  1191    
-04543C C3 99 53 04         A  1192    	JR	L_106
+04550E C3 6B 54 04         A  1192    	JR	L_106
                            A  1193    ;  101	                    case '%':
-045440                     A  1194    L_40:
+045512                     A  1194    L_40:
                            A  1195    .LINE 101
                            A  1196    
                            A  1197    ;  102	                        if(strlen(ptr+1
                            A  1198    .LINE 102
                            A  1199    
-045440 DD07FD              A  1200    	LD	BC,(IX+%FFFFFFFD)
-045443 03                  A  1201    	INC	BC
-045444 DD0FEF              A  1202    	LD	(IX+%FFFFFFEF),BC
-045447 C5                  A  1203    	PUSH	BC
-045448 CD 23 66 04         A  1204    	CALL	_strlen
-04544C C1                  A  1205    	POP	BC
-04544D CD F9 69 04         A  1206    	CALL	__icmpzero
-045451 28 32               A  1207    	JR	Z,L_45
+045512 DD07FD              A  1200    	LD	BC,(IX+%FFFFFFFD)
+045515 03                  A  1201    	INC	BC
+045516 DD0FEF              A  1202    	LD	(IX+%FFFFFFEF),BC
+045519 C5                  A  1203    	PUSH	BC
+04551A CD 0D 67 04         A  1204    	CALL	_strlen
+04551E C1                  A  1205    	POP	BC
+04551F CD E3 6A 04         A  1206    	CALL	__icmpzero
+045523 28 32               A  1207    	JR	Z,L_45
                            A  1208    ;  103	                            result = st
                            A  1209    .LINE 103
                            A  1210    
-045453 DD07EF              A  1211    	LD	BC,(IX+%FFFFFFEF)
-045456 C5                  A  1212    	PUSH	BC
-045457 CD 71 51 04         A  1213    	CALL	_str2bin
-04545B C1                  A  1214    	POP	BC
-04545C DD2FF8              A  1215    	LD	(IX+%FFFFFFF8),HL
-04545F DD73FB              A  1216    	LD	(IX+%FFFFFFFB),E
+045525 DD07EF              A  1211    	LD	BC,(IX+%FFFFFFEF)
+045528 C5                  A  1212    	PUSH	BC
+045529 CD 43 52 04         A  1213    	CALL	_str2bin
+04552D C1                  A  1214    	POP	BC
+04552E DD2FF8              A  1215    	LD	(IX+%FFFFFFF8),HL
+045531 DD73FB              A  1216    	LD	(IX+%FFFFFFFB),E
                            A  1217    ;  104	                            if(err_str2
                            A  1218    .LINE 104
                            A  1219    
-045462 3A 4F FC 07         A  1220    	LD	A,(_err_str2num)
-045466 B7                  A  1221    	OR	A,A
-045467 28 12               A  1222    	JR	Z,L_43
-045469 DD7E09              A  1223    	LD	A,(IX+%9)
-04546C B7                  A  1224    	OR	A,A
-04546D 28 0C               A  1225    	JR	Z,L_43
-04546F 21 E1 70 04         A  1226    	LD	HL,_message+69
-045473 ED07                A  1227    	LD	BC,(HL)
-045475 C5                  A  1228    	PUSH	BC
-045476 CD CF 57 04         A  1229    	CALL	_error
-04547A C1                  A  1230    	POP	BC
-04547B                     A  1231    L_43:
+045534 3A 4F FC 07         A  1220    	LD	A,(_err_str2num)
+045538 B7                  A  1221    	OR	A,A
+045539 28 12               A  1222    	JR	Z,L_43
+04553B DD7E09              A  1223    	LD	A,(IX+%9)
+04553E B7                  A  1224    	OR	A,A
+04553F 28 0C               A  1225    	JR	Z,L_43
+045541 21 CB 71 04         A  1226    	LD	HL,_message+69
+045545 ED07                A  1227    	LD	BC,(HL)
+045547 C5                  A  1228    	PUSH	BC
+045548 CD A1 58 04         A  1229    	CALL	_error
+04554C C1                  A  1230    	POP	BC
+04554D                     A  1231    L_43:
                            A  1232    ;  105	                            return resu
                            A  1233    .LINE 105
                            A  1234    
-04547B DD27F8              A  1235    	LD	HL,(IX+%FFFFFFF8)
-04547E DD5EFB              A  1236    	LD	E,(IX+%FFFFFFFB)
-045481 C3 10 57 04         A  1237    	JR	L_107
+04554D DD27F8              A  1235    	LD	HL,(IX+%FFFFFFF8)
+045550 DD5EFB              A  1236    	LD	E,(IX+%FFFFFFFB)
+045553 C3 E2 57 04         A  1237    	JR	L_107
                            A  1238    ;  106	                        }
                            A  1239    ;  107	                        else {
-045485                     A  1240    L_45:
+045557                     A  1240    L_45:
                            A  1241    .LINE 107
                            A  1242    
                            A  1243    ;  108	                            state = ERR
                            A  1244    .LINE 108
                            A  1245    
-045485 DD36FC05            A  1246    	LD	(IX+%FFFFFFFC),%5
+045557 DD36FC05            A  1246    	LD	(IX+%FFFFFFFC),%5
                            A  1247    ;  109	                            errorhalt =
                            A  1248    .LINE 109
                            A  1249    
-045489 DD360901            A  1250    	LD	(IX+%9),%1
+04555B DD360901            A  1250    	LD	(IX+%9),%1
                            A  1251    ;  110	                        }
                            A  1252    ;  111	                        break;
                            A  1253    .LINE 111
                            A  1254    
-04548D C3 99 53 04         A  1255    	JR	L_106
+04555F C3 6B 54 04         A  1255    	JR	L_106
                            A  1256    ;  112	                    case '0':
-045491                     A  1257    L_47:
+045563                     A  1257    L_47:
                            A  1258    .LINE 112
                            A  1259    
                            A  1260    ;  113	                        state = FIND_PR
                            A  1261    .LINE 113
                            A  1262    
-045491 DD36FC01            A  1263    	LD	(IX+%FFFFFFFC),%1
+045563 DD36FC01            A  1263    	LD	(IX+%FFFFFFFC),%1
                            A  1264    ;  114	                        ptr++;
                            A  1265    .LINE 114
                            A  1266    
-045495 DD07FD              A  1267    	LD	BC,(IX+%FFFFFFFD)
-045498 03                  A  1268    	INC	BC
-045499 DD0FFD              A  1269    	LD	(IX+%FFFFFFFD),BC
+045567 DD07FD              A  1267    	LD	BC,(IX+%FFFFFFFD)
+04556A 03                  A  1268    	INC	BC
+04556B DD0FFD              A  1269    	LD	(IX+%FFFFFFFD),BC
                            A  1270    ;  115	                        break;
                            A  1271    .LINE 115
                            A  1272    
-04549C C3 99 53 04         A  1273    	JR	L_106
+04556E C3 6B 54 04         A  1273    	JR	L_106
                            A  1274    ;  116	                    case 0: // empty st
-0454A0                     A  1275    L_49:
+045572                     A  1275    L_49:
                            A  1276    .LINE 116
                            A  1277    
                            A  1278    ;  117	                        state = DONE;
                            A  1279    .LINE 117
                            A  1280    
-0454A0 DD36FC04            A  1281    	LD	(IX+%FFFFFFFC),%4
+045572 DD36FC04            A  1281    	LD	(IX+%FFFFFFFC),%4
                            A  1282    ;  118	                        break;
                            A  1283    .LINE 118
                            A  1284    
-0454A4 C3 99 53 04         A  1285    	JR	L_106
+045576 C3 6B 54 04         A  1285    	JR	L_106
                            A  1286    ;  119	                    default:
-0454A8                     A  1287    L_50:
+04557A                     A  1287    L_50:
                            A  1288    .LINE 119
                            A  1289    
                            A  1290    ;  120	                        if(isxdigit(*pt
                            A  1291    .LINE 120
                            A  1292    
-0454A8 DD27FD              A  1293    	LD	HL,(IX+%FFFFFFFD)
-0454AB 7E                  A  1294    	LD	A,(HL)
-0454AC 47                  A  1295    	LD	B,A
-0454AD 17ED62              A  1296    	SEXT	HL
-0454B0 68                  A  1297    	LD	L,B
-0454B1 E5                  A  1298    	PUSH	HL
-0454B2 CD DA 63 04         A  1299    	CALL	_isxdigit
-0454B6 C1                  A  1300    	POP	BC
-0454B7 CD F9 69 04         A  1301    	CALL	__icmpzero
-0454BB 28 08               A  1302    	JR	Z,L_52
-0454BD DD36FC02            A  1303    	LD	(IX+%FFFFFFFC),%2
+04557A DD27FD              A  1293    	LD	HL,(IX+%FFFFFFFD)
+04557D 7E                  A  1294    	LD	A,(HL)
+04557E 47                  A  1295    	LD	B,A
+04557F 17ED62              A  1296    	SEXT	HL
+045582 68                  A  1297    	LD	L,B
+045583 E5                  A  1298    	PUSH	HL
+045584 CD C4 64 04         A  1299    	CALL	_isxdigit
+045588 C1                  A  1300    	POP	BC
+045589 CD E3 6A 04         A  1301    	CALL	__icmpzero
+04558D 28 08               A  1302    	JR	Z,L_52
+04558F DD36FC02            A  1303    	LD	(IX+%FFFFFFFC),%2
                            A  1304    ;  121	                        else state = ER
                            A  1305    .LINE 121
                            A  1306    
-0454C1 C3 99 53 04         A  1307    	JR	L_106
-0454C5                     A  1308    L_52:
-0454C5 DD36FC05            A  1309    	LD	(IX+%FFFFFFFC),%5
+045593 C3 6B 54 04         A  1307    	JR	L_106
+045597                     A  1308    L_52:
+045597 DD36FC05            A  1309    	LD	(IX+%FFFFFFFC),%5
                            A  1310    ;  122	                }
                            A  1311    ;  123	                break;
                            A  1312    .LINE 123
                            A  1313    
-0454C9 C3 99 53 04         A  1314    	JR	L_106
+04559B C3 6B 54 04         A  1314    	JR	L_106
                            A  1315    ;  124	            case(FIND_PREFIX):
-0454CD                     A  1316    L_54:
+04559F                     A  1316    L_54:
                            A  1317    .LINE 124
                            A  1318    
                            A  1319    ;  125	                switch(tolower(*ptr)) {
                            A  1320    .LINE 125
                            A  1321    
-0454CD DD27FD              A  1322    	LD	HL,(IX+%FFFFFFFD)
-0454D0 7E                  A  1323    	LD	A,(HL)
-0454D1 47                  A  1324    	LD	B,A
-0454D2 17ED62              A  1325    	SEXT	HL
-0454D5 68                  A  1326    	LD	L,B
-0454D6 E5                  A  1327    	PUSH	HL
-0454D7 CD E6 6D 04         A  1328    	CALL	_tolower
-0454DB C1                  A  1329    	POP	BC
-0454DC CD 49 6D 04         A  1330    	CALL	__case8D
-0454E0 E9                  A  1331    	JP	(HL)
-0454E1                     A  1332    L__23:
-0454E1 0400                A  1333    	DW	4
-0454E3 00                  A  1334    	DB	0
-0454E4 7A5504              A  1335    	DW24	L_67	
+04559F DD27FD              A  1322    	LD	HL,(IX+%FFFFFFFD)
+0455A2 7E                  A  1323    	LD	A,(HL)
+0455A3 47                  A  1324    	LD	B,A
+0455A4 17ED62              A  1325    	SEXT	HL
+0455A7 68                  A  1326    	LD	L,B
+0455A8 E5                  A  1327    	PUSH	HL
+0455A9 CD D0 6E 04         A  1328    	CALL	_tolower
+0455AD C1                  A  1329    	POP	BC
+0455AE CD 33 6E 04         A  1330    	CALL	__case8D
+0455B2 E9                  A  1331    	JP	(HL)
+0455B3                     A  1332    L__23:
+0455B3 0400                A  1333    	DW	4
+0455B5 00                  A  1334    	DB	0
+0455B6 4C5604              A  1335    	DW24	L_67	
                            A  1336    
-0454E7 62                  A  1337    	DB	98
-0454E8 475504              A  1338    	DW24	L_62	
+0455B9 62                  A  1337    	DB	98
+0455BA 195604              A  1338    	DW24	L_62	
                            A  1339    
-0454EB 68                  A  1340    	DB	104
-0454EC 7A5504              A  1341    	DW24	L_66	
+0455BD 68                  A  1340    	DB	104
+0455BE 4C5604              A  1341    	DW24	L_66	
                            A  1342    
-0454EF 78                  A  1343    	DB	120
-0454F0 F65404              A  1344    	DW24	L_55	
+0455C1 78                  A  1343    	DB	120
+0455C2 C85504              A  1344    	DW24	L_55	
                            A  1345    
-0454F3 835504              A  1346    	DW24	L_68	
+0455C5 555604              A  1346    	DW24	L_68	
                            A  1347    
                            A  1348    ;  126	                    case 'x':
-0454F6                     A  1349    L_55:
+0455C8                     A  1349    L_55:
                            A  1350    .LINE 126
                            A  1351    
                            A  1352    ;  127	                        if(strlen(ptr+1
                            A  1353    .LINE 127
                            A  1354    
-0454F6 DD07FD              A  1355    	LD	BC,(IX+%FFFFFFFD)
-0454F9 03                  A  1356    	INC	BC
-0454FA DD0FEC              A  1357    	LD	(IX+%FFFFFFEC),BC
-0454FD C5                  A  1358    	PUSH	BC
-0454FE CD 23 66 04         A  1359    	CALL	_strlen
-045502 C1                  A  1360    	POP	BC
-045503 CD F9 69 04         A  1361    	CALL	__icmpzero
-045507 28 32               A  1362    	JR	Z,L_60
+0455C8 DD07FD              A  1355    	LD	BC,(IX+%FFFFFFFD)
+0455CB 03                  A  1356    	INC	BC
+0455CC DD0FEC              A  1357    	LD	(IX+%FFFFFFEC),BC
+0455CF C5                  A  1358    	PUSH	BC
+0455D0 CD 0D 67 04         A  1359    	CALL	_strlen
+0455D4 C1                  A  1360    	POP	BC
+0455D5 CD E3 6A 04         A  1361    	CALL	__icmpzero
+0455D9 28 32               A  1362    	JR	Z,L_60
                            A  1363    ;  128	                            result = st
                            A  1364    .LINE 128
                            A  1365    
-045509 DD07EC              A  1366    	LD	BC,(IX+%FFFFFFEC)
-04550C C5                  A  1367    	PUSH	BC
-04550D CD 03 52 04         A  1368    	CALL	_str2hex
-045511 C1                  A  1369    	POP	BC
-045512 DD2FF8              A  1370    	LD	(IX+%FFFFFFF8),HL
-045515 DD73FB              A  1371    	LD	(IX+%FFFFFFFB),E
+0455DB DD07EC              A  1366    	LD	BC,(IX+%FFFFFFEC)
+0455DE C5                  A  1367    	PUSH	BC
+0455DF CD D5 52 04         A  1368    	CALL	_str2hex
+0455E3 C1                  A  1369    	POP	BC
+0455E4 DD2FF8              A  1370    	LD	(IX+%FFFFFFF8),HL
+0455E7 DD73FB              A  1371    	LD	(IX+%FFFFFFFB),E
                            A  1372    ;  129	                            if(err_str2
                            A  1373    .LINE 129
                            A  1374    
-045518 3A 4F FC 07         A  1375    	LD	A,(_err_str2num)
-04551C B7                  A  1376    	OR	A,A
-04551D 28 12               A  1377    	JR	Z,L_58
-04551F DD7E09              A  1378    	LD	A,(IX+%9)
-045522 B7                  A  1379    	OR	A,A
-045523 28 0C               A  1380    	JR	Z,L_58
-045525 21 A5 70 04         A  1381    	LD	HL,_message+9
-045529 ED07                A  1382    	LD	BC,(HL)
-04552B C5                  A  1383    	PUSH	BC
-04552C CD CF 57 04         A  1384    	CALL	_error
-045530 C1                  A  1385    	POP	BC
-045531                     A  1386    L_58:
+0455EA 3A 4F FC 07         A  1375    	LD	A,(_err_str2num)
+0455EE B7                  A  1376    	OR	A,A
+0455EF 28 12               A  1377    	JR	Z,L_58
+0455F1 DD7E09              A  1378    	LD	A,(IX+%9)
+0455F4 B7                  A  1379    	OR	A,A
+0455F5 28 0C               A  1380    	JR	Z,L_58
+0455F7 21 8F 71 04         A  1381    	LD	HL,_message+9
+0455FB ED07                A  1382    	LD	BC,(HL)
+0455FD C5                  A  1383    	PUSH	BC
+0455FE CD A1 58 04         A  1384    	CALL	_error
+045602 C1                  A  1385    	POP	BC
+045603                     A  1386    L_58:
                            A  1387    ;  130	                            return resu
                            A  1388    .LINE 130
                            A  1389    
-045531 DD27F8              A  1390    	LD	HL,(IX+%FFFFFFF8)
-045534 DD5EFB              A  1391    	LD	E,(IX+%FFFFFFFB)
-045537 C3 10 57 04         A  1392    	JR	L_107
+045603 DD27F8              A  1390    	LD	HL,(IX+%FFFFFFF8)
+045606 DD5EFB              A  1391    	LD	E,(IX+%FFFFFFFB)
+045609 C3 E2 57 04         A  1392    	JR	L_107
                            A  1393    ;  131	                        }
                            A  1394    ;  132	                        else { // label
-04553B                     A  1395    L_60:
+04560D                     A  1395    L_60:
                            A  1396    .LINE 132
                            A  1397    
                            A  1398    ;  133	                            errorhalt =
                            A  1399    .LINE 133
                            A  1400    
-04553B DD360901            A  1401    	LD	(IX+%9),%1
+04560D DD360901            A  1401    	LD	(IX+%9),%1
                            A  1402    ;  134	                            state = ERR
                            A  1403    .LINE 134
                            A  1404    
-04553F DD36FC05            A  1405    	LD	(IX+%FFFFFFFC),%5
+045611 DD36FC05            A  1405    	LD	(IX+%FFFFFFFC),%5
                            A  1406    ;  135	                        }
                            A  1407    ;  136	                        break;
                            A  1408    .LINE 136
                            A  1409    
-045543 C3 99 53 04         A  1410    	JR	L_106
+045615 C3 6B 54 04         A  1410    	JR	L_106
                            A  1411    ;  137	                    case 'b': // also t
-045547                     A  1412    L_62:
+045619                     A  1412    L_62:
                            A  1413    .LINE 137
                            A  1414    
                            A  1415    ;  138	                        result = str2bi
                            A  1416    .LINE 138
                            A  1417    
-045547 DD07FD              A  1418    	LD	BC,(IX+%FFFFFFFD)
-04554A 03                  A  1419    	INC	BC
-04554B C5                  A  1420    	PUSH	BC
-04554C CD 71 51 04         A  1421    	CALL	_str2bin
-045550 C1                  A  1422    	POP	BC
-045551 DD2FF8              A  1423    	LD	(IX+%FFFFFFF8),HL
-045554 DD73FB              A  1424    	LD	(IX+%FFFFFFFB),E
+045619 DD07FD              A  1418    	LD	BC,(IX+%FFFFFFFD)
+04561C 03                  A  1419    	INC	BC
+04561D C5                  A  1420    	PUSH	BC
+04561E CD 43 52 04         A  1421    	CALL	_str2bin
+045622 C1                  A  1422    	POP	BC
+045623 DD2FF8              A  1423    	LD	(IX+%FFFFFFF8),HL
+045626 DD73FB              A  1424    	LD	(IX+%FFFFFFFB),E
                            A  1425    ;  139	                        if(err_str2num 
                            A  1426    .LINE 139
                            A  1427    
-045557 3A 4F FC 07         A  1428    	LD	A,(_err_str2num)
-04555B B7                  A  1429    	OR	A,A
-04555C 28 12               A  1430    	JR	Z,L_65
-04555E DD7E09              A  1431    	LD	A,(IX+%9)
-045561 B7                  A  1432    	OR	A,A
-045562 28 0C               A  1433    	JR	Z,L_65
-045564 21 A5 70 04         A  1434    	LD	HL,_message+9
-045568 ED07                A  1435    	LD	BC,(HL)
-04556A C5                  A  1436    	PUSH	BC
-04556B CD CF 57 04         A  1437    	CALL	_error
-04556F C1                  A  1438    	POP	BC
-045570                     A  1439    L_65:
+045629 3A 4F FC 07         A  1428    	LD	A,(_err_str2num)
+04562D B7                  A  1429    	OR	A,A
+04562E 28 12               A  1430    	JR	Z,L_65
+045630 DD7E09              A  1431    	LD	A,(IX+%9)
+045633 B7                  A  1432    	OR	A,A
+045634 28 0C               A  1433    	JR	Z,L_65
+045636 21 8F 71 04         A  1434    	LD	HL,_message+9
+04563A ED07                A  1435    	LD	BC,(HL)
+04563C C5                  A  1436    	PUSH	BC
+04563D CD A1 58 04         A  1437    	CALL	_error
+045641 C1                  A  1438    	POP	BC
+045642                     A  1439    L_65:
                            A  1440    ;  140	                        return result;
                            A  1441    .LINE 140
                            A  1442    
-045570 DD27F8              A  1443    	LD	HL,(IX+%FFFFFFF8)
-045573 DD5EFB              A  1444    	LD	E,(IX+%FFFFFFFB)
-045576 C3 10 57 04         A  1445    	JR	L_107
+045642 DD27F8              A  1443    	LD	HL,(IX+%FFFFFFF8)
+045645 DD5EFB              A  1444    	LD	E,(IX+%FFFFFFFB)
+045648 C3 E2 57 04         A  1445    	JR	L_107
                            A  1446    ;  141	                        break;
                            A  1447    ;  142	                    case 'h':
-04557A                     A  1448    L_66:
+04564C                     A  1448    L_66:
                            A  1449    .LINE 142
                            A  1450    
                            A  1451    ;  143	                    case 0:
-04557A                     A  1452    L_67:
+04564C                     A  1452    L_67:
                            A  1453    .LINE 143
                            A  1454    
                            A  1455    ;  144	                        return 0; // sp
                            A  1456    .LINE 144
                            A  1457    
-04557A B7                  A  1458    	OR	A,A
-04557B ED62                A  1459    	SBC	HL,HL
-04557D 1E00                A  1460    	LD	E,%0
-04557F C3 10 57 04         A  1461    	JR	L_107
+04564C B7                  A  1458    	OR	A,A
+04564D ED62                A  1459    	SBC	HL,HL
+04564F 1E00                A  1460    	LD	E,%0
+045651 C3 E2 57 04         A  1461    	JR	L_107
                            A  1462    ;  145	                    default:
-045583                     A  1463    L_68:
+045655                     A  1463    L_68:
                            A  1464    .LINE 145
                            A  1465    
                            A  1466    ;  146	                        if(isxdigit(*pt
                            A  1467    .LINE 146
                            A  1468    
-045583 DD27FD              A  1469    	LD	HL,(IX+%FFFFFFFD)
-045586 7E                  A  1470    	LD	A,(HL)
-045587 47                  A  1471    	LD	B,A
-045588 17ED62              A  1472    	SEXT	HL
-04558B 68                  A  1473    	LD	L,B
-04558C E5                  A  1474    	PUSH	HL
-04558D CD DA 63 04         A  1475    	CALL	_isxdigit
-045591 C1                  A  1476    	POP	BC
-045592 CD F9 69 04         A  1477    	CALL	__icmpzero
-045596 28 0E               A  1478    	JR	Z,L_70
+045655 DD27FD              A  1469    	LD	HL,(IX+%FFFFFFFD)
+045658 7E                  A  1470    	LD	A,(HL)
+045659 47                  A  1471    	LD	B,A
+04565A 17ED62              A  1472    	SEXT	HL
+04565D 68                  A  1473    	LD	L,B
+04565E E5                  A  1474    	PUSH	HL
+04565F CD C4 64 04         A  1475    	CALL	_isxdigit
+045663 C1                  A  1476    	POP	BC
+045664 CD E3 6A 04         A  1477    	CALL	__icmpzero
+045668 28 0E               A  1478    	JR	Z,L_70
                            A  1479    ;  147	                            state = FIN
                            A  1480    .LINE 147
                            A  1481    
-045598 DD36FC02            A  1482    	LD	(IX+%FFFFFFFC),%2
+04566A DD36FC02            A  1482    	LD	(IX+%FFFFFFFC),%2
                            A  1483    ;  148	                            start = ptr
                            A  1484    .LINE 148
                            A  1485    
-04559C DD07FD              A  1486    	LD	BC,(IX+%FFFFFFFD)
-04559F DD0FF5              A  1487    	LD	(IX+%FFFFFFF5),BC
+04566E DD07FD              A  1486    	LD	BC,(IX+%FFFFFFFD)
+045671 DD0FF5              A  1487    	LD	(IX+%FFFFFFF5),BC
                            A  1488    ;  149	                        }
                            A  1489    ;  150	                        else state = ER
                            A  1490    .LINE 150
                            A  1491    
-0455A2 C3 99 53 04         A  1492    	JR	L_106
-0455A6                     A  1493    L_70:
-0455A6 DD36FC05            A  1494    	LD	(IX+%FFFFFFFC),%5
+045674 C3 6B 54 04         A  1492    	JR	L_106
+045678                     A  1493    L_70:
+045678 DD36FC05            A  1494    	LD	(IX+%FFFFFFFC),%5
                            A  1495    ;  151	                }
                            A  1496    ;  152	                break;
                            A  1497    .LINE 152
                            A  1498    
-0455AA C3 99 53 04         A  1499    	JR	L_106
+04567C C3 6B 54 04         A  1499    	JR	L_106
                            A  1500    ;  153	            case(FIND_END):
-0455AE                     A  1501    L_72:
+045680                     A  1501    L_72:
                            A  1502    .LINE 153
                            A  1503    
                            A  1504    ;  154	                switch(*ptr) {
                            A  1505    .LINE 154
                            A  1506    
-0455AE DD27FD              A  1507    	LD	HL,(IX+%FFFFFFFD)
-0455B1 7E                  A  1508    	LD	A,(HL)
-0455B2 47                  A  1509    	LD	B,A
-0455B3 17ED62              A  1510    	SEXT	HL
-0455B6 68                  A  1511    	LD	L,B
-0455B7 CD F9 69 04         A  1512    	CALL	__icmpzero
-0455BB 20 08               A  1513    	JR	NZ,L_74
+045680 DD27FD              A  1507    	LD	HL,(IX+%FFFFFFFD)
+045683 7E                  A  1508    	LD	A,(HL)
+045684 47                  A  1509    	LD	B,A
+045685 17ED62              A  1510    	SEXT	HL
+045688 68                  A  1511    	LD	L,B
+045689 CD E3 6A 04         A  1512    	CALL	__icmpzero
+04568D 20 08               A  1513    	JR	NZ,L_74
                            A  1514    ;  155	                    case 0:
                            A  1515    .LINE 155
                            A  1516    
                            A  1517    ;  156	                        state = DONE; /
                            A  1518    .LINE 156
                            A  1519    
-0455BD DD36FC04            A  1520    	LD	(IX+%FFFFFFFC),%4
+04568F DD36FC04            A  1520    	LD	(IX+%FFFFFFFC),%4
                            A  1521    ;  157	                        break;
                            A  1522    .LINE 157
                            A  1523    
-0455C1 C3 99 53 04         A  1524    	JR	L_106
+045693 C3 6B 54 04         A  1524    	JR	L_106
                            A  1525    ;  158	                    default:
-0455C5                     A  1526    L_74:
+045697                     A  1526    L_74:
                            A  1527    .LINE 158
                            A  1528    
                            A  1529    ;  159	                    if(ptr[1] == 0) sta
                            A  1530    .LINE 159
                            A  1531    
-0455C5 DD27FD              A  1532    	LD	HL,(IX+%FFFFFFFD)
-0455C8 23                  A  1533    	INC	HL
-0455C9 7E                  A  1534    	LD	A,(HL)
-0455CA B7                  A  1535    	OR	A,A
-0455CB 20 08               A  1536    	JR	NZ,L_77
-0455CD DD36FC03            A  1537    	LD	(IX+%FFFFFFFC),%3
+045697 DD27FD              A  1532    	LD	HL,(IX+%FFFFFFFD)
+04569A 23                  A  1533    	INC	HL
+04569B 7E                  A  1534    	LD	A,(HL)
+04569C B7                  A  1535    	OR	A,A
+04569D 20 08               A  1536    	JR	NZ,L_77
+04569F DD36FC03            A  1537    	LD	(IX+%FFFFFFFC),%3
                            A  1538    ;  160	                    else ptr++;
                            A  1539    .LINE 160
                            A  1540    
-0455D1 C3 99 53 04         A  1541    	JR	L_106
-0455D5                     A  1542    L_77:
-0455D5 DD07FD              A  1543    	LD	BC,(IX+%FFFFFFFD)
-0455D8 03                  A  1544    	INC	BC
-0455D9 DD0FFD              A  1545    	LD	(IX+%FFFFFFFD),BC
+0456A3 C3 6B 54 04         A  1541    	JR	L_106
+0456A7                     A  1542    L_77:
+0456A7 DD07FD              A  1543    	LD	BC,(IX+%FFFFFFFD)
+0456AA 03                  A  1544    	INC	BC
+0456AB DD0FFD              A  1545    	LD	(IX+%FFFFFFFD),BC
                            A  1546    ;  161	                }
                            A  1547    ;  162	                break;
                            A  1548    .LINE 162
                            A  1549    
-0455DC C3 99 53 04         A  1550    	JR	L_106
+0456AE C3 6B 54 04         A  1550    	JR	L_106
                            A  1551    ;  163	            case(LAST_ITEM):
-0455E0                     A  1552    L_79:
+0456B2                     A  1552    L_79:
                            A  1553    .LINE 163
                            A  1554    
                            A  1555    ;  164	                switch(tolower(*ptr)) {
                            A  1556    .LINE 164
                            A  1557    
-0455E0 DD27FD              A  1558    	LD	HL,(IX+%FFFFFFFD)
-0455E3 7E                  A  1559    	LD	A,(HL)
-0455E4 47                  A  1560    	LD	B,A
-0455E5 17ED62              A  1561    	SEXT	HL
-0455E8 68                  A  1562    	LD	L,B
-0455E9 E5                  A  1563    	PUSH	HL
-0455EA CD E6 6D 04         A  1564    	CALL	_tolower
-0455EE C1                  A  1565    	POP	BC
-0455EF CD 49 6D 04         A  1566    	CALL	__case8D
-0455F3 E9                  A  1567    	JP	(HL)
-0455F4                     A  1568    L__31:
-0455F4 0200                A  1569    	DW	2
-0455F6 62                  A  1570    	DB	98
-0455F7 015604              A  1571    	DW24	L_80	
+0456B2 DD27FD              A  1558    	LD	HL,(IX+%FFFFFFFD)
+0456B5 7E                  A  1559    	LD	A,(HL)
+0456B6 47                  A  1560    	LD	B,A
+0456B7 17ED62              A  1561    	SEXT	HL
+0456BA 68                  A  1562    	LD	L,B
+0456BB E5                  A  1563    	PUSH	HL
+0456BC CD D0 6E 04         A  1564    	CALL	_tolower
+0456C0 C1                  A  1565    	POP	BC
+0456C1 CD 33 6E 04         A  1566    	CALL	__case8D
+0456C5 E9                  A  1567    	JP	(HL)
+0456C6                     A  1568    L__31:
+0456C6 0200                A  1569    	DW	2
+0456C8 62                  A  1570    	DB	98
+0456C9 D35604              A  1571    	DW24	L_80	
                            A  1572    
-0455FA 68                  A  1573    	DB	104
-0455FB 535604              A  1574    	DW24	L_87	
+0456CC 68                  A  1573    	DB	104
+0456CD 255704              A  1574    	DW24	L_87	
                            A  1575    
-0455FE A35604              A  1576    	DW24	L_94	
+0456D0 755704              A  1576    	DW24	L_94	
                            A  1577    
                            A  1578    ;  165	                    case 'b':
-045601                     A  1579    L_80:
+0456D3                     A  1579    L_80:
                            A  1580    .LINE 165
                            A  1581    
                            A  1582    ;  166	                        *ptr = 0; // te
                            A  1583    .LINE 166
                            A  1584    
-045601 DD27FD              A  1585    	LD	HL,(IX+%FFFFFFFD)
-045604 3600                A  1586    	LD	(HL),%0
+0456D3 DD27FD              A  1585    	LD	HL,(IX+%FFFFFFFD)
+0456D6 3600                A  1586    	LD	(HL),%0
                            A  1587    ;  167	                        if(strlen(start
                            A  1588    .LINE 167
                            A  1589    
-045606 DD07F5              A  1590    	LD	BC,(IX+%FFFFFFF5)
-045609 C5                  A  1591    	PUSH	BC
-04560A CD 23 66 04         A  1592    	CALL	_strlen
-04560E C1                  A  1593    	POP	BC
-04560F CD F9 69 04         A  1594    	CALL	__icmpzero
-045613 28 32               A  1595    	JR	Z,L_85
+0456D8 DD07F5              A  1590    	LD	BC,(IX+%FFFFFFF5)
+0456DB C5                  A  1591    	PUSH	BC
+0456DC CD 0D 67 04         A  1592    	CALL	_strlen
+0456E0 C1                  A  1593    	POP	BC
+0456E1 CD E3 6A 04         A  1594    	CALL	__icmpzero
+0456E5 28 32               A  1595    	JR	Z,L_85
                            A  1596    ;  168	                            result = st
                            A  1597    .LINE 168
                            A  1598    
-045615 DD07F5              A  1599    	LD	BC,(IX+%FFFFFFF5)
-045618 C5                  A  1600    	PUSH	BC
-045619 CD 71 51 04         A  1601    	CALL	_str2bin
-04561D C1                  A  1602    	POP	BC
-04561E DD2FF8              A  1603    	LD	(IX+%FFFFFFF8),HL
-045621 DD73FB              A  1604    	LD	(IX+%FFFFFFFB),E
+0456E7 DD07F5              A  1599    	LD	BC,(IX+%FFFFFFF5)
+0456EA C5                  A  1600    	PUSH	BC
+0456EB CD 43 52 04         A  1601    	CALL	_str2bin
+0456EF C1                  A  1602    	POP	BC
+0456F0 DD2FF8              A  1603    	LD	(IX+%FFFFFFF8),HL
+0456F3 DD73FB              A  1604    	LD	(IX+%FFFFFFFB),E
                            A  1605    ;  169	                            if(err_str2
                            A  1606    .LINE 169
                            A  1607    
-045624 3A 4F FC 07         A  1608    	LD	A,(_err_str2num)
-045628 B7                  A  1609    	OR	A,A
-045629 28 12               A  1610    	JR	Z,L_83
-04562B DD7E09              A  1611    	LD	A,(IX+%9)
-04562E B7                  A  1612    	OR	A,A
-04562F 28 0C               A  1613    	JR	Z,L_83
-045631 21 A5 70 04         A  1614    	LD	HL,_message+9
-045635 ED07                A  1615    	LD	BC,(HL)
-045637 C5                  A  1616    	PUSH	BC
-045638 CD CF 57 04         A  1617    	CALL	_error
-04563C C1                  A  1618    	POP	BC
-04563D                     A  1619    L_83:
+0456F6 3A 4F FC 07         A  1608    	LD	A,(_err_str2num)
+0456FA B7                  A  1609    	OR	A,A
+0456FB 28 12               A  1610    	JR	Z,L_83
+0456FD DD7E09              A  1611    	LD	A,(IX+%9)
+045700 B7                  A  1612    	OR	A,A
+045701 28 0C               A  1613    	JR	Z,L_83
+045703 21 8F 71 04         A  1614    	LD	HL,_message+9
+045707 ED07                A  1615    	LD	BC,(HL)
+045709 C5                  A  1616    	PUSH	BC
+04570A CD A1 58 04         A  1617    	CALL	_error
+04570E C1                  A  1618    	POP	BC
+04570F                     A  1619    L_83:
                            A  1620    ;  170	                            return resu
                            A  1621    .LINE 170
                            A  1622    
-04563D DD27F8              A  1623    	LD	HL,(IX+%FFFFFFF8)
-045640 DD5EFB              A  1624    	LD	E,(IX+%FFFFFFFB)
-045643 C3 10 57 04         A  1625    	JR	L_107
+04570F DD27F8              A  1623    	LD	HL,(IX+%FFFFFFF8)
+045712 DD5EFB              A  1624    	LD	E,(IX+%FFFFFFFB)
+045715 C3 E2 57 04         A  1625    	JR	L_107
                            A  1626    ;  171	                        }
                            A  1627    ;  172	                        else {  // just
-045647                     A  1628    L_85:
+045719                     A  1628    L_85:
                            A  1629    .LINE 172
                            A  1630    
                            A  1631    ;  173	                            state = ERR
                            A  1632    .LINE 173
                            A  1633    
-045647 DD36FC05            A  1634    	LD	(IX+%FFFFFFFC),%5
+045719 DD36FC05            A  1634    	LD	(IX+%FFFFFFFC),%5
                            A  1635    ;  174	                            errorhalt =
                            A  1636    .LINE 174
                            A  1637    
-04564B DD360901            A  1638    	LD	(IX+%9),%1
+04571D DD360901            A  1638    	LD	(IX+%9),%1
                            A  1639    ;  175	                        }
                            A  1640    ;  176	                        break;
                            A  1641    .LINE 176
                            A  1642    
-04564F C3 99 53 04         A  1643    	JR	L_106
+045721 C3 6B 54 04         A  1643    	JR	L_106
                            A  1644    ;  177	                    case 'h':
-045653                     A  1645    L_87:
+045725                     A  1645    L_87:
                            A  1646    .LINE 177
                            A  1647    
                            A  1648    ;  178	                        *ptr = 0; // te
                            A  1649    .LINE 178
                            A  1650    
-045653 DD27FD              A  1651    	LD	HL,(IX+%FFFFFFFD)
-045656 3600                A  1652    	LD	(HL),%0
+045725 DD27FD              A  1651    	LD	HL,(IX+%FFFFFFFD)
+045728 3600                A  1652    	LD	(HL),%0
                            A  1653    ;  179	                        if(strlen(start
                            A  1654    .LINE 179
                            A  1655    
-045658 DD07F5              A  1656    	LD	BC,(IX+%FFFFFFF5)
-04565B C5                  A  1657    	PUSH	BC
-04565C CD 23 66 04         A  1658    	CALL	_strlen
-045660 C1                  A  1659    	POP	BC
-045661 CD F9 69 04         A  1660    	CALL	__icmpzero
-045665 28 30               A  1661    	JR	Z,L_92
+04572A DD07F5              A  1656    	LD	BC,(IX+%FFFFFFF5)
+04572D C5                  A  1657    	PUSH	BC
+04572E CD 0D 67 04         A  1658    	CALL	_strlen
+045732 C1                  A  1659    	POP	BC
+045733 CD E3 6A 04         A  1660    	CALL	__icmpzero
+045737 28 30               A  1661    	JR	Z,L_92
                            A  1662    ;  180	                            result = st
                            A  1663    .LINE 180
                            A  1664    
-045667 DD07F5              A  1665    	LD	BC,(IX+%FFFFFFF5)
-04566A C5                  A  1666    	PUSH	BC
-04566B CD 03 52 04         A  1667    	CALL	_str2hex
-04566F C1                  A  1668    	POP	BC
-045670 DD2FF8              A  1669    	LD	(IX+%FFFFFFF8),HL
-045673 DD73FB              A  1670    	LD	(IX+%FFFFFFFB),E
+045739 DD07F5              A  1665    	LD	BC,(IX+%FFFFFFF5)
+04573C C5                  A  1666    	PUSH	BC
+04573D CD D5 52 04         A  1667    	CALL	_str2hex
+045741 C1                  A  1668    	POP	BC
+045742 DD2FF8              A  1669    	LD	(IX+%FFFFFFF8),HL
+045745 DD73FB              A  1670    	LD	(IX+%FFFFFFFB),E
                            A  1671    ;  181	                            if(err_str2
                            A  1672    .LINE 181
                            A  1673    
-045676 3A 4F FC 07         A  1674    	LD	A,(_err_str2num)
-04567A B7                  A  1675    	OR	A,A
-04567B 28 12               A  1676    	JR	Z,L_90
-04567D DD7E09              A  1677    	LD	A,(IX+%9)
-045680 B7                  A  1678    	OR	A,A
-045681 28 0C               A  1679    	JR	Z,L_90
-045683 21 A5 70 04         A  1680    	LD	HL,_message+9
-045687 ED07                A  1681    	LD	BC,(HL)
-045689 C5                  A  1682    	PUSH	BC
-04568A CD CF 57 04         A  1683    	CALL	_error
-04568E C1                  A  1684    	POP	BC
-04568F                     A  1685    L_90:
+045748 3A 4F FC 07         A  1674    	LD	A,(_err_str2num)
+04574C B7                  A  1675    	OR	A,A
+04574D 28 12               A  1676    	JR	Z,L_90
+04574F DD7E09              A  1677    	LD	A,(IX+%9)
+045752 B7                  A  1678    	OR	A,A
+045753 28 0C               A  1679    	JR	Z,L_90
+045755 21 8F 71 04         A  1680    	LD	HL,_message+9
+045759 ED07                A  1681    	LD	BC,(HL)
+04575B C5                  A  1682    	PUSH	BC
+04575C CD A1 58 04         A  1683    	CALL	_error
+045760 C1                  A  1684    	POP	BC
+045761                     A  1685    L_90:
                            A  1686    ;  182	                            return resu
                            A  1687    .LINE 182
                            A  1688    
-04568F DD27F8              A  1689    	LD	HL,(IX+%FFFFFFF8)
-045692 DD5EFB              A  1690    	LD	E,(IX+%FFFFFFFB)
-045695 18 79               A  1691    	JR	L_107
+045761 DD27F8              A  1689    	LD	HL,(IX+%FFFFFFF8)
+045764 DD5EFB              A  1690    	LD	E,(IX+%FFFFFFFB)
+045767 18 79               A  1691    	JR	L_107
                            A  1692    ;  183	                        }
                            A  1693    ;  184	                        else {  // just
-045697                     A  1694    L_92:
+045769                     A  1694    L_92:
                            A  1695    .LINE 184
                            A  1696    
                            A  1697    ;  185	                            state = ERR
                            A  1698    .LINE 185
                            A  1699    
-045697 DD36FC05            A  1700    	LD	(IX+%FFFFFFFC),%5
+045769 DD36FC05            A  1700    	LD	(IX+%FFFFFFFC),%5
                            A  1701    ;  186	                            errorhalt =
                            A  1702    .LINE 186
                            A  1703    
-04569B DD360901            A  1704    	LD	(IX+%9),%1
+04576D DD360901            A  1704    	LD	(IX+%9),%1
                            A  1705    ;  187	                        }
                            A  1706    ;  188	                        break;
                            A  1707    .LINE 188
                            A  1708    
-04569F C3 99 53 04         A  1709    	JR	L_106
+045771 C3 6B 54 04         A  1709    	JR	L_106
                            A  1710    ;  189	                    default:
-0456A3                     A  1711    L_94:
+045775                     A  1711    L_94:
                            A  1712    .LINE 189
                            A  1713    
                            A  1714    ;  190	                        if(isdigit(*ptr
                            A  1715    .LINE 190
                            A  1716    
-0456A3 DD27FD              A  1717    	LD	HL,(IX+%FFFFFFFD)
-0456A6 7E                  A  1718    	LD	A,(HL)
-0456A7 47                  A  1719    	LD	B,A
-0456A8 17ED62              A  1720    	SEXT	HL
-0456AB 68                  A  1721    	LD	L,B
-0456AC E5                  A  1722    	PUSH	HL
-0456AD CD 05 6A 04         A  1723    	CALL	_isdigit
-0456B1 C1                  A  1724    	POP	BC
-0456B2 CD F9 69 04         A  1725    	CALL	__icmpzero
-0456B6 28 30               A  1726    	JR	Z,L_99
+045775 DD27FD              A  1717    	LD	HL,(IX+%FFFFFFFD)
+045778 7E                  A  1718    	LD	A,(HL)
+045779 47                  A  1719    	LD	B,A
+04577A 17ED62              A  1720    	SEXT	HL
+04577D 68                  A  1721    	LD	L,B
+04577E E5                  A  1722    	PUSH	HL
+04577F CD EF 6A 04         A  1723    	CALL	_isdigit
+045783 C1                  A  1724    	POP	BC
+045784 CD E3 6A 04         A  1725    	CALL	__icmpzero
+045788 28 30               A  1726    	JR	Z,L_99
                            A  1727    ;  191	                            result = st
                            A  1728    .LINE 191
                            A  1729    
-0456B8 DD07F5              A  1730    	LD	BC,(IX+%FFFFFFF5)
-0456BB C5                  A  1731    	PUSH	BC
-0456BC CD B6 52 04         A  1732    	CALL	_str2dec
-0456C0 C1                  A  1733    	POP	BC
-0456C1 DD2FF8              A  1734    	LD	(IX+%FFFFFFF8),HL
-0456C4 DD73FB              A  1735    	LD	(IX+%FFFFFFFB),E
+04578A DD07F5              A  1730    	LD	BC,(IX+%FFFFFFF5)
+04578D C5                  A  1731    	PUSH	BC
+04578E CD 88 53 04         A  1732    	CALL	_str2dec
+045792 C1                  A  1733    	POP	BC
+045793 DD2FF8              A  1734    	LD	(IX+%FFFFFFF8),HL
+045796 DD73FB              A  1735    	LD	(IX+%FFFFFFFB),E
                            A  1736    ;  192	                            if(err_str2
                            A  1737    .LINE 192
                            A  1738    
-0456C7 3A 4F FC 07         A  1739    	LD	A,(_err_str2num)
-0456CB B7                  A  1740    	OR	A,A
-0456CC 28 12               A  1741    	JR	Z,L_97
-0456CE DD7E09              A  1742    	LD	A,(IX+%9)
-0456D1 B7                  A  1743    	OR	A,A
-0456D2 28 0C               A  1744    	JR	Z,L_97
-0456D4 21 A5 70 04         A  1745    	LD	HL,_message+9
-0456D8 ED07                A  1746    	LD	BC,(HL)
-0456DA C5                  A  1747    	PUSH	BC
-0456DB CD CF 57 04         A  1748    	CALL	_error
-0456DF C1                  A  1749    	POP	BC
-0456E0                     A  1750    L_97:
+045799 3A 4F FC 07         A  1739    	LD	A,(_err_str2num)
+04579D B7                  A  1740    	OR	A,A
+04579E 28 12               A  1741    	JR	Z,L_97
+0457A0 DD7E09              A  1742    	LD	A,(IX+%9)
+0457A3 B7                  A  1743    	OR	A,A
+0457A4 28 0C               A  1744    	JR	Z,L_97
+0457A6 21 8F 71 04         A  1745    	LD	HL,_message+9
+0457AA ED07                A  1746    	LD	BC,(HL)
+0457AC C5                  A  1747    	PUSH	BC
+0457AD CD A1 58 04         A  1748    	CALL	_error
+0457B1 C1                  A  1749    	POP	BC
+0457B2                     A  1750    L_97:
                            A  1751    ;  193	                            return resu
                            A  1752    .LINE 193
                            A  1753    
-0456E0 DD27F8              A  1754    	LD	HL,(IX+%FFFFFFF8)
-0456E3 DD5EFB              A  1755    	LD	E,(IX+%FFFFFFFB)
-0456E6 18 28               A  1756    	JR	L_107
+0457B2 DD27F8              A  1754    	LD	HL,(IX+%FFFFFFF8)
+0457B5 DD5EFB              A  1755    	LD	E,(IX+%FFFFFFFB)
+0457B8 18 28               A  1756    	JR	L_107
                            A  1757    ;  194	                        }
                            A  1758    ;  195	                        else state = ER
-0456E8                     A  1759    L_99:
+0457BA                     A  1759    L_99:
                            A  1760    .LINE 195
                            A  1761    
-0456E8 DD36FC05            A  1762    	LD	(IX+%FFFFFFFC),%5
+0457BA DD36FC05            A  1762    	LD	(IX+%FFFFFFFC),%5
                            A  1763    ;  196	                }
                            A  1764    ;  197	                break;
                            A  1765    .LINE 197
                            A  1766    
-0456EC C3 99 53 04         A  1767    	JR	L_106
+0457BE C3 6B 54 04         A  1767    	JR	L_106
                            A  1768    ;  198	            case(ERROR):
-0456F0                     A  1769    L_101:
+0457C2                     A  1769    L_101:
                            A  1770    .LINE 198
                            A  1771    
                            A  1772    ;  199	                err_str2num = true;
                            A  1773    .LINE 199
                            A  1774    
-0456F0 3E01                A  1775    	LD	A,%1
-0456F2 32 4F FC 07         A  1776    	LD	(_err_str2num),A
+0457C2 3E01                A  1775    	LD	A,%1
+0457C4 32 4F FC 07         A  1776    	LD	(_err_str2num),A
                            A  1777    ;  200	                if(err_str2num && error
                            A  1778    .LINE 200
                            A  1779    
-0456F6 DD7E09              A  1780    	LD	A,(IX+%9)
-0456F9 B7                  A  1781    	OR	A,A
-0456FA 28 0C               A  1782    	JR	Z,L_104
-0456FC 21 A5 70 04         A  1783    	LD	HL,_message+9
-045700 ED07                A  1784    	LD	BC,(HL)
-045702 C5                  A  1785    	PUSH	BC
-045703 CD CF 57 04         A  1786    	CALL	_error
-045707 C1                  A  1787    	POP	BC
-045708                     A  1788    L_104:
+0457C8 DD7E09              A  1780    	LD	A,(IX+%9)
+0457CB B7                  A  1781    	OR	A,A
+0457CC 28 0C               A  1782    	JR	Z,L_104
+0457CE 21 8F 71 04         A  1783    	LD	HL,_message+9
+0457D2 ED07                A  1784    	LD	BC,(HL)
+0457D4 C5                  A  1785    	PUSH	BC
+0457D5 CD A1 58 04         A  1786    	CALL	_error
+0457D9 C1                  A  1787    	POP	BC
+0457DA                     A  1788    L_104:
                            A  1789    ;  201	                state = DONE;
                            A  1790    .LINE 201
                            A  1791    
-045708 DD36FC04            A  1792    	LD	(IX+%FFFFFFFC),%4
+0457DA DD36FC04            A  1792    	LD	(IX+%FFFFFFFC),%4
                            A  1793    ;  202	                break;
                            A  1794    .LINE 202
                            A  1795    
-04570C C3 99 53 04         A  1796    	JR	L_106
+0457DE C3 6B 54 04         A  1796    	JR	L_106
                            A  1797    ;  203	        }
                            A  1798    ;  204	    }
-045710                     A  1799    L_107:
+0457E2                     A  1799    L_107:
                            A  1800    .LINE 205
                            A  1801    
-045710 DDF9                A  1802    	LD	SP,IX
-045712 DDE1                A  1803    	POP	IX
-045714 C9                  A  1804    	RET	
+0457E2 DDF9                A  1802    	LD	SP,IX
+0457E4 DDE1                A  1803    	POP	IX
+0457E6 C9                  A  1804    	RET	
                            A  1805    
                            A  1806    
                            A  1807    ;**************************** _str2num ********

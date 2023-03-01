@@ -43,7 +43,7 @@ bool notEmpty(const char *str) {
 
 void error(char* msg)
 {
-    printf("\"%s\" - line %d - %s\n", filename[FILE_CURRENT], linenumber, msg);
+    printf("\"%s\" - line %d - %s\n\r", filename[FILE_CURRENT], linenumber, msg);
     global_errors++;
 }
 
@@ -204,7 +204,7 @@ bool openFile(uint8_t *file, char *name, uint8_t mode) {
     *file = mos_fopen(name, mode);
 
     if(*file) return true;
-    printf("Error opening \"%s\"\n", name);
+    printf("Error opening \"%s\"\n\r", name);
     return false;
 }
 
@@ -254,14 +254,20 @@ bool openfiles(void) {
 char *agon_fgets(char *s, int size, uint8_t fileid) {
 	int c;
 	char *cs;
-
+	bool eof;
     c = 0;
 	cs = s;
-	while (--size > 0 && (c = mos_fgetc(filehandle[fileid])) != EOF)
-		if ((*cs++ = c) == '\n')
-			break;
+
+	do {
+		eof = mos_feof(filehandle[fileid]);
+		c = mos_fgetc(filehandle[fileid]);
+		if((*cs++ = c) == '\n') break;		
+	}
+	while(--size > 0 && !eof);
+	
 	*cs = '\0';
-	return (c == EOF && cs == s) ? NULL : s;
+
+	return (eof) ? NULL : s;
 }
 
 int agon_fputs(char *s, uint8_t fileid) {
@@ -276,11 +282,12 @@ int agon_fputs(char *s, uint8_t fileid) {
 
 size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
     size_t n, s, result = 0;
+    char *t = (char *)ptr;
 
     for(n = 0; n < nmemb; n++) {
         for(s = 0; s < size; s++) {
-            mos_fputc(filehandle[fileid], (*(char *)ptr));
-            ptr++;
+            mos_fputc(filehandle[fileid], (*t));
+            t++;
             result++;
         }
     }
@@ -289,14 +296,15 @@ size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
 
 size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
     size_t n, s, result = 0;
+    char *t = (char *)ptr;
 
     for(n = 0; n < nmemb; n++) {
         for(s = 0; s < size; s++) {
-            if((*(char *)ptr = mos_fgetc(filehandle[fileid])) == EOF) {
-                *(char *)ptr = 0;
+            *t = mos_fgetc(filehandle[fileid]);
+                if(mos_feof(filehandle[fileid])) {
                 return result;
             }
-            ptr++;
+            t++;
             result++;
         }
     }

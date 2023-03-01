@@ -11,7 +11,7 @@
 int main(int argc, char *argv[])
 {
     if(argc < 2){
-        printf("Usage: asm <filename> [-l]\n");
+        printf("Usage: asm <filename> [-l]\n\r");
         return 0;
     }
 
@@ -31,9 +31,9 @@ int main(int argc, char *argv[])
     assemble();
     if(global_errors) {
         //remove(filename[FILE_OUTPUT]);
-        printf("Error in input\n");
+        printf("Error in input\n\r");
     }
-    else printf("%d bytes\n", totalsize);
+    else printf("%d bytes\n\r", totalsize);
  
     closeAllFiles();   
     return 0;

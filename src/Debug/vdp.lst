@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED28-Feb-23     21:42:25     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     14:26:44     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -48,7 +48,7 @@ PC     Object              I  Line    Source
                            A    44    .LINE 8
                            A    45    
 0401FB DD0706              A    46    	LD	BC,(IX+%6)
-0401FE CD AC 65 04         A    47    	CALL	__stoiu
+0401FE CD 96 66 04         A    47    	CALL	__stoiu
 040202 7D                  A    48    	LD	A,L
 040203 B7ED62              A    49    	UEXT	HL
 040206 6F                  A    50    	LD	L,A
@@ -59,9 +59,9 @@ PC     Object              I  Line    Source
                            A    55    .LINE 9
                            A    56    
 04020D DD0706              A    57    	LD	BC,(IX+%6)
-040210 CD AC 65 04         A    58    	CALL	__stoiu
+040210 CD 96 66 04         A    58    	CALL	__stoiu
 040214 3E08                A    59    	LD	A,%8
-040216 CD B5 63 04         A    60    	CALL	__ishrs_b
+040216 CD 9F 64 04         A    60    	CALL	__ishrs_b
 04021A E5                  A    61    	PUSH	HL
 04021B CD EC 0C 04         A    62    	CALL	_putch
 04021F C1                  A    63    	POP	BC
@@ -145,7 +145,7 @@ PC     Object              I  Line    Source
 04023E DD0706              A   141    	LD	BC,(IX+%6)
 040241 DD7E09              A   142    	LD	A,(IX+%9)
 040244 2E08                A   143    	LD	L,%8
-040246 CD B3 69 04         A   144    	CALL	__lshru
+040246 CD 9D 6A 04         A   144    	CALL	__lshru
 04024A DD0FFC              A   145    	LD	(IX+%FFFFFFFC),BC
 04024D DD77FF              A   146    	LD	(IX+%FFFFFFFF),A
                            A   147    ;   18		putch(temp & 0xFF);
@@ -164,7 +164,7 @@ PC     Object              I  Line    Source
 04025D DD07FC              A   160    	LD	BC,(IX+%FFFFFFFC)
 040260 DD7EFF              A   161    	LD	A,(IX+%FFFFFFFF)
 040263 2E08                A   162    	LD	L,%8
-040265 CD B3 69 04         A   163    	CALL	__lshru
+040265 CD 9D 6A 04         A   163    	CALL	__lshru
 040269 DD0FFC              A   164    	LD	(IX+%FFFFFFFC),BC
 04026C DD77FF              A   165    	LD	(IX+%FFFFFFFF),A
                            A   166    ;   20		putch(temp & 0xFF);
@@ -183,7 +183,7 @@ PC     Object              I  Line    Source
 04027C DD07FC              A   179    	LD	BC,(IX+%FFFFFFFC)
 04027F DD7EFF              A   180    	LD	A,(IX+%FFFFFFFF)
 040282 2E08                A   181    	LD	L,%8
-040284 CD B3 69 04         A   182    	CALL	__lshru
+040284 CD 9D 6A 04         A   182    	CALL	__lshru
 040288 DD0FFC              A   183    	LD	(IX+%FFFFFFFC),BC
 04028B DD77FF              A   184    	LD	(IX+%FFFFFFFF),A
                            A   185    ;   22		putch(temp & 0xFF);
@@ -1057,7 +1057,7 @@ PC     Object              I  Line    Source
                            A  1053    
 04047E DD2709              A  1054    	LD	HL,(IX+%9)
 040481 3E08                A  1055    	LD	A,%8
-040483 CD 07 6D 04         A  1056    	CALL	__ishru_b
+040483 CD F1 6D 04         A  1056    	CALL	__ishru_b
 040487 E5                  A  1057    	PUSH	HL
 040488 CD EC 0C 04         A  1058    	CALL	_putch
 04048C C1                  A  1059    	POP	BC
@@ -1075,7 +1075,7 @@ PC     Object              I  Line    Source
                            A  1071    
 04049A DD270C              A  1072    	LD	HL,(IX+%C)
 04049D 3E08                A  1073    	LD	A,%8
-04049F CD 07 6D 04         A  1074    	CALL	__ishru_b
+04049F CD F1 6D 04         A  1074    	CALL	__ishru_b
 0404A3 E5                  A  1075    	PUSH	HL
 0404A4 CD EC 0C 04         A  1076    	CALL	_putch
 0404A8 C1                  A  1077    	POP	BC
@@ -1590,7 +1590,7 @@ PC     Object              I  Line    Source
                            A  1586    
 04059D DD2706              A  1587    	LD	HL,(IX+%6)
 0405A0 3E08                A  1588    	LD	A,%8
-0405A2 CD 07 6D 04         A  1589    	CALL	__ishru_b
+0405A2 CD F1 6D 04         A  1589    	CALL	__ishru_b
 0405A6 E5                  A  1590    	PUSH	HL
 0405A7 CD EC 0C 04         A  1591    	CALL	_putch
 0405AB C1                  A  1592    	POP	BC
@@ -1609,7 +1609,7 @@ PC     Object              I  Line    Source
                            A  1605    
 0405BB DD2709              A  1606    	LD	HL,(IX+%9)
 0405BE 3E08                A  1607    	LD	A,%8
-0405C0 CD 07 6D 04         A  1608    	CALL	__ishru_b
+0405C0 CD F1 6D 04         A  1608    	CALL	__ishru_b
 0405C4 E5                  A  1609    	PUSH	HL
 0405C5 CD EC 0C 04         A  1610    	CALL	_putch
 0405C9 C1                  A  1611    	POP	BC
@@ -1829,7 +1829,7 @@ PC     Object              I  Line    Source
                            A  1825    .LINE 165
                            A  1826    
 04064D DD07FE              A  1827    	LD	BC,(IX+%FFFFFFFE)
-040650 CD AC 65 04         A  1828    	CALL	__stoiu
+040650 CD 96 66 04         A  1828    	CALL	__stoiu
 040654 29                  A  1829    	ADD	HL,HL
 040655 29                  A  1830    	ADD	HL,HL
 040656 DD070C              A  1831    	LD	BC,(IX+%C)
@@ -1854,16 +1854,16 @@ PC     Object              I  Line    Source
                            A  1850    .LINE 167
                            A  1851    
 040678 DD0706              A  1852    	LD	BC,(IX+%6)
-04067B CD AC 65 04         A  1853    	CALL	__stoiu
+04067B CD 96 66 04         A  1853    	CALL	__stoiu
 04067F E5D1                A  1854    	LD	DE,HL
 040681 DD0709              A  1855    	LD	BC,(IX+%9)
-040684 CD AC 65 04         A  1856    	CALL	__stoiu
+040684 CD 96 66 04         A  1856    	CALL	__stoiu
 040688 E5C1                A  1857    	LD	BC,HL
 04068A D5E1                A  1858    	LD	HL,DE
-04068C CD CB 6C 04         A  1859    	CALL	__imuls
+04068C CD B5 6D 04         A  1859    	CALL	__imuls
 040690 E5D1                A  1860    	LD	DE,HL
 040692 DD07FE              A  1861    	LD	BC,(IX+%FFFFFFFE)
-040695 CD AC 65 04         A  1862    	CALL	__stoiu
+040695 CD 96 66 04         A  1862    	CALL	__stoiu
 040699 B7                  A  1863    	OR	A,A
 04069A ED52                A  1864    	SBC	HL,DE
 04069C FA 4D 06 04         A  1865    	JP	M,L_26
@@ -3993,7 +3993,7 @@ PC     Object              I  Line    Source
 040B71 DD31FD              A  3989    	LD	IY,(IX+%FFFFFFFD)
 040B74 ED33FF              A  3990    	LEA	IY,IY+%FFFFFFFF
 040B77 DD3EFD              A  3991    	LD	(IX+%FFFFFFFD),IY
-040B7A CD F9 69 04         A  3992    	CALL	__icmpzero
+040B7A CD E3 6A 04         A  3992    	CALL	__icmpzero
 040B7E 20 EE               A  3993    	JR	NZ,L_59
                            A  3994    ;  394		return(getsysvar_cursorX());
                            A  3995    .LINE 394
@@ -4089,7 +4089,7 @@ PC     Object              I  Line    Source
 040BBB DD31FD              A  4085    	LD	IY,(IX+%FFFFFFFD)
 040BBE ED33FF              A  4086    	LEA	IY,IY+%FFFFFFFF
 040BC1 DD3EFD              A  4087    	LD	(IX+%FFFFFFFD),IY
-040BC4 CD F9 69 04         A  4088    	CALL	__icmpzero
+040BC4 CD E3 6A 04         A  4088    	CALL	__icmpzero
 040BC8 20 EE               A  4089    	JR	NZ,L_64
                            A  4090    ;  408		return(getsysvar_cursorY());
                            A  4091    .LINE 408
@@ -4236,7 +4236,7 @@ PC     Object              I  Line    Source
 040C33 DD31FD              A  4232    	LD	IY,(IX+%FFFFFFFD)
 040C36 ED33FF              A  4233    	LEA	IY,IY+%FFFFFFFF
 040C39 DD3EFD              A  4234    	LD	(IX+%FFFFFFFD),IY
-040C3C CD F9 69 04         A  4235    	CALL	__icmpzero
+040C3C CD E3 6A 04         A  4235    	CALL	__icmpzero
 040C40 20 EE               A  4236    	JR	NZ,L_69
                            A  4237    ;  425		return(getsysvar_scrchar());
                            A  4238    .LINE 425

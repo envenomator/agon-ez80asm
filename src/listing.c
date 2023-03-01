@@ -11,9 +11,9 @@ uint8_t _listObjects[256];
 uint8_t _listObjectCount;
 bool _listFirstline = true;
 
-char _listHeader[] = "PC      Output            Line   Source\n";
+char _listHeader[] = "PC      Output            Line   Source\n\r";
 
-char buffer[LINEMAX + 64];
+char buffer[LINEMAX + 32];
 
 void listInit(bool console) {
     sprintf(buffer, "%s", _listHeader);
@@ -65,12 +65,12 @@ void listEndLine(bool console) {
             }
         }
         if(lines == 0) {
-            sprintf(buffer, "%04d   %s\n",linenumber, _listLine);
+            sprintf(buffer, "%04d   %s\n\r",linenumber, _listLine);
             agon_fputs(buffer, FILE_LISTING);
             if(console) printf("%s",buffer);
         }
         else {
-            sprintf(buffer, "\n");
+            sprintf(buffer, "\n\r");
             agon_fputs(buffer, FILE_LISTING);
             if(console) printf("%s",buffer);
         }

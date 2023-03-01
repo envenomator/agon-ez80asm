@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED28-Feb-23     21:42:25     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     14:26:44     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -94,7 +94,7 @@ PC     Object              I  Line    Source
                            A    90    
 043A4F DD27FA              A    91    	LD	HL,(IX+%FFFFFFFA)
 043A52 3E25                A    92    	LD	A,%25
-043A54 CD BF 6C 04         A    93    	CALL	__imul_b
+043A54 CD A9 6D 04         A    93    	CALL	__imul_b
 043A58 E5C1                A    94    	LD	BC,HL
 043A5A DD27FD              A    95    	LD	HL,(IX+%FFFFFFFD)
 043A5D 7E                  A    96    	LD	A,(HL)
@@ -115,7 +115,7 @@ PC     Object              I  Line    Source
                            A   111    
 043A74 DD27FA              A   112    	LD	HL,(IX+%FFFFFFFA)
 043A77 DD0709              A   113    	LD	BC,(IX+%9)
-043A7A CD 1B 64 04         A   114    	CALL	__iremu
+043A7A CD 05 65 04         A   114    	CALL	__iremu
                            A   115    .LINE 13
                            A   116    
 043A7E DDF9                A   117    	LD	SP,IX

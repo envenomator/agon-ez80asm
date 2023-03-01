@@ -463,7 +463,7 @@ _main:
 	SBC	HL,BC
 	CALL	__setflag
 	JP	P,L_1
-;   14	        printf("Usage: asm <filename> [-l]\n");
+;   14	        printf("Usage: asm <filename> [-l]\n\r");
 .LINE 14
 
 	LD	BC,___print_uputch
@@ -585,7 +585,7 @@ L_9:
 	CALL	__scmpzero
 	JR	Z,L_11
 ;   33	        //remove(filename[FILE_OUTPUT]);
-;   34	        printf("Error in input\n");
+;   34	        printf("Error in input\n\r");
 .LINE 34
 
 	LD	BC,___print_uputch
@@ -595,7 +595,7 @@ L_9:
 	CALL	___print_sendstring
 	POP	BC
 ;   35	    }
-;   36	    else printf("%d bytes\n", totalsize);
+;   36	    else printf("%d bytes\n\r", totalsize);
 .LINE 36
 
 	JR	L_12
@@ -665,7 +665,7 @@ L_13:
 	SEGMENT STRSECT
 L__1:
 	DB	"Usage: asm <filename> [-l]"
-	DB	10,0
+	DB	10,13,0
 L__7:
 	DB	"-d"
 	DB	0
@@ -674,10 +674,10 @@ L__10:
 	DB	0
 L__13:
 	DB	"Error in input"
-	DB	10,0
+	DB	10,13,0
 L__14:
 	DB	" bytes"
-	DB	10,0
+	DB	10,13,0
 	XREF _assemble:ROM
 	XREF _initLocalLabelTable:ROM
 	XREF _initAnonymousLabelTable:ROM
