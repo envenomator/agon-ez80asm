@@ -90,7 +90,7 @@
 .TYPE 108
 .ENDEF
 .ENDREC "flt_info"
-.BEGREC "NONAME0",16
+.BEGREC "NONAME0",15
 .DEFINE "reg"
 .VALUE 0
 .CLASS 8
@@ -134,10 +134,10 @@
 .DEFINE "immediate"
 .VALUE 11
 .CLASS 8
-.TYPE 5
+.TYPE 4
 .ENDEF
 .DEFINE "wasLabel"
-.VALUE 15
+.VALUE 14
 .CLASS 8
 .TYPE 12
 .ENDEF
@@ -367,20 +367,20 @@ _pass:
 .TYPE 14
 .ENDEF
 _address:
-	DS	4*1
+	DS	3
 .DEFINE "address"
 .ALIAS "_address"
 .CLASS 83
 .VALUE _address
-.TYPE 15
+.TYPE 14
 .ENDEF
 _totalsize:
-	DS	4*1
+	DS	3
 .DEFINE "totalsize"
 .ALIAS "_totalsize"
 .CLASS 83
 .VALUE _totalsize
-.TYPE 15
+.TYPE 14
 .ENDEF
 _global_errors:
 	DS	2*1
@@ -408,7 +408,7 @@ _currentline:
 .TYPE 8
 .ENDEF
 _operand1:
-	DS	16
+	DS	15
 .DEFINE "operand1"
 .ALIAS "_operand1"
 .CLASS 83
@@ -417,7 +417,7 @@ _operand1:
 .TYPE 8
 .ENDEF
 _operand2:
-	DS	16
+	DS	15
 .DEFINE "operand2"
 .ALIAS "_operand2"
 .CLASS 83
@@ -647,8 +647,8 @@ _message:
 ;   21	//FILE *file_list;
 ;   22	unsigned int linenumber;
 ;   23	unsigned int pass;
-;   24	uint32_t address;
-;   25	uint32_t totalsize;      // total size of assembled binary
+;   24	uint24_t address;
+;   25	uint24_t totalsize;      // total size of assembled binary
 ;   26	uint16_t global_errors;
 ;   27	bool adlmode;
 ;   28	

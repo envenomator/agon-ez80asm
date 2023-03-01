@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:29:18     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:39:41     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -94,7 +94,7 @@ PC     Object              I  Line    Source
                            A    90    .TYPE 108
                            A    91    .ENDEF
                            A    92    .ENDREC "flt_info"
-                           A    93    .BEGREC "NONAME0",16
+                           A    93    .BEGREC "NONAME0",15
                            A    94    .DEFINE "reg"
                            A    95    .VALUE 0
                            A    96    .CLASS 8
@@ -138,10 +138,10 @@ PC     Object              I  Line    Source
                            A   134    .DEFINE "immediate"
                            A   135    .VALUE 11
                            A   136    .CLASS 8
-                           A   137    .TYPE 5
+                           A   137    .TYPE 4
                            A   138    .ENDEF
                            A   139    .DEFINE "wasLabel"
-                           A   140    .VALUE 15
+                           A   140    .VALUE 14
                            A   141    .CLASS 8
                            A   142    .TYPE 12
                            A   143    .ENDEF
@@ -352,8 +352,8 @@ PC     Object              I  Line    Source
                            A   348    .ENDEF
                            A   349    .ENDREC "NONAME7"
                            A   350    	SEGMENT BSS
-0487B9                     A   351    __filestack:
-0487B9                     A   352    	DS	268
+0484BA                     A   351    __filestack:
+0484BA                     A   352    	DS	268
                            A   353    .DEFINE "_filestack"
                            A   354    .ALIAS "__filestack"
                            A   355    .CLASS 83
@@ -362,8 +362,8 @@ PC     Object              I  Line    Source
                            A   358    .TAG "NONAME6"
                            A   359    .TYPE 104
                            A   360    .ENDEF
-0488C5                     A   361    __filestackCount:
-0488C5                     A   362    	DS	1
+0485C6                     A   361    __filestackCount:
+0485C6                     A   362    	DS	1
                            A   363    .DEFINE "_filestackCount"
                            A   364    .ALIAS "__filestackCount"
                            A   365    .CLASS 83
@@ -379,7 +379,7 @@ PC     Object              I  Line    Source
                            A   375    	SEGMENT CODE
                            A   376    ;    7	
                            A   377    ;    8	void filestackInit(void) {
-042F0B                     A   378    _filestackInit:
+042CF8                     A   378    _filestackInit:
                            A   379    .DEFINE "_filestackInit"
                            A   380    
                            A   381    .VALUE _filestackInit
@@ -392,20 +392,20 @@ PC     Object              I  Line    Source
                            A   388    
                            A   389    .BEGFUNC "filestackInit",8,"_filestackInit"
                            A   390    
-042F0B DDE5                A   391    	PUSH	IX
-042F0D DD210000 00         A   392    	LD	IX,0
-042F12 DD39                A   393    	ADD	IX,SP
+042CF8 DDE5                A   391    	PUSH	IX
+042CFA DD210000 00         A   392    	LD	IX,0
+042CFF DD39                A   393    	ADD	IX,SP
                            A   394    ;    9	    _filestackCount = 0;
                            A   395    .LINE 9
                            A   396    
-042F14 AF                  A   397    	XOR	A,A
-042F15 32 C5 88 04         A   398    	LD	(__filestackCount),A
+042D01 AF                  A   397    	XOR	A,A
+042D02 32 C6 85 04         A   398    	LD	(__filestackCount),A
                            A   399    ;   10	}
                            A   400    .LINE 10
                            A   401    
-042F19 DDF9                A   402    	LD	SP,IX
-042F1B DDE1                A   403    	POP	IX
-042F1D C9                  A   404    	RET	
+042D06 DDF9                A   402    	LD	SP,IX
+042D08 DDE1                A   403    	POP	IX
+042D0A C9                  A   404    	RET	
                            A   405    
                            A   406    
                            A   407    ;**************************** _filestackInit **
@@ -420,7 +420,7 @@ PC     Object              I  Line    Source
                            A   416    .ENDFUNC "filestackInit",10,"_filestackInit"
                            A   417    ;   11	
                            A   418    ;   12	uint8_t filestackCount(void) {
-042F1E                     A   419    _filestackCount:
+042D0B                     A   419    _filestackCount:
                            A   420    .DEFINE "_filestackCount"
                            A   421    
                            A   422    .VALUE _filestackCount
@@ -433,19 +433,19 @@ PC     Object              I  Line    Source
                            A   429    
                            A   430    .BEGFUNC "filestackCount",12,"_filestackCount"
                            A   431    
-042F1E DDE5                A   432    	PUSH	IX
-042F20 DD210000 00         A   433    	LD	IX,0
-042F25 DD39                A   434    	ADD	IX,SP
+042D0B DDE5                A   432    	PUSH	IX
+042D0D DD210000 00         A   433    	LD	IX,0
+042D12 DD39                A   434    	ADD	IX,SP
                            A   435    ;   13	    return _filestackCount;
                            A   436    .LINE 13
                            A   437    
-042F27 3A C5 88 04         A   438    	LD	A,(__filestackCount)
+042D14 3A C6 85 04         A   438    	LD	A,(__filestackCount)
                            A   439    ;   14	}
                            A   440    .LINE 14
                            A   441    
-042F2B DDF9                A   442    	LD	SP,IX
-042F2D DDE1                A   443    	POP	IX
-042F2F C9                  A   444    	RET	
+042D18 DDF9                A   442    	LD	SP,IX
+042D1A DDE1                A   443    	POP	IX
+042D1C C9                  A   444    	RET	
                            A   445    
                            A   446    
                            A   447    ;**************************** _filestackCount *
@@ -460,7 +460,7 @@ PC     Object              I  Line    Source
                            A   456    .ENDFUNC "filestackCount",14,"_filestackCount"
                            A   457    ;   15	
                            A   458    ;   16	bool filestackPush(filestackitem *fs) {
-042F30                     A   459    _filestackPush:
+042D1D                     A   459    _filestackPush:
                            A   460    .DEFINE "_filestackPush"
                            A   461    
                            A   462    .VALUE _filestackPush
@@ -487,88 +487,88 @@ PC     Object              I  Line    Source
                            A   483    
                            A   484    .ENDEF
                            A   485    
-042F30 DDE5                A   486    	PUSH	IX
-042F32 DD210000 00         A   487    	LD	IX,0
-042F37 DD39                A   488    	ADD	IX,SP
-042F39 C5                  A   489    	PUSH	BC
+042D1D DDE5                A   486    	PUSH	IX
+042D1F DD210000 00         A   487    	LD	IX,0
+042D24 DD39                A   488    	ADD	IX,SP
+042D26 C5                  A   489    	PUSH	BC
                            A   490    ;   17	    if(_filestackCount < FILESTACK_MAXF
                            A   491    .LINE 17
                            A   492    
-042F3A 3A C5 88 04         A   493    	LD	A,(__filestackCount)
-042F3E FE04                A   494    	CP	A,%4
-042F40 30 63               A   495    	JR	NC,L_4
+042D27 3A C6 85 04         A   493    	LD	A,(__filestackCount)
+042D2B FE04                A   494    	CP	A,%4
+042D2D 30 63               A   495    	JR	NC,L_4
                            A   496    ;   18	        _filestack[_filestackCount].lin
                            A   497    .LINE 18
                            A   498    
-042F42 3A C5 88 04         A   499    	LD	A,(__filestackCount)
-042F46 B7ED62              A   500    	UEXT	HL
-042F49 6F                  A   501    	LD	L,A
-042F4A 3E43                A   502    	LD	A,%43
-042F4C CD 9A 66 04         A   503    	CALL	__imul_b
-042F50 01 B9 87 04         A   504    	LD	BC,__filestack
-042F54 09                  A   505    	ADD	HL,BC
-042F55 DD2FFD              A   506    	LD	(IX+%FFFFFFFD),HL
-042F58 DD3106              A   507    	LD	IY,(IX+%6)
-042F5B FD0700              A   508    	LD	BC,(IY+%0)
-042F5E DD31FD              A   509    	LD	IY,(IX+%FFFFFFFD)
-042F61 FD7100              A   510    	LD	(IY+%0),C
-042F64 FD7001              A   511    	LD	(IY+%1),B
+042D2F 3A C6 85 04         A   499    	LD	A,(__filestackCount)
+042D33 B7ED62              A   500    	UEXT	HL
+042D36 6F                  A   501    	LD	L,A
+042D37 3E43                A   502    	LD	A,%43
+042D39 CD A4 63 04         A   503    	CALL	__imul_b
+042D3D 01 BA 84 04         A   504    	LD	BC,__filestack
+042D41 09                  A   505    	ADD	HL,BC
+042D42 DD2FFD              A   506    	LD	(IX+%FFFFFFFD),HL
+042D45 DD3106              A   507    	LD	IY,(IX+%6)
+042D48 FD0700              A   508    	LD	BC,(IY+%0)
+042D4B DD31FD              A   509    	LD	IY,(IX+%FFFFFFFD)
+042D4E FD7100              A   510    	LD	(IY+%0),C
+042D51 FD7001              A   511    	LD	(IY+%1),B
                            A   512    ;   19	        _filestack[_filestackCount].fp 
                            A   513    .LINE 19
                            A   514    
-042F67 DD3106              A   515    	LD	IY,(IX+%6)
-042F6A FD7E02              A   516    	LD	A,(IY+%2)
-042F6D DD31FD              A   517    	LD	IY,(IX+%FFFFFFFD)
-042F70 FD7702              A   518    	LD	(IY+%2),A
+042D54 DD3106              A   515    	LD	IY,(IX+%6)
+042D57 FD7E02              A   516    	LD	A,(IY+%2)
+042D5A DD31FD              A   517    	LD	IY,(IX+%FFFFFFFD)
+042D5D FD7702              A   518    	LD	(IY+%2),A
                            A   519    ;   20	        strcpy(_filestack[_filestackCou
                            A   520    .LINE 20
                            A   521    
-042F73 DD3106              A   522    	LD	IY,(IX+%6)
-042F76 ED6603              A   523    	PEA	IY+%3
-042F79 3A C5 88 04         A   524    	LD	A,(__filestackCount)
-042F7D B7ED62              A   525    	UEXT	HL
-042F80 6F                  A   526    	LD	L,A
-042F81 3E43                A   527    	LD	A,%43
-042F83 CD 9A 66 04         A   528    	CALL	__imul_b
-042F87 01 B9 87 04         A   529    	LD	BC,__filestack
-042F8B 09                  A   530    	ADD	HL,BC
-042F8C E5FDE1              A   531    	LD	IY,HL
-042F8F ED6603              A   532    	PEA	IY+%3
-042F92 CD EE 63 04         A   533    	CALL	_strcpy
-042F96 C1                  A   534    	POP	BC
-042F97 C1                  A   535    	POP	BC
+042D60 DD3106              A   522    	LD	IY,(IX+%6)
+042D63 ED6603              A   523    	PEA	IY+%3
+042D66 3A C6 85 04         A   524    	LD	A,(__filestackCount)
+042D6A B7ED62              A   525    	UEXT	HL
+042D6D 6F                  A   526    	LD	L,A
+042D6E 3E43                A   527    	LD	A,%43
+042D70 CD A4 63 04         A   528    	CALL	__imul_b
+042D74 01 BA 84 04         A   529    	LD	BC,__filestack
+042D78 09                  A   530    	ADD	HL,BC
+042D79 E5FDE1              A   531    	LD	IY,HL
+042D7C ED6603              A   532    	PEA	IY+%3
+042D7F CD 09 61 04         A   533    	CALL	_strcpy
+042D83 C1                  A   534    	POP	BC
+042D84 C1                  A   535    	POP	BC
                            A   536    ;   21	        _filestackCount++;
                            A   537    .LINE 21
                            A   538    
-042F98 3A C5 88 04         A   539    	LD	A,(__filestackCount)
-042F9C 3C                  A   540    	INC	A
-042F9D 32 C5 88 04         A   541    	LD	(__filestackCount),A
+042D85 3A C6 85 04         A   539    	LD	A,(__filestackCount)
+042D89 3C                  A   540    	INC	A
+042D8A 32 C6 85 04         A   541    	LD	(__filestackCount),A
                            A   542    ;   22	        return true;
                            A   543    .LINE 22
                            A   544    
-042FA1 3E01                A   545    	LD	A,%1
-042FA3 18 0D               A   546    	JR	L_6
+042D8E 3E01                A   545    	LD	A,%1
+042D90 18 0D               A   546    	JR	L_6
                            A   547    ;   23	    }
                            A   548    ;   24	    else error(message[ERROR_MAXINCLUDE
-042FA5                     A   549    L_4:
+042D92                     A   549    L_4:
                            A   550    .LINE 24
                            A   551    
-042FA5 21 B9 67 04         A   552    	LD	HL,_message+120
-042FA9 ED07                A   553    	LD	BC,(HL)
-042FAB C5                  A   554    	PUSH	BC
-042FAC CD A4 4E 04         A   555    	CALL	_error
-042FB0 C1                  A   556    	POP	BC
+042D92 21 BA 64 04         A   552    	LD	HL,_message+120
+042D96 ED07                A   553    	LD	BC,(HL)
+042D98 C5                  A   554    	PUSH	BC
+042D99 CD DC 4B 04         A   555    	CALL	_error
+042D9D C1                  A   556    	POP	BC
                            A   557    ;   25	    return false;
                            A   558    .LINE 25
                            A   559    
-042FB1 AF                  A   560    	XOR	A,A
+042D9E AF                  A   560    	XOR	A,A
                            A   561    ;   26	}
-042FB2                     A   562    L_6:
+042D9F                     A   562    L_6:
                            A   563    .LINE 26
                            A   564    
-042FB2 DDF9                A   565    	LD	SP,IX
-042FB4 DDE1                A   566    	POP	IX
-042FB6 C9                  A   567    	RET	
+042D9F DDF9                A   565    	LD	SP,IX
+042DA1 DDE1                A   566    	POP	IX
+042DA3 C9                  A   567    	RET	
                            A   568    
                            A   569    
                            A   570    ;**************************** _filestackPush **
@@ -588,7 +588,7 @@ PC     Object              I  Line    Source
                            A   584    .ENDFUNC "filestackPush",26,"_filestackPush"
                            A   585    ;   27	
                            A   586    ;   28	bool filestackPop(filestackitem *fs) {
-042FB7                     A   587    _filestackPop:
+042DA4                     A   587    _filestackPop:
                            A   588    .DEFINE "_filestackPop"
                            A   589    
                            A   590    .VALUE _filestackPop
@@ -615,85 +615,85 @@ PC     Object              I  Line    Source
                            A   611    
                            A   612    .ENDEF
                            A   613    
-042FB7 DDE5                A   614    	PUSH	IX
-042FB9 DD210000 00         A   615    	LD	IX,0
-042FBE DD39                A   616    	ADD	IX,SP
+042DA4 DDE5                A   614    	PUSH	IX
+042DA6 DD210000 00         A   615    	LD	IX,0
+042DAB DD39                A   616    	ADD	IX,SP
                            A   617    ;   29	    if(_filestackCount) {
                            A   618    .LINE 29
                            A   619    
-042FC0 3A C5 88 04         A   620    	LD	A,(__filestackCount)
-042FC4 B7                  A   621    	OR	A,A
-042FC5 28 6B               A   622    	JR	Z,L_9
+042DAD 3A C6 85 04         A   620    	LD	A,(__filestackCount)
+042DB1 B7                  A   621    	OR	A,A
+042DB2 28 6B               A   622    	JR	Z,L_9
                            A   623    ;   30	        _filestackCount--;
                            A   624    .LINE 30
                            A   625    
-042FC7 3A C5 88 04         A   626    	LD	A,(__filestackCount)
-042FCB 3D                  A   627    	DEC	A
-042FCC 32 C5 88 04         A   628    	LD	(__filestackCount),A
+042DB4 3A C6 85 04         A   626    	LD	A,(__filestackCount)
+042DB8 3D                  A   627    	DEC	A
+042DB9 32 C6 85 04         A   628    	LD	(__filestackCount),A
                            A   629    ;   31	        fs->linenumber = _filestack[_fi
                            A   630    .LINE 31
                            A   631    
-042FD0 B7ED62              A   632    	UEXT	HL
-042FD3 6F                  A   633    	LD	L,A
-042FD4 3E43                A   634    	LD	A,%43
-042FD6 CD 9A 66 04         A   635    	CALL	__imul_b
-042FDA 01 B9 87 04         A   636    	LD	BC,__filestack
-042FDE 09                  A   637    	ADD	HL,BC
-042FDF E5FDE1              A   638    	LD	IY,HL
-042FE2 FD0700              A   639    	LD	BC,(IY+%0)
-042FE5 DD3106              A   640    	LD	IY,(IX+%6)
-042FE8 FD7100              A   641    	LD	(IY+%0),C
-042FEB FD7001              A   642    	LD	(IY+%1),B
+042DBD B7ED62              A   632    	UEXT	HL
+042DC0 6F                  A   633    	LD	L,A
+042DC1 3E43                A   634    	LD	A,%43
+042DC3 CD A4 63 04         A   635    	CALL	__imul_b
+042DC7 01 BA 84 04         A   636    	LD	BC,__filestack
+042DCB 09                  A   637    	ADD	HL,BC
+042DCC E5FDE1              A   638    	LD	IY,HL
+042DCF FD0700              A   639    	LD	BC,(IY+%0)
+042DD2 DD3106              A   640    	LD	IY,(IX+%6)
+042DD5 FD7100              A   641    	LD	(IY+%0),C
+042DD8 FD7001              A   642    	LD	(IY+%1),B
                            A   643    ;   32	        fs->fp = _filestack[_filestackC
                            A   644    .LINE 32
                            A   645    
-042FEE 3A C5 88 04         A   646    	LD	A,(__filestackCount)
-042FF2 B7ED62              A   647    	UEXT	HL
-042FF5 6F                  A   648    	LD	L,A
-042FF6 3E43                A   649    	LD	A,%43
-042FF8 CD 9A 66 04         A   650    	CALL	__imul_b
-042FFC 01 B9 87 04         A   651    	LD	BC,__filestack
-043000 09                  A   652    	ADD	HL,BC
-043001 E5FDE1              A   653    	LD	IY,HL
-043004 FD7E02              A   654    	LD	A,(IY+%2)
-043007 DD3106              A   655    	LD	IY,(IX+%6)
-04300A FD7702              A   656    	LD	(IY+%2),A
+042DDB 3A C6 85 04         A   646    	LD	A,(__filestackCount)
+042DDF B7ED62              A   647    	UEXT	HL
+042DE2 6F                  A   648    	LD	L,A
+042DE3 3E43                A   649    	LD	A,%43
+042DE5 CD A4 63 04         A   650    	CALL	__imul_b
+042DE9 01 BA 84 04         A   651    	LD	BC,__filestack
+042DED 09                  A   652    	ADD	HL,BC
+042DEE E5FDE1              A   653    	LD	IY,HL
+042DF1 FD7E02              A   654    	LD	A,(IY+%2)
+042DF4 DD3106              A   655    	LD	IY,(IX+%6)
+042DF7 FD7702              A   656    	LD	(IY+%2),A
                            A   657    ;   33	        strcpy(fs->filename, _filestack
                            A   658    .LINE 33
                            A   659    
-04300D 3A C5 88 04         A   660    	LD	A,(__filestackCount)
-043011 B7ED62              A   661    	UEXT	HL
-043014 6F                  A   662    	LD	L,A
-043015 3E43                A   663    	LD	A,%43
-043017 CD 9A 66 04         A   664    	CALL	__imul_b
-04301B 09                  A   665    	ADD	HL,BC
-04301C E5FDE1              A   666    	LD	IY,HL
-04301F ED6603              A   667    	PEA	IY+%3
-043022 DD3106              A   668    	LD	IY,(IX+%6)
-043025 ED6603              A   669    	PEA	IY+%3
-043028 CD EE 63 04         A   670    	CALL	_strcpy
-04302C C1                  A   671    	POP	BC
-04302D C1                  A   672    	POP	BC
+042DFA 3A C6 85 04         A   660    	LD	A,(__filestackCount)
+042DFE B7ED62              A   661    	UEXT	HL
+042E01 6F                  A   662    	LD	L,A
+042E02 3E43                A   663    	LD	A,%43
+042E04 CD A4 63 04         A   664    	CALL	__imul_b
+042E08 09                  A   665    	ADD	HL,BC
+042E09 E5FDE1              A   666    	LD	IY,HL
+042E0C ED6603              A   667    	PEA	IY+%3
+042E0F DD3106              A   668    	LD	IY,(IX+%6)
+042E12 ED6603              A   669    	PEA	IY+%3
+042E15 CD 09 61 04         A   670    	CALL	_strcpy
+042E19 C1                  A   671    	POP	BC
+042E1A C1                  A   672    	POP	BC
                            A   673    ;   34	        return true;
                            A   674    .LINE 34
                            A   675    
-04302E 3E01                A   676    	LD	A,%1
-043030 18 01               A   677    	JR	L_10
+042E1B 3E01                A   676    	LD	A,%1
+042E1D 18 01               A   677    	JR	L_10
                            A   678    ;   35	    }
-043032                     A   679    L_9:
+042E1F                     A   679    L_9:
                            A   680    .LINE 35
                            A   681    
                            A   682    ;   36	    return false;
                            A   683    .LINE 36
                            A   684    
-043032 AF                  A   685    	XOR	A,A
+042E1F AF                  A   685    	XOR	A,A
                            A   686    ;   37	}
-043033                     A   687    L_10:
+042E20                     A   687    L_10:
                            A   688    .LINE 37
                            A   689    
-043033 DDF9                A   690    	LD	SP,IX
-043035 DDE1                A   691    	POP	IX
-043037 C9                  A   692    	RET	
+042E20 DDF9                A   690    	LD	SP,IX
+042E22 DDE1                A   691    	POP	IX
+042E24 C9                  A   692    	RET	
                            A   693    
                            A   694    
                            A   695    ;**************************** _filestackPop ***

@@ -6,7 +6,7 @@
 #include "stdint.h"
 
 char _listLine[LINEMAX];
-uint32_t _listAddress;
+uint24_t _listAddress;
 uint8_t _listObjects[256];
 uint8_t _listObjectCount;
 bool _listFirstline = true;

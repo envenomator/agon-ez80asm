@@ -43,8 +43,8 @@ extern uint8_t filehandle[FILES];
 
 extern unsigned int linenumber;
 extern unsigned int pass;
-extern uint32_t address;
-extern uint32_t totalsize;
+extern uint24_t address;
+extern uint24_t totalsize;
 extern uint16_t global_errors;
 extern bool adlmode;
 extern tokenline currentline;

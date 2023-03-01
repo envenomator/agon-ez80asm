@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:29:18     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:39:41     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -14,7 +14,7 @@ PC     Object              I  Line    Source
                            A    10    ;    3	#include "stdint.h"
                            A    11    ;    4	
                            A    12    ;    5	unsigned int hash(char *name, unsigned 
-043038                     A    13    _hash:
+042E25                     A    13    _hash:
                            A    14    .DEFINE "_hash"
                            A    15    
                            A    16    .VALUE _hash
@@ -69,58 +69,58 @@ PC     Object              I  Line    Source
                            A    65    
                            A    66    .ENDEF
                            A    67    
-043038 DDE5                A    68    	PUSH	IX
-04303A DD210000 00         A    69    	LD	IX,0
-04303F DD39                A    70    	ADD	IX,SP
-043041 C5                  A    71    	PUSH	BC
-043042 C5                  A    72    	PUSH	BC
+042E25 DDE5                A    68    	PUSH	IX
+042E27 DD210000 00         A    69    	LD	IX,0
+042E2C DD39                A    70    	ADD	IX,SP
+042E2E C5                  A    71    	PUSH	BC
+042E2F C5                  A    72    	PUSH	BC
                            A    73    ;    6	    unsigned int h;
                            A    74    ;    7	    unsigned char *p;
                            A    75    ;    8	
                            A    76    ;    9	    h = 7;
                            A    77    .LINE 9
                            A    78    
-043043 01070000            A    79    	LD	BC,7
-043047 DD0FFA              A    80    	LD	(IX+%FFFFFFFA),BC
+042E30 01070000            A    79    	LD	BC,7
+042E34 DD0FFA              A    80    	LD	(IX+%FFFFFFFA),BC
                            A    81    ;   10	    for(p = (unsigned char*)name; *p !=
                            A    82    .LINE 10
                            A    83    
-04304A DD0706              A    84    	LD	BC,(IX+%6)
-04304D DD0FFD              A    85    	LD	(IX+%FFFFFFFD),BC
-043050 18 1E               A    86    	JR	L_3
-043052                     A    87    L_1:
+042E37 DD0706              A    84    	LD	BC,(IX+%6)
+042E3A DD0FFD              A    85    	LD	(IX+%FFFFFFFD),BC
+042E3D 18 1E               A    86    	JR	L_3
+042E3F                     A    87    L_1:
                            A    88    ;   11	        h = 37 * h + *p;
                            A    89    .LINE 11
                            A    90    
-043052 DD27FA              A    91    	LD	HL,(IX+%FFFFFFFA)
-043055 3E25                A    92    	LD	A,%25
-043057 CD 9A 66 04         A    93    	CALL	__imul_b
-04305B E5C1                A    94    	LD	BC,HL
-04305D DD27FD              A    95    	LD	HL,(IX+%FFFFFFFD)
-043060 7E                  A    96    	LD	A,(HL)
-043061 B7ED62              A    97    	UEXT	HL
-043064 6F                  A    98    	LD	L,A
-043065 09                  A    99    	ADD	HL,BC
-043066 DD2FFA              A   100    	LD	(IX+%FFFFFFFA),HL
-043069 DD07FD              A   101    	LD	BC,(IX+%FFFFFFFD)
-04306C 03                  A   102    	INC	BC
-04306D DD0FFD              A   103    	LD	(IX+%FFFFFFFD),BC
-043070                     A   104    L_3:
-043070 DD27FD              A   105    	LD	HL,(IX+%FFFFFFFD)
-043073 7E                  A   106    	LD	A,(HL)
-043074 B7                  A   107    	OR	A,A
-043075 20 DB               A   108    	JR	NZ,L_1
+042E3F DD27FA              A    91    	LD	HL,(IX+%FFFFFFFA)
+042E42 3E25                A    92    	LD	A,%25
+042E44 CD A4 63 04         A    93    	CALL	__imul_b
+042E48 E5C1                A    94    	LD	BC,HL
+042E4A DD27FD              A    95    	LD	HL,(IX+%FFFFFFFD)
+042E4D 7E                  A    96    	LD	A,(HL)
+042E4E B7ED62              A    97    	UEXT	HL
+042E51 6F                  A    98    	LD	L,A
+042E52 09                  A    99    	ADD	HL,BC
+042E53 DD2FFA              A   100    	LD	(IX+%FFFFFFFA),HL
+042E56 DD07FD              A   101    	LD	BC,(IX+%FFFFFFFD)
+042E59 03                  A   102    	INC	BC
+042E5A DD0FFD              A   103    	LD	(IX+%FFFFFFFD),BC
+042E5D                     A   104    L_3:
+042E5D DD27FD              A   105    	LD	HL,(IX+%FFFFFFFD)
+042E60 7E                  A   106    	LD	A,(HL)
+042E61 B7                  A   107    	OR	A,A
+042E62 20 DB               A   108    	JR	NZ,L_1
                            A   109    ;   12	    return h % size;
                            A   110    .LINE 12
                            A   111    
-043077 DD27FA              A   112    	LD	HL,(IX+%FFFFFFFA)
-04307A DD0709              A   113    	LD	BC,(IX+%9)
-04307D CD F1 5A 04         A   114    	CALL	__iremu
+042E64 DD27FA              A   112    	LD	HL,(IX+%FFFFFFFA)
+042E67 DD0709              A   113    	LD	BC,(IX+%9)
+042E6A CD 14 58 04         A   114    	CALL	__iremu
                            A   115    .LINE 13
                            A   116    
-043081 DDF9                A   117    	LD	SP,IX
-043083 DDE1                A   118    	POP	IX
-043085 C9                  A   119    	RET	
+042E6E DDF9                A   117    	LD	SP,IX
+042E70 DDE1                A   118    	POP	IX
+042E72 C9                  A   119    	RET	
                            A   120    
                            A   121    
                            A   122    ;**************************** _hash ***********

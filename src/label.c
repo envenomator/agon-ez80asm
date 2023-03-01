@@ -142,12 +142,12 @@ void readLocalLabels(void) {
     }
 }
 
-void writeAnonymousLabel(int32_t address) {
+void writeAnonymousLabel(int24_t address) {
     agon_fwrite(&address, 1, sizeof(address), FILE_ANONYMOUS_LABELS);
 }
 
 void readAnonymousLabel(void) {
-    int32_t address;
+    int24_t address;
 
     if(agon_fread(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS)) {
         if(an_next.defined) {
@@ -164,12 +164,12 @@ void readAnonymousLabel(void) {
     }
 }
 
-bool insertLocalLabel(char *labelname, int32_t address) {
+bool insertLocalLabel(char *labelname, int24_t address) {
     int len,i;
     int p;
     char *ptr;
     char *old_name;
-    int32_t old_address;
+    int24_t old_address;
 
     if(labelname[1] == 0) {
         error(message[ERROR_INVALIDLABEL]);
@@ -212,7 +212,7 @@ bool insertLocalLabel(char *labelname, int32_t address) {
     return false;
 }
 
-bool insertGlobalLabel(char *labelname, int32_t address){
+bool insertGlobalLabel(char *labelname, int24_t address){
     int index,i,try,len;
     label *tmp;
 

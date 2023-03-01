@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:29:18     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:39:41     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -144,7 +144,7 @@ PC     Object              I  Line    Source
                            A   140    .TYPE 14
                            A   141    .ENDEF
                            A   142    .ENDREC "NONAME2"
-                           A   143    .BEGREC "NONAME3",16
+                           A   143    .BEGREC "NONAME3",15
                            A   144    .DEFINE "reg"
                            A   145    .VALUE 0
                            A   146    .CLASS 8
@@ -188,10 +188,10 @@ PC     Object              I  Line    Source
                            A   184    .DEFINE "immediate"
                            A   185    .VALUE 11
                            A   186    .CLASS 8
-                           A   187    .TYPE 5
+                           A   187    .TYPE 4
                            A   188    .ENDEF
                            A   189    .DEFINE "wasLabel"
-                           A   190    .VALUE 15
+                           A   190    .VALUE 14
                            A   191    .CLASS 8
                            A   192    .TYPE 12
                            A   193    .ENDEF
@@ -384,8 +384,8 @@ PC     Object              I  Line    Source
                            A   380    .ENDEF
                            A   381    .ENDREC "NONAME9"
                            A   382    	SEGMENT BSS
-06FF8A                     A   383    _err_str2num:
-06FF8A                     A   384    	DS	1
+06FC43                     A   383    _err_str2num:
+06FC43                     A   384    	DS	1
                            A   385    .DEFINE "err_str2num"
                            A   386    .ALIAS "_err_str2num"
                            A   387    .CLASS 83
@@ -410,17 +410,17 @@ PC     Object              I  Line    Source
                            A   406    ;   15	    ERROR
                            A   407    ;   16	};
                            A   408    ;   17	
-                           A   409    ;   18	// transform a binary string to a uint3
+                           A   409    ;   18	// transform a binary string to a uint2
                            A   410    ;   19	// string must end with 0 and contain o
-                           A   411    ;   20	int32_t str2bin(char *string) {
-044846                     A   412    _str2bin:
+                           A   411    ;   20	int24_t str2bin(char *string) {
+04460C                     A   412    _str2bin:
                            A   413    .DEFINE "_str2bin"
                            A   414    
                            A   415    .VALUE _str2bin
                            A   416    
                            A   417    .CLASS 2
                            A   418    
-                           A   419    .TYPE 69
+                           A   419    .TYPE 68
                            A   420    
                            A   421    .ENDEF
                            A   422    
@@ -452,1408 +452,1365 @@ PC     Object              I  Line    Source
                            A   448    
                            A   449    .CLASS 65
                            A   450    
-                           A   451    .VALUE -5
+                           A   451    .VALUE -4
                            A   452    
-                           A   453    .TYPE 5
+                           A   453    .TYPE 4
                            A   454    
                            A   455    .ENDEF
                            A   456    
-044846 DDE5                A   457    	PUSH	IX
-044848 DD210000 00         A   458    	LD	IX,0
-04484D DD39                A   459    	ADD	IX,SP
-04484F C5                  A   460    	PUSH	BC
-044850 C5                  A   461    	PUSH	BC
-044851 3B                  A   462    	DEC	SP
-044852 3B                  A   463    	DEC	SP
-                           A   464    ;   21	    int32_t result = 0;
-                           A   465    .LINE 21
-                           A   466    
-044853 01000000            A   467    	LD	BC,0
-044857 AF                  A   468    	XOR	A,A
-044858 DD0FFB              A   469    	LD	(IX+%FFFFFFFB),BC
-04485B DD77FE              A   470    	LD	(IX+%FFFFFFFE),A
-                           A   471    ;   22	    uint8_t x = 0;
-                           A   472    .LINE 22
-                           A   473    
-04485E DD36FF00            A   474    	LD	(IX+%FFFFFFFF),%0
-                           A   475    ;   23	
-                           A   476    ;   24	    while(*string) {
-                           A   477    .LINE 24
-                           A   478    
-044862 18 62               A   479    	JR	L_5
-044864                     A   480    L_6:
-                           A   481    ;   25	        if((*string == '0') || (*string
-                           A   482    .LINE 25
-                           A   483    
-044864 DD2706              A   484    	LD	HL,(IX+%6)
-044867 7E                  A   485    	LD	A,(HL)
-044868 47                  A   486    	LD	B,A
-044869 17ED62              A   487    	SEXT	HL
-04486C 68                  A   488    	LD	L,B
-04486D 01300000            A   489    	LD	BC,48
-044871 B7                  A   490    	OR	A,A
-044872 ED42                A   491    	SBC	HL,BC
-044874 28 12               A   492    	JR	Z,L_1
-044876 DD2706              A   493    	LD	HL,(IX+%6)
-044879 7E                  A   494    	LD	A,(HL)
-04487A 47                  A   495    	LD	B,A
-04487B 17ED62              A   496    	SEXT	HL
-04487E 68                  A   497    	LD	L,B
-04487F 01310000            A   498    	LD	BC,49
-044883 B7                  A   499    	OR	A,A
-044884 ED42                A   500    	SBC	HL,BC
-044886 20 0B               A   501    	JR	NZ,L_2
-044888                     A   502    L_1:
-044888 DD2706              A   503    	LD	HL,(IX+%6)
-04488B 7E                  A   504    	LD	A,(HL)
-04488C D630                A   505    	SUB	A,%30
-04488E DD77FF              A   506    	LD	(IX+%FFFFFFFF),A
-                           A   507    ;   26	        else err_str2num = true;
-                           A   508    .LINE 26
-                           A   509    
-044891 18 06               A   510    	JR	L_3
-044893                     A   511    L_2:
-044893 3E01                A   512    	LD	A,%1
-044895 32 8A FF 06         A   513    	LD	(_err_str2num),A
-044899                     A   514    L_3:
-                           A   515    ;   27	        result = (result << 1) | x;
-                           A   516    .LINE 27
-                           A   517    
-044899 DD07FB              A   518    	LD	BC,(IX+%FFFFFFFB)
-04489C DD7EFE              A   519    	LD	A,(IX+%FFFFFFFE)
-04489F 2E01                A   520    	LD	L,%1
-0448A1 CD 30 64 04         A   521    	CALL	__lshl
-0448A5 DD0FF8              A   522    	LD	(IX+%FFFFFFF8),BC
-0448A8 5F                  A   523    	LD	E,A
-0448A9 B7ED62              A   524    	UEXT	HL
-0448AC DD6EFF              A   525    	LD	L,(IX+%FFFFFFFF)
-0448AF E5C1                A   526    	LD	BC,HL
-0448B1 7C                  A   527    	LD	A,H
-0448B2 DD27F8              A   528    	LD	HL,(IX+%FFFFFFF8)
-0448B5 CD AB 60 04         A   529    	CALL	__lor
-0448B9 DD2FFB              A   530    	LD	(IX+%FFFFFFFB),HL
-0448BC DD73FE              A   531    	LD	(IX+%FFFFFFFE),E
-                           A   532    ;   28	        string++;
-                           A   533    .LINE 28
-                           A   534    
-0448BF DD0706              A   535    	LD	BC,(IX+%6)
-0448C2 03                  A   536    	INC	BC
-0448C3 DD0F06              A   537    	LD	(IX+%6),BC
-                           A   538    ;   29	    }
-0448C6                     A   539    L_5:
-                           A   540    .LINE 29
-                           A   541    
-0448C6 DD2706              A   542    	LD	HL,(IX+%6)
-0448C9 7E                  A   543    	LD	A,(HL)
-0448CA B7                  A   544    	OR	A,A
-0448CB 20 97               A   545    	JR	NZ,L_6
-                           A   546    ;   30	    return result;
-                           A   547    .LINE 30
+04460C DDE5                A   457    	PUSH	IX
+04460E DD210000 00         A   458    	LD	IX,0
+044613 DD39                A   459    	ADD	IX,SP
+044615 C5                  A   460    	PUSH	BC
+044616 3B                  A   461    	DEC	SP
+                           A   462    ;   21	    int24_t result = 0;
+                           A   463    .LINE 21
+                           A   464    
+044617 01000000            A   465    	LD	BC,0
+04461B DD0FFC              A   466    	LD	(IX+%FFFFFFFC),BC
+                           A   467    ;   22	    uint8_t x = 0;
+                           A   468    .LINE 22
+                           A   469    
+04461E DD36FF00            A   470    	LD	(IX+%FFFFFFFF),%0
+                           A   471    ;   23	
+                           A   472    ;   24	    while(*string) {
+                           A   473    .LINE 24
+                           A   474    
+044622 18 54               A   475    	JR	L_5
+044624                     A   476    L_6:
+                           A   477    ;   25	        if((*string == '0') || (*string
+                           A   478    .LINE 25
+                           A   479    
+044624 DD2706              A   480    	LD	HL,(IX+%6)
+044627 7E                  A   481    	LD	A,(HL)
+044628 47                  A   482    	LD	B,A
+044629 17ED62              A   483    	SEXT	HL
+04462C 68                  A   484    	LD	L,B
+04462D 01300000            A   485    	LD	BC,48
+044631 B7                  A   486    	OR	A,A
+044632 ED42                A   487    	SBC	HL,BC
+044634 28 12               A   488    	JR	Z,L_1
+044636 DD2706              A   489    	LD	HL,(IX+%6)
+044639 7E                  A   490    	LD	A,(HL)
+04463A 47                  A   491    	LD	B,A
+04463B 17ED62              A   492    	SEXT	HL
+04463E 68                  A   493    	LD	L,B
+04463F 01310000            A   494    	LD	BC,49
+044643 B7                  A   495    	OR	A,A
+044644 ED42                A   496    	SBC	HL,BC
+044646 20 0B               A   497    	JR	NZ,L_2
+044648                     A   498    L_1:
+044648 DD2706              A   499    	LD	HL,(IX+%6)
+04464B 7E                  A   500    	LD	A,(HL)
+04464C D630                A   501    	SUB	A,%30
+04464E DD77FF              A   502    	LD	(IX+%FFFFFFFF),A
+                           A   503    ;   26	        else err_str2num = true;
+                           A   504    .LINE 26
+                           A   505    
+044651 18 06               A   506    	JR	L_3
+044653                     A   507    L_2:
+044653 3E01                A   508    	LD	A,%1
+044655 32 43 FC 06         A   509    	LD	(_err_str2num),A
+044659                     A   510    L_3:
+                           A   511    ;   27	        result = (result << 1) | x;
+                           A   512    .LINE 27
+                           A   513    
+044659 DD27FC              A   514    	LD	HL,(IX+%FFFFFFFC)
+04465C 29                  A   515    	ADD	HL,HL
+04465D E5D1                A   516    	LD	DE,HL
+04465F DD7EFF              A   517    	LD	A,(IX+%FFFFFFFF)
+044662 B7ED62              A   518    	UEXT	HL
+044665 6F                  A   519    	LD	L,A
+044666 E5C1                A   520    	LD	BC,HL
+044668 D5E1                A   521    	LD	HL,DE
+04466A CD AF 59 04         A   522    	CALL	__ior
+04466E DD2FFC              A   523    	LD	(IX+%FFFFFFFC),HL
+                           A   524    ;   28	        string++;
+                           A   525    .LINE 28
+                           A   526    
+044671 DD0706              A   527    	LD	BC,(IX+%6)
+044674 03                  A   528    	INC	BC
+044675 DD0F06              A   529    	LD	(IX+%6),BC
+                           A   530    ;   29	    }
+044678                     A   531    L_5:
+                           A   532    .LINE 29
+                           A   533    
+044678 DD2706              A   534    	LD	HL,(IX+%6)
+04467B 7E                  A   535    	LD	A,(HL)
+04467C B7                  A   536    	OR	A,A
+04467D 20 A5               A   537    	JR	NZ,L_6
+                           A   538    ;   30	    return result;
+                           A   539    .LINE 30
+                           A   540    
+04467F DD27FC              A   541    	LD	HL,(IX+%FFFFFFFC)
+                           A   542    ;   31	}
+                           A   543    .LINE 31
+                           A   544    
+044682 DDF9                A   545    	LD	SP,IX
+044684 DDE1                A   546    	POP	IX
+044686 C9                  A   547    	RET	
                            A   548    
-0448CD DD27FB              A   549    	LD	HL,(IX+%FFFFFFFB)
-0448D0 DD5EFE              A   550    	LD	E,(IX+%FFFFFFFE)
-                           A   551    ;   31	}
-                           A   552    .LINE 31
-                           A   553    
-0448D3 DDF9                A   554    	LD	SP,IX
-0448D5 DDE1                A   555    	POP	IX
-0448D7 C9                  A   556    	RET	
+                           A   549    
+                           A   550    ;**************************** _str2bin ********
+                           A   551    ;Name                         Addr/Register   S
+                           A   552    ;_err_str2num                        STATIC    
+                           A   553    ;result                                IX-4    
+                           A   554    ;x                                     IX-1    
+                           A   555    ;string                                IX+6    
+                           A   556    
                            A   557    
-                           A   558    
-                           A   559    ;**************************** _str2bin ********
-                           A   560    ;Name                         Addr/Register   S
-                           A   561    ;_err_str2num                        STATIC    
-                           A   562    ;result                                IX-5    
-                           A   563    ;x                                     IX-1    
-                           A   564    ;string                                IX+6    
-                           A   565    
-                           A   566    
-                           A   567    ; Stack Frame Size: 17 (bytes)
-                           A   568    ;       Spill Code: 0 (instruction)
+                           A   558    ; Stack Frame Size: 13 (bytes)
+                           A   559    ;       Spill Code: 0 (instruction)
+                           A   560    
+                           A   561    
+                           A   562    .ENDFUNC "str2bin",31,"_str2bin"
+                           A   563    ;   32	
+                           A   564    ;   33	// transform a hex string to a int24_t 
+                           A   565    ;   34	// string must end with 0 and contain o
+                           A   566    ;   35	int24_t str2hex(char *string) {
+044687                     A   567    _str2hex:
+                           A   568    .DEFINE "_str2hex"
                            A   569    
-                           A   570    
-                           A   571    .ENDFUNC "str2bin",31,"_str2bin"
-                           A   572    ;   32	
-                           A   573    ;   33	// transform a hex string to a uint32_t
-                           A   574    ;   34	// string must end with 0 and contain o
-                           A   575    ;   35	int32_t str2hex(char *string) {
-0448D8                     A   576    _str2hex:
-                           A   577    .DEFINE "_str2hex"
-                           A   578    
-                           A   579    .VALUE _str2hex
-                           A   580    
-                           A   581    .CLASS 2
-                           A   582    
-                           A   583    .TYPE 69
-                           A   584    
-                           A   585    .ENDEF
-                           A   586    
-                           A   587    .BEGFUNC "str2hex",35,"_str2hex"
-                           A   588    
-                           A   589    .LINE 35
-                           A   590    
-                           A   591    .DEFINE "string"
-                           A   592    
-                           A   593    .CLASS 65
-                           A   594    
-                           A   595    .VALUE 6
-                           A   596    
-                           A   597    .TYPE 34
-                           A   598    
-                           A   599    .ENDEF
-                           A   600    
-                           A   601    .DEFINE "c"
-                           A   602    
-                           A   603    .CLASS 65
-                           A   604    
-                           A   605    .VALUE -1
-                           A   606    
-                           A   607    .TYPE 2
-                           A   608    
-                           A   609    .ENDEF
-                           A   610    
-                           A   611    .DEFINE "x"
-                           A   612    
-                           A   613    .CLASS 65
-                           A   614    
-                           A   615    .VALUE -2
-                           A   616    
-                           A   617    .TYPE 12
-                           A   618    
-                           A   619    .ENDEF
-                           A   620    
-                           A   621    .DEFINE "result"
-                           A   622    
-                           A   623    .CLASS 65
-                           A   624    
-                           A   625    .VALUE -6
-                           A   626    
-                           A   627    .TYPE 5
-                           A   628    
-                           A   629    .ENDEF
+                           A   570    .VALUE _str2hex
+                           A   571    
+                           A   572    .CLASS 2
+                           A   573    
+                           A   574    .TYPE 68
+                           A   575    
+                           A   576    .ENDEF
+                           A   577    
+                           A   578    .BEGFUNC "str2hex",35,"_str2hex"
+                           A   579    
+                           A   580    .LINE 35
+                           A   581    
+                           A   582    .DEFINE "string"
+                           A   583    
+                           A   584    .CLASS 65
+                           A   585    
+                           A   586    .VALUE 6
+                           A   587    
+                           A   588    .TYPE 34
+                           A   589    
+                           A   590    .ENDEF
+                           A   591    
+                           A   592    .DEFINE "c"
+                           A   593    
+                           A   594    .CLASS 65
+                           A   595    
+                           A   596    .VALUE -1
+                           A   597    
+                           A   598    .TYPE 2
+                           A   599    
+                           A   600    .ENDEF
+                           A   601    
+                           A   602    .DEFINE "x"
+                           A   603    
+                           A   604    .CLASS 65
+                           A   605    
+                           A   606    .VALUE -2
+                           A   607    
+                           A   608    .TYPE 12
+                           A   609    
+                           A   610    .ENDEF
+                           A   611    
+                           A   612    .DEFINE "result"
+                           A   613    
+                           A   614    .CLASS 65
+                           A   615    
+                           A   616    .VALUE -5
+                           A   617    
+                           A   618    .TYPE 4
+                           A   619    
+                           A   620    .ENDEF
+                           A   621    
+044687 DDE5                A   622    	PUSH	IX
+044689 DD210000 00         A   623    	LD	IX,0
+04468E DD39                A   624    	ADD	IX,SP
+044690 C5                  A   625    	PUSH	BC
+044691 3B                  A   626    	DEC	SP
+044692 3B                  A   627    	DEC	SP
+                           A   628    ;   36	    int24_t result = 0;
+                           A   629    .LINE 36
                            A   630    
-0448D8 DDE5                A   631    	PUSH	IX
-0448DA DD210000 00         A   632    	LD	IX,0
-0448DF DD39                A   633    	ADD	IX,SP
-0448E1 C5                  A   634    	PUSH	BC
-0448E2 C5                  A   635    	PUSH	BC
-0448E3 C5                  A   636    	PUSH	BC
-                           A   637    ;   36	    int32_t result = 0;
-                           A   638    .LINE 36
-                           A   639    
-0448E4 01000000            A   640    	LD	BC,0
-0448E8 AF                  A   641    	XOR	A,A
-0448E9 DD0FFA              A   642    	LD	(IX+%FFFFFFFA),BC
-0448EC DD77FD              A   643    	LD	(IX+%FFFFFFFD),A
-                           A   644    ;   37	    char c;
-                           A   645    ;   38	    uint8_t x = 0;
-                           A   646    .LINE 38
-                           A   647    
-0448EF DD36FE00            A   648    	LD	(IX+%FFFFFFFE),%0
-                           A   649    ;   39	
-                           A   650    ;   40	    while(*string) {
-                           A   651    .LINE 40
+044693 01000000            A   631    	LD	BC,0
+044697 DD0FFB              A   632    	LD	(IX+%FFFFFFFB),BC
+                           A   633    ;   37	    char c;
+                           A   634    ;   38	    uint8_t x = 0;
+                           A   635    .LINE 38
+                           A   636    
+04469A DD36FE00            A   637    	LD	(IX+%FFFFFFFE),%0
+                           A   638    ;   39	
+                           A   639    ;   40	    while(*string) {
+                           A   640    .LINE 40
+                           A   641    
+04469E 18 75               A   642    	JR	L_17
+0446A0                     A   643    L_18:
+                           A   644    ;   41	        c = *string;
+                           A   645    .LINE 41
+                           A   646    
+0446A0 DD2706              A   647    	LD	HL,(IX+%6)
+0446A3 7E                  A   648    	LD	A,(HL)
+0446A4 DD77FF              A   649    	LD	(IX+%FFFFFFFF),A
+                           A   650    ;   42	        if((c >= '0') && (c <= '9')) { 
+                           A   651    .LINE 42
                            A   652    
-0448F3 C3 77 49 04         A   653    	JR	L_17
-0448F7                     A   654    L_18:
-                           A   655    ;   41	        c = *string;
-                           A   656    .LINE 41
-                           A   657    
-0448F7 DD2706              A   658    	LD	HL,(IX+%6)
-0448FA 7E                  A   659    	LD	A,(HL)
-0448FB DD77FF              A   660    	LD	(IX+%FFFFFFFF),A
-                           A   661    ;   42	        if((c >= '0') && (c <= '9')) { 
-                           A   662    .LINE 42
-                           A   663    
-0448FE FE30                A   664    	CP	A,%30
-044900 FA 1B 49 04         A   665    	JP	M,L_14
-044904 3E39                A   666    	LD	A,%39
-044906 DDBEFF              A   667    	CP	A,(IX+%FFFFFFFF)
-044909 CD 15 5A 04         A   668    	CALL	__setflag
-04490D FA 1B 49 04         A   669    	JP	M,L_14
-044911 DD7EFF              A   670    	LD	A,(IX+%FFFFFFFF)
-044914 D630                A   671    	SUB	A,%30
-044916 DD77FE              A   672    	LD	(IX+%FFFFFFFE),A
-                           A   673    ;   43	        else {
-                           A   674    .LINE 43
+0446A7 FE30                A   653    	CP	A,%30
+0446A9 FA C4 46 04         A   654    	JP	M,L_14
+0446AD 3E39                A   655    	LD	A,%39
+0446AF DDBEFF              A   656    	CP	A,(IX+%FFFFFFFF)
+0446B2 CD 38 57 04         A   657    	CALL	__setflag
+0446B6 FA C4 46 04         A   658    	JP	M,L_14
+0446BA DD7EFF              A   659    	LD	A,(IX+%FFFFFFFF)
+0446BD D630                A   660    	SUB	A,%30
+0446BF DD77FE              A   661    	LD	(IX+%FFFFFFFE),A
+                           A   662    ;   43	        else {
+                           A   663    .LINE 43
+                           A   664    
+0446C2 18 2F               A   665    	JR	L_15
+0446C4                     A   666    L_14:
+                           A   667    ;   44	            c = c & 0xDF ; // toupper()
+                           A   668    .LINE 44
+                           A   669    
+0446C4 DD7EFF              A   670    	LD	A,(IX+%FFFFFFFF)
+0446C7 CBAF                A   671    	RES	%5,A
+0446C9 DD77FF              A   672    	LD	(IX+%FFFFFFFF),A
+                           A   673    ;   45	            if((c >= 'A') && (c <= 'F')
+                           A   674    .LINE 45
                            A   675    
-044919 18 2F               A   676    	JR	L_15
-04491B                     A   677    L_14:
-                           A   678    ;   44	            c = c & 0xDF ; // toupper()
-                           A   679    .LINE 44
-                           A   680    
-04491B DD7EFF              A   681    	LD	A,(IX+%FFFFFFFF)
-04491E CBAF                A   682    	RES	%5,A
-044920 DD77FF              A   683    	LD	(IX+%FFFFFFFF),A
-                           A   684    ;   45	            if((c >= 'A') && (c <= 'F')
-                           A   685    .LINE 45
-                           A   686    
-044923 FE41                A   687    	CP	A,%41
-044925 CD 15 5A 04         A   688    	CALL	__setflag
-044929 FA 44 49 04         A   689    	JP	M,L_12
-04492D 3E46                A   690    	LD	A,%46
-04492F DDBEFF              A   691    	CP	A,(IX+%FFFFFFFF)
-044932 CD 15 5A 04         A   692    	CALL	__setflag
-044936 FA 44 49 04         A   693    	JP	M,L_12
-04493A DD7EFF              A   694    	LD	A,(IX+%FFFFFFFF)
-04493D C6C9                A   695    	ADD	A,%FFFFFFC9
-04493F DD77FE              A   696    	LD	(IX+%FFFFFFFE),A
-                           A   697    ;   46	        else err_str2num = true;
-                           A   698    .LINE 46
+0446CC FE41                A   676    	CP	A,%41
+0446CE CD 38 57 04         A   677    	CALL	__setflag
+0446D2 FA ED 46 04         A   678    	JP	M,L_12
+0446D6 3E46                A   679    	LD	A,%46
+0446D8 DDBEFF              A   680    	CP	A,(IX+%FFFFFFFF)
+0446DB CD 38 57 04         A   681    	CALL	__setflag
+0446DF FA ED 46 04         A   682    	JP	M,L_12
+0446E3 DD7EFF              A   683    	LD	A,(IX+%FFFFFFFF)
+0446E6 C6C9                A   684    	ADD	A,%FFFFFFC9
+0446E8 DD77FE              A   685    	LD	(IX+%FFFFFFFE),A
+                           A   686    ;   46	        else err_str2num = true;
+                           A   687    .LINE 46
+                           A   688    
+0446EB 18 06               A   689    	JR	L_15
+0446ED                     A   690    L_12:
+0446ED 3E01                A   691    	LD	A,%1
+0446EF 32 43 FC 06         A   692    	LD	(_err_str2num),A
+                           A   693    ;   47	        }
+0446F3                     A   694    L_15:
+                           A   695    .LINE 47
+                           A   696    
+                           A   697    ;   48	        result = (result << 4) | x;
+                           A   698    .LINE 48
                            A   699    
-044942 18 06               A   700    	JR	L_15
-044944                     A   701    L_12:
-044944 3E01                A   702    	LD	A,%1
-044946 32 8A FF 06         A   703    	LD	(_err_str2num),A
-                           A   704    ;   47	        }
-04494A                     A   705    L_15:
-                           A   706    .LINE 47
-                           A   707    
-                           A   708    ;   48	        result = (result << 4) | x;
-                           A   709    .LINE 48
-                           A   710    
-04494A DD07FA              A   711    	LD	BC,(IX+%FFFFFFFA)
-04494D DD7EFD              A   712    	LD	A,(IX+%FFFFFFFD)
-044950 2E04                A   713    	LD	L,%4
-044952 CD 30 64 04         A   714    	CALL	__lshl
-044956 DD0FF7              A   715    	LD	(IX+%FFFFFFF7),BC
-044959 5F                  A   716    	LD	E,A
-04495A B7ED62              A   717    	UEXT	HL
-04495D DD6EFE              A   718    	LD	L,(IX+%FFFFFFFE)
-044960 E5C1                A   719    	LD	BC,HL
-044962 7C                  A   720    	LD	A,H
-044963 DD27F7              A   721    	LD	HL,(IX+%FFFFFFF7)
-044966 CD AB 60 04         A   722    	CALL	__lor
-04496A DD2FFA              A   723    	LD	(IX+%FFFFFFFA),HL
-04496D DD73FD              A   724    	LD	(IX+%FFFFFFFD),E
-                           A   725    ;   49	        string++;
-                           A   726    .LINE 49
-                           A   727    
-044970 DD0706              A   728    	LD	BC,(IX+%6)
-044973 03                  A   729    	INC	BC
-044974 DD0F06              A   730    	LD	(IX+%6),BC
-                           A   731    ;   50	    }
-044977                     A   732    L_17:
-                           A   733    .LINE 50
-                           A   734    
-044977 DD2706              A   735    	LD	HL,(IX+%6)
-04497A 7E                  A   736    	LD	A,(HL)
-04497B B7                  A   737    	OR	A,A
-04497C C2 F7 48 04         A   738    	JR	NZ,L_18
-                           A   739    ;   51	    return result;
-                           A   740    .LINE 51
-                           A   741    
-044980 DD27FA              A   742    	LD	HL,(IX+%FFFFFFFA)
-044983 DD5EFD              A   743    	LD	E,(IX+%FFFFFFFD)
-                           A   744    ;   52	}
-                           A   745    .LINE 52
+0446F3 DD27FB              A   700    	LD	HL,(IX+%FFFFFFFB)
+0446F6 29                  A   701    	ADD	HL,HL
+0446F7 29                  A   702    	ADD	HL,HL
+0446F8 29                  A   703    	ADD	HL,HL
+0446F9 29                  A   704    	ADD	HL,HL
+0446FA E5D1                A   705    	LD	DE,HL
+0446FC DD7EFE              A   706    	LD	A,(IX+%FFFFFFFE)
+0446FF B7ED62              A   707    	UEXT	HL
+044702 6F                  A   708    	LD	L,A
+044703 E5C1                A   709    	LD	BC,HL
+044705 D5E1                A   710    	LD	HL,DE
+044707 CD AF 59 04         A   711    	CALL	__ior
+04470B DD2FFB              A   712    	LD	(IX+%FFFFFFFB),HL
+                           A   713    ;   49	        string++;
+                           A   714    .LINE 49
+                           A   715    
+04470E DD0706              A   716    	LD	BC,(IX+%6)
+044711 03                  A   717    	INC	BC
+044712 DD0F06              A   718    	LD	(IX+%6),BC
+                           A   719    ;   50	    }
+044715                     A   720    L_17:
+                           A   721    .LINE 50
+                           A   722    
+044715 DD2706              A   723    	LD	HL,(IX+%6)
+044718 7E                  A   724    	LD	A,(HL)
+044719 B7                  A   725    	OR	A,A
+04471A 20 84               A   726    	JR	NZ,L_18
+                           A   727    ;   51	    return result;
+                           A   728    .LINE 51
+                           A   729    
+04471C DD27FB              A   730    	LD	HL,(IX+%FFFFFFFB)
+                           A   731    ;   52	}
+                           A   732    .LINE 52
+                           A   733    
+04471F DDF9                A   734    	LD	SP,IX
+044721 DDE1                A   735    	POP	IX
+044723 C9                  A   736    	RET	
+                           A   737    
+                           A   738    
+                           A   739    ;**************************** _str2hex ********
+                           A   740    ;Name                         Addr/Register   S
+                           A   741    ;_err_str2num                        STATIC    
+                           A   742    ;result                                IX-5    
+                           A   743    ;x                                     IX-2    
+                           A   744    ;c                                     IX-1    
+                           A   745    ;string                                IX+6    
                            A   746    
-044986 DDF9                A   747    	LD	SP,IX
-044988 DDE1                A   748    	POP	IX
-04498A C9                  A   749    	RET	
+                           A   747    
+                           A   748    ; Stack Frame Size: 14 (bytes)
+                           A   749    ;       Spill Code: 0 (instruction)
                            A   750    
                            A   751    
-                           A   752    ;**************************** _str2hex ********
-                           A   753    ;Name                         Addr/Register   S
-                           A   754    ;_err_str2num                        STATIC    
-                           A   755    ;result                                IX-6    
-                           A   756    ;x                                     IX-2    
-                           A   757    ;c                                     IX-1    
-                           A   758    ;string                                IX+6    
+                           A   752    .ENDFUNC "str2hex",52,"_str2hex"
+                           A   753    ;   53	
+                           A   754    ;   54	// transform a hex string to a int24_t 
+                           A   755    ;   55	// string must end with 0 and contain o
+                           A   756    ;   56	int24_t str2dec(char *string) {
+044724                     A   757    _str2dec:
+                           A   758    .DEFINE "_str2dec"
                            A   759    
-                           A   760    
-                           A   761    ; Stack Frame Size: 18 (bytes)
-                           A   762    ;       Spill Code: 0 (instruction)
+                           A   760    .VALUE _str2dec
+                           A   761    
+                           A   762    .CLASS 2
                            A   763    
-                           A   764    
-                           A   765    .ENDFUNC "str2hex",52,"_str2hex"
-                           A   766    ;   53	
-                           A   767    ;   54	// transform a hex string to a uint32_t
-                           A   768    ;   55	// string must end with 0 and contain o
-                           A   769    ;   56	int32_t str2dec(char *string) {
-04498B                     A   770    _str2dec:
-                           A   771    .DEFINE "_str2dec"
-                           A   772    
-                           A   773    .VALUE _str2dec
-                           A   774    
-                           A   775    .CLASS 2
-                           A   776    
-                           A   777    .TYPE 69
-                           A   778    
-                           A   779    .ENDEF
-                           A   780    
-                           A   781    .BEGFUNC "str2dec",56,"_str2dec"
-                           A   782    
-                           A   783    .LINE 56
-                           A   784    
-                           A   785    .DEFINE "string"
-                           A   786    
-                           A   787    .CLASS 65
-                           A   788    
-                           A   789    .VALUE 6
-                           A   790    
-                           A   791    .TYPE 34
-                           A   792    
-                           A   793    .ENDEF
-                           A   794    
-                           A   795    .DEFINE "x"
-                           A   796    
-                           A   797    .CLASS 65
-                           A   798    
-                           A   799    .VALUE -1
-                           A   800    
-                           A   801    .TYPE 12
-                           A   802    
-                           A   803    .ENDEF
-                           A   804    
-                           A   805    .DEFINE "result"
-                           A   806    
-                           A   807    .CLASS 65
-                           A   808    
-                           A   809    .VALUE -5
-                           A   810    
-                           A   811    .TYPE 5
-                           A   812    
-                           A   813    .ENDEF
+                           A   764    .TYPE 68
+                           A   765    
+                           A   766    .ENDEF
+                           A   767    
+                           A   768    .BEGFUNC "str2dec",56,"_str2dec"
+                           A   769    
+                           A   770    .LINE 56
+                           A   771    
+                           A   772    .DEFINE "string"
+                           A   773    
+                           A   774    .CLASS 65
+                           A   775    
+                           A   776    .VALUE 6
+                           A   777    
+                           A   778    .TYPE 34
+                           A   779    
+                           A   780    .ENDEF
+                           A   781    
+                           A   782    .DEFINE "result"
+                           A   783    
+                           A   784    .CLASS 65
+                           A   785    
+                           A   786    .VALUE -3
+                           A   787    
+                           A   788    .TYPE 4
+                           A   789    
+                           A   790    .ENDEF
+                           A   791    
+                           A   792    .DEFINE "x"
+                           A   793    
+                           A   794    .CLASS 65
+                           A   795    
+                           A   796    .VALUE -4
+                           A   797    
+                           A   798    .TYPE 12
+                           A   799    
+                           A   800    .ENDEF
+                           A   801    
+044724 DDE5                A   802    	PUSH	IX
+044726 DD210000 00         A   803    	LD	IX,0
+04472B DD39                A   804    	ADD	IX,SP
+04472D C5                  A   805    	PUSH	BC
+04472E 3B                  A   806    	DEC	SP
+                           A   807    ;   57	    int24_t result = 0;
+                           A   808    .LINE 57
+                           A   809    
+04472F 01000000            A   810    	LD	BC,0
+044733 DD0FFD              A   811    	LD	(IX+%FFFFFFFD),BC
+                           A   812    ;   58	    uint8_t x = 0;
+                           A   813    .LINE 58
                            A   814    
-04498B DDE5                A   815    	PUSH	IX
-04498D DD210000 00         A   816    	LD	IX,0
-044992 DD39                A   817    	ADD	IX,SP
-044994 ED22F5              A   818    	LEA	HL,IX+%FFFFFFF5
-044997 F9                  A   819    	LD	SP,HL
-                           A   820    ;   57	    int32_t result = 0;
-                           A   821    .LINE 57
-                           A   822    
-044998 01000000            A   823    	LD	BC,0
-04499C AF                  A   824    	XOR	A,A
-04499D DD0FFB              A   825    	LD	(IX+%FFFFFFFB),BC
-0449A0 DD77FE              A   826    	LD	(IX+%FFFFFFFE),A
-                           A   827    ;   58	    uint8_t x = 0;
-                           A   828    .LINE 58
-                           A   829    
-0449A3 DD36FF00            A   830    	LD	(IX+%FFFFFFFF),%0
-                           A   831    ;   59	
-                           A   832    ;   60	    while(*string) {
-                           A   833    .LINE 60
-                           A   834    
-0449A7 C3 2D 4A 04         A   835    	JR	L_26
-0449AB                     A   836    L_27:
-                           A   837    ;   61	        if((*string >= '0') && (*string
-                           A   838    .LINE 61
-                           A   839    
-0449AB DD2706              A   840    	LD	HL,(IX+%6)
-0449AE 7E                  A   841    	LD	A,(HL)
-0449AF 47                  A   842    	LD	B,A
-0449B0 17ED62              A   843    	SEXT	HL
-0449B3 68                  A   844    	LD	L,B
-0449B4 01300000            A   845    	LD	BC,48
-0449B8 B7                  A   846    	OR	A,A
-0449B9 ED42                A   847    	SBC	HL,BC
-0449BB FA E4 49 04         A   848    	JP	M,L_23
-0449BF DD2706              A   849    	LD	HL,(IX+%6)
-0449C2 7E                  A   850    	LD	A,(HL)
-0449C3 47                  A   851    	LD	B,A
-0449C4 17ED62              A   852    	SEXT	HL
-0449C7 68                  A   853    	LD	L,B
-0449C8 E5C1                A   854    	LD	BC,HL
-0449CA 21390000            A   855    	LD	HL,57
-0449CE B7                  A   856    	OR	A,A
-0449CF ED42                A   857    	SBC	HL,BC
-0449D1 CD 15 5A 04         A   858    	CALL	__setflag
-0449D5 FA E4 49 04         A   859    	JP	M,L_23
-0449D9 DD2706              A   860    	LD	HL,(IX+%6)
-0449DC 7E                  A   861    	LD	A,(HL)
-0449DD D630                A   862    	SUB	A,%30
-0449DF DD77FF              A   863    	LD	(IX+%FFFFFFFF),A
-                           A   864    ;   62	        else err_str2num = true;
-                           A   865    .LINE 62
-                           A   866    
-0449E2 18 06               A   867    	JR	L_24
-0449E4                     A   868    L_23:
-0449E4 3E01                A   869    	LD	A,%1
-0449E6 32 8A FF 06         A   870    	LD	(_err_str2num),A
-0449EA                     A   871    L_24:
-                           A   872    ;   63	        result = ((result << 1) + (resu
-                           A   873    .LINE 63
-                           A   874    
-0449EA DD07FB              A   875    	LD	BC,(IX+%FFFFFFFB)
-0449ED DD7EFE              A   876    	LD	A,(IX+%FFFFFFFE)
-0449F0 2E01                A   877    	LD	L,%1
-0449F2 CD 30 64 04         A   878    	CALL	__lshl
-0449F6 DD0FF5              A   879    	LD	(IX+%FFFFFFF5),BC
-0449F9 5F                  A   880    	LD	E,A
-0449FA DD07FB              A   881    	LD	BC,(IX+%FFFFFFFB)
-0449FD DD7EFE              A   882    	LD	A,(IX+%FFFFFFFE)
-044A00 2E03                A   883    	LD	L,%3
-044A02 CD 30 64 04         A   884    	CALL	__lshl
-044A06 DD27F5              A   885    	LD	HL,(IX+%FFFFFFF5)
-044A09 CD 06 5A 04         A   886    	CALL	__ladd
-044A0D DD2FF8              A   887    	LD	(IX+%FFFFFFF8),HL
-044A10 B7ED62              A   888    	UEXT	HL
-044A13 DD6EFF              A   889    	LD	L,(IX+%FFFFFFFF)
-044A16 E5C1                A   890    	LD	BC,HL
-044A18 7C                  A   891    	LD	A,H
-044A19 DD27F8              A   892    	LD	HL,(IX+%FFFFFFF8)
-044A1C CD 06 5A 04         A   893    	CALL	__ladd
-044A20 DD2FFB              A   894    	LD	(IX+%FFFFFFFB),HL
-044A23 DD73FE              A   895    	LD	(IX+%FFFFFFFE),E
-                           A   896    ;   64	        string++;
-                           A   897    .LINE 64
+044736 DD36FC00            A   815    	LD	(IX+%FFFFFFFC),%0
+                           A   816    ;   59	
+                           A   817    ;   60	    while(*string) {
+                           A   818    .LINE 60
+                           A   819    
+04473A 18 60               A   820    	JR	L_26
+04473C                     A   821    L_27:
+                           A   822    ;   61	        if((*string >= '0') && (*string
+                           A   823    .LINE 61
+                           A   824    
+04473C DD2706              A   825    	LD	HL,(IX+%6)
+04473F 7E                  A   826    	LD	A,(HL)
+044740 47                  A   827    	LD	B,A
+044741 17ED62              A   828    	SEXT	HL
+044744 68                  A   829    	LD	L,B
+044745 01300000            A   830    	LD	BC,48
+044749 B7                  A   831    	OR	A,A
+04474A ED42                A   832    	SBC	HL,BC
+04474C FA 75 47 04         A   833    	JP	M,L_23
+044750 DD2706              A   834    	LD	HL,(IX+%6)
+044753 7E                  A   835    	LD	A,(HL)
+044754 47                  A   836    	LD	B,A
+044755 17ED62              A   837    	SEXT	HL
+044758 68                  A   838    	LD	L,B
+044759 E5C1                A   839    	LD	BC,HL
+04475B 21390000            A   840    	LD	HL,57
+04475F B7                  A   841    	OR	A,A
+044760 ED42                A   842    	SBC	HL,BC
+044762 CD 38 57 04         A   843    	CALL	__setflag
+044766 FA 75 47 04         A   844    	JP	M,L_23
+04476A DD2706              A   845    	LD	HL,(IX+%6)
+04476D 7E                  A   846    	LD	A,(HL)
+04476E D630                A   847    	SUB	A,%30
+044770 DD77FC              A   848    	LD	(IX+%FFFFFFFC),A
+                           A   849    ;   62	        else err_str2num = true;
+                           A   850    .LINE 62
+                           A   851    
+044773 18 06               A   852    	JR	L_24
+044775                     A   853    L_23:
+044775 3E01                A   854    	LD	A,%1
+044777 32 43 FC 06         A   855    	LD	(_err_str2num),A
+04477B                     A   856    L_24:
+                           A   857    ;   63	        result = ((result << 1) + (resu
+                           A   858    .LINE 63
+                           A   859    
+04477B DD27FD              A   860    	LD	HL,(IX+%FFFFFFFD)
+04477E 29                  A   861    	ADD	HL,HL
+04477F E5C1                A   862    	LD	BC,HL
+044781 DD27FD              A   863    	LD	HL,(IX+%FFFFFFFD)
+044784 29                  A   864    	ADD	HL,HL
+044785 29                  A   865    	ADD	HL,HL
+044786 29                  A   866    	ADD	HL,HL
+044787 09                  A   867    	ADD	HL,BC
+044788 E5C1                A   868    	LD	BC,HL
+04478A DD7EFC              A   869    	LD	A,(IX+%FFFFFFFC)
+04478D B7ED62              A   870    	UEXT	HL
+044790 6F                  A   871    	LD	L,A
+044791 09                  A   872    	ADD	HL,BC
+044792 DD2FFD              A   873    	LD	(IX+%FFFFFFFD),HL
+                           A   874    ;   64	        string++;
+                           A   875    .LINE 64
+                           A   876    
+044795 DD0706              A   877    	LD	BC,(IX+%6)
+044798 03                  A   878    	INC	BC
+044799 DD0F06              A   879    	LD	(IX+%6),BC
+                           A   880    ;   65	    }
+04479C                     A   881    L_26:
+                           A   882    .LINE 65
+                           A   883    
+04479C DD2706              A   884    	LD	HL,(IX+%6)
+04479F 7E                  A   885    	LD	A,(HL)
+0447A0 B7                  A   886    	OR	A,A
+0447A1 20 99               A   887    	JR	NZ,L_27
+                           A   888    ;   66	    return result;
+                           A   889    .LINE 66
+                           A   890    
+0447A3 DD27FD              A   891    	LD	HL,(IX+%FFFFFFFD)
+                           A   892    ;   67	}
+                           A   893    .LINE 67
+                           A   894    
+0447A6 DDF9                A   895    	LD	SP,IX
+0447A8 DDE1                A   896    	POP	IX
+0447AA C9                  A   897    	RET	
                            A   898    
-044A26 DD0706              A   899    	LD	BC,(IX+%6)
-044A29 03                  A   900    	INC	BC
-044A2A DD0F06              A   901    	LD	(IX+%6),BC
-                           A   902    ;   65	    }
-044A2D                     A   903    L_26:
-                           A   904    .LINE 65
-                           A   905    
-044A2D DD2706              A   906    	LD	HL,(IX+%6)
-044A30 7E                  A   907    	LD	A,(HL)
-044A31 B7                  A   908    	OR	A,A
-044A32 C2 AB 49 04         A   909    	JR	NZ,L_27
-                           A   910    ;   66	    return result;
-                           A   911    .LINE 66
-                           A   912    
-044A36 DD27FB              A   913    	LD	HL,(IX+%FFFFFFFB)
-044A39 DD5EFE              A   914    	LD	E,(IX+%FFFFFFFE)
-                           A   915    ;   67	}
-                           A   916    .LINE 67
-                           A   917    
-044A3C DDF9                A   918    	LD	SP,IX
-044A3E DDE1                A   919    	POP	IX
-044A40 C9                  A   920    	RET	
-                           A   921    
+                           A   899    
+                           A   900    ;**************************** _str2dec ********
+                           A   901    ;Name                         Addr/Register   S
+                           A   902    ;_err_str2num                        STATIC    
+                           A   903    ;x                                     IX-4    
+                           A   904    ;result                                IX-3    
+                           A   905    ;string                                IX+6    
+                           A   906    
+                           A   907    
+                           A   908    ; Stack Frame Size: 13 (bytes)
+                           A   909    ;       Spill Code: 0 (instruction)
+                           A   910    
+                           A   911    
+                           A   912    .ENDFUNC "str2dec",67,"_str2dec"
+                           A   913    ;   68	
+                           A   914    ;   69	// Transforms a binary/hexadecimal/deci
+                           A   915    ;   70	// Valid strings are
+                           A   916    ;   71	// BINARY:  0%..., %..., ...b
+                           A   917    ;   72	// HEX:     0x..., ...h, $...
+                           A   918    ;   73	// DECIMAL ...
+                           A   919    ;   74	int24_t str2num(char *string, bool erro
+0447AB                     A   920    _str2num:
+                           A   921    .DEFINE "_str2num"
                            A   922    
-                           A   923    ;**************************** _str2dec ********
-                           A   924    ;Name                         Addr/Register   S
-                           A   925    ;_err_str2num                        STATIC    
-                           A   926    ;result                                IX-5    
-                           A   927    ;x                                     IX-1    
-                           A   928    ;string                                IX+6    
-                           A   929    
+                           A   923    .VALUE _str2num
+                           A   924    
+                           A   925    .CLASS 2
+                           A   926    
+                           A   927    .TYPE 68
+                           A   928    
+                           A   929    .ENDEF
                            A   930    
-                           A   931    ; Stack Frame Size: 20 (bytes)
-                           A   932    ;       Spill Code: 0 (instruction)
-                           A   933    
+                           A   931    .BEGFUNC "str2num",74,"_str2num"
+                           A   932    
+                           A   933    .LINE 74
                            A   934    
-                           A   935    .ENDFUNC "str2dec",67,"_str2dec"
-                           A   936    ;   68	
-                           A   937    ;   69	// Transforms a binary/hexadecimal/deci
-                           A   938    ;   70	// Valid strings are
-                           A   939    ;   71	// BINARY:  0%..., %..., ...b
-                           A   940    ;   72	// HEX:     0x..., ...h, $...
-                           A   941    ;   73	// DECIMAL ...
-                           A   942    ;   74	int32_t str2num(char *string, bool erro
-044A41                     A   943    _str2num:
-                           A   944    .DEFINE "_str2num"
-                           A   945    
-                           A   946    .VALUE _str2num
-                           A   947    
-                           A   948    .CLASS 2
-                           A   949    
-                           A   950    .TYPE 69
-                           A   951    
-                           A   952    .ENDEF
-                           A   953    
-                           A   954    .BEGFUNC "str2num",74,"_str2num"
-                           A   955    
-                           A   956    .LINE 74
-                           A   957    
-                           A   958    .DEFINE "string"
-                           A   959    
-                           A   960    .CLASS 65
-                           A   961    
-                           A   962    .VALUE 6
-                           A   963    
-                           A   964    .TYPE 34
-                           A   965    
-                           A   966    .ENDEF
-                           A   967    
-                           A   968    .DEFINE "errorhalt"
-                           A   969    
-                           A   970    .CLASS 65
-                           A   971    
-                           A   972    .VALUE 9
-                           A   973    
-                           A   974    .TYPE 12
-                           A   975    
-                           A   976    .ENDEF
-                           A   977    
-                           A   978    .DEFINE "ptr"
-                           A   979    
-                           A   980    .CLASS 65
-                           A   981    
-                           A   982    .VALUE -3
-                           A   983    
-                           A   984    .TYPE 34
-                           A   985    
-                           A   986    .ENDEF
-                           A   987    
-                           A   988    .DEFINE "state"
-                           A   989    
-                           A   990    .CLASS 65
-                           A   991    
-                           A   992    .VALUE -4
-                           A   993    
-                           A   994    .TYPE 12
-                           A   995    
-                           A   996    .ENDEF
-                           A   997    
-                           A   998    .DEFINE "result"
-                           A   999    
-                           A  1000    .CLASS 65
-                           A  1001    
-                           A  1002    .VALUE -8
-                           A  1003    
-                           A  1004    .TYPE 5
-                           A  1005    
-                           A  1006    .ENDEF
+                           A   935    .DEFINE "string"
+                           A   936    
+                           A   937    .CLASS 65
+                           A   938    
+                           A   939    .VALUE 6
+                           A   940    
+                           A   941    .TYPE 34
+                           A   942    
+                           A   943    .ENDEF
+                           A   944    
+                           A   945    .DEFINE "errorhalt"
+                           A   946    
+                           A   947    .CLASS 65
+                           A   948    
+                           A   949    .VALUE 9
+                           A   950    
+                           A   951    .TYPE 12
+                           A   952    
+                           A   953    .ENDEF
+                           A   954    
+                           A   955    .DEFINE "ptr"
+                           A   956    
+                           A   957    .CLASS 65
+                           A   958    
+                           A   959    .VALUE -3
+                           A   960    
+                           A   961    .TYPE 34
+                           A   962    
+                           A   963    .ENDEF
+                           A   964    
+                           A   965    .DEFINE "state"
+                           A   966    
+                           A   967    .CLASS 65
+                           A   968    
+                           A   969    .VALUE -4
+                           A   970    
+                           A   971    .TYPE 12
+                           A   972    
+                           A   973    .ENDEF
+                           A   974    
+                           A   975    .DEFINE "result"
+                           A   976    
+                           A   977    .CLASS 65
+                           A   978    
+                           A   979    .VALUE -7
+                           A   980    
+                           A   981    .TYPE 4
+                           A   982    
+                           A   983    .ENDEF
+                           A   984    
+                           A   985    .DEFINE "start"
+                           A   986    
+                           A   987    .CLASS 65
+                           A   988    
+                           A   989    .VALUE -10
+                           A   990    
+                           A   991    .TYPE 34
+                           A   992    
+                           A   993    .ENDEF
+                           A   994    
+0447AB DDE5                A   995    	PUSH	IX
+0447AD DD210000 00         A   996    	LD	IX,0
+0447B2 DD39                A   997    	ADD	IX,SP
+0447B4 ED22ED              A   998    	LEA	HL,IX+%FFFFFFED
+0447B7 F9                  A   999    	LD	SP,HL
+                           A  1000    ;   75	    char *ptr = string;
+                           A  1001    .LINE 75
+                           A  1002    
+0447B8 DD0706              A  1003    	LD	BC,(IX+%6)
+0447BB DD0FFD              A  1004    	LD	(IX+%FFFFFFFD),BC
+                           A  1005    ;   76	    char *start = string;
+                           A  1006    .LINE 76
                            A  1007    
-                           A  1008    .DEFINE "start"
-                           A  1009    
-                           A  1010    .CLASS 65
-                           A  1011    
-                           A  1012    .VALUE -11
-                           A  1013    
-                           A  1014    .TYPE 34
-                           A  1015    
-                           A  1016    .ENDEF
+0447BE DD0706              A  1008    	LD	BC,(IX+%6)
+0447C1 DD0FF6              A  1009    	LD	(IX+%FFFFFFF6),BC
+                           A  1010    ;   77	    int24_t result = 0;
+                           A  1011    .LINE 77
+                           A  1012    
+0447C4 01000000            A  1013    	LD	BC,0
+0447C8 DD0FF9              A  1014    	LD	(IX+%FFFFFFF9),BC
+                           A  1015    ;   78	    uint8_t state = BASESELECT;
+                           A  1016    .LINE 78
                            A  1017    
-044A41 DDE5                A  1018    	PUSH	IX
-044A43 DD210000 00         A  1019    	LD	IX,0
-044A48 DD39                A  1020    	ADD	IX,SP
-044A4A ED22EC              A  1021    	LEA	HL,IX+%FFFFFFEC
-044A4D F9                  A  1022    	LD	SP,HL
-                           A  1023    ;   75	    char *ptr = string;
-                           A  1024    .LINE 75
-                           A  1025    
-044A4E DD0706              A  1026    	LD	BC,(IX+%6)
-044A51 DD0FFD              A  1027    	LD	(IX+%FFFFFFFD),BC
-                           A  1028    ;   76	    char *start = string;
-                           A  1029    .LINE 76
-                           A  1030    
-044A54 DD0706              A  1031    	LD	BC,(IX+%6)
-044A57 DD0FF5              A  1032    	LD	(IX+%FFFFFFF5),BC
-                           A  1033    ;   77	    int32_t result = 0;
-                           A  1034    .LINE 77
-                           A  1035    
-044A5A 01000000            A  1036    	LD	BC,0
-044A5E AF                  A  1037    	XOR	A,A
-044A5F DD0FF8              A  1038    	LD	(IX+%FFFFFFF8),BC
-044A62 DD77FB              A  1039    	LD	(IX+%FFFFFFFB),A
-                           A  1040    ;   78	    uint8_t state = BASESELECT;
-                           A  1041    .LINE 78
-                           A  1042    
-044A65 DD36FC00            A  1043    	LD	(IX+%FFFFFFFC),%0
-                           A  1044    ;   79	
-                           A  1045    ;   80	    err_str2num = false;
-                           A  1046    .LINE 80
+0447CB DD36FC00            A  1018    	LD	(IX+%FFFFFFFC),%0
+                           A  1019    ;   79	
+                           A  1020    ;   80	    err_str2num = false;
+                           A  1021    .LINE 80
+                           A  1022    
+0447CF AF                  A  1023    	XOR	A,A
+0447D0 32 43 FC 06         A  1024    	LD	(_err_str2num),A
+                           A  1025    ;   81	
+                           A  1026    ;   82	    while(1) {
+0447D4                     A  1027    L_106:
+                           A  1028    .LINE 82
+                           A  1029    
+                           A  1030    ;   83	        switch(state) {
+                           A  1031    .LINE 83
+                           A  1032    
+0447D4 DD7EFC              A  1033    	LD	A,(IX+%FFFFFFFC)
+0447D7 B7ED62              A  1034    	UEXT	HL
+0447DA 6F                  A  1035    	LD	L,A
+0447DB CD A4 57 04         A  1036    	CALL	__seqcaseD
+0447DF E9                  A  1037    	JP	(HL)
+0447E0                     A  1038    L__14:
+0447E0 0600                A  1039    	DW	6
+0447E2 0000                A  1040    	DW	0
+0447E4 00                  A  1041    	DB	0
+0447E5 014804              A  1042    	DW24	L_31	
+                           A  1043    
+0447E8 FA4804              A  1044    	DW24	L_54	
+                           A  1045    
+0447EB CD4904              A  1046    	DW24	L_72	
                            A  1047    
-044A69 AF                  A  1048    	XOR	A,A
-044A6A 32 8A FF 06         A  1049    	LD	(_err_str2num),A
-                           A  1050    ;   81	
-                           A  1051    ;   82	    while(1) {
-044A6E                     A  1052    L_106:
-                           A  1053    .LINE 82
-                           A  1054    
-                           A  1055    ;   83	        switch(state) {
-                           A  1056    .LINE 83
-                           A  1057    
-044A6E DD7EFC              A  1058    	LD	A,(IX+%FFFFFFFC)
-044A71 B7ED62              A  1059    	UEXT	HL
-044A74 6F                  A  1060    	LD	L,A
-044A75 CD 81 5A 04         A  1061    	CALL	__seqcaseD
-044A79 E9                  A  1062    	JP	(HL)
-044A7A                     A  1063    L__14:
-044A7A 0600                A  1064    	DW	6
-044A7C 0000                A  1065    	DW	0
-044A7E 00                  A  1066    	DB	0
-044A7F 9D4A04              A  1067    	DW24	L_31	
-                           A  1068    
-044A82 A24B04              A  1069    	DW24	L_54	
+0447EE FF4904              A  1048    	DW24	L_79	
+                           A  1049    
+0447F1 FA4704              A  1050    	DW24	L_30	
+                           A  1051    
+0447F4 FD4A04              A  1052    	DW24	L_101	
+                           A  1053    
+0447F7 D44704              A  1054    	DW24	L_106	
+                           A  1055    
+                           A  1056    ;   84	            case(DONE):
+0447FA                     A  1057    L_30:
+                           A  1058    .LINE 84
+                           A  1059    
+                           A  1060    ;   85	                return result;
+                           A  1061    .LINE 85
+                           A  1062    
+0447FA B7                  A  1063    	OR	A,A
+0447FB ED62                A  1064    	SBC	HL,HL
+0447FD C3 1D 4B 04         A  1065    	JR	L_107
+                           A  1066    ;   86	                break;
+                           A  1067    ;   87	            case(BASESELECT):
+044801                     A  1068    L_31:
+                           A  1069    .LINE 87
                            A  1070    
-044A85 834C04              A  1071    	DW24	L_72	
-                           A  1072    
-044A88 B54C04              A  1073    	DW24	L_79	
-                           A  1074    
-044A8B 944A04              A  1075    	DW24	L_30	
-                           A  1076    
-044A8E C54D04              A  1077    	DW24	L_101	
-                           A  1078    
-044A91 6E4A04              A  1079    	DW24	L_106	
-                           A  1080    
-                           A  1081    ;   84	            case(DONE):
-044A94                     A  1082    L_30:
-                           A  1083    .LINE 84
-                           A  1084    
-                           A  1085    ;   85	                return result;
-                           A  1086    .LINE 85
-                           A  1087    
-044A94 B7                  A  1088    	OR	A,A
-044A95 ED62                A  1089    	SBC	HL,HL
-044A97 1E00                A  1090    	LD	E,%0
-044A99 C3 E5 4D 04         A  1091    	JR	L_107
-                           A  1092    ;   86	                break;
-                           A  1093    ;   87	            case(BASESELECT):
-044A9D                     A  1094    L_31:
-                           A  1095    .LINE 87
-                           A  1096    
-                           A  1097    ;   88	                switch(*ptr) {
-                           A  1098    .LINE 88
+                           A  1071    ;   88	                switch(*ptr) {
+                           A  1072    .LINE 88
+                           A  1073    
+044801 DD27FD              A  1074    	LD	HL,(IX+%FFFFFFFD)
+044804 7E                  A  1075    	LD	A,(HL)
+044805 47                  A  1076    	LD	B,A
+044806 17ED62              A  1077    	SEXT	HL
+044809 68                  A  1078    	LD	L,B
+04480A CD B7 60 04         A  1079    	CALL	__case8D
+04480E E9                  A  1080    	JP	(HL)
+04480F                     A  1081    L__15:
+04480F 0500                A  1082    	DW	5
+044811 00                  A  1083    	DB	0
+044812 CD4804              A  1084    	DW24	L_49	
+                           A  1085    
+044815 23                  A  1086    	DB	35
+044816 284804              A  1087    	DW24	L_33	
+                           A  1088    
+044819 24                  A  1089    	DB	36
+04481A 284804              A  1090    	DW24	L_32	
+                           A  1091    
+04481D 25                  A  1092    	DB	37
+04481E 734804              A  1093    	DW24	L_40	
+                           A  1094    
+044821 30                  A  1095    	DB	48
+044822 BE4804              A  1096    	DW24	L_47	
+                           A  1097    
+044825 D54804              A  1098    	DW24	L_50	
                            A  1099    
-044A9D DD27FD              A  1100    	LD	HL,(IX+%FFFFFFFD)
-044AA0 7E                  A  1101    	LD	A,(HL)
-044AA1 47                  A  1102    	LD	B,A
-044AA2 17ED62              A  1103    	SEXT	HL
-044AA5 68                  A  1104    	LD	L,B
-044AA6 CD B2 63 04         A  1105    	CALL	__case8D
-044AAA E9                  A  1106    	JP	(HL)
-044AAB                     A  1107    L__15:
-044AAB 0500                A  1108    	DW	5
-044AAD 00                  A  1109    	DB	0
-044AAE 754B04              A  1110    	DW24	L_49	
-                           A  1111    
-044AB1 23                  A  1112    	DB	35
-044AB2 C44A04              A  1113    	DW24	L_33	
-                           A  1114    
-044AB5 24                  A  1115    	DB	36
-044AB6 C44A04              A  1116    	DW24	L_32	
-                           A  1117    
-044AB9 25                  A  1118    	DB	37
-044ABA 154B04              A  1119    	DW24	L_40	
-                           A  1120    
-044ABD 30                  A  1121    	DB	48
-044ABE 664B04              A  1122    	DW24	L_47	
-                           A  1123    
-044AC1 7D4B04              A  1124    	DW24	L_50	
-                           A  1125    
-                           A  1126    ;   89	                    case '$':
-044AC4                     A  1127    L_32:
-                           A  1128    .LINE 89
+                           A  1100    ;   89	                    case '$':
+044828                     A  1101    L_32:
+                           A  1102    .LINE 89
+                           A  1103    
+                           A  1104    ;   90	                    case '#':
+044828                     A  1105    L_33:
+                           A  1106    .LINE 90
+                           A  1107    
+                           A  1108    ;   91	                        if(strlen(ptr+1
+                           A  1109    .LINE 91
+                           A  1110    
+044828 DD07FD              A  1111    	LD	BC,(IX+%FFFFFFFD)
+04482B 03                  A  1112    	INC	BC
+04482C DD0FF3              A  1113    	LD	(IX+%FFFFFFF3),BC
+04482F C5                  A  1114    	PUSH	BC
+044830 CD 41 5A 04         A  1115    	CALL	_strlen
+044834 C1                  A  1116    	POP	BC
+044835 CD C5 5D 04         A  1117    	CALL	__icmpzero
+044839 28 2C               A  1118    	JR	Z,L_38
+                           A  1119    ;   92	                            result = st
+                           A  1120    .LINE 92
+                           A  1121    
+04483B DD07F3              A  1122    	LD	BC,(IX+%FFFFFFF3)
+04483E C5                  A  1123    	PUSH	BC
+04483F CD 87 46 04         A  1124    	CALL	_str2hex
+044843 C1                  A  1125    	POP	BC
+044844 DD2FF9              A  1126    	LD	(IX+%FFFFFFF9),HL
+                           A  1127    ;   93	                            if(err_str2
+                           A  1128    .LINE 93
                            A  1129    
-                           A  1130    ;   90	                    case '#':
-044AC4                     A  1131    L_33:
-                           A  1132    .LINE 90
-                           A  1133    
-                           A  1134    ;   91	                        if(strlen(ptr+1
-                           A  1135    .LINE 91
-                           A  1136    
-044AC4 DD07FD              A  1137    	LD	BC,(IX+%FFFFFFFD)
-044AC7 03                  A  1138    	INC	BC
-044AC8 DD0FF2              A  1139    	LD	(IX+%FFFFFFF2),BC
-044ACB C5                  A  1140    	PUSH	BC
-044ACC CD F9 5C 04         A  1141    	CALL	_strlen
-044AD0 C1                  A  1142    	POP	BC
-044AD1 CD CF 60 04         A  1143    	CALL	__icmpzero
-044AD5 28 32               A  1144    	JR	Z,L_38
-                           A  1145    ;   92	                            result = st
-                           A  1146    .LINE 92
-                           A  1147    
-044AD7 DD07F2              A  1148    	LD	BC,(IX+%FFFFFFF2)
-044ADA C5                  A  1149    	PUSH	BC
-044ADB CD D8 48 04         A  1150    	CALL	_str2hex
-044ADF C1                  A  1151    	POP	BC
-044AE0 DD2FF8              A  1152    	LD	(IX+%FFFFFFF8),HL
-044AE3 DD73FB              A  1153    	LD	(IX+%FFFFFFFB),E
-                           A  1154    ;   93	                            if(err_str2
-                           A  1155    .LINE 93
-                           A  1156    
-044AE6 3A 8A FF 06         A  1157    	LD	A,(_err_str2num)
-044AEA B7                  A  1158    	OR	A,A
-044AEB 28 12               A  1159    	JR	Z,L_36
-044AED DD7E09              A  1160    	LD	A,(IX+%9)
-044AF0 B7                  A  1161    	OR	A,A
-044AF1 28 0C               A  1162    	JR	Z,L_36
-044AF3 21 4A 67 04         A  1163    	LD	HL,_message+9
-044AF7 ED07                A  1164    	LD	BC,(HL)
-044AF9 C5                  A  1165    	PUSH	BC
-044AFA CD A4 4E 04         A  1166    	CALL	_error
-044AFE C1                  A  1167    	POP	BC
-044AFF                     A  1168    L_36:
-                           A  1169    ;   94	                            return resu
-                           A  1170    .LINE 94
+044847 3A 43 FC 06         A  1130    	LD	A,(_err_str2num)
+04484B B7                  A  1131    	OR	A,A
+04484C 28 12               A  1132    	JR	Z,L_36
+04484E DD7E09              A  1133    	LD	A,(IX+%9)
+044851 B7                  A  1134    	OR	A,A
+044852 28 0C               A  1135    	JR	Z,L_36
+044854 21 4B 64 04         A  1136    	LD	HL,_message+9
+044858 ED07                A  1137    	LD	BC,(HL)
+04485A C5                  A  1138    	PUSH	BC
+04485B CD DC 4B 04         A  1139    	CALL	_error
+04485F C1                  A  1140    	POP	BC
+044860                     A  1141    L_36:
+                           A  1142    ;   94	                            return resu
+                           A  1143    .LINE 94
+                           A  1144    
+044860 DD27F9              A  1145    	LD	HL,(IX+%FFFFFFF9)
+044863 C3 1D 4B 04         A  1146    	JR	L_107
+                           A  1147    ;   95	                        }
+                           A  1148    ;   96	                        else {
+044867                     A  1149    L_38:
+                           A  1150    .LINE 96
+                           A  1151    
+                           A  1152    ;   97	                            state = ERR
+                           A  1153    .LINE 97
+                           A  1154    
+044867 DD36FC05            A  1155    	LD	(IX+%FFFFFFFC),%5
+                           A  1156    ;   98	                            errorhalt =
+                           A  1157    .LINE 98
+                           A  1158    
+04486B DD360901            A  1159    	LD	(IX+%9),%1
+                           A  1160    ;   99	                        }
+                           A  1161    ;  100	                        break;
+                           A  1162    .LINE 100
+                           A  1163    
+04486F C3 D4 47 04         A  1164    	JR	L_106
+                           A  1165    ;  101	                    case '%':
+044873                     A  1166    L_40:
+                           A  1167    .LINE 101
+                           A  1168    
+                           A  1169    ;  102	                        if(strlen(ptr+1
+                           A  1170    .LINE 102
                            A  1171    
-044AFF DD27F8              A  1172    	LD	HL,(IX+%FFFFFFF8)
-044B02 DD5EFB              A  1173    	LD	E,(IX+%FFFFFFFB)
-044B05 C3 E5 4D 04         A  1174    	JR	L_107
-                           A  1175    ;   95	                        }
-                           A  1176    ;   96	                        else {
-044B09                     A  1177    L_38:
-                           A  1178    .LINE 96
-                           A  1179    
-                           A  1180    ;   97	                            state = ERR
-                           A  1181    .LINE 97
+044873 DD07FD              A  1172    	LD	BC,(IX+%FFFFFFFD)
+044876 03                  A  1173    	INC	BC
+044877 DD0FF0              A  1174    	LD	(IX+%FFFFFFF0),BC
+04487A C5                  A  1175    	PUSH	BC
+04487B CD 41 5A 04         A  1176    	CALL	_strlen
+04487F C1                  A  1177    	POP	BC
+044880 CD C5 5D 04         A  1178    	CALL	__icmpzero
+044884 28 2C               A  1179    	JR	Z,L_45
+                           A  1180    ;  103	                            result = st
+                           A  1181    .LINE 103
                            A  1182    
-044B09 DD36FC05            A  1183    	LD	(IX+%FFFFFFFC),%5
-                           A  1184    ;   98	                            errorhalt =
-                           A  1185    .LINE 98
-                           A  1186    
-044B0D DD360901            A  1187    	LD	(IX+%9),%1
-                           A  1188    ;   99	                        }
-                           A  1189    ;  100	                        break;
-                           A  1190    .LINE 100
-                           A  1191    
-044B11 C3 6E 4A 04         A  1192    	JR	L_106
-                           A  1193    ;  101	                    case '%':
-044B15                     A  1194    L_40:
-                           A  1195    .LINE 101
-                           A  1196    
-                           A  1197    ;  102	                        if(strlen(ptr+1
-                           A  1198    .LINE 102
-                           A  1199    
-044B15 DD07FD              A  1200    	LD	BC,(IX+%FFFFFFFD)
-044B18 03                  A  1201    	INC	BC
-044B19 DD0FEF              A  1202    	LD	(IX+%FFFFFFEF),BC
-044B1C C5                  A  1203    	PUSH	BC
-044B1D CD F9 5C 04         A  1204    	CALL	_strlen
-044B21 C1                  A  1205    	POP	BC
-044B22 CD CF 60 04         A  1206    	CALL	__icmpzero
-044B26 28 32               A  1207    	JR	Z,L_45
-                           A  1208    ;  103	                            result = st
-                           A  1209    .LINE 103
-                           A  1210    
-044B28 DD07EF              A  1211    	LD	BC,(IX+%FFFFFFEF)
-044B2B C5                  A  1212    	PUSH	BC
-044B2C CD 46 48 04         A  1213    	CALL	_str2bin
-044B30 C1                  A  1214    	POP	BC
-044B31 DD2FF8              A  1215    	LD	(IX+%FFFFFFF8),HL
-044B34 DD73FB              A  1216    	LD	(IX+%FFFFFFFB),E
-                           A  1217    ;  104	                            if(err_str2
-                           A  1218    .LINE 104
+044886 DD07F0              A  1183    	LD	BC,(IX+%FFFFFFF0)
+044889 C5                  A  1184    	PUSH	BC
+04488A CD 0C 46 04         A  1185    	CALL	_str2bin
+04488E C1                  A  1186    	POP	BC
+04488F DD2FF9              A  1187    	LD	(IX+%FFFFFFF9),HL
+                           A  1188    ;  104	                            if(err_str2
+                           A  1189    .LINE 104
+                           A  1190    
+044892 3A 43 FC 06         A  1191    	LD	A,(_err_str2num)
+044896 B7                  A  1192    	OR	A,A
+044897 28 12               A  1193    	JR	Z,L_43
+044899 DD7E09              A  1194    	LD	A,(IX+%9)
+04489C B7                  A  1195    	OR	A,A
+04489D 28 0C               A  1196    	JR	Z,L_43
+04489F 21 87 64 04         A  1197    	LD	HL,_message+69
+0448A3 ED07                A  1198    	LD	BC,(HL)
+0448A5 C5                  A  1199    	PUSH	BC
+0448A6 CD DC 4B 04         A  1200    	CALL	_error
+0448AA C1                  A  1201    	POP	BC
+0448AB                     A  1202    L_43:
+                           A  1203    ;  105	                            return resu
+                           A  1204    .LINE 105
+                           A  1205    
+0448AB DD27F9              A  1206    	LD	HL,(IX+%FFFFFFF9)
+0448AE C3 1D 4B 04         A  1207    	JR	L_107
+                           A  1208    ;  106	                        }
+                           A  1209    ;  107	                        else {
+0448B2                     A  1210    L_45:
+                           A  1211    .LINE 107
+                           A  1212    
+                           A  1213    ;  108	                            state = ERR
+                           A  1214    .LINE 108
+                           A  1215    
+0448B2 DD36FC05            A  1216    	LD	(IX+%FFFFFFFC),%5
+                           A  1217    ;  109	                            errorhalt =
+                           A  1218    .LINE 109
                            A  1219    
-044B37 3A 8A FF 06         A  1220    	LD	A,(_err_str2num)
-044B3B B7                  A  1221    	OR	A,A
-044B3C 28 12               A  1222    	JR	Z,L_43
-044B3E DD7E09              A  1223    	LD	A,(IX+%9)
-044B41 B7                  A  1224    	OR	A,A
-044B42 28 0C               A  1225    	JR	Z,L_43
-044B44 21 86 67 04         A  1226    	LD	HL,_message+69
-044B48 ED07                A  1227    	LD	BC,(HL)
-044B4A C5                  A  1228    	PUSH	BC
-044B4B CD A4 4E 04         A  1229    	CALL	_error
-044B4F C1                  A  1230    	POP	BC
-044B50                     A  1231    L_43:
-                           A  1232    ;  105	                            return resu
-                           A  1233    .LINE 105
-                           A  1234    
-044B50 DD27F8              A  1235    	LD	HL,(IX+%FFFFFFF8)
-044B53 DD5EFB              A  1236    	LD	E,(IX+%FFFFFFFB)
-044B56 C3 E5 4D 04         A  1237    	JR	L_107
-                           A  1238    ;  106	                        }
-                           A  1239    ;  107	                        else {
-044B5A                     A  1240    L_45:
-                           A  1241    .LINE 107
+0448B6 DD360901            A  1220    	LD	(IX+%9),%1
+                           A  1221    ;  110	                        }
+                           A  1222    ;  111	                        break;
+                           A  1223    .LINE 111
+                           A  1224    
+0448BA C3 D4 47 04         A  1225    	JR	L_106
+                           A  1226    ;  112	                    case '0':
+0448BE                     A  1227    L_47:
+                           A  1228    .LINE 112
+                           A  1229    
+                           A  1230    ;  113	                        state = FIND_PR
+                           A  1231    .LINE 113
+                           A  1232    
+0448BE DD36FC01            A  1233    	LD	(IX+%FFFFFFFC),%1
+                           A  1234    ;  114	                        ptr++;
+                           A  1235    .LINE 114
+                           A  1236    
+0448C2 DD07FD              A  1237    	LD	BC,(IX+%FFFFFFFD)
+0448C5 03                  A  1238    	INC	BC
+0448C6 DD0FFD              A  1239    	LD	(IX+%FFFFFFFD),BC
+                           A  1240    ;  115	                        break;
+                           A  1241    .LINE 115
                            A  1242    
-                           A  1243    ;  108	                            state = ERR
-                           A  1244    .LINE 108
-                           A  1245    
-044B5A DD36FC05            A  1246    	LD	(IX+%FFFFFFFC),%5
-                           A  1247    ;  109	                            errorhalt =
-                           A  1248    .LINE 109
-                           A  1249    
-044B5E DD360901            A  1250    	LD	(IX+%9),%1
-                           A  1251    ;  110	                        }
-                           A  1252    ;  111	                        break;
-                           A  1253    .LINE 111
+0448C9 C3 D4 47 04         A  1243    	JR	L_106
+                           A  1244    ;  116	                    case 0: // empty st
+0448CD                     A  1245    L_49:
+                           A  1246    .LINE 116
+                           A  1247    
+                           A  1248    ;  117	                        state = DONE;
+                           A  1249    .LINE 117
+                           A  1250    
+0448CD DD36FC04            A  1251    	LD	(IX+%FFFFFFFC),%4
+                           A  1252    ;  118	                        break;
+                           A  1253    .LINE 118
                            A  1254    
-044B62 C3 6E 4A 04         A  1255    	JR	L_106
-                           A  1256    ;  112	                    case '0':
-044B66                     A  1257    L_47:
-                           A  1258    .LINE 112
+0448D1 C3 D4 47 04         A  1255    	JR	L_106
+                           A  1256    ;  119	                    default:
+0448D5                     A  1257    L_50:
+                           A  1258    .LINE 119
                            A  1259    
-                           A  1260    ;  113	                        state = FIND_PR
-                           A  1261    .LINE 113
+                           A  1260    ;  120	                        if(isxdigit(*pt
+                           A  1261    .LINE 120
                            A  1262    
-044B66 DD36FC01            A  1263    	LD	(IX+%FFFFFFFC),%1
-                           A  1264    ;  114	                        ptr++;
-                           A  1265    .LINE 114
-                           A  1266    
-044B6A DD07FD              A  1267    	LD	BC,(IX+%FFFFFFFD)
-044B6D 03                  A  1268    	INC	BC
-044B6E DD0FFD              A  1269    	LD	(IX+%FFFFFFFD),BC
-                           A  1270    ;  115	                        break;
-                           A  1271    .LINE 115
-                           A  1272    
-044B71 C3 6E 4A 04         A  1273    	JR	L_106
-                           A  1274    ;  116	                    case 0: // empty st
-044B75                     A  1275    L_49:
-                           A  1276    .LINE 116
-                           A  1277    
-                           A  1278    ;  117	                        state = DONE;
-                           A  1279    .LINE 117
-                           A  1280    
-044B75 DD36FC04            A  1281    	LD	(IX+%FFFFFFFC),%4
-                           A  1282    ;  118	                        break;
-                           A  1283    .LINE 118
-                           A  1284    
-044B79 C3 6E 4A 04         A  1285    	JR	L_106
-                           A  1286    ;  119	                    default:
-044B7D                     A  1287    L_50:
-                           A  1288    .LINE 119
-                           A  1289    
-                           A  1290    ;  120	                        if(isxdigit(*pt
-                           A  1291    .LINE 120
-                           A  1292    
-044B7D DD27FD              A  1293    	LD	HL,(IX+%FFFFFFFD)
-044B80 7E                  A  1294    	LD	A,(HL)
-044B81 47                  A  1295    	LD	B,A
-044B82 17ED62              A  1296    	SEXT	HL
-044B85 68                  A  1297    	LD	L,B
-044B86 E5                  A  1298    	PUSH	HL
-044B87 CD BC 5A 04         A  1299    	CALL	_isxdigit
-044B8B C1                  A  1300    	POP	BC
-044B8C CD CF 60 04         A  1301    	CALL	__icmpzero
-044B90 28 08               A  1302    	JR	Z,L_52
-044B92 DD36FC02            A  1303    	LD	(IX+%FFFFFFFC),%2
-                           A  1304    ;  121	                        else state = ER
-                           A  1305    .LINE 121
+0448D5 DD27FD              A  1263    	LD	HL,(IX+%FFFFFFFD)
+0448D8 7E                  A  1264    	LD	A,(HL)
+0448D9 47                  A  1265    	LD	B,A
+0448DA 17ED62              A  1266    	SEXT	HL
+0448DD 68                  A  1267    	LD	L,B
+0448DE E5                  A  1268    	PUSH	HL
+0448DF CD DF 57 04         A  1269    	CALL	_isxdigit
+0448E3 C1                  A  1270    	POP	BC
+0448E4 CD C5 5D 04         A  1271    	CALL	__icmpzero
+0448E8 28 08               A  1272    	JR	Z,L_52
+0448EA DD36FC02            A  1273    	LD	(IX+%FFFFFFFC),%2
+                           A  1274    ;  121	                        else state = ER
+                           A  1275    .LINE 121
+                           A  1276    
+0448EE C3 D4 47 04         A  1277    	JR	L_106
+0448F2                     A  1278    L_52:
+0448F2 DD36FC05            A  1279    	LD	(IX+%FFFFFFFC),%5
+                           A  1280    ;  122	                }
+                           A  1281    ;  123	                break;
+                           A  1282    .LINE 123
+                           A  1283    
+0448F6 C3 D4 47 04         A  1284    	JR	L_106
+                           A  1285    ;  124	            case(FIND_PREFIX):
+0448FA                     A  1286    L_54:
+                           A  1287    .LINE 124
+                           A  1288    
+                           A  1289    ;  125	                switch(tolower(*ptr)) {
+                           A  1290    .LINE 125
+                           A  1291    
+0448FA DD27FD              A  1292    	LD	HL,(IX+%FFFFFFFD)
+0448FD 7E                  A  1293    	LD	A,(HL)
+0448FE 47                  A  1294    	LD	B,A
+0448FF 17ED62              A  1295    	SEXT	HL
+044902 68                  A  1296    	LD	L,B
+044903 E5                  A  1297    	PUSH	HL
+044904 CD 6D 61 04         A  1298    	CALL	_tolower
+044908 C1                  A  1299    	POP	BC
+044909 CD B7 60 04         A  1300    	CALL	__case8D
+04490D E9                  A  1301    	JP	(HL)
+04490E                     A  1302    L__23:
+04490E 0400                A  1303    	DW	4
+044910 00                  A  1304    	DB	0
+044911 9B4904              A  1305    	DW24	L_67	
                            A  1306    
-044B96 C3 6E 4A 04         A  1307    	JR	L_106
-044B9A                     A  1308    L_52:
-044B9A DD36FC05            A  1309    	LD	(IX+%FFFFFFFC),%5
-                           A  1310    ;  122	                }
-                           A  1311    ;  123	                break;
-                           A  1312    .LINE 123
-                           A  1313    
-044B9E C3 6E 4A 04         A  1314    	JR	L_106
-                           A  1315    ;  124	            case(FIND_PREFIX):
-044BA2                     A  1316    L_54:
-                           A  1317    .LINE 124
-                           A  1318    
-                           A  1319    ;  125	                switch(tolower(*ptr)) {
-                           A  1320    .LINE 125
+044914 62                  A  1307    	DB	98
+044915 6E4904              A  1308    	DW24	L_62	
+                           A  1309    
+044918 68                  A  1310    	DB	104
+044919 9B4904              A  1311    	DW24	L_66	
+                           A  1312    
+04491C 78                  A  1313    	DB	120
+04491D 234904              A  1314    	DW24	L_55	
+                           A  1315    
+044920 A24904              A  1316    	DW24	L_68	
+                           A  1317    
+                           A  1318    ;  126	                    case 'x':
+044923                     A  1319    L_55:
+                           A  1320    .LINE 126
                            A  1321    
-044BA2 DD27FD              A  1322    	LD	HL,(IX+%FFFFFFFD)
-044BA5 7E                  A  1323    	LD	A,(HL)
-044BA6 47                  A  1324    	LD	B,A
-044BA7 17ED62              A  1325    	SEXT	HL
-044BAA 68                  A  1326    	LD	L,B
-044BAB E5                  A  1327    	PUSH	HL
-044BAC CD 4F 64 04         A  1328    	CALL	_tolower
-044BB0 C1                  A  1329    	POP	BC
-044BB1 CD B2 63 04         A  1330    	CALL	__case8D
-044BB5 E9                  A  1331    	JP	(HL)
-044BB6                     A  1332    L__23:
-044BB6 0400                A  1333    	DW	4
-044BB8 00                  A  1334    	DB	0
-044BB9 4F4C04              A  1335    	DW24	L_67	
-                           A  1336    
-044BBC 62                  A  1337    	DB	98
-044BBD 1C4C04              A  1338    	DW24	L_62	
-                           A  1339    
-044BC0 68                  A  1340    	DB	104
-044BC1 4F4C04              A  1341    	DW24	L_66	
-                           A  1342    
-044BC4 78                  A  1343    	DB	120
-044BC5 CB4B04              A  1344    	DW24	L_55	
-                           A  1345    
-044BC8 584C04              A  1346    	DW24	L_68	
-                           A  1347    
-                           A  1348    ;  126	                    case 'x':
-044BCB                     A  1349    L_55:
-                           A  1350    .LINE 126
-                           A  1351    
-                           A  1352    ;  127	                        if(strlen(ptr+1
-                           A  1353    .LINE 127
-                           A  1354    
-044BCB DD07FD              A  1355    	LD	BC,(IX+%FFFFFFFD)
-044BCE 03                  A  1356    	INC	BC
-044BCF DD0FEC              A  1357    	LD	(IX+%FFFFFFEC),BC
-044BD2 C5                  A  1358    	PUSH	BC
-044BD3 CD F9 5C 04         A  1359    	CALL	_strlen
-044BD7 C1                  A  1360    	POP	BC
-044BD8 CD CF 60 04         A  1361    	CALL	__icmpzero
-044BDC 28 32               A  1362    	JR	Z,L_60
-                           A  1363    ;  128	                            result = st
-                           A  1364    .LINE 128
+                           A  1322    ;  127	                        if(strlen(ptr+1
+                           A  1323    .LINE 127
+                           A  1324    
+044923 DD07FD              A  1325    	LD	BC,(IX+%FFFFFFFD)
+044926 03                  A  1326    	INC	BC
+044927 DD0FED              A  1327    	LD	(IX+%FFFFFFED),BC
+04492A C5                  A  1328    	PUSH	BC
+04492B CD 41 5A 04         A  1329    	CALL	_strlen
+04492F C1                  A  1330    	POP	BC
+044930 CD C5 5D 04         A  1331    	CALL	__icmpzero
+044934 28 2C               A  1332    	JR	Z,L_60
+                           A  1333    ;  128	                            result = st
+                           A  1334    .LINE 128
+                           A  1335    
+044936 DD07ED              A  1336    	LD	BC,(IX+%FFFFFFED)
+044939 C5                  A  1337    	PUSH	BC
+04493A CD 87 46 04         A  1338    	CALL	_str2hex
+04493E C1                  A  1339    	POP	BC
+04493F DD2FF9              A  1340    	LD	(IX+%FFFFFFF9),HL
+                           A  1341    ;  129	                            if(err_str2
+                           A  1342    .LINE 129
+                           A  1343    
+044942 3A 43 FC 06         A  1344    	LD	A,(_err_str2num)
+044946 B7                  A  1345    	OR	A,A
+044947 28 12               A  1346    	JR	Z,L_58
+044949 DD7E09              A  1347    	LD	A,(IX+%9)
+04494C B7                  A  1348    	OR	A,A
+04494D 28 0C               A  1349    	JR	Z,L_58
+04494F 21 4B 64 04         A  1350    	LD	HL,_message+9
+044953 ED07                A  1351    	LD	BC,(HL)
+044955 C5                  A  1352    	PUSH	BC
+044956 CD DC 4B 04         A  1353    	CALL	_error
+04495A C1                  A  1354    	POP	BC
+04495B                     A  1355    L_58:
+                           A  1356    ;  130	                            return resu
+                           A  1357    .LINE 130
+                           A  1358    
+04495B DD27F9              A  1359    	LD	HL,(IX+%FFFFFFF9)
+04495E C3 1D 4B 04         A  1360    	JR	L_107
+                           A  1361    ;  131	                        }
+                           A  1362    ;  132	                        else { // label
+044962                     A  1363    L_60:
+                           A  1364    .LINE 132
                            A  1365    
-044BDE DD07EC              A  1366    	LD	BC,(IX+%FFFFFFEC)
-044BE1 C5                  A  1367    	PUSH	BC
-044BE2 CD D8 48 04         A  1368    	CALL	_str2hex
-044BE6 C1                  A  1369    	POP	BC
-044BE7 DD2FF8              A  1370    	LD	(IX+%FFFFFFF8),HL
-044BEA DD73FB              A  1371    	LD	(IX+%FFFFFFFB),E
-                           A  1372    ;  129	                            if(err_str2
-                           A  1373    .LINE 129
-                           A  1374    
-044BED 3A 8A FF 06         A  1375    	LD	A,(_err_str2num)
-044BF1 B7                  A  1376    	OR	A,A
-044BF2 28 12               A  1377    	JR	Z,L_58
-044BF4 DD7E09              A  1378    	LD	A,(IX+%9)
-044BF7 B7                  A  1379    	OR	A,A
-044BF8 28 0C               A  1380    	JR	Z,L_58
-044BFA 21 4A 67 04         A  1381    	LD	HL,_message+9
-044BFE ED07                A  1382    	LD	BC,(HL)
-044C00 C5                  A  1383    	PUSH	BC
-044C01 CD A4 4E 04         A  1384    	CALL	_error
-044C05 C1                  A  1385    	POP	BC
-044C06                     A  1386    L_58:
-                           A  1387    ;  130	                            return resu
-                           A  1388    .LINE 130
-                           A  1389    
-044C06 DD27F8              A  1390    	LD	HL,(IX+%FFFFFFF8)
-044C09 DD5EFB              A  1391    	LD	E,(IX+%FFFFFFFB)
-044C0C C3 E5 4D 04         A  1392    	JR	L_107
-                           A  1393    ;  131	                        }
-                           A  1394    ;  132	                        else { // label
-044C10                     A  1395    L_60:
-                           A  1396    .LINE 132
-                           A  1397    
-                           A  1398    ;  133	                            errorhalt =
-                           A  1399    .LINE 133
-                           A  1400    
-044C10 DD360901            A  1401    	LD	(IX+%9),%1
-                           A  1402    ;  134	                            state = ERR
-                           A  1403    .LINE 134
-                           A  1404    
-044C14 DD36FC05            A  1405    	LD	(IX+%FFFFFFFC),%5
-                           A  1406    ;  135	                        }
-                           A  1407    ;  136	                        break;
-                           A  1408    .LINE 136
+                           A  1366    ;  133	                            errorhalt =
+                           A  1367    .LINE 133
+                           A  1368    
+044962 DD360901            A  1369    	LD	(IX+%9),%1
+                           A  1370    ;  134	                            state = ERR
+                           A  1371    .LINE 134
+                           A  1372    
+044966 DD36FC05            A  1373    	LD	(IX+%FFFFFFFC),%5
+                           A  1374    ;  135	                        }
+                           A  1375    ;  136	                        break;
+                           A  1376    .LINE 136
+                           A  1377    
+04496A C3 D4 47 04         A  1378    	JR	L_106
+                           A  1379    ;  137	                    case 'b': // also t
+04496E                     A  1380    L_62:
+                           A  1381    .LINE 137
+                           A  1382    
+                           A  1383    ;  138	                        result = str2bi
+                           A  1384    .LINE 138
+                           A  1385    
+04496E DD07FD              A  1386    	LD	BC,(IX+%FFFFFFFD)
+044971 03                  A  1387    	INC	BC
+044972 C5                  A  1388    	PUSH	BC
+044973 CD 0C 46 04         A  1389    	CALL	_str2bin
+044977 C1                  A  1390    	POP	BC
+044978 DD2FF9              A  1391    	LD	(IX+%FFFFFFF9),HL
+                           A  1392    ;  139	                        if(err_str2num 
+                           A  1393    .LINE 139
+                           A  1394    
+04497B 3A 43 FC 06         A  1395    	LD	A,(_err_str2num)
+04497F B7                  A  1396    	OR	A,A
+044980 28 12               A  1397    	JR	Z,L_65
+044982 DD7E09              A  1398    	LD	A,(IX+%9)
+044985 B7                  A  1399    	OR	A,A
+044986 28 0C               A  1400    	JR	Z,L_65
+044988 21 4B 64 04         A  1401    	LD	HL,_message+9
+04498C ED07                A  1402    	LD	BC,(HL)
+04498E C5                  A  1403    	PUSH	BC
+04498F CD DC 4B 04         A  1404    	CALL	_error
+044993 C1                  A  1405    	POP	BC
+044994                     A  1406    L_65:
+                           A  1407    ;  140	                        return result;
+                           A  1408    .LINE 140
                            A  1409    
-044C18 C3 6E 4A 04         A  1410    	JR	L_106
-                           A  1411    ;  137	                    case 'b': // also t
-044C1C                     A  1412    L_62:
-                           A  1413    .LINE 137
-                           A  1414    
-                           A  1415    ;  138	                        result = str2bi
-                           A  1416    .LINE 138
-                           A  1417    
-044C1C DD07FD              A  1418    	LD	BC,(IX+%FFFFFFFD)
-044C1F 03                  A  1419    	INC	BC
-044C20 C5                  A  1420    	PUSH	BC
-044C21 CD 46 48 04         A  1421    	CALL	_str2bin
-044C25 C1                  A  1422    	POP	BC
-044C26 DD2FF8              A  1423    	LD	(IX+%FFFFFFF8),HL
-044C29 DD73FB              A  1424    	LD	(IX+%FFFFFFFB),E
-                           A  1425    ;  139	                        if(err_str2num 
-                           A  1426    .LINE 139
-                           A  1427    
-044C2C 3A 8A FF 06         A  1428    	LD	A,(_err_str2num)
-044C30 B7                  A  1429    	OR	A,A
-044C31 28 12               A  1430    	JR	Z,L_65
-044C33 DD7E09              A  1431    	LD	A,(IX+%9)
-044C36 B7                  A  1432    	OR	A,A
-044C37 28 0C               A  1433    	JR	Z,L_65
-044C39 21 4A 67 04         A  1434    	LD	HL,_message+9
-044C3D ED07                A  1435    	LD	BC,(HL)
-044C3F C5                  A  1436    	PUSH	BC
-044C40 CD A4 4E 04         A  1437    	CALL	_error
-044C44 C1                  A  1438    	POP	BC
-044C45                     A  1439    L_65:
-                           A  1440    ;  140	                        return result;
-                           A  1441    .LINE 140
-                           A  1442    
-044C45 DD27F8              A  1443    	LD	HL,(IX+%FFFFFFF8)
-044C48 DD5EFB              A  1444    	LD	E,(IX+%FFFFFFFB)
-044C4B C3 E5 4D 04         A  1445    	JR	L_107
-                           A  1446    ;  141	                        break;
-                           A  1447    ;  142	                    case 'h':
-044C4F                     A  1448    L_66:
-                           A  1449    .LINE 142
+044994 DD27F9              A  1410    	LD	HL,(IX+%FFFFFFF9)
+044997 C3 1D 4B 04         A  1411    	JR	L_107
+                           A  1412    ;  141	                        break;
+                           A  1413    ;  142	                    case 'h':
+04499B                     A  1414    L_66:
+                           A  1415    .LINE 142
+                           A  1416    
+                           A  1417    ;  143	                    case 0:
+04499B                     A  1418    L_67:
+                           A  1419    .LINE 143
+                           A  1420    
+                           A  1421    ;  144	                        return 0; // sp
+                           A  1422    .LINE 144
+                           A  1423    
+04499B B7                  A  1424    	OR	A,A
+04499C ED62                A  1425    	SBC	HL,HL
+04499E C3 1D 4B 04         A  1426    	JR	L_107
+                           A  1427    ;  145	                    default:
+0449A2                     A  1428    L_68:
+                           A  1429    .LINE 145
+                           A  1430    
+                           A  1431    ;  146	                        if(isxdigit(*pt
+                           A  1432    .LINE 146
+                           A  1433    
+0449A2 DD27FD              A  1434    	LD	HL,(IX+%FFFFFFFD)
+0449A5 7E                  A  1435    	LD	A,(HL)
+0449A6 47                  A  1436    	LD	B,A
+0449A7 17ED62              A  1437    	SEXT	HL
+0449AA 68                  A  1438    	LD	L,B
+0449AB E5                  A  1439    	PUSH	HL
+0449AC CD DF 57 04         A  1440    	CALL	_isxdigit
+0449B0 C1                  A  1441    	POP	BC
+0449B1 CD C5 5D 04         A  1442    	CALL	__icmpzero
+0449B5 28 0E               A  1443    	JR	Z,L_70
+                           A  1444    ;  147	                            state = FIN
+                           A  1445    .LINE 147
+                           A  1446    
+0449B7 DD36FC02            A  1447    	LD	(IX+%FFFFFFFC),%2
+                           A  1448    ;  148	                            start = ptr
+                           A  1449    .LINE 148
                            A  1450    
-                           A  1451    ;  143	                    case 0:
-044C4F                     A  1452    L_67:
-                           A  1453    .LINE 143
-                           A  1454    
-                           A  1455    ;  144	                        return 0; // sp
-                           A  1456    .LINE 144
-                           A  1457    
-044C4F B7                  A  1458    	OR	A,A
-044C50 ED62                A  1459    	SBC	HL,HL
-044C52 1E00                A  1460    	LD	E,%0
-044C54 C3 E5 4D 04         A  1461    	JR	L_107
-                           A  1462    ;  145	                    default:
-044C58                     A  1463    L_68:
-                           A  1464    .LINE 145
-                           A  1465    
-                           A  1466    ;  146	                        if(isxdigit(*pt
-                           A  1467    .LINE 146
+0449BB DD07FD              A  1451    	LD	BC,(IX+%FFFFFFFD)
+0449BE DD0FF6              A  1452    	LD	(IX+%FFFFFFF6),BC
+                           A  1453    ;  149	                        }
+                           A  1454    ;  150	                        else state = ER
+                           A  1455    .LINE 150
+                           A  1456    
+0449C1 C3 D4 47 04         A  1457    	JR	L_106
+0449C5                     A  1458    L_70:
+0449C5 DD36FC05            A  1459    	LD	(IX+%FFFFFFFC),%5
+                           A  1460    ;  151	                }
+                           A  1461    ;  152	                break;
+                           A  1462    .LINE 152
+                           A  1463    
+0449C9 C3 D4 47 04         A  1464    	JR	L_106
+                           A  1465    ;  153	            case(FIND_END):
+0449CD                     A  1466    L_72:
+                           A  1467    .LINE 153
                            A  1468    
-044C58 DD27FD              A  1469    	LD	HL,(IX+%FFFFFFFD)
-044C5B 7E                  A  1470    	LD	A,(HL)
-044C5C 47                  A  1471    	LD	B,A
-044C5D 17ED62              A  1472    	SEXT	HL
-044C60 68                  A  1473    	LD	L,B
-044C61 E5                  A  1474    	PUSH	HL
-044C62 CD BC 5A 04         A  1475    	CALL	_isxdigit
-044C66 C1                  A  1476    	POP	BC
-044C67 CD CF 60 04         A  1477    	CALL	__icmpzero
-044C6B 28 0E               A  1478    	JR	Z,L_70
-                           A  1479    ;  147	                            state = FIN
-                           A  1480    .LINE 147
+                           A  1469    ;  154	                switch(*ptr) {
+                           A  1470    .LINE 154
+                           A  1471    
+0449CD DD27FD              A  1472    	LD	HL,(IX+%FFFFFFFD)
+0449D0 7E                  A  1473    	LD	A,(HL)
+0449D1 47                  A  1474    	LD	B,A
+0449D2 17ED62              A  1475    	SEXT	HL
+0449D5 68                  A  1476    	LD	L,B
+0449D6 CD C5 5D 04         A  1477    	CALL	__icmpzero
+0449DA 20 08               A  1478    	JR	NZ,L_74
+                           A  1479    ;  155	                    case 0:
+                           A  1480    .LINE 155
                            A  1481    
-044C6D DD36FC02            A  1482    	LD	(IX+%FFFFFFFC),%2
-                           A  1483    ;  148	                            start = ptr
-                           A  1484    .LINE 148
-                           A  1485    
-044C71 DD07FD              A  1486    	LD	BC,(IX+%FFFFFFFD)
-044C74 DD0FF5              A  1487    	LD	(IX+%FFFFFFF5),BC
-                           A  1488    ;  149	                        }
-                           A  1489    ;  150	                        else state = ER
-                           A  1490    .LINE 150
-                           A  1491    
-044C77 C3 6E 4A 04         A  1492    	JR	L_106
-044C7B                     A  1493    L_70:
-044C7B DD36FC05            A  1494    	LD	(IX+%FFFFFFFC),%5
-                           A  1495    ;  151	                }
-                           A  1496    ;  152	                break;
-                           A  1497    .LINE 152
-                           A  1498    
-044C7F C3 6E 4A 04         A  1499    	JR	L_106
-                           A  1500    ;  153	            case(FIND_END):
-044C83                     A  1501    L_72:
-                           A  1502    .LINE 153
-                           A  1503    
-                           A  1504    ;  154	                switch(*ptr) {
-                           A  1505    .LINE 154
-                           A  1506    
-044C83 DD27FD              A  1507    	LD	HL,(IX+%FFFFFFFD)
-044C86 7E                  A  1508    	LD	A,(HL)
-044C87 47                  A  1509    	LD	B,A
-044C88 17ED62              A  1510    	SEXT	HL
-044C8B 68                  A  1511    	LD	L,B
-044C8C CD CF 60 04         A  1512    	CALL	__icmpzero
-044C90 20 08               A  1513    	JR	NZ,L_74
-                           A  1514    ;  155	                    case 0:
-                           A  1515    .LINE 155
-                           A  1516    
-                           A  1517    ;  156	                        state = DONE; /
-                           A  1518    .LINE 156
+                           A  1482    ;  156	                        state = DONE; /
+                           A  1483    .LINE 156
+                           A  1484    
+0449DC DD36FC04            A  1485    	LD	(IX+%FFFFFFFC),%4
+                           A  1486    ;  157	                        break;
+                           A  1487    .LINE 157
+                           A  1488    
+0449E0 C3 D4 47 04         A  1489    	JR	L_106
+                           A  1490    ;  158	                    default:
+0449E4                     A  1491    L_74:
+                           A  1492    .LINE 158
+                           A  1493    
+                           A  1494    ;  159	                    if(ptr[1] == 0) sta
+                           A  1495    .LINE 159
+                           A  1496    
+0449E4 DD27FD              A  1497    	LD	HL,(IX+%FFFFFFFD)
+0449E7 23                  A  1498    	INC	HL
+0449E8 7E                  A  1499    	LD	A,(HL)
+0449E9 B7                  A  1500    	OR	A,A
+0449EA 20 08               A  1501    	JR	NZ,L_77
+0449EC DD36FC03            A  1502    	LD	(IX+%FFFFFFFC),%3
+                           A  1503    ;  160	                    else ptr++;
+                           A  1504    .LINE 160
+                           A  1505    
+0449F0 C3 D4 47 04         A  1506    	JR	L_106
+0449F4                     A  1507    L_77:
+0449F4 DD07FD              A  1508    	LD	BC,(IX+%FFFFFFFD)
+0449F7 03                  A  1509    	INC	BC
+0449F8 DD0FFD              A  1510    	LD	(IX+%FFFFFFFD),BC
+                           A  1511    ;  161	                }
+                           A  1512    ;  162	                break;
+                           A  1513    .LINE 162
+                           A  1514    
+0449FB C3 D4 47 04         A  1515    	JR	L_106
+                           A  1516    ;  163	            case(LAST_ITEM):
+0449FF                     A  1517    L_79:
+                           A  1518    .LINE 163
                            A  1519    
-044C92 DD36FC04            A  1520    	LD	(IX+%FFFFFFFC),%4
-                           A  1521    ;  157	                        break;
-                           A  1522    .LINE 157
-                           A  1523    
-044C96 C3 6E 4A 04         A  1524    	JR	L_106
-                           A  1525    ;  158	                    default:
-044C9A                     A  1526    L_74:
-                           A  1527    .LINE 158
-                           A  1528    
-                           A  1529    ;  159	                    if(ptr[1] == 0) sta
-                           A  1530    .LINE 159
-                           A  1531    
-044C9A DD27FD              A  1532    	LD	HL,(IX+%FFFFFFFD)
-044C9D 23                  A  1533    	INC	HL
-044C9E 7E                  A  1534    	LD	A,(HL)
-044C9F B7                  A  1535    	OR	A,A
-044CA0 20 08               A  1536    	JR	NZ,L_77
-044CA2 DD36FC03            A  1537    	LD	(IX+%FFFFFFFC),%3
-                           A  1538    ;  160	                    else ptr++;
-                           A  1539    .LINE 160
+                           A  1520    ;  164	                switch(tolower(*ptr)) {
+                           A  1521    .LINE 164
+                           A  1522    
+0449FF DD27FD              A  1523    	LD	HL,(IX+%FFFFFFFD)
+044A02 7E                  A  1524    	LD	A,(HL)
+044A03 47                  A  1525    	LD	B,A
+044A04 17ED62              A  1526    	SEXT	HL
+044A07 68                  A  1527    	LD	L,B
+044A08 E5                  A  1528    	PUSH	HL
+044A09 CD 6D 61 04         A  1529    	CALL	_tolower
+044A0D C1                  A  1530    	POP	BC
+044A0E CD B7 60 04         A  1531    	CALL	__case8D
+044A12 E9                  A  1532    	JP	(HL)
+044A13                     A  1533    L__31:
+044A13 0200                A  1534    	DW	2
+044A15 62                  A  1535    	DB	98
+044A16 204A04              A  1536    	DW24	L_80	
+                           A  1537    
+044A19 68                  A  1538    	DB	104
+044A1A 6C4A04              A  1539    	DW24	L_87	
                            A  1540    
-044CA6 C3 6E 4A 04         A  1541    	JR	L_106
-044CAA                     A  1542    L_77:
-044CAA DD07FD              A  1543    	LD	BC,(IX+%FFFFFFFD)
-044CAD 03                  A  1544    	INC	BC
-044CAE DD0FFD              A  1545    	LD	(IX+%FFFFFFFD),BC
-                           A  1546    ;  161	                }
-                           A  1547    ;  162	                break;
-                           A  1548    .LINE 162
+044A1D B64A04              A  1541    	DW24	L_94	
+                           A  1542    
+                           A  1543    ;  165	                    case 'b':
+044A20                     A  1544    L_80:
+                           A  1545    .LINE 165
+                           A  1546    
+                           A  1547    ;  166	                        *ptr = 0; // te
+                           A  1548    .LINE 166
                            A  1549    
-044CB1 C3 6E 4A 04         A  1550    	JR	L_106
-                           A  1551    ;  163	            case(LAST_ITEM):
-044CB5                     A  1552    L_79:
-                           A  1553    .LINE 163
+044A20 DD27FD              A  1550    	LD	HL,(IX+%FFFFFFFD)
+044A23 3600                A  1551    	LD	(HL),%0
+                           A  1552    ;  167	                        if(strlen(start
+                           A  1553    .LINE 167
                            A  1554    
-                           A  1555    ;  164	                switch(tolower(*ptr)) {
-                           A  1556    .LINE 164
-                           A  1557    
-044CB5 DD27FD              A  1558    	LD	HL,(IX+%FFFFFFFD)
-044CB8 7E                  A  1559    	LD	A,(HL)
-044CB9 47                  A  1560    	LD	B,A
-044CBA 17ED62              A  1561    	SEXT	HL
-044CBD 68                  A  1562    	LD	L,B
-044CBE E5                  A  1563    	PUSH	HL
-044CBF CD 4F 64 04         A  1564    	CALL	_tolower
-044CC3 C1                  A  1565    	POP	BC
-044CC4 CD B2 63 04         A  1566    	CALL	__case8D
-044CC8 E9                  A  1567    	JP	(HL)
-044CC9                     A  1568    L__31:
-044CC9 0200                A  1569    	DW	2
-044CCB 62                  A  1570    	DB	98
-044CCC D64C04              A  1571    	DW24	L_80	
-                           A  1572    
-044CCF 68                  A  1573    	DB	104
-044CD0 284D04              A  1574    	DW24	L_87	
-                           A  1575    
-044CD3 784D04              A  1576    	DW24	L_94	
-                           A  1577    
-                           A  1578    ;  165	                    case 'b':
-044CD6                     A  1579    L_80:
-                           A  1580    .LINE 165
-                           A  1581    
-                           A  1582    ;  166	                        *ptr = 0; // te
-                           A  1583    .LINE 166
-                           A  1584    
-044CD6 DD27FD              A  1585    	LD	HL,(IX+%FFFFFFFD)
-044CD9 3600                A  1586    	LD	(HL),%0
-                           A  1587    ;  167	                        if(strlen(start
-                           A  1588    .LINE 167
-                           A  1589    
-044CDB DD07F5              A  1590    	LD	BC,(IX+%FFFFFFF5)
-044CDE C5                  A  1591    	PUSH	BC
-044CDF CD F9 5C 04         A  1592    	CALL	_strlen
-044CE3 C1                  A  1593    	POP	BC
-044CE4 CD CF 60 04         A  1594    	CALL	__icmpzero
-044CE8 28 32               A  1595    	JR	Z,L_85
-                           A  1596    ;  168	                            result = st
-                           A  1597    .LINE 168
-                           A  1598    
-044CEA DD07F5              A  1599    	LD	BC,(IX+%FFFFFFF5)
-044CED C5                  A  1600    	PUSH	BC
-044CEE CD 46 48 04         A  1601    	CALL	_str2bin
-044CF2 C1                  A  1602    	POP	BC
-044CF3 DD2FF8              A  1603    	LD	(IX+%FFFFFFF8),HL
-044CF6 DD73FB              A  1604    	LD	(IX+%FFFFFFFB),E
-                           A  1605    ;  169	                            if(err_str2
-                           A  1606    .LINE 169
-                           A  1607    
-044CF9 3A 8A FF 06         A  1608    	LD	A,(_err_str2num)
-044CFD B7                  A  1609    	OR	A,A
-044CFE 28 12               A  1610    	JR	Z,L_83
-044D00 DD7E09              A  1611    	LD	A,(IX+%9)
-044D03 B7                  A  1612    	OR	A,A
-044D04 28 0C               A  1613    	JR	Z,L_83
-044D06 21 4A 67 04         A  1614    	LD	HL,_message+9
-044D0A ED07                A  1615    	LD	BC,(HL)
-044D0C C5                  A  1616    	PUSH	BC
-044D0D CD A4 4E 04         A  1617    	CALL	_error
-044D11 C1                  A  1618    	POP	BC
-044D12                     A  1619    L_83:
-                           A  1620    ;  170	                            return resu
-                           A  1621    .LINE 170
-                           A  1622    
-044D12 DD27F8              A  1623    	LD	HL,(IX+%FFFFFFF8)
-044D15 DD5EFB              A  1624    	LD	E,(IX+%FFFFFFFB)
-044D18 C3 E5 4D 04         A  1625    	JR	L_107
-                           A  1626    ;  171	                        }
-                           A  1627    ;  172	                        else {  // just
-044D1C                     A  1628    L_85:
-                           A  1629    .LINE 172
-                           A  1630    
-                           A  1631    ;  173	                            state = ERR
-                           A  1632    .LINE 173
-                           A  1633    
-044D1C DD36FC05            A  1634    	LD	(IX+%FFFFFFFC),%5
-                           A  1635    ;  174	                            errorhalt =
-                           A  1636    .LINE 174
-                           A  1637    
-044D20 DD360901            A  1638    	LD	(IX+%9),%1
-                           A  1639    ;  175	                        }
-                           A  1640    ;  176	                        break;
-                           A  1641    .LINE 176
-                           A  1642    
-044D24 C3 6E 4A 04         A  1643    	JR	L_106
-                           A  1644    ;  177	                    case 'h':
-044D28                     A  1645    L_87:
-                           A  1646    .LINE 177
-                           A  1647    
-                           A  1648    ;  178	                        *ptr = 0; // te
-                           A  1649    .LINE 178
+044A25 DD07F6              A  1555    	LD	BC,(IX+%FFFFFFF6)
+044A28 C5                  A  1556    	PUSH	BC
+044A29 CD 41 5A 04         A  1557    	CALL	_strlen
+044A2D C1                  A  1558    	POP	BC
+044A2E CD C5 5D 04         A  1559    	CALL	__icmpzero
+044A32 28 2C               A  1560    	JR	Z,L_85
+                           A  1561    ;  168	                            result = st
+                           A  1562    .LINE 168
+                           A  1563    
+044A34 DD07F6              A  1564    	LD	BC,(IX+%FFFFFFF6)
+044A37 C5                  A  1565    	PUSH	BC
+044A38 CD 0C 46 04         A  1566    	CALL	_str2bin
+044A3C C1                  A  1567    	POP	BC
+044A3D DD2FF9              A  1568    	LD	(IX+%FFFFFFF9),HL
+                           A  1569    ;  169	                            if(err_str2
+                           A  1570    .LINE 169
+                           A  1571    
+044A40 3A 43 FC 06         A  1572    	LD	A,(_err_str2num)
+044A44 B7                  A  1573    	OR	A,A
+044A45 28 12               A  1574    	JR	Z,L_83
+044A47 DD7E09              A  1575    	LD	A,(IX+%9)
+044A4A B7                  A  1576    	OR	A,A
+044A4B 28 0C               A  1577    	JR	Z,L_83
+044A4D 21 4B 64 04         A  1578    	LD	HL,_message+9
+044A51 ED07                A  1579    	LD	BC,(HL)
+044A53 C5                  A  1580    	PUSH	BC
+044A54 CD DC 4B 04         A  1581    	CALL	_error
+044A58 C1                  A  1582    	POP	BC
+044A59                     A  1583    L_83:
+                           A  1584    ;  170	                            return resu
+                           A  1585    .LINE 170
+                           A  1586    
+044A59 DD27F9              A  1587    	LD	HL,(IX+%FFFFFFF9)
+044A5C C3 1D 4B 04         A  1588    	JR	L_107
+                           A  1589    ;  171	                        }
+                           A  1590    ;  172	                        else {  // just
+044A60                     A  1591    L_85:
+                           A  1592    .LINE 172
+                           A  1593    
+                           A  1594    ;  173	                            state = ERR
+                           A  1595    .LINE 173
+                           A  1596    
+044A60 DD36FC05            A  1597    	LD	(IX+%FFFFFFFC),%5
+                           A  1598    ;  174	                            errorhalt =
+                           A  1599    .LINE 174
+                           A  1600    
+044A64 DD360901            A  1601    	LD	(IX+%9),%1
+                           A  1602    ;  175	                        }
+                           A  1603    ;  176	                        break;
+                           A  1604    .LINE 176
+                           A  1605    
+044A68 C3 D4 47 04         A  1606    	JR	L_106
+                           A  1607    ;  177	                    case 'h':
+044A6C                     A  1608    L_87:
+                           A  1609    .LINE 177
+                           A  1610    
+                           A  1611    ;  178	                        *ptr = 0; // te
+                           A  1612    .LINE 178
+                           A  1613    
+044A6C DD27FD              A  1614    	LD	HL,(IX+%FFFFFFFD)
+044A6F 3600                A  1615    	LD	(HL),%0
+                           A  1616    ;  179	                        if(strlen(start
+                           A  1617    .LINE 179
+                           A  1618    
+044A71 DD07F6              A  1619    	LD	BC,(IX+%FFFFFFF6)
+044A74 C5                  A  1620    	PUSH	BC
+044A75 CD 41 5A 04         A  1621    	CALL	_strlen
+044A79 C1                  A  1622    	POP	BC
+044A7A CD C5 5D 04         A  1623    	CALL	__icmpzero
+044A7E 28 2A               A  1624    	JR	Z,L_92
+                           A  1625    ;  180	                            result = st
+                           A  1626    .LINE 180
+                           A  1627    
+044A80 DD07F6              A  1628    	LD	BC,(IX+%FFFFFFF6)
+044A83 C5                  A  1629    	PUSH	BC
+044A84 CD 87 46 04         A  1630    	CALL	_str2hex
+044A88 C1                  A  1631    	POP	BC
+044A89 DD2FF9              A  1632    	LD	(IX+%FFFFFFF9),HL
+                           A  1633    ;  181	                            if(err_str2
+                           A  1634    .LINE 181
+                           A  1635    
+044A8C 3A 43 FC 06         A  1636    	LD	A,(_err_str2num)
+044A90 B7                  A  1637    	OR	A,A
+044A91 28 12               A  1638    	JR	Z,L_90
+044A93 DD7E09              A  1639    	LD	A,(IX+%9)
+044A96 B7                  A  1640    	OR	A,A
+044A97 28 0C               A  1641    	JR	Z,L_90
+044A99 21 4B 64 04         A  1642    	LD	HL,_message+9
+044A9D ED07                A  1643    	LD	BC,(HL)
+044A9F C5                  A  1644    	PUSH	BC
+044AA0 CD DC 4B 04         A  1645    	CALL	_error
+044AA4 C1                  A  1646    	POP	BC
+044AA5                     A  1647    L_90:
+                           A  1648    ;  182	                            return resu
+                           A  1649    .LINE 182
                            A  1650    
-044D28 DD27FD              A  1651    	LD	HL,(IX+%FFFFFFFD)
-044D2B 3600                A  1652    	LD	(HL),%0
-                           A  1653    ;  179	                        if(strlen(start
-                           A  1654    .LINE 179
-                           A  1655    
-044D2D DD07F5              A  1656    	LD	BC,(IX+%FFFFFFF5)
-044D30 C5                  A  1657    	PUSH	BC
-044D31 CD F9 5C 04         A  1658    	CALL	_strlen
-044D35 C1                  A  1659    	POP	BC
-044D36 CD CF 60 04         A  1660    	CALL	__icmpzero
-044D3A 28 30               A  1661    	JR	Z,L_92
-                           A  1662    ;  180	                            result = st
-                           A  1663    .LINE 180
+044AA5 DD27F9              A  1651    	LD	HL,(IX+%FFFFFFF9)
+044AA8 18 73               A  1652    	JR	L_107
+                           A  1653    ;  183	                        }
+                           A  1654    ;  184	                        else {  // just
+044AAA                     A  1655    L_92:
+                           A  1656    .LINE 184
+                           A  1657    
+                           A  1658    ;  185	                            state = ERR
+                           A  1659    .LINE 185
+                           A  1660    
+044AAA DD36FC05            A  1661    	LD	(IX+%FFFFFFFC),%5
+                           A  1662    ;  186	                            errorhalt =
+                           A  1663    .LINE 186
                            A  1664    
-044D3C DD07F5              A  1665    	LD	BC,(IX+%FFFFFFF5)
-044D3F C5                  A  1666    	PUSH	BC
-044D40 CD D8 48 04         A  1667    	CALL	_str2hex
-044D44 C1                  A  1668    	POP	BC
-044D45 DD2FF8              A  1669    	LD	(IX+%FFFFFFF8),HL
-044D48 DD73FB              A  1670    	LD	(IX+%FFFFFFFB),E
-                           A  1671    ;  181	                            if(err_str2
-                           A  1672    .LINE 181
-                           A  1673    
-044D4B 3A 8A FF 06         A  1674    	LD	A,(_err_str2num)
-044D4F B7                  A  1675    	OR	A,A
-044D50 28 12               A  1676    	JR	Z,L_90
-044D52 DD7E09              A  1677    	LD	A,(IX+%9)
-044D55 B7                  A  1678    	OR	A,A
-044D56 28 0C               A  1679    	JR	Z,L_90
-044D58 21 4A 67 04         A  1680    	LD	HL,_message+9
-044D5C ED07                A  1681    	LD	BC,(HL)
-044D5E C5                  A  1682    	PUSH	BC
-044D5F CD A4 4E 04         A  1683    	CALL	_error
-044D63 C1                  A  1684    	POP	BC
-044D64                     A  1685    L_90:
-                           A  1686    ;  182	                            return resu
-                           A  1687    .LINE 182
-                           A  1688    
-044D64 DD27F8              A  1689    	LD	HL,(IX+%FFFFFFF8)
-044D67 DD5EFB              A  1690    	LD	E,(IX+%FFFFFFFB)
-044D6A 18 79               A  1691    	JR	L_107
-                           A  1692    ;  183	                        }
-                           A  1693    ;  184	                        else {  // just
-044D6C                     A  1694    L_92:
-                           A  1695    .LINE 184
-                           A  1696    
-                           A  1697    ;  185	                            state = ERR
-                           A  1698    .LINE 185
-                           A  1699    
-044D6C DD36FC05            A  1700    	LD	(IX+%FFFFFFFC),%5
-                           A  1701    ;  186	                            errorhalt =
-                           A  1702    .LINE 186
-                           A  1703    
-044D70 DD360901            A  1704    	LD	(IX+%9),%1
-                           A  1705    ;  187	                        }
-                           A  1706    ;  188	                        break;
-                           A  1707    .LINE 188
-                           A  1708    
-044D74 C3 6E 4A 04         A  1709    	JR	L_106
-                           A  1710    ;  189	                    default:
-044D78                     A  1711    L_94:
-                           A  1712    .LINE 189
+044AAE DD360901            A  1665    	LD	(IX+%9),%1
+                           A  1666    ;  187	                        }
+                           A  1667    ;  188	                        break;
+                           A  1668    .LINE 188
+                           A  1669    
+044AB2 C3 D4 47 04         A  1670    	JR	L_106
+                           A  1671    ;  189	                    default:
+044AB6                     A  1672    L_94:
+                           A  1673    .LINE 189
+                           A  1674    
+                           A  1675    ;  190	                        if(isdigit(*ptr
+                           A  1676    .LINE 190
+                           A  1677    
+044AB6 DD27FD              A  1678    	LD	HL,(IX+%FFFFFFFD)
+044AB9 7E                  A  1679    	LD	A,(HL)
+044ABA 47                  A  1680    	LD	B,A
+044ABB 17ED62              A  1681    	SEXT	HL
+044ABE 68                  A  1682    	LD	L,B
+044ABF E5                  A  1683    	PUSH	HL
+044AC0 CD D1 5D 04         A  1684    	CALL	_isdigit
+044AC4 C1                  A  1685    	POP	BC
+044AC5 CD C5 5D 04         A  1686    	CALL	__icmpzero
+044AC9 28 2A               A  1687    	JR	Z,L_99
+                           A  1688    ;  191	                            result = st
+                           A  1689    .LINE 191
+                           A  1690    
+044ACB DD07F6              A  1691    	LD	BC,(IX+%FFFFFFF6)
+044ACE C5                  A  1692    	PUSH	BC
+044ACF CD 24 47 04         A  1693    	CALL	_str2dec
+044AD3 C1                  A  1694    	POP	BC
+044AD4 DD2FF9              A  1695    	LD	(IX+%FFFFFFF9),HL
+                           A  1696    ;  192	                            if(err_str2
+                           A  1697    .LINE 192
+                           A  1698    
+044AD7 3A 43 FC 06         A  1699    	LD	A,(_err_str2num)
+044ADB B7                  A  1700    	OR	A,A
+044ADC 28 12               A  1701    	JR	Z,L_97
+044ADE DD7E09              A  1702    	LD	A,(IX+%9)
+044AE1 B7                  A  1703    	OR	A,A
+044AE2 28 0C               A  1704    	JR	Z,L_97
+044AE4 21 4B 64 04         A  1705    	LD	HL,_message+9
+044AE8 ED07                A  1706    	LD	BC,(HL)
+044AEA C5                  A  1707    	PUSH	BC
+044AEB CD DC 4B 04         A  1708    	CALL	_error
+044AEF C1                  A  1709    	POP	BC
+044AF0                     A  1710    L_97:
+                           A  1711    ;  193	                            return resu
+                           A  1712    .LINE 193
                            A  1713    
-                           A  1714    ;  190	                        if(isdigit(*ptr
-                           A  1715    .LINE 190
-                           A  1716    
-044D78 DD27FD              A  1717    	LD	HL,(IX+%FFFFFFFD)
-044D7B 7E                  A  1718    	LD	A,(HL)
-044D7C 47                  A  1719    	LD	B,A
-044D7D 17ED62              A  1720    	SEXT	HL
-044D80 68                  A  1721    	LD	L,B
-044D81 E5                  A  1722    	PUSH	HL
-044D82 CD DB 60 04         A  1723    	CALL	_isdigit
-044D86 C1                  A  1724    	POP	BC
-044D87 CD CF 60 04         A  1725    	CALL	__icmpzero
-044D8B 28 30               A  1726    	JR	Z,L_99
-                           A  1727    ;  191	                            result = st
-                           A  1728    .LINE 191
-                           A  1729    
-044D8D DD07F5              A  1730    	LD	BC,(IX+%FFFFFFF5)
-044D90 C5                  A  1731    	PUSH	BC
-044D91 CD 8B 49 04         A  1732    	CALL	_str2dec
-044D95 C1                  A  1733    	POP	BC
-044D96 DD2FF8              A  1734    	LD	(IX+%FFFFFFF8),HL
-044D99 DD73FB              A  1735    	LD	(IX+%FFFFFFFB),E
-                           A  1736    ;  192	                            if(err_str2
-                           A  1737    .LINE 192
+044AF0 DD27F9              A  1714    	LD	HL,(IX+%FFFFFFF9)
+044AF3 18 28               A  1715    	JR	L_107
+                           A  1716    ;  194	                        }
+                           A  1717    ;  195	                        else state = ER
+044AF5                     A  1718    L_99:
+                           A  1719    .LINE 195
+                           A  1720    
+044AF5 DD36FC05            A  1721    	LD	(IX+%FFFFFFFC),%5
+                           A  1722    ;  196	                }
+                           A  1723    ;  197	                break;
+                           A  1724    .LINE 197
+                           A  1725    
+044AF9 C3 D4 47 04         A  1726    	JR	L_106
+                           A  1727    ;  198	            case(ERROR):
+044AFD                     A  1728    L_101:
+                           A  1729    .LINE 198
+                           A  1730    
+                           A  1731    ;  199	                err_str2num = true;
+                           A  1732    .LINE 199
+                           A  1733    
+044AFD 3E01                A  1734    	LD	A,%1
+044AFF 32 43 FC 06         A  1735    	LD	(_err_str2num),A
+                           A  1736    ;  200	                if(err_str2num && error
+                           A  1737    .LINE 200
                            A  1738    
-044D9C 3A 8A FF 06         A  1739    	LD	A,(_err_str2num)
-044DA0 B7                  A  1740    	OR	A,A
-044DA1 28 12               A  1741    	JR	Z,L_97
-044DA3 DD7E09              A  1742    	LD	A,(IX+%9)
-044DA6 B7                  A  1743    	OR	A,A
-044DA7 28 0C               A  1744    	JR	Z,L_97
-044DA9 21 4A 67 04         A  1745    	LD	HL,_message+9
-044DAD ED07                A  1746    	LD	BC,(HL)
-044DAF C5                  A  1747    	PUSH	BC
-044DB0 CD A4 4E 04         A  1748    	CALL	_error
-044DB4 C1                  A  1749    	POP	BC
-044DB5                     A  1750    L_97:
-                           A  1751    ;  193	                            return resu
-                           A  1752    .LINE 193
-                           A  1753    
-044DB5 DD27F8              A  1754    	LD	HL,(IX+%FFFFFFF8)
-044DB8 DD5EFB              A  1755    	LD	E,(IX+%FFFFFFFB)
-044DBB 18 28               A  1756    	JR	L_107
-                           A  1757    ;  194	                        }
-                           A  1758    ;  195	                        else state = ER
-044DBD                     A  1759    L_99:
-                           A  1760    .LINE 195
-                           A  1761    
-044DBD DD36FC05            A  1762    	LD	(IX+%FFFFFFFC),%5
-                           A  1763    ;  196	                }
-                           A  1764    ;  197	                break;
-                           A  1765    .LINE 197
-                           A  1766    
-044DC1 C3 6E 4A 04         A  1767    	JR	L_106
-                           A  1768    ;  198	            case(ERROR):
-044DC5                     A  1769    L_101:
-                           A  1770    .LINE 198
-                           A  1771    
-                           A  1772    ;  199	                err_str2num = true;
-                           A  1773    .LINE 199
-                           A  1774    
-044DC5 3E01                A  1775    	LD	A,%1
-044DC7 32 8A FF 06         A  1776    	LD	(_err_str2num),A
-                           A  1777    ;  200	                if(err_str2num && error
-                           A  1778    .LINE 200
-                           A  1779    
-044DCB DD7E09              A  1780    	LD	A,(IX+%9)
-044DCE B7                  A  1781    	OR	A,A
-044DCF 28 0C               A  1782    	JR	Z,L_104
-044DD1 21 4A 67 04         A  1783    	LD	HL,_message+9
-044DD5 ED07                A  1784    	LD	BC,(HL)
-044DD7 C5                  A  1785    	PUSH	BC
-044DD8 CD A4 4E 04         A  1786    	CALL	_error
-044DDC C1                  A  1787    	POP	BC
-044DDD                     A  1788    L_104:
-                           A  1789    ;  201	                state = DONE;
-                           A  1790    .LINE 201
-                           A  1791    
-044DDD DD36FC04            A  1792    	LD	(IX+%FFFFFFFC),%4
-                           A  1793    ;  202	                break;
-                           A  1794    .LINE 202
-                           A  1795    
-044DE1 C3 6E 4A 04         A  1796    	JR	L_106
-                           A  1797    ;  203	        }
-                           A  1798    ;  204	    }
-044DE5                     A  1799    L_107:
-                           A  1800    .LINE 205
-                           A  1801    
-044DE5 DDF9                A  1802    	LD	SP,IX
-044DE7 DDE1                A  1803    	POP	IX
-044DE9 C9                  A  1804    	RET	
-                           A  1805    
-                           A  1806    
-                           A  1807    ;**************************** _str2num ********
-                           A  1808    ;Name                         Addr/Register   S
-                           A  1809    ;_isdigit                            IMPORT  --
-                           A  1810    ;_tolower                            IMPORT  --
-                           A  1811    ;_isxdigit                           IMPORT  --
-                           A  1812    ;_message                            IMPORT  un
-                           A  1813    ;_error                              IMPORT  --
-                           A  1814    ;_strlen                             IMPORT  --
-                           A  1815    ;_err_str2num                        STATIC    
-                           A  1816    ;G_2                                  IX-20    
-                           A  1817    ;G_1                                  IX-17    
-                           A  1818    ;G_0                                  IX-14    
-                           A  1819    ;start                                IX-11    
-                           A  1820    ;result                                IX-8    
-                           A  1821    ;state                                 IX-4    
-                           A  1822    ;ptr                                   IX-3    
-                           A  1823    ;errorhalt                             IX+9    
-                           A  1824    ;string                                IX+6    
-                           A  1825    
-                           A  1826    
-                           A  1827    ; Stack Frame Size: 32 (bytes)
-                           A  1828    ;       Spill Code: 0 (instruction)
-                           A  1829    
-                           A  1830    
-                           A  1831    .ENDFUNC "str2num",205,"_str2num"
-                           A  1832    	XREF _error:ROM
-                           A  1833    	XREF _message:ROM
-                           A  1834    	XREF _tolower:ROM
-                           A  1835    	XREF _isxdigit:ROM
-                           A  1836    	XREF _isdigit:ROM
-                           A  1837    	XREF _strlen:ROM
-                           A  1838    	XREF __ladd:ROM
-                           A  1839    	XREF __lor:ROM
-                           A  1840    	XREF __lshl:ROM
-                           A  1841    	XREF __setflag:ROM
-                           A  1842    	XREF __icmpzero:ROM
-                           A  1843    	XREF __case8D:ROM
-                           A  1844    	XREF __seqcaseD:ROM
-                           A  1845    	XDEF _str2num
-                           A  1846    	XDEF _str2dec
-                           A  1847    	XDEF _str2hex
-                           A  1848    	XDEF _str2bin
-                           A  1849    	XDEF _err_str2num
-                           A  1850    	END
+044B03 DD7E09              A  1739    	LD	A,(IX+%9)
+044B06 B7                  A  1740    	OR	A,A
+044B07 28 0C               A  1741    	JR	Z,L_104
+044B09 21 4B 64 04         A  1742    	LD	HL,_message+9
+044B0D ED07                A  1743    	LD	BC,(HL)
+044B0F C5                  A  1744    	PUSH	BC
+044B10 CD DC 4B 04         A  1745    	CALL	_error
+044B14 C1                  A  1746    	POP	BC
+044B15                     A  1747    L_104:
+                           A  1748    ;  201	                state = DONE;
+                           A  1749    .LINE 201
+                           A  1750    
+044B15 DD36FC04            A  1751    	LD	(IX+%FFFFFFFC),%4
+                           A  1752    ;  202	                break;
+                           A  1753    .LINE 202
+                           A  1754    
+044B19 C3 D4 47 04         A  1755    	JR	L_106
+                           A  1756    ;  203	        }
+                           A  1757    ;  204	    }
+044B1D                     A  1758    L_107:
+                           A  1759    .LINE 205
+                           A  1760    
+044B1D DDF9                A  1761    	LD	SP,IX
+044B1F DDE1                A  1762    	POP	IX
+044B21 C9                  A  1763    	RET	
+                           A  1764    
+                           A  1765    
+                           A  1766    ;**************************** _str2num ********
+                           A  1767    ;Name                         Addr/Register   S
+                           A  1768    ;_isdigit                            IMPORT  --
+                           A  1769    ;_tolower                            IMPORT  --
+                           A  1770    ;_isxdigit                           IMPORT  --
+                           A  1771    ;_message                            IMPORT  un
+                           A  1772    ;_error                              IMPORT  --
+                           A  1773    ;_strlen                             IMPORT  --
+                           A  1774    ;_err_str2num                        STATIC    
+                           A  1775    ;G_2                                  IX-19    
+                           A  1776    ;G_1                                  IX-16    
+                           A  1777    ;G_0                                  IX-13    
+                           A  1778    ;start                                IX-10    
+                           A  1779    ;result                                IX-7    
+                           A  1780    ;state                                 IX-4    
+                           A  1781    ;ptr                                   IX-3    
+                           A  1782    ;errorhalt                             IX+9    
+                           A  1783    ;string                                IX+6    
+                           A  1784    
+                           A  1785    
+                           A  1786    ; Stack Frame Size: 31 (bytes)
+                           A  1787    ;       Spill Code: 0 (instruction)
+                           A  1788    
+                           A  1789    
+                           A  1790    .ENDFUNC "str2num",205,"_str2num"
+                           A  1791    	XREF _error:ROM
+                           A  1792    	XREF _message:ROM
+                           A  1793    	XREF _tolower:ROM
+                           A  1794    	XREF _isxdigit:ROM
+                           A  1795    	XREF _isdigit:ROM
+                           A  1796    	XREF _strlen:ROM
+                           A  1797    	XREF __ior:ROM
+                           A  1798    	XREF __setflag:ROM
+                           A  1799    	XREF __icmpzero:ROM
+                           A  1800    	XREF __case8D:ROM
+                           A  1801    	XREF __seqcaseD:ROM
+                           A  1802    	XDEF _str2num
+                           A  1803    	XDEF _str2dec
+                           A  1804    	XDEF _str2hex
+                           A  1805    	XDEF _str2bin
+                           A  1806    	XDEF _err_str2num
+                           A  1807    	END
 
 
 Errors: 0
 Warnings: 0
-Lines Assembled: 1851
+Lines Assembled: 1808

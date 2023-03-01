@@ -90,7 +90,7 @@
 .TYPE 108
 .ENDEF
 .ENDREC "flt_info"
-.BEGREC "NONAME0",7
+.BEGREC "NONAME0",6
 .DEFINE "name"
 .VALUE 0
 .CLASS 8
@@ -99,10 +99,10 @@
 .DEFINE "address"
 .VALUE 3
 .CLASS 8
-.TYPE 5
+.TYPE 4
 .ENDEF
 .ENDREC "NONAME0"
-.BEGREC "NONAME1",5
+.BEGREC "NONAME1",4
 .DEFINE "defined"
 .VALUE 0
 .CLASS 8
@@ -111,7 +111,7 @@
 .DEFINE "address"
 .VALUE 1
 .CLASS 8
-.TYPE 5
+.TYPE 4
 .ENDEF
 .ENDREC "NONAME1"
 .BEGREC "NONAME2",6
@@ -187,7 +187,7 @@
 .TYPE 2
 .ENDEF
 .ENDREC "NONAME5"
-.BEGREC "NONAME6",16
+.BEGREC "NONAME6",15
 .DEFINE "reg"
 .VALUE 0
 .CLASS 8
@@ -231,10 +231,10 @@
 .DEFINE "immediate"
 .VALUE 11
 .CLASS 8
-.TYPE 5
+.TYPE 4
 .ENDEF
 .DEFINE "wasLabel"
-.VALUE 15
+.VALUE 14
 .CLASS 8
 .TYPE 12
 .ENDEF
@@ -405,7 +405,7 @@
 .ENDREC "NONAME11"
 	SEGMENT BSS
 _an_prev:
-	DS	5
+	DS	4
 .DEFINE "an_prev"
 .ALIAS "_an_prev"
 .CLASS 83
@@ -414,7 +414,7 @@ _an_prev:
 .TYPE 8
 .ENDEF
 _an_next:
-	DS	5
+	DS	4
 .DEFINE "an_next"
 .ALIAS "_an_next"
 .CLASS 83
@@ -423,7 +423,7 @@ _an_next:
 .TYPE 8
 .ENDEF
 _an_return:
-	DS	7
+	DS	6
 .DEFINE "an_return"
 .ALIAS "_an_return"
 .CLASS 83
@@ -484,7 +484,7 @@ _globalLabelCounter:
 .TYPE 13
 .ENDEF
 _localLabelTable:
-	DS	448
+	DS	384
 .DEFINE "localLabelTable"
 .ALIAS "_localLabelTable"
 .CLASS 83
@@ -594,8 +594,11 @@ _printLocalLabelTable:
 	JR	L_3
 L_1:
 	LD	HL,(IX+%FFFFFFFD)
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
 	LD	(IX+%FFFFFFFA),HL
@@ -609,11 +612,12 @@ L_1:
 	LD	(___print_fmt+4),A
 	LD	IY,(IX+%FFFFFFFA)
 	LD	BC,(IY+%3)
-	LD	A,(IY+%6)
-	LD	H,%0
-	LD	L,A
-	PUSH	HL
+	CALL	__itol
+	LD	DE,BC
+	LD	C,A
+	LD	B,%0
 	PUSH	BC
+	PUSH	DE
 	CALL	__u_uitoa
 	POP	BC
 	POP	BC
@@ -654,7 +658,7 @@ L_3:
 ;Name                         Addr/Register   Size   Type
 ;__u_uitoa                           IMPORT  -----   function
 ;___print_fmt                        IMPORT     19   variable
-;_localLabelTable                    STATIC    448   variable
+;_localLabelTable                    STATIC    384   variable
 ;_localLabelCounter                  STATIC      2   variable
 ;__u_itoa                            IMPORT  -----   function
 ;___print_sendstring                 IMPORT  -----   function
@@ -901,9 +905,9 @@ _initAnonymousLabelTable:
 
 ;**************************** _initAnonymousLabelTable ***************************
 ;Name                         Addr/Register   Size   Type
-;_an_return                          STATIC      7   variable
-;_an_next                            STATIC      5   variable
-;_an_prev                            STATIC      5   variable
+;_an_return                          STATIC      6   variable
+;_an_next                            STATIC      4   variable
+;_an_prev                            STATIC      4   variable
 
 
 ; Stack Frame Size: 6 (bytes)
@@ -969,8 +973,11 @@ L_14:
 .LINE 61
 
 	LD	HL,(IX+%FFFFFFFD)
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
 	LD	BC,0
@@ -999,7 +1006,7 @@ L_16:
 
 ;**************************** _initLocalLabelTable ***************************
 ;Name                         Addr/Register   Size   Type
-;_localLabelTable                    STATIC    448   variable
+;_localLabelTable                    STATIC    384   variable
 ;_localLabelCounter                  STATIC      2   variable
 ;_localLabelBufferIndex              STATIC      2   variable
 ;i                                     IX-3      3   variable
@@ -1161,8 +1168,11 @@ L_23:
 ;   77			cmp = strcmp(key,localLabelTable[p].name);
 .LINE 77
 
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
 	LD	IY,HL
@@ -1235,7 +1245,7 @@ L_27:
 
 ;**************************** _findLocalLabelIndex ***************************
 ;Name                         Addr/Register   Size   Type
-;_localLabelTable                    STATIC    448   variable
+;_localLabelTable                    STATIC    384   variable
 ;_strcmp                             IMPORT  -----   function
 ;_localLabelCounter                  STATIC      2   variable
 ;base                                 IX-12      3   variable
@@ -1311,8 +1321,11 @@ _findLocalLabel:
 	CALL	__setflag
 	JP	P,L_29
 	LD	HL,(IX+%FFFFFFFD)
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
 	JR	L_30
@@ -1333,7 +1346,7 @@ L_30:
 
 ;**************************** _findLocalLabel ***************************
 ;Name                         Addr/Register   Size   Type
-;_localLabelTable                    STATIC    448   variable
+;_localLabelTable                    STATIC    384   variable
 ;p                                     IX-3      3   variable
 ;key                                   IX+6      3   parameter
 
@@ -1402,8 +1415,7 @@ _writeLocalLabels:
 	LD	IX,0
 	ADD	IX,SP
 	PUSH	BC
-	DEC	SP
-	DEC	SP
+	PUSH	BC
 ;  113	    int i;
 ;  114	    uint16_t delta;
 ;  115	    // number of bytes in the string buffer
@@ -1418,7 +1430,9 @@ _writeLocalLabels:
 	PUSH	BC
 	LD	BC,_localLabelBufferIndex
 	PUSH	BC
+	LD	(IX+%FFFFFFFA),A
 	CALL	_agon_fwrite
+	LD	A,(IX+%FFFFFFFA)
 	POP	BC
 	POP	BC
 	POP	BC
@@ -1439,7 +1453,9 @@ _writeLocalLabels:
 	PUSH	HL
 	LD	BC,_localLabelBuffer
 	PUSH	BC
+	LD	(IX+%FFFFFFFA),A
 	CALL	_agon_fwrite
+	LD	A,(IX+%FFFFFFFA)
 	POP	BC
 	POP	BC
 	POP	BC
@@ -1457,7 +1473,9 @@ L_32:
 	PUSH	BC
 	LD	BC,_localLabelCounter
 	PUSH	BC
+	LD	(IX+%FFFFFFFA),A
 	CALL	_agon_fwrite
+	LD	A,(IX+%FFFFFFFA)
 	POP	BC
 	POP	BC
 	POP	BC
@@ -1473,8 +1491,11 @@ L_34:
 .LINE 122
 
 	LD	HL,(IX+%FFFFFFFD)
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
 	LD	IY,HL
@@ -1494,7 +1515,9 @@ L_34:
 	LD	BC,2
 	PUSH	BC
 	PEA	IX+%FFFFFFFB
+	LD	(IX+%FFFFFFFA),A
 	CALL	_agon_fwrite
+	LD	A,(IX+%FFFFFFFA)
 	POP	BC
 	POP	BC
 	POP	BC
@@ -1509,13 +1532,18 @@ L_34:
 	LD	BC,4
 	PUSH	BC
 	LD	HL,(IX+%FFFFFFFD)
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
 	LD	IY,HL
 	PEA	IY+%3
+	LD	(IX+%FFFFFFFA),A
 	CALL	_agon_fwrite
+	LD	A,(IX+%FFFFFFFA)
 	POP	BC
 	POP	BC
 	POP	BC
@@ -1546,7 +1574,7 @@ L_36:
 
 ;**************************** _writeLocalLabels ***************************
 ;Name                         Addr/Register   Size   Type
-;_localLabelTable                    STATIC    448   variable
+;_localLabelTable                    STATIC    384   variable
 ;_localLabelCounter                  STATIC      2   variable
 ;_localLabelBuffer                   STATIC   4096   variable
 ;_localLabelBufferIndex              STATIC      2   variable
@@ -1555,7 +1583,7 @@ L_36:
 ;i                                     IX-3      3   variable
 
 
-; Stack Frame Size: 11 (bytes)
+; Stack Frame Size: 12 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -1691,8 +1719,11 @@ L_41:
 	LD	BC,4
 	PUSH	BC
 	LD	HL,(IX+%FFFFFFFD)
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
 	LD	IY,HL
@@ -1707,15 +1738,19 @@ L_41:
 
 	LD	BC,(IX+%FFFFFFFB)
 	CALL	__stoiu
-	LD	BC,HL
-	LD	HL,(IX+%FFFFFFFD)
-	LD	A,%7
-	CALL	__imul_b
-	LD	DE,_localLabelTable
-	ADD	HL,DE
+	LD	DE,HL
+	LD	IY,(IX+%FFFFFFFD)
+	LD	BC,IY
+	LD	HL,IY
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
+	LD	BC,_localLabelTable
+	ADD	HL,BC
 	LD	IY,HL
 	LD	HL,_localLabelBuffer
-	ADD	HL,BC
+	ADD	HL,DE
 	LD	(IY+%0),HL
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
@@ -1744,7 +1779,7 @@ L_43:
 
 ;**************************** _readLocalLabels ***************************
 ;Name                         Addr/Register   Size   Type
-;_localLabelTable                    STATIC    448   variable
+;_localLabelTable                    STATIC    384   variable
 ;_localLabelCounter                  STATIC      2   variable
 ;_localLabelBuffer                   STATIC   4096   variable
 ;_localLabelBufferIndex              STATIC      2   variable
@@ -1759,7 +1794,7 @@ L_43:
 
 .ENDFUNC "readLocalLabels",143,"_readLocalLabels"
 ;  144	
-;  145	void writeAnonymousLabel(int32_t address) {
+;  145	void writeAnonymousLabel(int24_t address) {
 _writeAnonymousLabel:
 .DEFINE "_writeAnonymousLabel"
 
@@ -1781,7 +1816,7 @@ _writeAnonymousLabel:
 
 .VALUE 6
 
-.TYPE 5
+.TYPE 4
 
 .ENDEF
 
@@ -1793,6 +1828,7 @@ _writeAnonymousLabel:
 
 	LD	BC,4
 	PUSH	BC
+	LD	BC,3
 	PUSH	BC
 	LD	BC,1
 	PUSH	BC
@@ -1813,10 +1849,10 @@ _writeAnonymousLabel:
 ;**************************** _writeAnonymousLabel ***************************
 ;Name                         Addr/Register   Size   Type
 ;_agon_fwrite                        IMPORT  -----   function
-;address                               IX+6      4   parameter
+;address                               IX+6      3   parameter
 
 
-; Stack Frame Size: 12 (bytes)
+; Stack Frame Size: 9 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -1842,9 +1878,9 @@ _readAnonymousLabel:
 
 .CLASS 65
 
-.VALUE -4
+.VALUE -3
 
-.TYPE 5
+.TYPE 4
 
 .ENDEF
 
@@ -1852,8 +1888,7 @@ _readAnonymousLabel:
 	LD	IX,0
 	ADD	IX,SP
 	PUSH	BC
-	DEC	SP
-;  150	    int32_t address;
+;  150	    int24_t address;
 ;  151	
 ;  152	    if(agon_fread(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS)) {
 .LINE 152
@@ -1862,9 +1897,9 @@ _readAnonymousLabel:
 	PUSH	BC
 	LD	BC,1
 	PUSH	BC
-	LD	BC,4
+	LD	BC,3
 	PUSH	BC
-	PEA	IX+%FFFFFFFC
+	PEA	IX+%FFFFFFFD
 	CALL	_agon_fread
 	POP	BC
 	POP	BC
@@ -1882,9 +1917,7 @@ _readAnonymousLabel:
 .LINE 154
 
 	LD	BC,(_an_next+1)
-	LD	A,(_an_next+4)
 	LD	(_an_prev+1),BC
-	LD	(_an_prev+4),A
 ;  155	            an_prev.defined = true;
 .LINE 155
 
@@ -1897,10 +1930,8 @@ L_47:
 ;  157	        an_next.address = address;
 .LINE 157
 
-	LD	BC,(IX+%FFFFFFFC)
+	LD	BC,(IX+%FFFFFFFD)
 	LD	(_an_next+1),BC
-	LD	A,(IX+%FFFFFFFF)
-	LD	(_an_next+4),A
 ;  158	        an_next.defined = true;            
 .LINE 158
 
@@ -1916,9 +1947,7 @@ L_49:
 .LINE 161
 
 	LD	BC,(_an_next+1)
-	LD	A,(_an_next+4)
 	LD	(_an_prev+1),BC
-	LD	(_an_prev+4),A
 ;  162	        an_prev.defined = true;
 .LINE 162
 
@@ -1941,19 +1970,19 @@ L_50:
 
 ;**************************** _readAnonymousLabel ***************************
 ;Name                         Addr/Register   Size   Type
-;_an_prev                            STATIC      5   variable
-;_an_next                            STATIC      5   variable
+;_an_prev                            STATIC      4   variable
+;_an_next                            STATIC      4   variable
 ;_agon_fread                         IMPORT  -----   function
-;address                               IX-4      4   variable
+;address                               IX-3      3   variable
 
 
-; Stack Frame Size: 10 (bytes)
+; Stack Frame Size: 9 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
 .ENDFUNC "readAnonymousLabel",165,"_readAnonymousLabel"
 ;  166	
-;  167	bool insertLocalLabel(char *labelname, int32_t address) {
+;  167	bool insertLocalLabel(char *labelname, int24_t address) {
 _insertLocalLabel:
 .DEFINE "_insertLocalLabel"
 
@@ -1985,7 +2014,7 @@ _insertLocalLabel:
 
 .VALUE 9
 
-.TYPE 5
+.TYPE 4
 
 .ENDEF
 
@@ -2019,13 +2048,13 @@ _insertLocalLabel:
 
 .ENDEF
 
-.DEFINE "old_name"
+.DEFINE "old_address"
 
 .CLASS 65
 
 .VALUE -12
 
-.TYPE 34
+.TYPE 4
 
 .ENDEF
 
@@ -2039,26 +2068,26 @@ _insertLocalLabel:
 
 .ENDEF
 
-.DEFINE "old_address"
+.DEFINE "old_name"
 
 .CLASS 65
 
-.VALUE -19
+.VALUE -18
 
-.TYPE 5
+.TYPE 34
 
 .ENDEF
 
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LEA	HL,IX+%FFFFFFEA
+	LEA	HL,IX+%FFFFFFEB
 	LD	SP,HL
 ;  168	    int len,i;
 ;  169	    int p;
 ;  170	    char *ptr;
 ;  171	    char *old_name;
-;  172	    int32_t old_address;
+;  172	    int24_t old_address;
 ;  173	
 ;  174	    if(labelname[1] == 0) {
 .LINE 174
@@ -2182,8 +2211,11 @@ L_57:
 .LINE 192
 
 	LD	HL,(IX+%FFFFFFFD)
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
 	LD	IY,HL
@@ -2233,21 +2265,22 @@ L_61:
 .LINE 196
 
 	LD	HL,(IX+%FFFFFFFD)
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
-	LD	(IX+%FFFFFFEA),HL
-	LD	IY,(IX+%FFFFFFEA)
+	LD	(IX+%FFFFFFEB),HL
+	LD	IY,(IX+%FFFFFFEB)
 	LD	BC,(IY+%0)
-	LD	(IX+%FFFFFFF4),BC
+	LD	(IX+%FFFFFFEE),BC
 ;  197	                    old_address = localLabelTable[i].address;
 .LINE 197
 
 	LD	BC,(IY+%3)
-	LD	A,(IY+%6)
-	LD	(IX+%FFFFFFED),BC
-	LD	(IX+%FFFFFFF0),A
+	LD	(IX+%FFFFFFF4),BC
 ;  198	                    localLabelTable[i].name = ptr;
 .LINE 198
 
@@ -2257,21 +2290,17 @@ L_61:
 .LINE 199
 
 	LD	BC,(IX+%9)
-	LD	A,(IX+%C)
 	LD	(IY+%3),BC
-	LD	(IY+%6),A
 ;  200	                    ptr = old_name;
 .LINE 200
 
-	LD	BC,(IX+%FFFFFFF4)
+	LD	BC,(IX+%FFFFFFEE)
 	LD	(IX+%FFFFFFFA),BC
 ;  201	                    address = old_address;
 .LINE 201
 
-	LD	BC,(IX+%FFFFFFED)
-	LD	A,(IX+%FFFFFFF0)
+	LD	BC,(IX+%FFFFFFF4)
 	LD	(IX+%9),BC
-	LD	(IX+%C),A
 	LD	BC,(IX+%FFFFFFFD)
 	INC	BC
 	LD	(IX+%FFFFFFFD),BC
@@ -2296,8 +2325,11 @@ L_66:
 
 	LD	BC,(_localLabelCounter)
 	CALL	__stoiu
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
 	LD	BC,(IX+%FFFFFFFA)
@@ -2308,15 +2340,16 @@ L_66:
 
 	LD	BC,(_localLabelCounter)
 	CALL	__stoiu
-	LD	A,%7
-	CALL	__imul_b
+	LD	BC,HL
+	ADD	HL,HL
+	ADD	HL,HL
+	ADD	HL,BC
+	ADD	HL,BC
 	LD	BC,_localLabelTable
 	ADD	HL,BC
 	LD	BC,(IX+%9)
-	LD	A,(IX+%C)
 	LD	IY,HL
 	LD	(IY+%3),BC
-	LD	(IY+%6),A
 ;  206	            localLabelCounter++;
 .LINE 206
 
@@ -2368,7 +2401,7 @@ L_73:
 
 ;**************************** _insertLocalLabel ***************************
 ;Name                         Addr/Register   Size   Type
-;_localLabelTable                    STATIC    448   variable
+;_localLabelTable                    STATIC    384   variable
 ;_strcmp                             IMPORT  -----   function
 ;_strcpy                             IMPORT  -----   function
 ;_localLabelBuffer                   STATIC   4096   variable
@@ -2377,23 +2410,23 @@ L_73:
 ;_localLabelCounter                  STATIC      2   variable
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
-;old_address                          IX-19      4   variable
+;old_name                             IX-18      3   variable
 ;p                                    IX-15      3   variable
-;old_name                             IX-12      3   variable
+;old_address                          IX-12      3   variable
 ;len                                   IX-9      3   variable
 ;ptr                                   IX-6      3   variable
 ;i                                     IX-3      3   variable
-;address                               IX+9      4   parameter
+;address                               IX+9      3   parameter
 ;labelname                             IX+6      3   parameter
 
 
-; Stack Frame Size: 37 (bytes)
+; Stack Frame Size: 33 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
 .ENDFUNC "insertLocalLabel",213,"_insertLocalLabel"
 ;  214	
-;  215	bool insertGlobalLabel(char *labelname, int32_t address){
+;  215	bool insertGlobalLabel(char *labelname, int24_t address){
 _insertGlobalLabel:
 .DEFINE "_insertGlobalLabel"
 
@@ -2425,7 +2458,7 @@ _insertGlobalLabel:
 
 .VALUE 9
 
-.TYPE 5
+.TYPE 4
 
 .ENDEF
 
@@ -2506,7 +2539,7 @@ _insertGlobalLabel:
 	LD	BC,(IX+%FFFFFFF7)
 	ADD	HL,BC
 	LD	IY,HL
-	LEA	BC,IY+%8
+	LEA	BC,IY+%7
 	LD	HL,8191
 	OR	A,A
 	SBC	HL,BC
@@ -2530,7 +2563,7 @@ L_75:
 .LINE 225
 
 	LD	IY,(_globalLabelBufferIndex)
-	LEA	BC,IY+%7
+	LEA	BC,IY+%6
 	LD	HL,_globalLabelBufferIndex
 	LD	(HL),C
 	INC	HL
@@ -2571,10 +2604,8 @@ L_75:
 .LINE 230
 
 	LD	BC,(IX+%9)
-	LD	A,(IX+%C)
 	LD	IY,(IX+%FFFFFFFA)
 	LD	(IY+%3),BC
-	LD	(IY+%6),A
 ;  231	
 ;  232	    index = hash(labelname, GLOBAL_LABEL_TABLE_SIZE);
 .LINE 232
@@ -2678,11 +2709,11 @@ L_83:
 ;len                                   IX-9      3   variable
 ;tmp                                   IX-6      3   variable
 ;i                                     IX-3      3   variable
-;address                               IX+9      4   parameter
+;address                               IX+9      3   parameter
 ;labelname                             IX+6      3   parameter
 
 
-; Stack Frame Size: 33 (bytes)
+; Stack Frame Size: 30 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -3035,9 +3066,7 @@ L_96:
 .LINE 270
 
 	LD	BC,(_an_next+1)
-	LD	A,(_an_next+4)
 	LD	(_an_return+3),BC
-	LD	(_an_return+6),A
 ;  271	                return &an_return;
 .LINE 271
 
@@ -3093,9 +3122,7 @@ L_101:
 .LINE 277
 
 	LD	BC,(_an_prev+1)
-	LD	A,(_an_prev+4)
 	LD	(_an_return+3),BC
-	LD	(_an_return+6),A
 ;  278	                return &an_return;
 .LINE 278
 
@@ -3142,9 +3169,9 @@ L_109:
 ;**************************** _findLabel ***************************
 ;Name                         Addr/Register   Size   Type
 ;_findGlobalLabel                    IMPORT  -----   function
-;_an_prev                            STATIC      5   variable
-;_an_return                          STATIC      7   variable
-;_an_next                            STATIC      5   variable
+;_an_prev                            STATIC      4   variable
+;_an_return                          STATIC      6   variable
+;_an_next                            STATIC      4   variable
 ;G_6                                   IX-9      3   variable
 ;G_5                                   IX-6      3   variable
 ;G_4                                   IX-3      3   variable
@@ -3176,7 +3203,6 @@ L_109:
 	XREF __setflag:ROM
 	XREF __scmpzero:ROM
 	XREF __icmpzero:ROM
-	XREF __imul_b:ROM
 	XREF __ishrs_b:ROM
 	XDEF _findLabel
 	XDEF _findGlobalLabel

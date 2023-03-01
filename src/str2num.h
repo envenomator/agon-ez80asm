@@ -6,9 +6,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-// Transforms a binary/hexadecimal/decimal string to an int32_t number
+// Transforms a binary/hexadecimal/decimal string to an int24_t number
 // option to NOT halt on errors, but just set the err_str2num status - just check if something is a valid number
-int32_t str2num(char *string, bool errorhalt);
+int24_t str2num(char *string, bool errorhalt);
 
 extern bool err_str2num;
 

@@ -109,7 +109,7 @@ typedef enum {
 #define S_ANY         0xFF
 #define S_NONE        0x00
 #define S_SISLIL      S_SIS | S_LIL
-#define S_S1L0          S_SIL | S_LIS
+#define S_S1L0        S_SIL | S_LIS
 
 // actual codes to emit
 #define CODE_SIS    0x40
@@ -126,7 +126,7 @@ typedef struct {
     int16_t             displacement;           // larger, so we can check range
     bool                displacement_provided;
     bool                immediate_provided;
-    int32_t            immediate;
+    int24_t             immediate;
     bool                wasLabel;
 } operand;
 

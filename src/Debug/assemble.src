@@ -140,7 +140,7 @@
 .TYPE 14
 .ENDEF
 .ENDREC "NONAME2"
-.BEGREC "NONAME3",16
+.BEGREC "NONAME3",15
 .DEFINE "reg"
 .VALUE 0
 .CLASS 8
@@ -184,10 +184,10 @@
 .DEFINE "immediate"
 .VALUE 11
 .CLASS 8
-.TYPE 5
+.TYPE 4
 .ENDEF
 .DEFINE "wasLabel"
-.VALUE 15
+.VALUE 14
 .CLASS 8
 .TYPE 12
 .ENDEF
@@ -302,7 +302,7 @@
 .TYPE 556
 .ENDEF
 .ENDREC "NONAME7"
-.BEGREC "NONAME8",7
+.BEGREC "NONAME8",6
 .DEFINE "name"
 .VALUE 0
 .CLASS 8
@@ -311,10 +311,10 @@
 .DEFINE "address"
 .VALUE 3
 .CLASS 8
-.TYPE 5
+.TYPE 4
 .ENDEF
 .ENDREC "NONAME8"
-.BEGREC "NONAME9",5
+.BEGREC "NONAME9",4
 .DEFINE "defined"
 .VALUE 0
 .CLASS 8
@@ -323,7 +323,7 @@
 .DEFINE "address"
 .VALUE 1
 .CLASS 8
-.TYPE 5
+.TYPE 4
 .ENDEF
 .ENDREC "NONAME9"
 .BEGREC "NONAME10",264
@@ -499,7 +499,6 @@ _empty_operand:
 .LINE 24
 
 	LD	(IY+%B),BC
-	LD	(IY+%E),%0
 ;   25	    op->immediate_provided = false;
 .LINE 25
 
@@ -507,7 +506,7 @@ _empty_operand:
 ;   26	    op->wasLabel = false;
 .LINE 26
 
-	LD	(IY+%F),%0
+	LD	(IY+%E),%0
 ;   27	}
 .LINE 27
 
@@ -847,7 +846,7 @@ L_21:
 ;   66	// labelb-1
 ;   67	// labela+labelb+offset1-1
 ;   68	// The string should not contain any spaces, needs to be a single token
-;   69	int32_t getLabelValue(char *string) {
+;   69	int24_t getLabelValue(char *string) {
 _getLabelValue:
 .DEFINE "_getLabelValue"
 
@@ -855,7 +854,7 @@ _getLabelValue:
 
 .CLASS 2
 
-.TYPE 69
+.TYPE 68
 
 .ENDEF
 
@@ -873,23 +872,23 @@ _getLabelValue:
 
 .ENDEF
 
-.DEFINE "operator"
-
-.CLASS 65
-
-.VALUE -1
-
-.TYPE 2
-
-.ENDEF
-
 .DEFINE "total"
 
 .CLASS 65
 
-.VALUE -5
+.VALUE -3
 
-.TYPE 5
+.TYPE 4
+
+.ENDEF
+
+.DEFINE "operator"
+
+.CLASS 65
+
+.VALUE -4
+
+.TYPE 2
 
 .ENDEF
 
@@ -897,9 +896,9 @@ _getLabelValue:
 
 .CLASS 65
 
-.VALUE -9
+.VALUE -7
 
-.TYPE 5
+.TYPE 4
 
 .ENDEF
 
@@ -907,7 +906,7 @@ _getLabelValue:
 
 .CLASS 65
 
-.VALUE -12
+.VALUE -10
 
 .TYPE 34
 
@@ -917,7 +916,7 @@ _getLabelValue:
 
 .CLASS 65
 
-.VALUE -18
+.VALUE -16
 
 .TAG "NONAME8"
 
@@ -929,7 +928,7 @@ _getLabelValue:
 
 .CLASS 65
 
-.VALUE -151
+.VALUE -149
 
 .TAG "NONAME11"
 
@@ -940,10 +939,10 @@ _getLabelValue:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-151
+	LD	HL,-149
 	ADD	HL,SP
 	LD	SP,HL
-;   70	    int32_t total, tmp;
+;   70	    int24_t total, tmp;
 ;   71	    char operator, *ptr;
 ;   72	    label *lbl;
 ;   73	    tokentype token;
@@ -952,18 +951,16 @@ _getLabelValue:
 .LINE 75
 
 	LD	BC,(IX+%6)
-	LD	(IX+%FFFFFFF4),BC
+	LD	(IX+%FFFFFFF6),BC
 ;   76	    total = 0;
 .LINE 76
 
 	LD	BC,0
-	XOR	A,A
-	LD	(IX+%FFFFFFFB),BC
-	LD	(IX+%FFFFFFFE),A
+	LD	(IX+%FFFFFFFD),BC
 ;   77	    operator = '+'; // previous operand in case of single value/label
 .LINE 77
 
-	LD	(IX+%FFFFFFFF),%2B
+	LD	(IX+%FFFFFFFC),%2B
 ;   78	    while(ptr) {
 .LINE 78
 
@@ -973,16 +970,14 @@ L_43:
 .LINE 79
 
 	LD	BC,0
-	XOR	A,A
-	LD	(IX+%FFFFFFF7),BC
-	LD	(IX+%FFFFFFFA),A
+	LD	(IX+%FFFFFFF9),BC
 ;   80	        getOperatorToken(&token, ptr);
 .LINE 80
 
-	LD	BC,(IX+%FFFFFFF4)
+	LD	BC,(IX+%FFFFFFF6)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-151
+	LD	BC,-149
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -993,7 +988,7 @@ L_43:
 .LINE 81
 
 	LD	HL,IX
-	LD	BC,-151
+	LD	BC,-149
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -1005,23 +1000,21 @@ L_43:
 .LINE 82
 
 	LD	HL,IX
-	LD	BC,-151
+	LD	BC,-149
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
 	CALL	_findLabel
 	POP	BC
-	LD	(IX+%FFFFFFEE),HL
+	LD	(IX+%FFFFFFF0),HL
 ;   83	            if(lbl) tmp = lbl->address;
 .LINE 83
 
 	CALL	__icmpzero
 	JR	Z,L_27
-	LD	IY,(IX+%FFFFFFEE)
+	LD	IY,(IX+%FFFFFFF0)
 	LD	BC,(IY+%3)
-	LD	A,(IY+%6)
-	LD	(IX+%FFFFFFF7),BC
-	LD	(IX+%FFFFFFFA),A
+	LD	(IX+%FFFFFFF9),BC
 ;   84	            else {
 .LINE 84
 
@@ -1031,9 +1024,9 @@ L_27:
 .LINE 85
 
 	LD	HL,IX
-	LD	BC,-151
+	LD	BC,-149
 	ADD	HL,BC
-	LD	(IX+%FFFFFFF1),HL
+	LD	(IX+%FFFFFFF3),HL
 	LD	A,(HL)
 	LD	B,A
 	SEXT	HL
@@ -1042,14 +1035,13 @@ L_27:
 	OR	A,A
 	SBC	HL,BC
 	JR	NZ,L_25
-	LD	BC,(IX+%FFFFFFF1)
+	LD	BC,(IX+%FFFFFFF3)
 	PUSH	BC
 	CALL	_getAsciiValue
 	POP	BC
 	UEXT	HL
 	LD	L,A
-	LD	(IX+%FFFFFFF7),HL
-	LD	(IX+%FFFFFFFA),H
+	LD	(IX+%FFFFFFF9),HL
 ;   86	                else {
 .LINE 86
 
@@ -1060,13 +1052,12 @@ L_25:
 
 	LD	BC,0
 	PUSH	BC
-	LD	BC,(IX+%FFFFFFF1)
+	LD	BC,(IX+%FFFFFFF3)
 	PUSH	BC
 	CALL	_str2num
 	POP	BC
 	POP	BC
-	LD	(IX+%FFFFFFF7),HL
-	LD	(IX+%FFFFFFFA),E
+	LD	(IX+%FFFFFFF9),HL
 ;   88	                    if(err_str2num && (pass == 2)) error(message[ERROR_INVALIDLABEL]);
 .LINE 88
 
@@ -1092,7 +1083,7 @@ L_30:
 ;   92	        if(operator == '!') error(message[ERROR_OPERATOR]);
 .LINE 92
 
-	LD	A,(IX+%FFFFFFFF)
+	LD	A,(IX+%FFFFFFFC)
 	CP	A,%21
 	JR	NZ,L_32
 	LD	HL,_message+114
@@ -1104,89 +1095,79 @@ L_32:
 ;   93	        if(operator == '+') total += tmp;
 .LINE 93
 
-	LD	A,(IX+%FFFFFFFF)
+	LD	A,(IX+%FFFFFFFC)
 	CP	A,%2B
 	JR	NZ,L_34
-	LD	HL,(IX+%FFFFFFFB)
-	LD	E,(IX+%FFFFFFFE)
-	LD	BC,(IX+%FFFFFFF7)
-	LD	A,(IX+%FFFFFFFA)
-	CALL	__ladd
-	LD	(IX+%FFFFFFFB),HL
-	LD	(IX+%FFFFFFFE),E
+	LD	BC,(IX+%FFFFFFF9)
+	LD	HL,(IX+%FFFFFFFD)
+	ADD	HL,BC
+	LD	(IX+%FFFFFFFD),HL
 L_34:
 ;   94	        if(operator == '-') total -= tmp;
 .LINE 94
 
-	LD	A,(IX+%FFFFFFFF)
+	LD	A,(IX+%FFFFFFFC)
 	CP	A,%2D
 	JR	NZ,L_36
-	LD	HL,(IX+%FFFFFFFB)
-	LD	E,(IX+%FFFFFFFE)
-	LD	BC,(IX+%FFFFFFF7)
-	LD	A,(IX+%FFFFFFFA)
-	CALL	__lsub
-	LD	(IX+%FFFFFFFB),HL
-	LD	(IX+%FFFFFFFE),E
+	LD	BC,(IX+%FFFFFFF9)
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	LD	(IX+%FFFFFFFD),HL
 L_36:
 ;   95	        if(operator == '<') total = total << tmp;
 .LINE 95
 
-	LD	A,(IX+%FFFFFFFF)
+	LD	A,(IX+%FFFFFFFC)
 	CP	A,%3C
 	JR	NZ,L_38
-	LD	HL,(IX+%FFFFFFF7)
-	LD	BC,(IX+%FFFFFFFB)
-	LD	A,(IX+%FFFFFFFE)
-	CALL	__lshl
-	LD	(IX+%FFFFFFFB),BC
-	LD	(IX+%FFFFFFFE),A
+	LD	HL,(IX+%FFFFFFFD)
+	LD	BC,(IX+%FFFFFFF9)
+	CALL	__ishl
+	LD	(IX+%FFFFFFFD),HL
 L_38:
 ;   96	        if(operator == '>') total = total >> tmp;
 .LINE 96
 
-	LD	A,(IX+%FFFFFFFF)
+	LD	A,(IX+%FFFFFFFC)
 	CP	A,%3E
 	JR	NZ,L_39
-	LD	HL,(IX+%FFFFFFF7)
-	LD	BC,(IX+%FFFFFFFB)
-	LD	A,(IX+%FFFFFFFE)
-	CALL	__lshrs
-	LD	(IX+%FFFFFFFB),BC
-	LD	(IX+%FFFFFFFE),A
+	LD	HL,(IX+%FFFFFFFD)
+	LD	BC,(IX+%FFFFFFF9)
+	CALL	__ishrs
+	LD	(IX+%FFFFFFFD),HL
 L_39:
 ;   97	        operator = token.terminator;
 .LINE 97
 
-	LD	A,(IX+%FFFFFFED)
-	LD	(IX+%FFFFFFFF),A
+	LD	A,(IX+%FFFFFFEF)
+	LD	(IX+%FFFFFFFC),A
 ;   98	
 ;   99	        if(operator) ptr = token.next;
 .LINE 99
 
 	OR	A,A
 	JR	Z,L_41
-	LD	BC,(IX+%FFFFFFEA)
-	LD	(IX+%FFFFFFF4),BC
+	LD	BC,(IX+%FFFFFFEC)
+	LD	(IX+%FFFFFFF6),BC
 ;  100	        else ptr = NULL;
 .LINE 100
 
 	JR	L_42
 L_41:
 	LD	BC,0
-	LD	(IX+%FFFFFFF4),BC
+	LD	(IX+%FFFFFFF6),BC
 ;  101	    }
 L_42:
 .LINE 101
 
-	LD	HL,(IX+%FFFFFFF4)
+	LD	HL,(IX+%FFFFFFF6)
 	CALL	__icmpzero
 	JR	NZ,L_43
 ;  102	    return total;
 .LINE 102
 
-	LD	HL,(IX+%FFFFFFFB)
-	LD	E,(IX+%FFFFFFFE)
+	LD	HL,(IX+%FFFFFFFD)
 ;  103	}
 .LINE 103
 
@@ -1205,17 +1186,17 @@ L_42:
 ;_findLabel                          IMPORT  -----   function
 ;_notEmpty                           IMPORT  -----   function
 ;_getOperatorToken                   IMPORT  -----   function
-;token                               IX-151    133   variable
-;lbl                                  IX-18      3   variable
-;G_1                                  IX-15      3   variable
-;ptr                                  IX-12      3   variable
-;tmp                                   IX-9      4   variable
-;total                                 IX-5      4   variable
-;operator                              IX-1      1   variable
+;token                               IX-149    133   variable
+;lbl                                  IX-16      3   variable
+;G_1                                  IX-13      3   variable
+;ptr                                  IX-10      3   variable
+;tmp                                   IX-7      3   variable
+;operator                              IX-4      1   variable
+;total                                 IX-3      3   variable
 ;string                                IX+6      3   parameter
 
 
-; Stack Frame Size: 160 (bytes)
+; Stack Frame Size: 158 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -2770,7 +2751,6 @@ L_176:
 	POP	BC
 	LD	IY,(IX+%9)
 	LD	(IY+%B),HL
-	LD	(IY+%E),E
 ;  368	        else operand->immediate = getLabelValue(string);
 .LINE 368
 
@@ -2782,7 +2762,6 @@ L_173:
 	POP	BC
 	LD	IY,(IX+%9)
 	LD	(IY+%B),HL
-	LD	(IY+%E),E
 L_174:
 ;  369	        operand->immediate_provided = true;
 .LINE 369
@@ -2793,7 +2772,7 @@ L_174:
 ;  370	        operand->wasLabel = true;
 .LINE 370
 
-	LD	(IY+%F),A
+	LD	(IY+%E),A
 ;  371	    }
 ;  372	}
 L_177:
@@ -3788,8 +3767,8 @@ L_227:
 ;_error                              IMPORT  -----   function
 ;_getLineToken                       IMPORT  -----   function
 ;_isspace                            IMPORT  -----   function
-;_operand2                           IMPORT     16   variable
-;_operand1                           IMPORT     16   variable
+;_operand2                           IMPORT     15   variable
+;_operand1                           IMPORT     15   variable
 ;_currentline                        IMPORT    264   variable
 ;token                               IX-140    133   variable
 ;G_4                                   IX-7      3   variable
@@ -3806,7 +3785,7 @@ L_227:
 
 .ENDFUNC "parseLine",525,"_parseLine"
 ;  526	
-;  527	void definelabel(int32_t num){
+;  527	void definelabel(int24_t num){
 _definelabel:
 .DEFINE "_definelabel"
 
@@ -3828,7 +3807,7 @@ _definelabel:
 
 .VALUE 6
 
-.TYPE 5
+.TYPE 4
 
 .ENDEF
 
@@ -3875,13 +3854,9 @@ _definelabel:
 ;  531	                writeAnonymousLabel(num);
 .LINE 531
 
-	LD	C,(IX+%9)
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(IX+%6)
 	PUSH	BC
 	CALL	_writeAnonymousLabel
-	POP	BC
 	POP	BC
 ;  532	                return;
 .LINE 532
@@ -3894,15 +3869,11 @@ L_232:
 ;  534	            if(insertLocalLabel(currentline.label, num) == false) {
 .LINE 534
 
-	LD	C,(IX+%9)
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(IX+%6)
 	PUSH	BC
 	LD	BC,(IX+%FFFFFFFD)
 	PUSH	BC
 	CALL	_insertLocalLabel
-	POP	BC
 	POP	BC
 	POP	BC
 	OR	A,A
@@ -3928,15 +3899,11 @@ L_236:
 ;  540	            if(insertGlobalLabel(currentline.label, num) == false){
 .LINE 540
 
-	LD	C,(IX+%9)
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(IX+%6)
 	PUSH	BC
 	LD	BC,(IX+%FFFFFFFD)
 	PUSH	BC
 	CALL	_insertGlobalLabel
-	POP	BC
 	POP	BC
 	POP	BC
 	OR	A,A
@@ -3988,10 +3955,10 @@ L_238:
 ;_currentline                        IMPORT    264   variable
 ;_strlen                             IMPORT  -----   function
 ;G_6                                   IX-3      3   variable
-;num                                   IX+6      4   parameter
+;num                                   IX+6      3   parameter
 
 
-; Stack Frame Size: 15 (bytes)
+; Stack Frame Size: 12 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -4698,12 +4665,11 @@ L_302:
 	LD	A,(IX+%FFFFFFFF)
 	CP	A,%2
 	JR	NZ,L_303
-	LD	HL,65535
-	LD	E,%0
 	LD	IY,(IX+%6)
 	LD	BC,(IY+%B)
-	LD	A,(IY+%E)
-	CALL	__lcmps
+	LD	HL,65535
+	OR	A,A
+	SBC	HL,BC
 	JP	P,L_303
 	LD	HL,_message+39
 	LD	BC,(HL)
@@ -4822,10 +4788,11 @@ _emit_immediate:
 .LINE 654
 
 	LD	IY,(IX+%6)
-	LD	BC,(IY+%B)
-	LD	A,(IY+%E)
-	LD	L,%8
-	CALL	__lshrs
+	LD	HL,(IY+%B)
+	LD	A,%8
+	CALL	__ishrs_b
+	LD	A,L
+	LD	C,A
 	LD	B,%0
 	PUSH	BC
 	CALL	_emit_8bit
@@ -4837,10 +4804,11 @@ _emit_immediate:
 	CP	A,%3
 	JR	NZ,L_306
 	LD	IY,(IX+%6)
-	LD	BC,(IY+%B)
-	LD	A,(IY+%E)
-	LD	L,%10
-	CALL	__lshrs
+	LD	HL,(IY+%B)
+	LD	A,%10
+	CALL	__ishrs_b
+	LD	A,L
+	LD	C,A
 	LD	B,%0
 	PUSH	BC
 	CALL	_emit_8bit
@@ -5311,8 +5279,8 @@ L_331:
 ;**************************** _prefix_ddfd_suffix ***************************
 ;Name                         Addr/Register   Size   Type
 ;_output                             IMPORT      4   variable
-;_operand2                           IMPORT     16   variable
-;_operand1                           IMPORT     16   variable
+;_operand2                           IMPORT     15   variable
+;_operand1                           IMPORT     15   variable
 ;prefix1                               IX-2      1   variable
 ;prefix2                               IX-1      1   variable
 ;op                                    IX+6      3   parameter
@@ -5376,19 +5344,21 @@ _transform_instruction:
 
 .CLASS 65
 
-.VALUE -5
+.VALUE -4
 
-.TYPE 5
+.TYPE 4
 
 .ENDEF
 
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LEA	HL,IX+%FFFFFFF4
-	LD	SP,HL
+	PUSH	BC
+	PUSH	BC
+	PUSH	BC
+	DEC	SP
 ;  728	    uint8_t y;
-;  729	    int32_t rel;
+;  729	    int24_t rel;
 ;  730	
 ;  731	    switch(type) {
 .LINE 731
@@ -5442,14 +5412,14 @@ L_332:
 
 	LD	IY,(IX+%6)
 	LD	BC,(IY+%0)
-	LD	(IX+%FFFFFFF8),BC
+	LD	(IX+%FFFFFFF9),BC
 	LD	BC,16
-	LD	HL,(IX+%FFFFFFF8)
+	LD	HL,(IX+%FFFFFFF9)
 	OR	A,A
 	SBC	HL,BC
 	JR	Z,L_334
 	LD	BC,18
-	LD	HL,(IX+%FFFFFFF8)
+	LD	HL,(IX+%FFFFFFF9)
 	OR	A,A
 	SBC	HL,BC
 	JR	NZ,L_366
@@ -5470,14 +5440,14 @@ L_336:
 
 	LD	IY,(IX+%6)
 	LD	BC,(IY+%0)
-	LD	(IX+%FFFFFFF5),BC
+	LD	(IX+%FFFFFFF6),BC
 	LD	BC,16
-	LD	HL,(IX+%FFFFFFF5)
+	LD	HL,(IX+%FFFFFFF6)
 	OR	A,A
 	SBC	HL,BC
 	JR	Z,L_338
 	LD	BC,18
-	LD	HL,(IX+%FFFFFFF5)
+	LD	HL,(IX+%FFFFFFF6)
 	OR	A,A
 	SBC	HL,BC
 	JR	NZ,L_366
@@ -5733,20 +5703,17 @@ L_355:
 .LINE 779
 
 	LD	IY,(IX+%6)
-	LD	A,(IY+%F)
+	LD	A,(IY+%E)
 	OR	A,A
 	JR	Z,L_357
 	LD	IY,(IX+%6)
 	LD	HL,(IY+%B)
-	LD	E,(IY+%E)
 	LD	BC,(_address)
-	LD	A,(_address+3)
-	CALL	__lsub
-	LD	BC,16777214
-	LD	A,%FF
-	CALL	__ladd
-	LD	(IX+%FFFFFFFB),HL
-	LD	(IX+%FFFFFFFE),E
+	OR	A,A
+	SBC	HL,BC
+	DEC	HL
+	DEC	HL
+	LD	(IX+%FFFFFFFC),HL
 ;  780	                else rel = op->immediate; // user asked for specific offset
 .LINE 780
 
@@ -5754,47 +5721,40 @@ L_355:
 L_357:
 	LD	IY,(IX+%6)
 	LD	BC,(IY+%B)
-	LD	A,(IY+%E)
-	LD	(IX+%FFFFFFFB),BC
-	LD	(IX+%FFFFFFFE),A
+	LD	(IX+%FFFFFFFC),BC
 L_360:
 ;  781	                if((rel > 127) || (rel < -128)) error(message[ERROR_RELATIVEJUMPTOOLARGE]);
 .LINE 781
 
+	LD	BC,(IX+%FFFFFFFC)
 	LD	HL,127
-	LD	E,%0
-	LD	BC,(IX+%FFFFFFFB)
-	LD	A,(IX+%FFFFFFFE)
-	CALL	__lcmps
+	OR	A,A
+	SBC	HL,BC
 	JP	M,L_359
-	LD	HL,(IX+%FFFFFFFB)
-	LD	E,(IX+%FFFFFFFE)
 	LD	BC,16777088
-	LD	A,%FF
-	CALL	__lcmps
+	LD	HL,(IX+%FFFFFFFC)
+	OR	A,A
+	SBC	HL,BC
 	CALL	__setflag
 	JP	P,L_361
 L_359:
 	LD	HL,_message+66
 	LD	BC,(HL)
 	PUSH	BC
-	LD	(IX+%FFFFFFF4),A
 	CALL	_error
-	LD	A,(IX+%FFFFFFF4)
 	POP	BC
 L_361:
 ;  782	                op->immediate = ((int8_t)(rel & 0xFF));
 .LINE 782
 
-	UEXT	HL
-	LD	L,(IX+%FFFFFFFB)
-	LD	BC,HL
-	LD	A,C
+	LD	A,(IX+%FFFFFFFC)
+	LD	L,A
+	LD	B,L
+	LD	A,B
 	SEXT	HL
-	LD	L,C
+	LD	L,B
 	LD	IY,(IX+%6)
 	LD	(IY+%B),HL
-	LD	(IY+%E),H
 ;  783	                op->immediate_provided = true;
 .LINE 783
 
@@ -5838,18 +5798,18 @@ L_366:
 ;Name                         Addr/Register   Size   Type
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
-;_address                            IMPORT      4   variable
+;_address                            IMPORT      3   variable
 ;_pass                               IMPORT      3   variable
 ;_output                             IMPORT      4   variable
-;G_16                                 IX-11      3   variable
-;G_15                                  IX-8      3   variable
-;rel                                   IX-5      4   variable
+;G_16                                 IX-10      3   variable
+;G_15                                  IX-7      3   variable
+;rel                                   IX-4      3   variable
 ;y                                     IX-1      1   variable
 ;type                                  IX+9      3   parameter
 ;op                                    IX+6      3   parameter
 
 
-; Stack Frame Size: 24 (bytes)
+; Stack Frame Size: 22 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -5931,14 +5891,9 @@ _emit_instruction:
 	OR	A,A
 	SBC	HL,BC
 	JR	NZ,L_380
-	LD	A,(_address+3)
-	LD	C,A
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(_address)
 	PUSH	BC
 	CALL	_definelabel
-	POP	BC
 	POP	BC
 L_380:
 ;  805	
@@ -5974,19 +5929,16 @@ L_380:
 	SBC	HL,BC
 	JR	NZ,L_378
 L_372:
-	LD	HL,255
-	LD	E,%0
 	LD	BC,(_operand1+11)
-	LD	A,(_operand1+14)
-	CALL	__lcmps
+	LD	HL,255
+	OR	A,A
+	SBC	HL,BC
 	CALL	__setflag
 	JP	M,L_373
-	LD	HL,(_operand1+11)
-	LD	A,(_operand1+14)
-	LD	E,A
 	LD	BC,16777088
-	LD	A,%FF
-	CALL	__lcmps
+	LD	HL,(_operand1+11)
+	OR	A,A
+	SBC	HL,BC
 	CALL	__setflag
 	JP	P,L_378
 L_373:
@@ -6013,19 +5965,16 @@ L_378:
 	SBC	HL,BC
 	JR	NZ,L_383
 L_376:
-	LD	HL,255
-	LD	E,%0
 	LD	BC,(_operand2+11)
-	LD	A,(_operand2+14)
-	CALL	__lcmps
+	LD	HL,255
+	OR	A,A
+	SBC	HL,BC
 	CALL	__setflag
 	JP	M,L_377
-	LD	HL,(_operand2+11)
-	LD	A,(_operand2+14)
-	LD	E,A
 	LD	BC,16777088
-	LD	A,%FF
-	CALL	__lcmps
+	LD	HL,(_operand2+11)
+	OR	A,A
+	SBC	HL,BC
 	CALL	__setflag
 	JP	P,L_383
 L_377:
@@ -6089,11 +6038,10 @@ L_390:
 	OR	A,A
 	SBC	HL,BC
 	JR	NZ,L_393
-	LD	HL,7
-	LD	E,%0
 	LD	BC,(_operand1+11)
-	LD	A,(_operand1+14)
-	CALL	__lcmps
+	LD	HL,7
+	OR	A,A
+	SBC	HL,BC
 	CALL	__setflag
 	JP	P,L_393
 	LD	HL,_message+69
@@ -6111,11 +6059,10 @@ L_393:
 	OR	A,A
 	SBC	HL,BC
 	JR	NZ,L_396
-	LD	HL,2
-	LD	E,%0
 	LD	BC,(_operand1+11)
-	LD	A,(_operand1+14)
-	CALL	__lcmps
+	LD	HL,2
+	OR	A,A
+	SBC	HL,BC
 	CALL	__setflag
 	JP	P,L_396
 	LD	HL,_message+72
@@ -6137,8 +6084,7 @@ L_396:
 	AND	A,%47
 	UEXT	HL
 	LD	L,A
-	LD	E,H
-	CALL	__lcmpzero
+	CALL	__icmpzero
 	JR	Z,L_397
 	LD	HL,_message+75
 	LD	BC,(HL)
@@ -6434,11 +6380,11 @@ L_433:
 ;**************************** _emit_instruction ***************************
 ;Name                         Addr/Register   Size   Type
 ;_emit_8bit                          IMPORT  -----   function
-;_operand2                           IMPORT     16   variable
+;_operand2                           IMPORT     15   variable
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
-;_operand1                           IMPORT     16   variable
-;_address                            IMPORT      4   variable
+;_operand1                           IMPORT     15   variable
+;_address                            IMPORT      3   variable
 ;_pass                               IMPORT      3   variable
 ;_output                             IMPORT      4   variable
 ;G_22                                 IX-22      3   variable
@@ -6524,25 +6470,15 @@ L_436:
 ;  857	    address++;
 .LINE 857
 
-	LD	HL,(_address)
-	LD	A,(_address+3)
-	LD	E,A
-	LD	A,%1
-	CALL	__ladd_b
-	LD	(_address),HL
-	LD	A,E
-	LD	(_address+3),A
+	LD	BC,(_address)
+	INC	BC
+	LD	(_address),BC
 ;  858	    totalsize++;
 .LINE 858
 
-	LD	HL,(_totalsize)
-	LD	A,(_totalsize+3)
-	LD	E,A
-	LD	A,%1
-	CALL	__ladd_b
-	LD	(_totalsize),HL
-	LD	A,E
-	LD	(_totalsize+3),A
+	LD	BC,(_totalsize)
+	INC	BC
+	LD	(_totalsize),BC
 ;  859	}
 .LINE 859
 
@@ -6553,8 +6489,8 @@ L_436:
 
 ;**************************** _emit_8bit ***************************
 ;Name                         Addr/Register   Size   Type
-;_totalsize                          IMPORT      4   variable
-;_address                            IMPORT      4   variable
+;_totalsize                          IMPORT      3   variable
+;_address                            IMPORT      3   variable
 ;_agon_fwrite                        IMPORT  -----   function
 ;_listEmit8bit                       IMPORT  -----   function
 ;_pass                               IMPORT      3   variable
@@ -6638,7 +6574,7 @@ _emit_16bit:
 
 .ENDFUNC "emit_16bit",864,"_emit_16bit"
 ;  865	
-;  866	void emit_24bit(uint32_t value) {
+;  866	void emit_24bit(uint24_t value) {
 _emit_24bit:
 .DEFINE "_emit_24bit"
 
@@ -6660,7 +6596,7 @@ _emit_24bit:
 
 .VALUE 6
 
-.TYPE 15
+.TYPE 14
 
 .ENDEF
 
@@ -6679,10 +6615,11 @@ _emit_24bit:
 ;  868	    emit_8bit((value>>8)&0xFF);
 .LINE 868
 
-	LD	BC,(IX+%6)
-	LD	A,(IX+%9)
-	LD	L,%8
-	CALL	__lshru
+	LD	HL,(IX+%6)
+	LD	A,%8
+	CALL	__ishru_b
+	LD	A,L
+	LD	C,A
 	LD	B,%0
 	PUSH	BC
 	CALL	_emit_8bit
@@ -6690,10 +6627,11 @@ _emit_24bit:
 ;  869	    emit_8bit((value>>16)&0xFF);
 .LINE 869
 
-	LD	BC,(IX+%6)
-	LD	A,(IX+%9)
-	LD	L,%10
-	CALL	__lshru
+	LD	HL,(IX+%6)
+	LD	A,%10
+	CALL	__ishru_b
+	LD	A,L
+	LD	C,A
 	LD	B,%0
 	PUSH	BC
 	CALL	_emit_8bit
@@ -6709,10 +6647,10 @@ _emit_24bit:
 ;**************************** _emit_24bit ***************************
 ;Name                         Addr/Register   Size   Type
 ;_emit_8bit                          IMPORT  -----   function
-;value                                 IX+6      4   parameter
+;value                                 IX+6      3   parameter
 
 
-; Stack Frame Size: 12 (bytes)
+; Stack Frame Size: 9 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -7369,8 +7307,6 @@ _parse_asm_single_immediate:
 	POP	BC
 	POP	BC
 	LD	(_operand1+11),HL
-	LD	A,E
-	LD	(_operand1+14),A
 ;  954	            operand1.immediate_provided = true;
 .LINE 954
 
@@ -7422,7 +7358,7 @@ L_485:
 ;Name                         Addr/Register   Size   Type
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
-;_operand1                           IMPORT     16   variable
+;_operand1                           IMPORT     15   variable
 ;_str2num                            IMPORT  -----   function
 ;_notEmpty                           IMPORT  -----   function
 ;_getLineToken                       IMPORT  -----   function
@@ -7555,8 +7491,6 @@ _parse_asm_keyval_pair:
 	POP	BC
 	POP	BC
 	LD	(_operand2+11),HL
-	LD	A,E
-	LD	(_operand2+14),A
 ;  972	                operand2.immediate_provided = true;
 .LINE 972
 
@@ -7608,7 +7542,7 @@ L_492:
 ;Name                         Addr/Register   Size   Type
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
-;_operand2                           IMPORT     16   variable
+;_operand2                           IMPORT     15   variable
 ;_str2num                            IMPORT  -----   function
 ;_notEmpty                           IMPORT  -----   function
 ;_strcpy                             IMPORT  -----   function
@@ -7671,14 +7605,9 @@ _handle_asm_db:
 ;  986	        definelabel(address);
 .LINE 986
 
-	LD	A,(_address+3)
-	LD	C,A
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(_address)
 	PUSH	BC
 	CALL	_definelabel
-	POP	BC
 	POP	BC
 ;  987	    }
 L_509:
@@ -7764,15 +7693,13 @@ L_495:
 	CALL	_getLabelValue
 	POP	BC
 	LD	(_operand1+11),HL
-	LD	A,E
-	LD	(_operand1+14),A
 ;  998	                        if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
 .LINE 998
 
-	LD	HL,255
-	LD	E,%0
 	LD	BC,(_operand1+11)
-	CALL	__lcmps
+	LD	HL,255
+	OR	A,A
+	SBC	HL,BC
 	JP	P,L_497
 	LD	HL,_message+30
 	LD	BC,(HL)
@@ -7862,11 +7789,11 @@ L_510:
 ;_emit_8bit                          IMPORT  -----   function
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
-;_operand1                           IMPORT     16   variable
+;_operand1                           IMPORT     15   variable
 ;_notEmpty                           IMPORT  -----   function
 ;_getLineToken                       IMPORT  -----   function
 ;_currentline                        IMPORT    264   variable
-;_address                            IMPORT      4   variable
+;_address                            IMPORT      3   variable
 ;_pass                               IMPORT      3   variable
 ;token                               IX-136    133   variable
 ;G_23                                  IX-3      3   variable
@@ -7948,14 +7875,9 @@ _handle_asm_dw:
 ; 1019	        definelabel(address);
 .LINE 1019
 
-	LD	A,(_address+3)
-	LD	C,A
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(_address)
 	PUSH	BC
 	CALL	_definelabel
-	POP	BC
 	POP	BC
 ; 1020	    }
 L_530:
@@ -8018,9 +7940,7 @@ L_527:
 	JR	Z,L_513
 	LD	IY,(IX+%FFFFFFFD)
 	LD	BC,(IY+%3)
-	LD	A,(IY+%6)
 	LD	(_operand1+11),BC
-	LD	(_operand1+14),A
 ; 1027	                else operand1.immediate = str2num(token.start,true);
 .LINE 1027
 
@@ -8037,8 +7957,6 @@ L_513:
 	POP	BC
 	POP	BC
 	LD	(_operand1+11),HL
-	LD	A,E
-	LD	(_operand1+14),A
 L_518:
 ; 1028	                
 ; 1029	                if(longword) {
@@ -8050,14 +7968,9 @@ L_518:
 ; 1030	                    emit_24bit(operand1.immediate);
 .LINE 1030
 
-	LD	A,(_operand1+14)
-	LD	C,A
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(_operand1+11)
 	PUSH	BC
 	CALL	_emit_24bit
-	POP	BC
 	POP	BC
 ; 1031	                }
 ; 1032	                else {
@@ -8068,12 +7981,11 @@ L_517:
 ; 1033	                    if(operand1.immediate > 0xffffff) error(message[ERROR_ADLWORDSIZE]);
 .LINE 1033
 
-	LD	HL,16777215
-	LD	E,%0
 	LD	BC,(_operand1+11)
-	LD	A,(_operand1+14)
-	CALL	__lcmps
-	JP	P,L_515
+	LD	HL,16777215
+	OR	A,A
+	SBC	HL,BC
+	JR	NC,L_515
 	LD	HL,_message+84
 	LD	BC,(HL)
 	PUSH	BC
@@ -8160,12 +8072,12 @@ L_531:
 ;_error                              IMPORT  -----   function
 ;_emit_24bit                         IMPORT  -----   function
 ;_str2num                            IMPORT  -----   function
-;_operand1                           IMPORT     16   variable
+;_operand1                           IMPORT     15   variable
 ;_findLabel                          IMPORT  -----   function
 ;_notEmpty                           IMPORT  -----   function
 ;_getLineToken                       IMPORT  -----   function
 ;_currentline                        IMPORT    264   variable
-;_address                            IMPORT      4   variable
+;_address                            IMPORT      3   variable
 ;_pass                               IMPORT      3   variable
 ;token                               IX-136    133   variable
 ;lbl                                   IX-3      3   variable
@@ -8286,9 +8198,7 @@ L_535:
 	JR	NZ,L_539
 	LD	BC,0
 	PUSH	BC
-	PUSH	BC
 	CALL	_definelabel
-	POP	BC
 	POP	BC
 L_539:
 ; 1056	            if(pass == 2) {
@@ -8321,7 +8231,6 @@ L_539:
 	POP	BC
 	LD	IY,(IX+%FFFFFFFD)
 	LD	(IY+%3),HL
-	LD	(IY+%6),E
 ; 1059	                else error(message[ERROR_MISSINGLABEL]);
 .LINE 1059
 
@@ -8420,16 +8329,12 @@ _handle_asm_adl:
 .LINE 1070
 
 	LD	HL,(_operand2+11)
-	LD	A,(_operand2+14)
-	LD	E,A
-	CALL	__lcmpzero
+	CALL	__icmpzero
 	JR	Z,L_546
-	LD	HL,(_operand2+11)
-	LD	A,(_operand2+14)
-	LD	E,A
 	LD	BC,1
-	XOR	A,A
-	CALL	__lcmps
+	LD	HL,(_operand2+11)
+	OR	A,A
+	SBC	HL,BC
 	JR	NZ,L_547
 L_546:
 ; 1071	            adlmode = operand2.immediate;
@@ -8473,7 +8378,7 @@ L_550:
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
 ;_adlmode                            IMPORT      1   variable
-;_operand2                           IMPORT     16   variable
+;_operand2                           IMPORT     15   variable
 ;_currentline                        IMPORT    264   variable
 ;_strcasecmp                         IMPORT  -----   function
 
@@ -8509,9 +8414,9 @@ _handle_asm_org:
 
 .CLASS 65
 
-.VALUE -4
+.VALUE -3
 
-.TYPE 15
+.TYPE 14
 
 .ENDEF
 
@@ -8519,8 +8424,7 @@ _handle_asm_org:
 	LD	IX,0
 	ADD	IX,SP
 	PUSH	BC
-	DEC	SP
-; 1079	    uint32_t newaddress;
+; 1079	    uint24_t newaddress;
 ; 1080	    
 ; 1081	    parse_asm_single_immediate(); // get address from next token
 .LINE 1081
@@ -8530,20 +8434,17 @@ _handle_asm_org:
 .LINE 1082
 
 	LD	BC,(_operand1+11)
-	LD	A,(_operand1+14)
-	LD	(IX+%FFFFFFFC),BC
-	LD	(IX+%FFFFFFFF),A
+	LD	(IX+%FFFFFFFD),BC
 ; 1083	    if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE]); 
 .LINE 1083
 
 	LD	A,(_adlmode)
 	OR	A,A
 	JR	NZ,L_557
+	LD	BC,(IX+%FFFFFFFD)
 	LD	HL,65535
-	LD	E,%0
-	LD	BC,(IX+%FFFFFFFC)
-	LD	A,(IX+%FFFFFFFF)
-	CALL	__lcmpu
+	OR	A,A
+	SBC	HL,BC
 	JR	NC,L_557
 	LD	HL,_message+60
 	LD	BC,(HL)
@@ -8554,11 +8455,10 @@ L_557:
 ; 1084	    if(newaddress >= address) {
 .LINE 1084
 
-	LD	HL,(IX+%FFFFFFFC)
-	LD	E,(IX+%FFFFFFFF)
 	LD	BC,(_address)
-	LD	A,(_address+3)
-	CALL	__lcmpu
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
 	JR	C,L_556
 ; 1085	        if(pass == 1) {
 .LINE 1085
@@ -8572,14 +8472,9 @@ L_557:
 ; 1087	            definelabel(address); // set address to current line
 .LINE 1087
 
-	LD	A,(_address+3)
-	LD	C,A
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(_address)
 	PUSH	BC
 	CALL	_definelabel
-	POP	BC
 	POP	BC
 ; 1088	        }
 L_554:
@@ -8588,10 +8483,8 @@ L_554:
 ; 1089	        address = newaddress;
 .LINE 1089
 
-	LD	BC,(IX+%FFFFFFFC)
+	LD	BC,(IX+%FFFFFFFD)
 	LD	(_address),BC
-	LD	A,(IX+%FFFFFFFF)
-	LD	(_address+3),A
 ; 1090	    }
 ; 1091	    else error(message[ERROR_ADDRESSLOWER]);
 .LINE 1091
@@ -8615,15 +8508,15 @@ L_558:
 ;**************************** _handle_asm_org ***************************
 ;Name                         Addr/Register   Size   Type
 ;_pass                               IMPORT      3   variable
-;_address                            IMPORT      4   variable
+;_address                            IMPORT      3   variable
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
 ;_adlmode                            IMPORT      1   variable
-;_operand1                           IMPORT     16   variable
-;newaddress                            IX-4      4   variable
+;_operand1                           IMPORT     15   variable
+;newaddress                            IX-3      3   variable
 
 
-; Stack Frame Size: 10 (bytes)
+; Stack Frame Size: 9 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -8907,9 +8800,9 @@ _handle_asm_blk:
 
 .CLASS 65
 
-.VALUE -4
+.VALUE -3
 
-.TYPE 5
+.TYPE 4
 
 .ENDEF
 
@@ -8917,7 +8810,7 @@ _handle_asm_blk:
 
 .CLASS 65
 
-.VALUE -6
+.VALUE -5
 
 .TYPE 13
 
@@ -8927,7 +8820,7 @@ _handle_asm_blk:
 
 .CLASS 65
 
-.VALUE -142
+.VALUE -141
 
 .TAG "NONAME11"
 
@@ -8938,17 +8831,15 @@ _handle_asm_blk:
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LD	HL,-142
+	LD	HL,-141
 	ADD	HL,SP
 	LD	SP,HL
 ; 1122	    uint16_t num;
-; 1123	    int32_t val = 0;
+; 1123	    int24_t val = 0;
 .LINE 1123
 
 	LD	BC,0
-	XOR	A,A
-	LD	(IX+%FFFFFFFC),BC
-	LD	(IX+%FFFFFFFF),A
+	LD	(IX+%FFFFFFFD),BC
 ; 1124	    tokentype token;
 ; 1125	
 ; 1126	    if(pass == 1) {
@@ -8963,14 +8854,9 @@ _handle_asm_blk:
 ; 1128	        definelabel(address);
 .LINE 1128
 
-	LD	A,(_address+3)
-	LD	C,A
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(_address)
 	PUSH	BC
 	CALL	_definelabel
-	POP	BC
 	POP	BC
 ; 1129	    }
 L_589:
@@ -8991,7 +8877,7 @@ L_589:
 	LD	BC,(_currentline+3)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-142
+	LD	BC,-141
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -9003,7 +8889,7 @@ L_589:
 .LINE 1133
 
 	LD	HL,IX
-	LD	BC,-142
+	LD	BC,-141
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -9017,20 +8903,20 @@ L_589:
 	LD	BC,1
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-142
+	LD	BC,-141
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
 	CALL	_str2num
 	POP	BC
 	POP	BC
-	LD	(IX+%FFFFFFFA),L
-	LD	(IX+%FFFFFFFB),H
+	LD	(IX+%FFFFFFFB),L
+	LD	(IX+%FFFFFFFC),H
 ; 1135	
 ; 1136	            if(token.terminator == ',') {
 .LINE 1136
 
-	LD	A,(IX+%FFFFFFF6)
+	LD	A,(IX+%FFFFFFF7)
 	CP	A,%2C
 	JR	NZ,L_576
 ; 1137	                getLineToken(&token, token.next, 0);
@@ -9038,10 +8924,10 @@ L_589:
 
 	LD	BC,0
 	PUSH	BC
-	LD	BC,(IX+%FFFFFFF3)
+	LD	BC,(IX+%FFFFFFF4)
 	PUSH	BC
 	LD	HL,IX
-	LD	BC,-142
+	LD	BC,-141
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -9053,7 +8939,7 @@ L_589:
 .LINE 1138
 
 	LD	HL,IX
-	LD	BC,-142
+	LD	BC,-141
 	ADD	HL,BC
 	LD	BC,HL
 	PUSH	BC
@@ -9065,9 +8951,9 @@ L_589:
 .LINE 1139
 
 	LD	HL,IX
-	LD	BC,-142
+	LD	BC,-141
 	ADD	HL,BC
-	LD	(IX+%FFFFFFF7),HL
+	LD	(IX+%FFFFFFF8),HL
 	LD	A,(HL)
 	LD	B,A
 	SEXT	HL
@@ -9076,14 +8962,13 @@ L_589:
 	OR	A,A
 	SBC	HL,BC
 	JR	NZ,L_570
-	LD	BC,(IX+%FFFFFFF7)
+	LD	BC,(IX+%FFFFFFF8)
 	PUSH	BC
 	CALL	_getAsciiValue
 	POP	BC
 	UEXT	HL
 	LD	L,A
-	LD	(IX+%FFFFFFFC),HL
-	LD	(IX+%FFFFFFFF),H
+	LD	(IX+%FFFFFFFD),HL
 ; 1140	                    else val = str2num(token.start,true);
 .LINE 1140
 
@@ -9091,13 +8976,12 @@ L_589:
 L_570:
 	LD	BC,1
 	PUSH	BC
-	LD	BC,(IX+%FFFFFFF7)
+	LD	BC,(IX+%FFFFFFF8)
 	PUSH	BC
 	CALL	_str2num
 	POP	BC
 	POP	BC
-	LD	(IX+%FFFFFFFC),HL
-	LD	(IX+%FFFFFFFF),E
+	LD	(IX+%FFFFFFFD),HL
 ; 1141	                }
 ; 1142	                else error(message[ERROR_MISSINGOPERAND]);
 .LINE 1142
@@ -9115,10 +8999,10 @@ L_572:
 
 	JR	L_582
 L_576:
-	LD	A,(IX+%FFFFFFF6)
+	LD	A,(IX+%FFFFFFF7)
 	OR	A,A
 	JR	Z,L_582
-	LD	A,(IX+%FFFFFFF6)
+	LD	A,(IX+%FFFFFFF7)
 	CP	A,%3B
 	JR	Z,L_582
 	LD	HL,_message+90
@@ -9160,7 +9044,7 @@ L_578:
 ; 1148	                        emit_8bit(val);
 .LINE 1148
 
-	LD	C,(IX+%FFFFFFFC)
+	LD	C,(IX+%FFFFFFFD)
 	LD	B,%0
 	PUSH	BC
 	CALL	_emit_8bit
@@ -9176,7 +9060,7 @@ L_579:
 ; 1151	                        emit_16bit(val);
 .LINE 1151
 
-	LD	BC,(IX+%FFFFFFFC)
+	LD	BC,(IX+%FFFFFFFD)
 	PUSH	BC
 	CALL	_emit_16bit
 	POP	BC
@@ -9191,13 +9075,9 @@ L_580:
 ; 1154	                        emit_24bit(val);
 .LINE 1154
 
-	LD	C,(IX+%FFFFFFFF)
-	LD	B,%0
-	PUSH	BC
-	LD	BC,(IX+%FFFFFFFC)
+	LD	BC,(IX+%FFFFFFFD)
 	PUSH	BC
 	CALL	_emit_24bit
-	POP	BC
 	POP	BC
 ; 1155	                        break;
 .LINE 1155
@@ -9210,11 +9090,13 @@ L_581:
 ; 1157	                        emit_32bit(val);
 .LINE 1157
 
-	LD	C,(IX+%FFFFFFFF)
+	LD	BC,(IX+%FFFFFFFD)
+	CALL	__itol
+	LD	DE,BC
+	LD	C,A
 	LD	B,%0
 	PUSH	BC
-	LD	BC,(IX+%FFFFFFFC)
-	PUSH	BC
+	PUSH	DE
 	CALL	_emit_32bit
 	POP	BC
 	POP	BC
@@ -9224,11 +9106,11 @@ L_581:
 L_582:
 .LINE 1160
 
-	LD	BC,(IX+%FFFFFFFA)
-	LD	IY,(IX+%FFFFFFFA)
+	LD	BC,(IX+%FFFFFFFB)
+	LD	IY,(IX+%FFFFFFFB)
 	LEA	HL,IY+%FFFFFFFF
-	LD	(IX+%FFFFFFFA),L
-	LD	(IX+%FFFFFFFB),H
+	LD	(IX+%FFFFFFFB),L
+	LD	(IX+%FFFFFFFC),H
 	LD	HL,BC
 	CALL	__scmpzero
 	JR	NZ,L_583
@@ -9274,16 +9156,16 @@ L_590:
 ;_notEmpty                           IMPORT  -----   function
 ;_getLineToken                       IMPORT  -----   function
 ;_currentline                        IMPORT    264   variable
-;_address                            IMPORT      4   variable
+;_address                            IMPORT      3   variable
 ;_pass                               IMPORT      3   variable
-;token                               IX-142    133   variable
-;G_27                                  IX-9      3   variable
-;num                                   IX-6      2   variable
-;val                                   IX-4      4   variable
+;token                               IX-141    133   variable
+;G_27                                  IX-8      3   variable
+;num                                   IX-5      2   variable
+;val                                   IX-3      3   variable
 ;width                                 IX+6      1   parameter
 
 
-; Stack Frame Size: 151 (bytes)
+; Stack Frame Size: 150 (bytes)
 ;       Spill Code: 0 (instruction)
 
 
@@ -9309,9 +9191,9 @@ _handle_asm_align:
 
 .CLASS 65
 
-.VALUE -4
+.VALUE -3
 
-.TYPE 15
+.TYPE 14
 
 .ENDEF
 
@@ -9319,9 +9201,9 @@ _handle_asm_align:
 
 .CLASS 65
 
-.VALUE -8
+.VALUE -6
 
-.TYPE 15
+.TYPE 14
 
 .ENDEF
 
@@ -9329,20 +9211,22 @@ _handle_asm_align:
 
 .CLASS 65
 
-.VALUE -12
+.VALUE -9
 
-.TYPE 15
+.TYPE 14
 
 .ENDEF
 
 	PUSH	IX
 	LD	IX,0
 	ADD	IX,SP
-	LEA	HL,IX+%FFFFFFEC
-	LD	SP,HL
-; 1168	uint32_t alignment;
-; 1169	uint32_t base;
-; 1170	uint32_t delta;
+	PUSH	BC
+	PUSH	BC
+	PUSH	BC
+	DEC	SP
+; 1168	uint24_t alignment;
+; 1169	uint24_t base;
+; 1170	uint24_t delta;
 ; 1171	
 ; 1172	    if(pass == 1) {
 .LINE 1172
@@ -9356,14 +9240,11 @@ _handle_asm_align:
 ; 1174	        definelabel(address);
 .LINE 1174
 
-	LD	A,(_address+3)
-	LD	C,A
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(_address)
 	PUSH	BC
+	LD	(IX+%FFFFFFF6),A
 	CALL	_definelabel
-	POP	BC
+	LD	A,(IX+%FFFFFFF6)
 	POP	BC
 ; 1175	    }
 L_592:
@@ -9373,86 +9254,64 @@ L_592:
 ; 1177	    parse_asm_single_immediate();
 .LINE 1177
 
+	LD	(IX+%FFFFFFF6),A
 	CALL	_parse_asm_single_immediate
+	LD	A,(IX+%FFFFFFF6)
 ; 1178	    if(operand1.immediate > 0) {
 .LINE 1178
 
+	LD	BC,(_operand1+11)
 	OR	A,A
 	SBC	HL,HL
-	LD	E,%0
-	LD	BC,(_operand1+11)
-	LD	A,(_operand1+14)
-	CALL	__lcmps
+	OR	A,A
+	SBC	HL,BC
 	JP	P,L_603
 ; 1179	        if((operand1.immediate & (operand1.immediate - 1)) == 0) {
 .LINE 1179
 
 	LD	HL,(_operand1+11)
-	LD	A,(_operand1+14)
-	LD	E,A
-	LD	BC,16777215
-	LD	A,%FF
-	CALL	__ladd
+	DEC	HL
 	LD	BC,(_operand1+11)
-	LD	A,(_operand1+14)
-	CALL	__land
-	CALL	__lcmpzero
+	CALL	__iand
+	CALL	__icmpzero
 	JR	NZ,L_601
 ; 1180	            alignment = operand1.immediate;
 .LINE 1180
 
 	LD	BC,(_operand1+11)
-	LD	A,(_operand1+14)
-	LD	(IX+%FFFFFFF4),BC
-	LD	(IX+%FFFFFFF7),A
+	LD	(IX+%FFFFFFF7),BC
 ; 1181	            base = (~(operand1.immediate - 1) & address);
 .LINE 1181
 
 	LD	HL,(_operand1+11)
-	LD	A,(_operand1+14)
-	LD	E,A
-	LD	BC,16777215
-	LD	A,%FF
-	CALL	__ladd
-	CALL	__lnot
+	DEC	HL
+	CALL	__inot
 	LD	BC,(_address)
-	LD	A,(_address+3)
-	CALL	__land
-	LD	(IX+%FFFFFFFC),HL
-	LD	(IX+%FFFFFFFF),E
+	CALL	__iand
+	LD	(IX+%FFFFFFFD),HL
 ; 1182	
 ; 1183	            if(address & (operand1.immediate -1)) base += alignment;
 .LINE 1183
 
 	LD	HL,(_operand1+11)
-	LD	A,(_operand1+14)
-	LD	E,A
-	LD	BC,16777215
-	LD	A,%FF
-	CALL	__ladd
+	DEC	HL
 	LD	BC,(_address)
-	LD	A,(_address+3)
-	CALL	__land
-	CALL	__lcmpzero
+	CALL	__iand
+	CALL	__icmpzero
 	JR	Z,L_594
-	LD	HL,(IX+%FFFFFFF4)
-	LD	E,(IX+%FFFFFFF7)
-	LD	BC,(IX+%FFFFFFFC)
-	LD	A,(IX+%FFFFFFFF)
-	CALL	__ladd
-	LD	(IX+%FFFFFFFC),HL
-	LD	(IX+%FFFFFFFF),E
+	LD	BC,(IX+%FFFFFFF7)
+	LD	HL,(IX+%FFFFFFFD)
+	ADD	HL,BC
+	LD	(IX+%FFFFFFFD),HL
 L_594:
 ; 1184	            delta = base - address;
 .LINE 1184
 
-	LD	HL,(IX+%FFFFFFFC)
-	LD	E,(IX+%FFFFFFFF)
 	LD	BC,(_address)
-	LD	A,(_address+3)
-	CALL	__lsub
-	LD	(IX+%FFFFFFF8),HL
-	LD	(IX+%FFFFFFFB),E
+	LD	HL,(IX+%FFFFFFFD)
+	OR	A,A
+	SBC	HL,BC
+	LD	(IX+%FFFFFFFA),HL
 ; 1185	            while(delta--) emit_8bit(FILLBYTE);
 .LINE 1185
 
@@ -9463,30 +9322,18 @@ L_597:
 	CALL	_emit_8bit
 	POP	BC
 L_596:
-	LD	BC,(IX+%FFFFFFF8)
-	LD	(IX+%FFFFFFEC),BC	; spill
-	LD	H,(IX+%FFFFFFFB)
-	LD	(IX+%FFFFFFF2),H	; spill
-	LD	HL,(IX+%FFFFFFF8)
-	LD	E,(IX+%FFFFFFFB)
-	LD	BC,1
-	XOR	A,A
-	CALL	__lsub
-	LD	(IX+%FFFFFFF8),HL
-	LD	(IX+%FFFFFFFB),E
-	LD	H,(IX+%FFFFFFF2)	; unspill
-	LD	E,H
-	LD	HL,(IX+%FFFFFFEC)
-	CALL	__lcmpzero
+	LD	HL,(IX+%FFFFFFFA)
+	LD	IY,(IX+%FFFFFFFA)
+	LEA	IY,IY+%FFFFFFFF
+	LD	(IX+%FFFFFFFA),IY
+	CALL	__icmpzero
 	JR	NZ,L_597
 ; 1186	
 ; 1187	            address = base;
 .LINE 1187
 
-	LD	BC,(IX+%FFFFFFFC)
+	LD	BC,(IX+%FFFFFFFD)
 	LD	(_address),BC
-	LD	A,(IX+%FFFFFFFF)
-	LD	(_address+3),A
 ; 1188	            if(pass == 1) {
 .LINE 1188
 
@@ -9498,14 +9345,9 @@ L_596:
 ; 1189	                definelabel(address); // set address to current line
 .LINE 1189
 
-	LD	A,(_address+3)
-	LD	C,A
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(_address)
 	PUSH	BC
 	CALL	_definelabel
-	POP	BC
 	POP	BC
 ; 1190	            }
 ; 1191	        }
@@ -9544,16 +9386,16 @@ L_604:
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
 ;_emit_8bit                          IMPORT  -----   function
-;_operand1                           IMPORT     16   variable
-;_address                            IMPORT      4   variable
+;_operand1                           IMPORT     15   variable
+;_address                            IMPORT      3   variable
 ;_pass                               IMPORT      3   variable
-;alignment                            IX-12      4   variable
-;delta                                 IX-8      4   variable
-;base                                  IX-4      4   variable
+;alignment                             IX-9      3   variable
+;delta                                 IX-6      3   variable
+;base                                  IX-3      3   variable
 
 
-; Stack Frame Size: 26 (bytes)
-;       Spill Code: -1 (instruction)
+; Stack Frame Size: 16 (bytes)
+;       Spill Code: 0 (instruction)
 
 
 .ENDFUNC "handle_asm_align",1195,"_handle_asm_align"
@@ -9831,7 +9673,7 @@ L_619:
 
 
 ; Stack Frame Size: 6 (bytes)
-;       Spill Code: -1 (instruction)
+;       Spill Code: 0 (instruction)
 
 
 .ENDFUNC "handle_assembler_command",1244,"_handle_assembler_command"
@@ -9913,14 +9755,9 @@ _processInstructions:
 	OR	A,A
 	SBC	HL,BC
 	JR	NZ,L_640
-	LD	A,(_address+3)
-	LD	C,A
-	LD	B,%0
-	PUSH	BC
 	LD	BC,(_address)
 	PUSH	BC
 	CALL	_definelabel
-	POP	BC
 	POP	BC
 ; 1255	        return; // valid line, but empty
 .LINE 1255
@@ -10072,10 +9909,10 @@ L_640:
 ;Name                         Addr/Register   Size   Type
 ;_message                            IMPORT  unknown variable
 ;_error                              IMPORT  -----   function
-;_operand2                           IMPORT     16   variable
-;_operand1                           IMPORT     16   variable
+;_operand2                           IMPORT     15   variable
+;_operand1                           IMPORT     15   variable
 ;_permittype_matchlist               IMPORT  unknown variable
-;_address                            IMPORT      4   variable
+;_address                            IMPORT      3   variable
 ;_pass                               IMPORT      3   variable
 ;_currentline                        IMPORT    264   variable
 ;_isEmpty                            IMPORT  -----   function
@@ -10085,7 +9922,7 @@ L_640:
 
 
 ; Stack Frame Size: 11 (bytes)
-;       Spill Code: -1 (instruction)
+;       Spill Code: 0 (instruction)
 
 
 .ENDFUNC "processInstructions",1277,"_processInstructions"
@@ -10139,15 +9976,11 @@ _passInitialize:
 ; 1283	    address = START_ADDRESS;
 .LINE 1283
 
-	XOR	A,A
 	LD	(_address),BC
-	LD	(_address+3),A
 ; 1284	    totalsize = 0;
 .LINE 1284
 
-	XOR	A,A
 	LD	(_totalsize),BC
-	LD	(_totalsize+3),A
 ; 1285	    
 ; 1286	    // init the file stack and push the primary input file
 ; 1287	    filestackInit();
@@ -10165,8 +9998,8 @@ _passInitialize:
 ;**************************** _passInitialize ***************************
 ;Name                         Addr/Register   Size   Type
 ;_filestackInit                      IMPORT  -----   function
-;_totalsize                          IMPORT      4   variable
-;_address                            IMPORT      4   variable
+;_totalsize                          IMPORT      3   variable
+;_address                            IMPORT      3   variable
 ;_linenumber                         IMPORT      3   variable
 ;_adlmode                            IMPORT      1   variable
 ;_pass                               IMPORT      3   variable
@@ -10174,7 +10007,7 @@ _passInitialize:
 
 
 ; Stack Frame Size: 9 (bytes)
-;       Spill Code: -1 (instruction)
+;       Spill Code: 0 (instruction)
 
 
 .ENDFUNC "passInitialize",1288,"_passInitialize"
@@ -10230,7 +10063,7 @@ L_643:
 
 
 ; Stack Frame Size: 6 (bytes)
-;       Spill Code: -1 (instruction)
+;       Spill Code: 0 (instruction)
 
 
 .ENDFUNC "processDelayedLineNumberReset",1296,"_processDelayedLineNumberReset"
@@ -10744,7 +10577,7 @@ L_664:
 
 
 ; Stack Frame Size: 202 (bytes)
-;       Spill Code: -1 (instruction)
+;       Spill Code: 0 (instruction)
 
 
 .ENDFUNC "assemble",1373,"_assemble"
@@ -10820,25 +10653,20 @@ L__294:
 	XREF ___print_xputch:ROM
 	XREF ___print_uputch:ROM
 	XREF __indcall:ROM
-	XREF __lcmps:ROM
-	XREF __lcmpu:ROM
-	XREF __ladd:ROM
-	XREF __lsub:ROM
 	XREF __sneg:ROM
-	XREF __lnot:ROM
-	XREF __land:ROM
-	XREF __lshl:ROM
-	XREF __lshrs:ROM
+	XREF __inot:ROM
+	XREF __iand:ROM
+	XREF __ishrs:ROM
 	XREF __lshru:ROM
+	XREF __ishl:ROM
 	XREF __stoiu:ROM
 	XREF __itol:ROM
 	XREF __setflag:ROM
 	XREF __scmpzero:ROM
 	XREF __icmpzero:ROM
-	XREF __lcmpzero:ROM
 	XREF __case8D:ROM
 	XREF __seqcaseD:ROM
-	XREF __ladd_b:ROM
+	XREF __ishru_b:ROM
 	XREF __ishrs_b:ROM
 	XDEF _assemble
 	XDEF _processDelayedLineNumberReset

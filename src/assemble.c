@@ -66,8 +66,8 @@ uint8_t getAsciiValue(char *string) {
 // labelb-1
 // labela+labelb+offset1-1
 // The string should not contain any spaces, needs to be a single token
-int32_t getLabelValue(char *string) {
-    int32_t total, tmp;
+int24_t getLabelValue(char *string) {
+    int24_t total, tmp;
     char operator, *ptr;
     label *lbl;
     tokentype token;
@@ -524,7 +524,7 @@ void parseLine(char *src) {
     }
 }
 
-void definelabel(int32_t num){
+void definelabel(int24_t num){
     if(strlen(currentline.label)) {
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
@@ -726,7 +726,7 @@ void prefix_ddfd_suffix(operandlist *op) {
 
 void transform_instruction(operand *op, permittype type) {
     uint8_t y;
-    int32_t rel;
+    int24_t rel;
 
     switch(type) {
         case TRANSFORM_IR0:
@@ -863,7 +863,7 @@ void emit_16bit(uint16_t value) {
     emit_8bit((value>>8)&0xFF);
 }
 
-void emit_24bit(uint32_t value) {
+void emit_24bit(uint24_t value) {
     emit_8bit(value&0xFF);
     emit_8bit((value>>8)&0xFF);
     emit_8bit((value>>16)&0xFF);
@@ -1076,7 +1076,7 @@ void handle_asm_adl(void) {
 }
 
 void handle_asm_org(void) {
-    uint32_t newaddress;
+    uint24_t newaddress;
     
     parse_asm_single_immediate(); // get address from next token
     newaddress = operand1.immediate;
@@ -1120,7 +1120,7 @@ void handle_asm_include(void) {
 
 void handle_asm_blk(uint8_t width) {
     uint16_t num;
-    int32_t val = 0;
+    int24_t val = 0;
     tokentype token;
 
     if(pass == 1) {
@@ -1165,9 +1165,9 @@ void handle_asm_blk(uint8_t width) {
 }
 
 void handle_asm_align(void) {
-uint32_t alignment;
-uint32_t base;
-uint32_t delta;
+uint24_t alignment;
+uint24_t base;
+uint24_t delta;
 
     if(pass == 1) {
         // Output label at this address

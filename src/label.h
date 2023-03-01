@@ -11,23 +11,23 @@
 
 typedef struct {
     char *name;
-    int32_t address;
+    int24_t address;
 } label;
 
 typedef struct {
     bool defined;
-    int32_t address;
+    int24_t address;
 } anonymouslabeltype;
 
 label *findLabel(char *name);
 void initGlobalLabelTable(void);
 void initAnonymousLabelTable(void);
-bool insertGlobalLabel(char *labelname, int32_t address);
-bool insertLocalLabel(char *labelname, int32_t address);
+bool insertGlobalLabel(char *labelname, int24_t address);
+bool insertLocalLabel(char *labelname, int24_t address);
 void clearLocalLabels(void);
 void writeLocalLabels(void);
 void readLocalLabels(void);
-void writeAnonymousLabel(int32_t address);
+void writeAnonymousLabel(int24_t address);
 void readAnonymousLabel(void);
 label * findGlobalLabel(char *name);
 void initLocalLabelTable(void);

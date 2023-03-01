@@ -140,7 +140,7 @@
 .TYPE 14
 .ENDEF
 .ENDREC "NONAME2"
-.BEGREC "NONAME3",16
+.BEGREC "NONAME3",15
 .DEFINE "reg"
 .VALUE 0
 .CLASS 8
@@ -184,10 +184,10 @@
 .DEFINE "immediate"
 .VALUE 11
 .CLASS 8
-.TYPE 5
+.TYPE 4
 .ENDEF
 .DEFINE "wasLabel"
-.VALUE 15
+.VALUE 14
 .CLASS 8
 .TYPE 12
 .ENDEF
@@ -379,7 +379,7 @@
 .TYPE 2
 .ENDEF
 .ENDREC "NONAME9"
-.BEGREC "NONAME10",7
+.BEGREC "NONAME10",6
 .DEFINE "name"
 .VALUE 0
 .CLASS 8
@@ -388,10 +388,10 @@
 .DEFINE "address"
 .VALUE 3
 .CLASS 8
-.TYPE 5
+.TYPE 4
 .ENDEF
 .ENDREC "NONAME10"
-.BEGREC "NONAME11",5
+.BEGREC "NONAME11",4
 .DEFINE "defined"
 .VALUE 0
 .CLASS 8
@@ -400,7 +400,7 @@
 .DEFINE "address"
 .VALUE 1
 .CLASS 8
-.TYPE 5
+.TYPE 4
 .ENDEF
 .ENDREC "NONAME11"
 ;    1	#include <stdio.h>
@@ -602,12 +602,13 @@ L_9:
 L_11:
 	LD	BC,___print_uputch
 	LD	(___print_xputch),BC
-	LD	A,(_totalsize+3)
+	LD	BC,(_totalsize)
+	XOR	A,A
+	LD	DE,BC
 	LD	C,A
 	LD	B,%0
 	PUSH	BC
-	LD	BC,(_totalsize)
-	PUSH	BC
+	PUSH	DE
 	CALL	__u_itoa
 	POP	BC
 	POP	BC
@@ -637,7 +638,7 @@ L_13:
 ;**************************** _main ***************************
 ;Name                         Addr/Register   Size   Type
 ;_closeAllFiles                      IMPORT  -----   function
-;_totalsize                          IMPORT      4   variable
+;_totalsize                          IMPORT      3   variable
 ;__u_itoa                            IMPORT  -----   function
 ;_global_errors                      IMPORT      2   variable
 ;_assemble                           IMPORT  -----   function

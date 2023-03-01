@@ -1,4 +1,4 @@
-Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:29:18     page:   1
+Zilog eZ80 Macro Assembler Version 4.3 (19073001) RELISTED01-Mar-23     16:39:41     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -16,7 +16,7 @@ PC     Object              I  Line    Source
                            A    12    ;    5	
                            A    13    ;    6	void vdp_mode(unsigned char mode)
                            A    14    ;    7	{
-0401F2                     A    15    _vdp_mode:
+0401F1                     A    15    _vdp_mode:
                            A    16    .DEFINE "_vdp_mode"
                            A    17    
                            A    18    .VALUE _vdp_mode
@@ -41,31 +41,31 @@ PC     Object              I  Line    Source
                            A    37    
                            A    38    .ENDEF
                            A    39    
-0401F2 DDE5                A    40    	PUSH	IX
-0401F4 DD210000 00         A    41    	LD	IX,0
-0401F9 DD39                A    42    	ADD	IX,SP
+0401F1 DDE5                A    40    	PUSH	IX
+0401F3 DD210000 00         A    41    	LD	IX,0
+0401F8 DD39                A    42    	ADD	IX,SP
                            A    43    ;    8	    putch(22);
                            A    44    .LINE 8
                            A    45    
-0401FB 01160000            A    46    	LD	BC,22
-0401FF C5                  A    47    	PUSH	BC
-040200 CD 42 03 04         A    48    	CALL	_putch
-040204 C1                  A    49    	POP	BC
+0401FA 01160000            A    46    	LD	BC,22
+0401FE C5                  A    47    	PUSH	BC
+0401FF CD 41 03 04         A    48    	CALL	_putch
+040203 C1                  A    49    	POP	BC
                            A    50    ;    9	    putch(mode);
                            A    51    .LINE 9
                            A    52    
-040205 DD7E06              A    53    	LD	A,(IX+%6)
-040208 B7ED62              A    54    	UEXT	HL
-04020B 6F                  A    55    	LD	L,A
-04020C E5                  A    56    	PUSH	HL
-04020D CD 42 03 04         A    57    	CALL	_putch
-040211 C1                  A    58    	POP	BC
+040204 DD7E06              A    53    	LD	A,(IX+%6)
+040207 B7ED62              A    54    	UEXT	HL
+04020A 6F                  A    55    	LD	L,A
+04020B E5                  A    56    	PUSH	HL
+04020C CD 41 03 04         A    57    	CALL	_putch
+040210 C1                  A    58    	POP	BC
                            A    59    ;   10	}
                            A    60    .LINE 10
                            A    61    
-040212 DDF9                A    62    	LD	SP,IX
-040214 DDE1                A    63    	POP	IX
-040216 C9                  A    64    	RET	
+040211 DDF9                A    62    	LD	SP,IX
+040213 DDE1                A    63    	POP	IX
+040215 C9                  A    64    	RET	
                            A    65    
                            A    66    
                            A    67    ;**************************** _vdp_mode *******
@@ -83,7 +83,7 @@ PC     Object              I  Line    Source
                            A    79    ;   12	// Text functions
                            A    80    ;   13	void vdp_cls()
                            A    81    ;   14	{
-040217                     A    82    _vdp_cls:
+040216                     A    82    _vdp_cls:
                            A    83    .DEFINE "_vdp_cls"
                            A    84    
                            A    85    .VALUE _vdp_cls
@@ -96,22 +96,22 @@ PC     Object              I  Line    Source
                            A    92    
                            A    93    .BEGFUNC "vdp_cls",14,"_vdp_cls"
                            A    94    
-040217 DDE5                A    95    	PUSH	IX
-040219 DD210000 00         A    96    	LD	IX,0
-04021E DD39                A    97    	ADD	IX,SP
+040216 DDE5                A    95    	PUSH	IX
+040218 DD210000 00         A    96    	LD	IX,0
+04021D DD39                A    97    	ADD	IX,SP
                            A    98    ;   15	    putch(12);
                            A    99    .LINE 15
                            A   100    
-040220 010C0000            A   101    	LD	BC,12
-040224 C5                  A   102    	PUSH	BC
-040225 CD 42 03 04         A   103    	CALL	_putch
-040229 C1                  A   104    	POP	BC
+04021F 010C0000            A   101    	LD	BC,12
+040223 C5                  A   102    	PUSH	BC
+040224 CD 41 03 04         A   103    	CALL	_putch
+040228 C1                  A   104    	POP	BC
                            A   105    ;   16	}
                            A   106    .LINE 16
                            A   107    
-04022A DDF9                A   108    	LD	SP,IX
-04022C DDE1                A   109    	POP	IX
-04022E C9                  A   110    	RET	
+040229 DDF9                A   108    	LD	SP,IX
+04022B DDE1                A   109    	POP	IX
+04022D C9                  A   110    	RET	
                            A   111    
                            A   112    
                            A   113    ;**************************** _vdp_cls ********
@@ -127,7 +127,7 @@ PC     Object              I  Line    Source
                            A   123    ;   17	
                            A   124    ;   18	void vdp_cursorHome()
                            A   125    ;   19	{
-04022F                     A   126    _vdp_cursorHome:
+04022E                     A   126    _vdp_cursorHome:
                            A   127    .DEFINE "_vdp_cursorHome"
                            A   128    
                            A   129    .VALUE _vdp_cursorHome
@@ -140,22 +140,22 @@ PC     Object              I  Line    Source
                            A   136    
                            A   137    .BEGFUNC "vdp_cursorHome",19,"_vdp_cursorHome"
                            A   138    
-04022F DDE5                A   139    	PUSH	IX
-040231 DD210000 00         A   140    	LD	IX,0
-040236 DD39                A   141    	ADD	IX,SP
+04022E DDE5                A   139    	PUSH	IX
+040230 DD210000 00         A   140    	LD	IX,0
+040235 DD39                A   141    	ADD	IX,SP
                            A   142    ;   20	    putch(30);
                            A   143    .LINE 20
                            A   144    
-040238 011E0000            A   145    	LD	BC,30
-04023C C5                  A   146    	PUSH	BC
-04023D CD 42 03 04         A   147    	CALL	_putch
-040241 C1                  A   148    	POP	BC
+040237 011E0000            A   145    	LD	BC,30
+04023B C5                  A   146    	PUSH	BC
+04023C CD 41 03 04         A   147    	CALL	_putch
+040240 C1                  A   148    	POP	BC
                            A   149    ;   21	}
                            A   150    .LINE 21
                            A   151    
-040242 DDF9                A   152    	LD	SP,IX
-040244 DDE1                A   153    	POP	IX
-040246 C9                  A   154    	RET	
+040241 DDF9                A   152    	LD	SP,IX
+040243 DDE1                A   153    	POP	IX
+040245 C9                  A   154    	RET	
                            A   155    
                            A   156    
                            A   157    ;**************************** _vdp_cursorHome *
@@ -171,7 +171,7 @@ PC     Object              I  Line    Source
                            A   167    ;   22	
                            A   168    ;   23	void vdp_cursorUp()
                            A   169    ;   24	{
-040247                     A   170    _vdp_cursorUp:
+040246                     A   170    _vdp_cursorUp:
                            A   171    .DEFINE "_vdp_cursorUp"
                            A   172    
                            A   173    .VALUE _vdp_cursorUp
@@ -184,22 +184,22 @@ PC     Object              I  Line    Source
                            A   180    
                            A   181    .BEGFUNC "vdp_cursorUp",24,"_vdp_cursorUp"
                            A   182    
-040247 DDE5                A   183    	PUSH	IX
-040249 DD210000 00         A   184    	LD	IX,0
-04024E DD39                A   185    	ADD	IX,SP
+040246 DDE5                A   183    	PUSH	IX
+040248 DD210000 00         A   184    	LD	IX,0
+04024D DD39                A   185    	ADD	IX,SP
                            A   186    ;   25	    putch(11);
                            A   187    .LINE 25
                            A   188    
-040250 010B0000            A   189    	LD	BC,11
-040254 C5                  A   190    	PUSH	BC
-040255 CD 42 03 04         A   191    	CALL	_putch
-040259 C1                  A   192    	POP	BC
+04024F 010B0000            A   189    	LD	BC,11
+040253 C5                  A   190    	PUSH	BC
+040254 CD 41 03 04         A   191    	CALL	_putch
+040258 C1                  A   192    	POP	BC
                            A   193    ;   26	}
                            A   194    .LINE 26
                            A   195    
-04025A DDF9                A   196    	LD	SP,IX
-04025C DDE1                A   197    	POP	IX
-04025E C9                  A   198    	RET	
+040259 DDF9                A   196    	LD	SP,IX
+04025B DDE1                A   197    	POP	IX
+04025D C9                  A   198    	RET	
                            A   199    
                            A   200    
                            A   201    ;**************************** _vdp_cursorUp ***
@@ -215,7 +215,7 @@ PC     Object              I  Line    Source
                            A   211    ;   27	
                            A   212    ;   28	void vdp_cursorGoto(unsigned char x, un
                            A   213    ;   29	{
-04025F                     A   214    _vdp_cursorGoto:
+04025E                     A   214    _vdp_cursorGoto:
                            A   215    .DEFINE "_vdp_cursorGoto"
                            A   216    
                            A   217    .VALUE _vdp_cursorGoto
@@ -250,40 +250,40 @@ PC     Object              I  Line    Source
                            A   246    
                            A   247    .ENDEF
                            A   248    
-04025F DDE5                A   249    	PUSH	IX
-040261 DD210000 00         A   250    	LD	IX,0
-040266 DD39                A   251    	ADD	IX,SP
+04025E DDE5                A   249    	PUSH	IX
+040260 DD210000 00         A   250    	LD	IX,0
+040265 DD39                A   251    	ADD	IX,SP
                            A   252    ;   30	    putch(31); // TAB
                            A   253    .LINE 30
                            A   254    
-040268 011F0000            A   255    	LD	BC,31
-04026C C5                  A   256    	PUSH	BC
-04026D CD 42 03 04         A   257    	CALL	_putch
-040271 C1                  A   258    	POP	BC
+040267 011F0000            A   255    	LD	BC,31
+04026B C5                  A   256    	PUSH	BC
+04026C CD 41 03 04         A   257    	CALL	_putch
+040270 C1                  A   258    	POP	BC
                            A   259    ;   31	    putch(x);
                            A   260    .LINE 31
                            A   261    
-040272 DD7E06              A   262    	LD	A,(IX+%6)
-040275 B7ED62              A   263    	UEXT	HL
-040278 6F                  A   264    	LD	L,A
-040279 E5                  A   265    	PUSH	HL
-04027A CD 42 03 04         A   266    	CALL	_putch
-04027E C1                  A   267    	POP	BC
+040271 DD7E06              A   262    	LD	A,(IX+%6)
+040274 B7ED62              A   263    	UEXT	HL
+040277 6F                  A   264    	LD	L,A
+040278 E5                  A   265    	PUSH	HL
+040279 CD 41 03 04         A   266    	CALL	_putch
+04027D C1                  A   267    	POP	BC
                            A   268    ;   32	    putch(y);
                            A   269    .LINE 32
                            A   270    
-04027F DD7E09              A   271    	LD	A,(IX+%9)
-040282 B7ED62              A   272    	UEXT	HL
-040285 6F                  A   273    	LD	L,A
-040286 E5                  A   274    	PUSH	HL
-040287 CD 42 03 04         A   275    	CALL	_putch
-04028B C1                  A   276    	POP	BC
+04027E DD7E09              A   271    	LD	A,(IX+%9)
+040281 B7ED62              A   272    	UEXT	HL
+040284 6F                  A   273    	LD	L,A
+040285 E5                  A   274    	PUSH	HL
+040286 CD 41 03 04         A   275    	CALL	_putch
+04028A C1                  A   276    	POP	BC
                            A   277    ;   33	}
                            A   278    .LINE 33
                            A   279    
-04028C DDF9                A   280    	LD	SP,IX
-04028E DDE1                A   281    	POP	IX
-040290 C9                  A   282    	RET	
+04028B DDF9                A   280    	LD	SP,IX
+04028D DDE1                A   281    	POP	IX
+04028F C9                  A   282    	RET	
                            A   283    
                            A   284    
                            A   285    ;**************************** _vdp_cursorGoto *
@@ -301,7 +301,7 @@ PC     Object              I  Line    Source
                            A   297    ;   34	
                            A   298    ;   35	void vdp_colour(unsigned char foregroun
                            A   299    ;   36	{
-040291                     A   300    _vdp_colour:
+040290                     A   300    _vdp_colour:
                            A   301    .DEFINE "_vdp_colour"
                            A   302    
                            A   303    .VALUE _vdp_colour
@@ -356,67 +356,67 @@ PC     Object              I  Line    Source
                            A   352    
                            A   353    .ENDEF
                            A   354    
-040291 DDE5                A   355    	PUSH	IX
-040293 DD210000 00         A   356    	LD	IX,0
-040298 DD39                A   357    	ADD	IX,SP
-04029A C5                  A   358    	PUSH	BC
+040290 DDE5                A   355    	PUSH	IX
+040292 DD210000 00         A   356    	LD	IX,0
+040297 DD39                A   357    	ADD	IX,SP
+040299 C5                  A   358    	PUSH	BC
                            A   359    ;   37	    putch(17); // COLOUR
                            A   360    .LINE 37
                            A   361    
-04029B 01110000            A   362    	LD	BC,17
-04029F C5                  A   363    	PUSH	BC
-0402A0 CD 42 03 04         A   364    	CALL	_putch
-0402A4 C1                  A   365    	POP	BC
+04029A 01110000            A   362    	LD	BC,17
+04029E C5                  A   363    	PUSH	BC
+04029F CD 41 03 04         A   364    	CALL	_putch
+0402A3 C1                  A   365    	POP	BC
                            A   366    ;   38	    putch(!foreground);
                            A   367    .LINE 38
                            A   368    
-0402A5 DD7E06              A   369    	LD	A,(IX+%6)
-0402A8 B7                  A   370    	OR	A,A
-0402A9 20 09               A   371    	JR	NZ,L_6
-0402AB 01010000            A   372    	LD	BC,1
-0402AF DD0FFD              A   373    	LD	(IX+%FFFFFFFD),BC
-0402B2 18 07               A   374    	JR	L_7
-0402B4                     A   375    L_6:
-0402B4 01000000            A   376    	LD	BC,0
-0402B8 DD0FFD              A   377    	LD	(IX+%FFFFFFFD),BC
-0402BB                     A   378    L_7:
-0402BB DD07FD              A   379    	LD	BC,(IX+%FFFFFFFD)
-0402BE C5                  A   380    	PUSH	BC
-0402BF CD 42 03 04         A   381    	CALL	_putch
-0402C3 C1                  A   382    	POP	BC
+0402A4 DD7E06              A   369    	LD	A,(IX+%6)
+0402A7 B7                  A   370    	OR	A,A
+0402A8 20 09               A   371    	JR	NZ,L_6
+0402AA 01010000            A   372    	LD	BC,1
+0402AE DD0FFD              A   373    	LD	(IX+%FFFFFFFD),BC
+0402B1 18 07               A   374    	JR	L_7
+0402B3                     A   375    L_6:
+0402B3 01000000            A   376    	LD	BC,0
+0402B7 DD0FFD              A   377    	LD	(IX+%FFFFFFFD),BC
+0402BA                     A   378    L_7:
+0402BA DD07FD              A   379    	LD	BC,(IX+%FFFFFFFD)
+0402BD C5                  A   380    	PUSH	BC
+0402BE CD 41 03 04         A   381    	CALL	_putch
+0402C2 C1                  A   382    	POP	BC
                            A   383    ;   39	    putch(r);
                            A   384    .LINE 39
                            A   385    
-0402C4 DD7E09              A   386    	LD	A,(IX+%9)
-0402C7 B7ED62              A   387    	UEXT	HL
-0402CA 6F                  A   388    	LD	L,A
-0402CB E5                  A   389    	PUSH	HL
-0402CC CD 42 03 04         A   390    	CALL	_putch
-0402D0 C1                  A   391    	POP	BC
+0402C3 DD7E09              A   386    	LD	A,(IX+%9)
+0402C6 B7ED62              A   387    	UEXT	HL
+0402C9 6F                  A   388    	LD	L,A
+0402CA E5                  A   389    	PUSH	HL
+0402CB CD 41 03 04         A   390    	CALL	_putch
+0402CF C1                  A   391    	POP	BC
                            A   392    ;   40	    putch(g);
                            A   393    .LINE 40
                            A   394    
-0402D1 DD7E0C              A   395    	LD	A,(IX+%C)
-0402D4 B7ED62              A   396    	UEXT	HL
-0402D7 6F                  A   397    	LD	L,A
-0402D8 E5                  A   398    	PUSH	HL
-0402D9 CD 42 03 04         A   399    	CALL	_putch
-0402DD C1                  A   400    	POP	BC
+0402D0 DD7E0C              A   395    	LD	A,(IX+%C)
+0402D3 B7ED62              A   396    	UEXT	HL
+0402D6 6F                  A   397    	LD	L,A
+0402D7 E5                  A   398    	PUSH	HL
+0402D8 CD 41 03 04         A   399    	CALL	_putch
+0402DC C1                  A   400    	POP	BC
                            A   401    ;   41	    putch(b);
                            A   402    .LINE 41
                            A   403    
-0402DE DD7E0F              A   404    	LD	A,(IX+%F)
-0402E1 B7ED62              A   405    	UEXT	HL
-0402E4 6F                  A   406    	LD	L,A
-0402E5 E5                  A   407    	PUSH	HL
-0402E6 CD 42 03 04         A   408    	CALL	_putch
-0402EA C1                  A   409    	POP	BC
+0402DD DD7E0F              A   404    	LD	A,(IX+%F)
+0402E0 B7ED62              A   405    	UEXT	HL
+0402E3 6F                  A   406    	LD	L,A
+0402E4 E5                  A   407    	PUSH	HL
+0402E5 CD 41 03 04         A   408    	CALL	_putch
+0402E9 C1                  A   409    	POP	BC
                            A   410    ;   42	}
                            A   411    .LINE 42
                            A   412    
-0402EB DDF9                A   413    	LD	SP,IX
-0402ED DDE1                A   414    	POP	IX
-0402EF C9                  A   415    	RET	
+0402EA DDF9                A   413    	LD	SP,IX
+0402EC DDE1                A   414    	POP	IX
+0402EE C9                  A   415    	RET	
                            A   416    
                            A   417    
                            A   418    ;**************************** _vdp_colour *****
@@ -437,7 +437,7 @@ PC     Object              I  Line    Source
                            A   433    ;   43	
                            A   434    ;   44	void vdp_fgcolour(unsigned char r, unsi
                            A   435    ;   45	{
-0402F0                     A   436    _vdp_fgcolour:
+0402EF                     A   436    _vdp_fgcolour:
                            A   437    .DEFINE "_vdp_fgcolour"
                            A   438    
                            A   439    .VALUE _vdp_fgcolour
@@ -482,32 +482,32 @@ PC     Object              I  Line    Source
                            A   478    
                            A   479    .ENDEF
                            A   480    
-0402F0 DDE5                A   481    	PUSH	IX
-0402F2 DD210000 00         A   482    	LD	IX,0
-0402F7 DD39                A   483    	ADD	IX,SP
+0402EF DDE5                A   481    	PUSH	IX
+0402F1 DD210000 00         A   482    	LD	IX,0
+0402F6 DD39                A   483    	ADD	IX,SP
                            A   484    ;   46	    vdp_colour(1,r,g,b);
                            A   485    .LINE 46
                            A   486    
-0402F9 DD4E0C              A   487    	LD	C,(IX+%C)
-0402FC 0600                A   488    	LD	B,%0
-0402FE C5                  A   489    	PUSH	BC
-0402FF DD4E09              A   490    	LD	C,(IX+%9)
-040302 C5                  A   491    	PUSH	BC
-040303 DD4E06              A   492    	LD	C,(IX+%6)
-040306 C5                  A   493    	PUSH	BC
-040307 01010000            A   494    	LD	BC,1
-04030B C5                  A   495    	PUSH	BC
-04030C CD 91 02 04         A   496    	CALL	_vdp_colour
-040310 C1                  A   497    	POP	BC
-040311 C1                  A   498    	POP	BC
-040312 C1                  A   499    	POP	BC
-040313 C1                  A   500    	POP	BC
+0402F8 DD4E0C              A   487    	LD	C,(IX+%C)
+0402FB 0600                A   488    	LD	B,%0
+0402FD C5                  A   489    	PUSH	BC
+0402FE DD4E09              A   490    	LD	C,(IX+%9)
+040301 C5                  A   491    	PUSH	BC
+040302 DD4E06              A   492    	LD	C,(IX+%6)
+040305 C5                  A   493    	PUSH	BC
+040306 01010000            A   494    	LD	BC,1
+04030A C5                  A   495    	PUSH	BC
+04030B CD 90 02 04         A   496    	CALL	_vdp_colour
+04030F C1                  A   497    	POP	BC
+040310 C1                  A   498    	POP	BC
+040311 C1                  A   499    	POP	BC
+040312 C1                  A   500    	POP	BC
                            A   501    ;   47	}
                            A   502    .LINE 47
                            A   503    
-040314 DDF9                A   504    	LD	SP,IX
-040316 DDE1                A   505    	POP	IX
-040318 C9                  A   506    	RET	
+040313 DDF9                A   504    	LD	SP,IX
+040315 DDE1                A   505    	POP	IX
+040317 C9                  A   506    	RET	
                            A   507    
                            A   508    
                            A   509    ;**************************** _vdp_fgcolour ***
@@ -525,7 +525,7 @@ PC     Object              I  Line    Source
                            A   521    ;   48	
                            A   522    ;   49	void vdp_bgcolour(unsigned char r, unsi
                            A   523    ;   50	{
-040319                     A   524    _vdp_bgcolour:
+040318                     A   524    _vdp_bgcolour:
                            A   525    .DEFINE "_vdp_bgcolour"
                            A   526    
                            A   527    .VALUE _vdp_bgcolour
@@ -570,32 +570,32 @@ PC     Object              I  Line    Source
                            A   566    
                            A   567    .ENDEF
                            A   568    
-040319 DDE5                A   569    	PUSH	IX
-04031B DD210000 00         A   570    	LD	IX,0
-040320 DD39                A   571    	ADD	IX,SP
+040318 DDE5                A   569    	PUSH	IX
+04031A DD210000 00         A   570    	LD	IX,0
+04031F DD39                A   571    	ADD	IX,SP
                            A   572    ;   51	    vdp_colour(0,r,g,b);
                            A   573    .LINE 51
                            A   574    
-040322 DD4E0C              A   575    	LD	C,(IX+%C)
-040325 0600                A   576    	LD	B,%0
-040327 C5                  A   577    	PUSH	BC
-040328 DD4E09              A   578    	LD	C,(IX+%9)
-04032B C5                  A   579    	PUSH	BC
-04032C DD4E06              A   580    	LD	C,(IX+%6)
-04032F C5                  A   581    	PUSH	BC
-040330 01000000            A   582    	LD	BC,0
-040334 C5                  A   583    	PUSH	BC
-040335 CD 91 02 04         A   584    	CALL	_vdp_colour
-040339 C1                  A   585    	POP	BC
-04033A C1                  A   586    	POP	BC
-04033B C1                  A   587    	POP	BC
-04033C C1                  A   588    	POP	BC
+040321 DD4E0C              A   575    	LD	C,(IX+%C)
+040324 0600                A   576    	LD	B,%0
+040326 C5                  A   577    	PUSH	BC
+040327 DD4E09              A   578    	LD	C,(IX+%9)
+04032A C5                  A   579    	PUSH	BC
+04032B DD4E06              A   580    	LD	C,(IX+%6)
+04032E C5                  A   581    	PUSH	BC
+04032F 01000000            A   582    	LD	BC,0
+040333 C5                  A   583    	PUSH	BC
+040334 CD 90 02 04         A   584    	CALL	_vdp_colour
+040338 C1                  A   585    	POP	BC
+040339 C1                  A   586    	POP	BC
+04033A C1                  A   587    	POP	BC
+04033B C1                  A   588    	POP	BC
                            A   589    ;   52	}
                            A   590    .LINE 52
                            A   591    
-04033D DDF9                A   592    	LD	SP,IX
-04033F DDE1                A   593    	POP	IX
-040341 C9                  A   594    	RET	
+04033C DDF9                A   592    	LD	SP,IX
+04033E DDE1                A   593    	POP	IX
+040340 C9                  A   594    	RET	
                            A   595    
                            A   596    
                            A   597    ;**************************** _vdp_bgcolour ***
