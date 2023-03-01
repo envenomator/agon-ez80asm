@@ -1,0 +1,129 @@
+PC     Output            Line Source
+000000                   0001     .assume  adl = 1
+000000                   0002     .org $40000
+040000                   0003 
+040000                   0004 argv_ptrs_max:    equ  16
+040000                   0005 
+040000 C3 45 00 04       0006 	jp  _start
+040004                   0007 
+040004 48 45 4C 4C 4F 2E 0008 _exec_name:    db  "HELLO.BIN", 0
+       42 49 4E 00       
+04000E                   0009 
+04000E 00 00 00 00 00 00 0010       align  64
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00             
+040040                   0011 
+040040 4D 4F 53          0012       db  "MOS"
+040043 00                0013       db  00h
+040044 01                0014       db  01h
+040045                   0015 ;
+040045                   0016 ; And the code follows on immediately after the header
+040045                   0017 ;
+040045 F5                0018 _start:    push  af
+040046 C5                0019       PUSH  BC
+040047 D5                0020       push  de
+040048 DD E5             0021       push  ix
+04004A FD E5             0022       push  iy
+04004C                   0023 
+04004C DD 21 CB 00 04    0024       ld  ix, argv_ptrs
+040051 DD E5             0025       push  ix
+040053 CD 74 00 04       0026       call  _parse_params
+040057 DD E1             0027       pop  ix
+040059 06 00             0028       ld  b, 0
+04005B CD 6B 00 04       0029       call  _main
+04005F                   0030 
+04005F FD E1             0031       pop  iy
+040061 DD E1             0032       pop  ix
+040063 D1                0033       pop  de
+040064 C1                0034       pop  bc
+040065 F1                0035       pop  af
+040066 21 00 00 00       0036       ld hl,0
+04006A C9                0037       ret
+04006B                   0038 
+04006B                   0039 _main:
+04006B 21 FB 00 04       0040       ld hl, string
+04006F CD C3 00 04       0041       call prstr
+040073 C9                0042       ret
+040074                   0043 
+040074                   0044 _parse_params:
+040074 01 04 00 04       0045             ld  bc, _exec_name
+040078 DD 0F 00          0046       ld  (ix+0), BC
+04007B DD 23             0047       inc  ix
+04007D DD 23             0048       inc  ix
+04007F DD 23             0049       inc  ix
+040081 CD BC 00 04       0050       call  _skip_spaces
+040085                   0051 ;
+040085 01 01 00 00       0052       ld  bc, 1
+040089 06 0F             0053       ld  b, argv_ptrs_max - 1
+04008B                   0054 ;
+04008B                   0055 _parse_params_1:
+04008B C5                0056       push  bc
+04008C E5                0057       push  hl
+04008D CD AD 00 04       0058       call  _get_token
+040091 79                0059       ld  a, c
+040092 D1                0060       pop  de
+040093 C1                0061       pop  bc
+040094 B7                0062       or  A
+040095 C8                0063       ret  Z
+040096                   0064 ;
+040096 DD 1F 00          0065       ld  (ix+0), de
+040099 E5                0066       push  HL
+04009A D1                0067       pop  de
+04009B CD BC 00 04       0068       call  _skip_spaces
+04009F AF                0069       xor  a
+0400A0 12                0070       ld  (de), a
+0400A1 DD 23             0071       inc  ix
+0400A3 DD 23             0072       inc  ix
+0400A5 DD 23             0073       inc  ix
+0400A7 0C                0074       inc  C
+0400A8 79                0075       ld  a, c
+0400A9 B8                0076       cp  b
+0400AA 38 DF             0077       jr  c, _parse_params_1
+0400AC C9                0078       ret
+0400AD                   0079 
+0400AD 0E 00             0080 _get_token:    ld  c, 0
+0400AF 7E                0081 @@:      ld  a, (hl)
+0400B0 B7                0082       or  a
+0400B1 C8                0083       ret   z
+0400B2 FE 0D             0084       cp  13
+0400B4 C8                0085       ret  z
+0400B5 FE 20             0086       cp  ' '
+0400B7 C8                0087       ret  z
+0400B8 23                0088       inc  hl
+0400B9 0C                0089       inc   c
+0400BA 18 F3             0090       JR  @B
+0400BC                   0091 
+0400BC 7E                0092 _skip_spaces:    ld  a, (hl)
+0400BD FE 20             0093       cp  ' '
+0400BF C0                0094       ret  nz
+0400C0 23                0095       inc  hl
+0400C1 18 F9             0096       jr  _skip_spaces
+0400C3                   0097 
+0400C3                   0098 prstr:
+0400C3 7E                0099       ld a,(hl)
+0400C4 B7                0100       OR a
+0400C5 C8                0101       ret z
+0400C6 5B D7             0102       rst.lil 10h
+0400C8 23                0103       inc   hl
+0400C9 18 F8             0104       jr    prstr
+0400CB                   0105 
+0400CB                   0106 ; Storage for the argv array pointers
+0400CB                   0107 ;
+0400CB 00 00 00 00 00 00 0108 argv_ptrs:    blkp  16, 0
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+       00 00 00 00 00 00 
+0400FB 48 65 6C 6C 6F 20 0109 string:       db "Hello ez80ASM!\r\n",0
+       65 7A 38 30 41 53 
+       4D 21 0D 0A 00    
+
