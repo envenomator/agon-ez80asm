@@ -311,10 +311,10 @@ size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
     return result;
 }
 
-int strcasecmp (char *s1, char *s2) {
+int8_t strcasecmp (char *s1, char *s2) {
   const unsigned char *p1 = (const unsigned char *) s1;
   const unsigned char *p2 = (const unsigned char *) s2;
-  int result;
+  int8_t result;
   if (p1 == p2)
     return 0;
   while ((result = tolower(*p1) - tolower(*p2++)) == 0)
