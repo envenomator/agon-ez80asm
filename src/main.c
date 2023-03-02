@@ -7,6 +7,7 @@
 #include "assemble.h"
 #include "label.h"
 #include "stdint.h"
+#include "mos-interface.h"
 
 int main(int argc, char *argv[])
 {
@@ -30,7 +31,7 @@ int main(int argc, char *argv[])
     // Assemble input to output
     assemble();
     if(global_errors) {
-        //remove(filename[FILE_OUTPUT]);
+        mos_del(filename[FILE_OUTPUT]);
         printf("Error in input\n\r");
     }
     else printf("%d bytes\n\r", totalsize);

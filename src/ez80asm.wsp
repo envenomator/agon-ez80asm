@@ -8,6 +8,8 @@ ptn_Child1=ChildFrames
 ptn_Child1=Document-0
 ptn_Child2=Document-1
 ptn_Child3=Document-2
+ptn_Child4=Document-3
+ptn_Child5=Document-4
 
 [WorkState_v1_2.Frames.ChildFrames.Document-0]
 ptn_Child1=ViewFrame-0
@@ -38,7 +40,29 @@ ptn_Child1=ViewFrame-0
 DocPathName=.\assemble.c
 DocTemplateIndex=0
 DocumentString=IDE.Document
+IsActiveChildFrame=False
+IsFrameVisible=True
+WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPIPPPPPPPBOPPPPPPEDAAAAAAEDAAAAAADNEAAAAAIKAAAAAA
+
+[WorkState_v1_2.Frames.ChildFrames.Document-3]
+ptn_Child1=ViewFrame-0
+
+[WorkState_v1_2.Frames.ChildFrames.Document-3.ViewFrame-0]
+DocPathName=.\mos-interface.asm
+DocTemplateIndex=0
+DocumentString=IDE.Document
+IsActiveChildFrame=False
+IsFrameVisible=True
+WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPIPPPPPPPBOPPPPPPAAAAAAAAAAAAAAAAPJEAAAAACJAAAAAA
+
+[WorkState_v1_2.Frames.ChildFrames.Document-4]
+ptn_Child1=ViewFrame-0
+
+[WorkState_v1_2.Frames.ChildFrames.Document-4.ViewFrame-0]
+DocPathName=.\init.asm
+DocTemplateIndex=0
+DocumentString=IDE.Document
 IsActiveChildFrame=True
 IsFrameVisible=True
-WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAPPPPPPPPPPPPPPPPIPPPPPPPBOPPPPPPEDAAAAAAEDAAAAAADNEAAAAAIKAAAAAA
+WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAPPPPPPPPPPPPPPPPIPPPPPPPBOPPPPPPIGAAAAAAIGAAAAAADNEAAAAAAIBAAAAA
 

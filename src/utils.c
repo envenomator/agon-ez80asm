@@ -234,8 +234,8 @@ void closeAllFiles() {
     if(filehandle[FILE_LOCAL_LABELS]) mos_fclose(filehandle[FILE_LOCAL_LABELS]);
     if(filehandle[FILE_ANONYMOUS_LABELS]) mos_fclose(filehandle[FILE_ANONYMOUS_LABELS]);
     if(filehandle[FILE_LISTING]) mos_fclose(filehandle[FILE_LISTING]);
-    //remove(filename[FILE_LOCAL_LABELS]);
-    //remove(filename[FILE_ANONYMOUS_LABELS]);
+    mos_del(filename[FILE_LOCAL_LABELS]);
+    mos_del(filename[FILE_ANONYMOUS_LABELS]);
 }
 
 bool openfiles(void) {
