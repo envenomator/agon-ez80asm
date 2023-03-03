@@ -1,88 +1,86 @@
 ;
-; Title:	Mos asm loader
-; Author:	Jeroen Venema
-;           Init code by Dean Belfeld
-; Created:	02/03/2023
+; Title:	Hello World - Initialisation Code
+; Author:	Dean Belfield
+; Created:	22/11/2022
+; Last Updated: 25/11/2022
 ;
 ; Modinfo:
-; 02/03/2023:	Initial version
+; 25/11/2022:	Added parameter parsing; now accepts CR or NUL as end of string markers
 
 			SEGMENT CODE
-		
-			.ASSUME	ADL = 1
 			
-			INCLUDE	"equs.inc"
-			INCLUDE "mos_api.inc"
+			XREF	__low_bss
+			XREF	__len_bss
 			
+			XREF	_main
 			
-argv_ptrs_max:		EQU	    16		; Maximum number of arguments allowed in argv
-user_start:			EQU 40000h			
-max_size:			EQU  6000h		; Max 384KB
+			.ASSUME	ADL = 1	
+
+argv_ptrs_max:		EQU	16			; Maximum number of arguments allowed in argv
+
 ;
 ; Start in ADL mode
 ;
-			JP	_start			; Jump to start			
-;
-; The header stuff is from byte 64 onwards
-;
 
-_exec_name:		DB	"ASM.BIN", 0					; The executable name, only used in argv
-_load_name:		DB	"/MOS/ASM.LDR", 0					; The loadable module name
-_error_string:	DB	"Error loading /MOS/ASM.LDR\r\n",0
+			JP	_start			; Jump to start
 
-			ALIGN	64
+;
+; The header stuff
+;
+_exec_name:		DB	"EZ80ASM.BIN", 0		; The executable name, only used in argv
+
+			ALIGN	64			; The executable header is from byte 64 onwards
 			
-			DB		"MOS"			; Flag for MOS - to confirm this is a valid MOS command
-			DB		00h			; MOS header version 0
-			DB		01h			; Flag for run mode (0: Z80, 1: ADL)
+			DB	"MOS"			; Flag for MOS - to confirm this is a valid MOS command
+			DB	00h			; MOS header version 0
+			DB	01h			; Flag for run mode (0: Z80, 1: ADL)
+
 ;
 ; And the code follows on immediately after the header
 ;
-_start:		PUSH	AF			; Preserve the registers
+_start:			PUSH	AF			; Preserve registers
 			PUSH	BC
 			PUSH	DE
 			PUSH	IX
-			PUSH	IY
-			
-			PUSH	HL			; parameter string
-			; Load module into memory at start address
-			LD		HL, _load_name
-			LD		DE, user_start
-			LD		BC, max_size
-			LD		A, mos_load
-			RST.LIL 08h
-			POP		HL			; recover parameter string
-			OR		A
-			JR		Z, _start2			
-
-			LD		HL, _error_string
-			CALL	prstr
-			JR		_exit
-			
-_start2:
-			LD		IX, argv_ptrs		; The argv array pointer address
-			PUSH	IX
+			PUSH	IY			; Need to preserve IY for MOS			
+;			
+			PUSH	HL			; Clear the RAM
+			CALL	_clear_bss
+			POP	HL
+;
+			LD	IX, argv_ptrs		; The argv array pointer address
+			PUSH	IX			; Parameter 2: argv[0] = IX
 			CALL	_parse_params		; Parse the parameters
-			POP		IX					; IX: argv	
-			
-			LD		B, 0				;  C: argc
-			CALL	user_start			; Start user code
-			
-_exit:		POP		IY					; Restore registers
-			POP		IX
-			POP		DE
-			POP		BC
-			POP		AF
-			LD		HL,0		; Always exit with 'success' to MOS
+			LD	B, 0			; Clear B from BCU as we just want ARGC
+			PUSH	BC			; Parameter 1: argc
+			CALL	_main			; int main(int argc, char *argv[])
+			POP	DE			; Balance the stack
+			POP	DE
+
+			POP	IY			; Restore registers
+			POP	IX
+			POP	DE
+			POP 	BC
+			POP	AF
 			RET
-	
-prstr:
-			LD		A,(HL)
-			OR		A
-			RET		Z
-			RST.LIL	10h
-			INC		HL
-			JR		prstr
+			
+; Clear the memory
+;
+_clear_bss:		LD	BC, __len_bss		; Check for non-zero length
+			LD	a, __len_bss >> 16
+			OR	A, C
+			OR	A, B
+			RET	Z			; BSS is zero-length ...
+			XOR	A, A
+			LD 	(__low_bss), A
+			SBC	HL, HL			; HL = 0
+			DEC	BC			; 1st byte's taken care of
+			SBC	HL, BC
+			RET	Z		  	; Just 1 byte ...
+			LD	HL, __low_bss		; Reset HL
+			LD	DE, __low_bss + 1	; [DE] = bss + 1
+			LDIR				; Clear this section
+			RET
 			
 ; Parse the parameter string into a C array
 ; Parameters
@@ -158,10 +156,12 @@ _skip_spaces:		LD	A, (HL)			; Get the character from the parameter string
 			INC	HL			; Advance to next character
 			JR	_skip_spaces		; Increment length
 
+
+			SEGMENT DATA
+
+
 ; Storage for the argv array pointers
 ;
-argv_ptrs:		BLKP	argv_ptrs_max, 0			
-
-			DEFINE	LORAM, SPACE = ROM
-			SEGMENT LORAM
+argv_ptrs:		BLKP	argv_ptrs_max, 0
 			
+			END

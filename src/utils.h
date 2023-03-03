@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#define TOKEN_MAX   128
+#include "config.h"
 
 typedef struct {
     char    start[TOKEN_MAX];

@@ -2,8 +2,7 @@
 #define LISTING_H
 
 #include <stdint.h>
-
-#define OBJECTS_PER_LINE 6
+#include "config.h"
 
 void listInit(bool output_console);
 void listStartLine(char *line);

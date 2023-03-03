@@ -3,11 +3,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-
-#define GLOBAL_LABEL_BUFFERSIZE 131072
-#define LOCAL_LABEL_BUFFERSIZE    4096
-#define GLOBAL_LABEL_TABLE_SIZE   8192
-#define LOCAL_LABEL_TABLE_SIZE      64
+#include "config.h"
 
 typedef struct {
     char *name;

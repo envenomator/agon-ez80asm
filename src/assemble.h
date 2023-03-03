@@ -5,9 +5,7 @@
 #include <stdio.h>
 #include "instruction.h"
 #include "label.h"
-
-#define START_ADDRESS   0x0
-#define FILLBYTE        0x00 // NOP
+#include "config.h"
 
 bool assemble(void);
 void emit_8bit(uint8_t value);

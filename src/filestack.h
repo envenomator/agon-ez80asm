@@ -3,8 +3,7 @@
 
 #include <stdint.h>
 #include "globals.h"
-
-#define FILESTACK_MAXFILES  4
+#include "config.h"
 
 typedef struct {
     uint16_t linenumber;

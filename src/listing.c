@@ -65,12 +65,12 @@ void listEndLine(bool console) {
             }
         }
         if(lines == 0) {
-            sprintf(buffer, "%04d %s\n\r",linenumber, _listLine);
+            sprintf(buffer, "%04d %s\r\n",linenumber, _listLine);
             agon_fputs(buffer, FILE_LISTING);
             if(console) printf("%s",buffer);
         }
         else {
-            sprintf(buffer, "\n\r");
+            sprintf(buffer, "\r\n");
             agon_fputs(buffer, FILE_LISTING);
             if(console) printf("%s",buffer);
         }

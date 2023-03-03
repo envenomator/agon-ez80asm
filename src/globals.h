@@ -4,10 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "instruction.h"
-
-#define LINEMAX         128
-#define FILENAMEMAXLENGTH 64
-#define FILES               5+1 // +current
+#include "config.h"
 
 enum {
     FILE_CURRENT,
