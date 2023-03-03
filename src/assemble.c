@@ -517,7 +517,6 @@ void parseLine(char *src) {
                 state = PS_DONE;
                 break;
             case PS_ERROR:
-                //error(message[ERROR_PARSE]);
                 currentline.next = NULL;
                 state = PS_DONE;
                 break;
@@ -1287,7 +1286,7 @@ void processInstructions(void){
 
 void passInitialize(uint8_t passnumber) {
     pass = passnumber;
-    adlmode = true;
+    adlmode = ADLMODE_START;
     linenumber = 0;
     address = START_ADDRESS;
     totalsize = 0;
@@ -1340,9 +1339,6 @@ bool assemble(void){
     while(incfiles);
     writeLocalLabels();
     if(global_errors) return false;
-
-    printf("%d lines\n\r", linenumber);
-    printf("%d labels\n\r", getGlobalLabelCount());
 
     // Pass 2
     printf("Pass 2...\n\r");

@@ -10,7 +10,6 @@
 char filename[FILES][FILENAMEMAXLENGTH];
 uint8_t filehandle[FILES];
 
-bool debug_enabled;
 bool consolelist_enabled;
 bool lineNumberNeedsReset;
 //char currentInputFilename[FILENAMEMAXLENGTH];

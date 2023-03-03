@@ -34,9 +34,11 @@ void listStartLine(char *line) {
 void listEndLine(bool console) {
     uint8_t i, lines, objectnum;
     uint8_t linemax;
+    uint8_t linelength;
+    char *t;
 
-    linemax = (_listObjectCount / OBJECTS_PER_LINE);
-    if(_listObjectCount % OBJECTS_PER_LINE) linemax ++;
+    linemax = (_listObjectCount / LISTING_OBJECTS_PER_LINE);
+    if(_listObjectCount % LISTING_OBJECTS_PER_LINE) linemax ++;
     if(linemax == 0) linemax = 1;
 
     objectnum = 0;
@@ -51,7 +53,7 @@ void listEndLine(bool console) {
             agon_fputs(buffer, FILE_LISTING);
             if(console) printf("%s",buffer);
         }
-        for(i = 0; i < OBJECTS_PER_LINE; i++) {
+        for(i = 0; i < LISTING_OBJECTS_PER_LINE; i++) {
             if(objectnum < _listObjectCount) {
                 sprintf(buffer, "%02X ",_listObjects[objectnum]);
                 agon_fputs(buffer, FILE_LISTING);
@@ -71,7 +73,7 @@ void listEndLine(bool console) {
         }
         else {
             sprintf(buffer, "\r\n");
-            agon_fputs(buffer, FILE_LISTING);
+            agon_fputs("buffer", FILE_LISTING);
             if(console) printf("%s",buffer);
         }
     }

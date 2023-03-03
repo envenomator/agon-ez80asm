@@ -19,8 +19,6 @@ int main(int argc, char *argv[])
     prepare_filenames(argv[1]);
     if(!openfiles()) return 0;
 
-    debug_enabled = false;
-    if((argc == 3) && (strcmp(argv[2], "-d") == 0)) debug_enabled = true;
     if((argc == 3) && (strcmp(argv[2], "-l") == 0)) consolelist_enabled = true;
 
     // Init tables
@@ -32,9 +30,9 @@ int main(int argc, char *argv[])
     assemble();
     if(global_errors) {
         mos_del(filename[FILE_OUTPUT]);
-        printf("Error in input\n\r");
+        printf("Error in input\r\n");
     }
-    else printf("%d bytes\n\r", totalsize);
+    else printf("Done\r\n");
  
     closeAllFiles();   
     return 0;
