@@ -124,6 +124,7 @@ uint8_t getLineToken(tokentype *token, char *src, char terminator) {
                 if(*src == '\"') state = TOKEN_STRING;
                 if(*src == '(') state = TOKEN_BRACKET;
                 terminated = ((*src == ';') || (*src == terminator));
+                if(terminator == ' ') terminated = terminated || (*src == '\t'); 
                 break;            
         }
         terminated = terminated || (*src == 0);
