@@ -12,7 +12,8 @@ enum {
     FILE_OUTPUT,
     FILE_LOCAL_LABELS,
     FILE_ANONYMOUS_LABELS,
-    FILE_LISTING
+    FILE_LISTING,
+    FILE_MACRO
 };
 
 typedef struct {
@@ -39,6 +40,7 @@ extern uint8_t filehandle[FILES];
 
 extern unsigned int linenumber;
 extern unsigned int pass;
+extern bool inmacro;
 extern uint24_t address;
 extern uint24_t totalsize;
 extern uint16_t global_errors;

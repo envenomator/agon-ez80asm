@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define MAX_MNEMONIC_SIZE         8
+#define MAX_MNEMONIC_SIZE         10
 
 typedef enum { // permitted operand type
     OPTYPE_NONE,
@@ -184,7 +184,9 @@ enum {
     ASM_BLKB,
     ASM_BLKW,
     ASM_BLKP,
-    ASM_BLKL
+    ASM_BLKL,
+    ASM_MACRO_START,
+    ASM_MACRO_END
 };
 
 typedef enum {

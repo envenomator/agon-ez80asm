@@ -468,20 +468,22 @@ void parseLine(char *src) {
                     break;
                 }
                 // Valid EZ80 instruction
-                switch(token.terminator) {
-                    case ';':
-                        getLineToken(&token, token.next, 0);
-                        state = PS_COMMENT;
-                        break;
-                    case 0:
-                        currentline.next = NULL;
-                        state = PS_DONE;
-                        break;
-                    default:
-                        getLineToken(&token, token.next, ',');
-                        state = PS_OP1;
-                        break;
-                }                
+                if(!inmacro) {
+                    switch(token.terminator) {
+                        case ';':
+                            getLineToken(&token, token.next, 0);
+                            state = PS_COMMENT;
+                            break;
+                        case 0:
+                            currentline.next = NULL;
+                            state = PS_DONE;
+                            break;
+                        default:
+                            getLineToken(&token, token.next, ',');
+                            state = PS_OP1;
+                            break;
+                    }
+                } else state = PS_DONE;
                 break;
             case PS_OP1:
                 argcount++;
@@ -1202,6 +1204,76 @@ uint24_t delta;
     else error(message[ERROR_INVALIDNUMBER]);
 }
 
+void handle_asm_endmacro(void) {
+    if(pass == 1) {
+        inmacro = false;
+        mos_fclose(filehandle[FILE_MACRO]);
+    }
+}
+
+void handle_asm_definemacro(void) {
+    tokentype token;
+    uint8_t i;
+    uint8_t argcount = 0;
+    char arglist[8][32];
+    char temp[32];
+
+    if(pass == 1) {
+        if(isEmpty(currentline.label)) {
+            error("Macro has no name");
+            return;
+        }
+        if(currentline.label[0] == '@') {
+            error("Illegal macro name");
+            return;
+        }
+        if(insertGlobalLabel(currentline.label, 0 , LABEL_MACRO) == false){
+            error(message[ERROR_CREATINGLABEL]);
+            return;
+        }
+        // parse arguments into array
+        if(currentline.next) {
+            while(currentline.next) {
+                getLineToken(&token, currentline.next, ',');
+                if(notEmpty(token.start)) {
+                    strcpy(arglist[argcount], token.start);
+                    argcount++;
+                }
+                if(token.terminator == ',') currentline.next = token.next;
+                else {
+                    if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+                    currentline.next = NULL; 
+                }
+            }
+        }
+        // define macro meta filename
+        strcpy(filename[FILE_MACRO], "macro-data.");
+        strcat(filename[FILE_MACRO], currentline.label);
+        if(openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always)) {
+            // write arguments to file
+            sprintf(temp, "%d\r\n", argcount);
+            agon_fputs(temp, filehandle[FILE_MACRO]);
+            for(i = 0; i < argcount ; i++) {
+                agon_fputs(arglist[i], filehandle[FILE_MACRO]);
+                agon_fputs("\r\n", filehandle[FILE_MACRO]);
+            }
+            mos_fclose(filehandle[FILE_MACRO]);
+        }
+        else {
+            error("Error writing macro data file");
+            return;
+        }
+        // define macro filename
+        strcpy(filename[FILE_MACRO], "macro.");
+        strcat(filename[FILE_MACRO], currentline.label);
+        if(openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always)) {
+            // start writing macro lines to file, keep file open until 'endmacro'
+        }
+        else error("Error writing macro file");
+    }
+    inmacro = true;
+}
+
 void handle_assembler_command(void) {
     switch(currentline.current_instruction->asmtype) {
     case(ASM_ADL):
@@ -1247,37 +1319,50 @@ void handle_assembler_command(void) {
     case(ASM_ALIGN):
         handle_asm_align();
         break;
+    case(ASM_MACRO_START):
+        handle_asm_definemacro();
+        break;
+    case(ASM_MACRO_END):
+        handle_asm_endmacro();
+        break;
     }
     return;
 }
 
-void processInstructions(void){
+void processInstructions(char *line){
     operandlist *list;
     uint8_t listitem;
     bool match;
 
-    // return on empty lines
-    if(isEmpty(currentline.mnemonic)) {
-        // check if there is a single label on a line in during pass 1
-        if(pass == 1) definelabel(address);
-        return; // valid line, but empty
+    if(!inmacro) {
+        // return on empty lines
+        if(isEmpty(currentline.mnemonic)) {
+            // check if there is a single label on a line in during pass 1
+            if(pass == 1) definelabel(address);
+            return; // valid line, but empty
+        }
     }
 
     if(currentline.current_instruction) {
         if(currentline.current_instruction->type == EZ80) {
-            // process this mnemonic by applying the instruction list as a filter to the operand-set
-            list = currentline.current_instruction->list;
-            match = false;
-            for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
-                if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
-                    match = true;
-                    emit_instruction(list);
-                    break;
+            if(!inmacro) {
+                // process this mnemonic by applying the instruction list as a filter to the operand-set
+                list = currentline.current_instruction->list;
+                match = false;
+                for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
+                    if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
+                        match = true;
+                        emit_instruction(list);
+                        break;
+                    }
+                    list++;
                 }
-                list++;
+                if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
+                return;
             }
-            if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
-            return;
+            else {
+                if(pass == 1) agon_fputs(line, filehandle[FILE_MACRO]); // emit entire line to macro file
+            }
         }
         else handle_assembler_command();
     }
@@ -1290,7 +1375,7 @@ void passInitialize(uint8_t passnumber) {
     linenumber = 0;
     address = START_ADDRESS;
     totalsize = 0;
-    
+    inmacro = false;
     // init the file stack and push the primary input file
     filestackInit();
 }
@@ -1321,7 +1406,7 @@ bool assemble(void){
         while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
             linenumber++;
             parseLine(line);
-            processInstructions();
+            processInstructions(line);
             processDelayedLineNumberReset();
 
             //printLocalLabelTable();
@@ -1358,7 +1443,7 @@ bool assemble(void){
             listStartLine(line);
             parseLine(line);
             refreshlocalLabels();
-            processInstructions();
+            processInstructions(line);
             listEndLine(consolelist_enabled);
             processDelayedLineNumberReset();
 
