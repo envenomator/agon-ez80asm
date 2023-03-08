@@ -5,8 +5,14 @@
 #include <stdint.h>
 #include "config.h"
 
+enum {
+    LABEL_REGULAR,
+    LABEL_MACRO
+};
+
 typedef struct {
     char *name;
+    uint8_t type;
     int24_t address;
 } label;
 
@@ -18,7 +24,7 @@ typedef struct {
 label *findLabel(char *name);
 void initGlobalLabelTable(void);
 void initAnonymousLabelTable(void);
-bool insertGlobalLabel(char *labelname, int24_t address);
+bool insertGlobalLabel(char *labelname, int24_t address, uint8_t labeltype);
 bool insertLocalLabel(char *labelname, int24_t address);
 void clearLocalLabels(void);
 void writeLocalLabels(void);

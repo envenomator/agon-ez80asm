@@ -540,7 +540,7 @@ void definelabel(int24_t num){
             }
         }
         else {
-            if(insertGlobalLabel(currentline.label, num) == false){
+            if(insertGlobalLabel(currentline.label, num, LABEL_REGULAR) == false){
                 error(message[ERROR_CREATINGLABEL]);
                 return;
             }
