@@ -72,5 +72,7 @@ char *message[] = {
     "Parse error",
     "Invalid operator",
     "Argument is not a power of 2",
-    "Maximum include files reached"
+    "Maximum include files reached",
+    "Maximum number of macros reached",
+    "Macro already defined"
 };

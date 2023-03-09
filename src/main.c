@@ -7,6 +7,7 @@
 #include "assemble.h"
 #include "label.h"
 #include "stdint.h"
+#include "macro.h"
 #include "mos-interface.h"
 
 int main(int argc, char *argv[])
@@ -25,7 +26,8 @@ int main(int argc, char *argv[])
     initGlobalLabelTable();
     initLocalLabelTable();
     initAnonymousLabelTable();
-
+    initMacros();
+    
     // Assemble input to output
     assemble();
     if(global_errors) {

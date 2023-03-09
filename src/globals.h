@@ -95,7 +95,9 @@ enum {
     ERROR_PARSE,
     ERROR_OPERATOR,
     ERROR_POWER2,
-    ERROR_MAXINCLUDEFILES
+    ERROR_MAXINCLUDEFILES,
+    ERROR_MAXMACROS,
+    ERROR_MACRODEFINED
 };
 // Error messages
 extern char *message[];

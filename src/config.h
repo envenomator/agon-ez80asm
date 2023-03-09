@@ -14,5 +14,7 @@
 #define LOCAL_LABEL_TABLE_SIZE       64 //  64 local labels
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX                    64 // Token maximum length 
+#define MAXIMUM_MACROS               64 // Maximum number of macros
+#define MACRO_BUFFERSIZE         0x4000 // 16KB local macro space
 
 #endif // CONFIG_H

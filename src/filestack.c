@@ -1,6 +1,7 @@
 #include <string.h>
 #include "filestack.h"
 #include "utils.h"
+#include "stdint.h"
 
 filestackitem _filestack[FILESTACK_MAXFILES];
 uint8_t       _filestackCount;
