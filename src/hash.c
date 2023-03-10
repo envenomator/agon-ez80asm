@@ -1,6 +1,6 @@
 #include <string.h>
 #include "hash.h"
-#include "stdint.h"
+#include "./stdint.h"
 
 unsigned int hash(char *name, unsigned int size) {
     unsigned int h;

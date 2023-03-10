@@ -12,9 +12,11 @@
 
 #ifndef MOS_H
 #define MOS_H
+#include "./stdint.h"
 
+#ifdef AGON
 #include <defines.h>
-
+#endif
 // File access modes - from mos_api.inc
 #define fa_read				0x01
 #define fa_write			0x02
@@ -53,4 +55,4 @@ extern UINT8 mos_feof(UINT8 fh);					 // returns 1 if EOF, 0 otherwise
 extern UINT8 mos_save(char *filename, UINT24 address, UINT24 nbytes);
 extern UINT8 mos_del(char *filename);
 
-#endif MOS_H
+#endif //MOS_H

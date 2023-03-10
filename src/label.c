@@ -1,4 +1,3 @@
-#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include "label.h"
@@ -6,7 +5,7 @@
 #include "str2num.h"
 #include "utils.h"
 #include "globals.h"
-#include "stdint.h"
+#include "./stdint.h"
 
 // memory for anonymous labels
 anonymouslabeltype an_prev;

@@ -2,7 +2,7 @@
 #define GLOBALS_H
 
 #include <stdio.h>
-#include <stdint.h>
+#include "./stdint.h"
 #include "instruction.h"
 #include "config.h"
 

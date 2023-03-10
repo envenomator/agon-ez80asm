@@ -6,7 +6,7 @@
 #include "str2num.h"
 #include "label.h"
 #include "instruction.h"
-#include "stdint.h"
+#include "./stdint.h"
 #include "mos-interface.h"
 
 // return a base filename, stripping the given extension from it
@@ -312,6 +312,7 @@ size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
     return result;
 }
 
+#ifdef AGON
 int strcasecmp (char *s1, char *s2) {
   const unsigned char *p1 = (const unsigned char *) s1;
   const unsigned char *p2 = (const unsigned char *) s2;
@@ -323,3 +324,4 @@ int strcasecmp (char *s1, char *s2) {
       break;
   return result;
 }
+#endif

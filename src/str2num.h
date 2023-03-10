@@ -1,7 +1,7 @@
 #ifndef STR2NUM_H
 #define STR2NUM_H
 
-#include <stdint.h>
+#include "./stdint.h"
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>

@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdint.h>
 #include "globals.h"
 #include "utils.h"
 #include "assemble.h"
 #include "label.h"
-#include "stdint.h"
+#include "./stdint.h"
 #include "macro.h"
 #include "mos-interface.h"
 

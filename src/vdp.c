@@ -1,4 +1,4 @@
-#include <defines.h>
+#include "vdp.h"
 #include "mos-interface.h"
 
 // Generic functions

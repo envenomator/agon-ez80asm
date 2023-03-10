@@ -11,7 +11,7 @@
 #include "str2num.h"
 #include "listing.h"
 #include "filestack.h"
-#include "stdint.h"
+#include "./stdint.h"
 #include "mos-interface.h"
 
 void empty_operand(operand *op) {
@@ -1050,7 +1050,6 @@ void handle_asm_dw(bool longword) {
 }
 
 void handle_asm_equ(void) {
-    label *lbl;
     tokentype token;
 
     if(currentline.next) {
@@ -1112,7 +1111,7 @@ void handle_asm_include(void) {
             filestackPush(&fsi);
             filehandle[FILE_CURRENT] = mos_fopen(token.start+1, fa_read);
             strcpy(filename[FILE_CURRENT], token.start+1);
-            if(filehandle[FILE_CURRENT] == NULL) {
+            if(filehandle[FILE_CURRENT] == 0) {
                 filestackPop(&fsi);
                 error(message[ERROR_INCLUDEFILE]);
             }

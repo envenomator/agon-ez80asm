@@ -2,7 +2,7 @@
 #define LABEL_H
 
 #include <stdio.h>
-#include <stdint.h>
+#include "./stdint.h"
 #include "config.h"
 
 enum {

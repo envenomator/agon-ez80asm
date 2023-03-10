@@ -1,7 +1,7 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-#include <stdint.h>
+#include "./stdint.h"
 
 #define MAX_MNEMONIC_SIZE         10
 

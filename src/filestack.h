@@ -1,7 +1,7 @@
 #ifndef FILESTACK_H
 #define FILESTACK_H
 
-#include <stdint.h>
+#include "./stdint.h"
 #include "globals.h"
 #include "config.h"
 

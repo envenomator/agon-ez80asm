@@ -3,7 +3,7 @@
 #include "listing.h"
 #include "globals.h"
 #include "utils.h"
-#include "stdint.h"
+#include "./stdint.h"
 
 char _listLine[LINEMAX];
 uint24_t _listAddress;
@@ -34,8 +34,6 @@ void listStartLine(char *line) {
 void listEndLine(bool console) {
     uint8_t i, lines, objectnum;
     uint8_t linemax;
-    uint8_t linelength;
-    char *t;
 
     linemax = (_listObjectCount / LISTING_OBJECTS_PER_LINE);
     if(_listObjectCount % LISTING_OBJECTS_PER_LINE) linemax ++;

@@ -9,7 +9,9 @@
  * 22/10/2022:		Bitmap/Sprite functions added
  */
 
+#ifdef AGON
 #include <defines.h>
+#endif
 #include "mos-interface.h"
 
 #ifndef VDP_H
@@ -31,4 +33,4 @@ void  vdp_cursorGoto(unsigned char x, unsigned char y);
 void  vdp_fgcolour(unsigned char r, unsigned char g, unsigned char b);
 void  vdp_bgcolour(unsigned char r, unsigned char g, unsigned char b);
 
-#endif VDP_H
+#endif //VDP_H

@@ -1,6 +1,16 @@
 #ifndef STDINT_H
 #define STDINT_H
 
+#include <stdint.h>
+#include <stdbool.h>
+typedef int8_t INT8;
+typedef uint8_t UINT8;
+typedef int int24_t;
+typedef int INT24;
+typedef unsigned int uint24_t;
+typedef unsigned int UINT24;
+
+#ifdef AGON
 typedef char int8_t;
 typedef unsigned char uint8_t;
 typedef short int16_t;
@@ -16,5 +26,7 @@ typedef unsigned char byte;
 #define TRUE    1
 #define false   0
 #define FALSE   0
+#endif
+
 
 #endif

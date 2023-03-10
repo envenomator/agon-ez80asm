@@ -2,7 +2,7 @@
 #include "str2num.h"
 #include "globals.h"
 #include "utils.h"
-#include "stdint.h"
+#include "./stdint.h"
 
 bool err_str2num;
 

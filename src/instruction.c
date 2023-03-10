@@ -7,7 +7,7 @@
 #include "assemble.h"
 #include "utils.h"
 #include "globals.h"
-#include "stdint.h"
+#include "./stdint.h"
 
 bool none_match(operand *op) {
     return ((op->reg == R_NONE) && (op->immediate_provided == false) & !(op->cc));
