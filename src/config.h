@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define AGON
+//#define AGON
 
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000
@@ -10,6 +10,7 @@
 #define LINEMAX                     128 // Input line length maximum
 #define FILENAMEMAXLENGTH            64
 #define FILES                       6+1 // +current
+#define MALLOC_BUFFERSIZE       0x40000 // global memory buffer
 #define GLOBAL_LABEL_BUFFERSIZE 0x40000 // 256KB global label space
 #define LOCAL_LABEL_BUFFERSIZE   0x4000 // 16KB local label space
 #define GLOBAL_LABEL_TABLE_SIZE   16384 // 16K global labels

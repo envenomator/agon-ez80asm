@@ -1,14 +1,4 @@
-#include <string.h>
-#include <stdio.h>
-#include "./stdint.h"
-#include "config.h"
-#include "macro.h"
-#include "utils.h"
-#include "globals.h"
-
-// memory buffer for sequentially storing macros
-char macroBuffer[MACRO_BUFFERSIZE];
-uint16_t macroBufferIndex;
+#include "./macro.h"
 
 // tables
 macro macroTable[MAXIMUM_MACROS]; // indexed table
@@ -17,7 +7,6 @@ uint8_t macroTableCounter;
 void initMacros(void) {
     int i;
 
-    macroBufferIndex = 0;
     macroTableCounter = 0;
     for(i = 0; i < MAXIMUM_MACROS; i++){
         macroTable[i].name = NULL;
@@ -48,15 +37,6 @@ macro * findMacro(char *name){
     uint8_t index = findMacroIndex(name);
     if(index < MAXIMUM_MACROS) return &macroTable[index];
     else return NULL;
-}
-
-char *agon_malloc(uint16_t length) {
-    char *ptr;
-    if((macroBufferIndex + length) > MACRO_BUFFERSIZE - 1) return NULL;
-
-    ptr = &macroBuffer[macroBufferIndex];
-    macroBufferIndex += length;
-    return ptr;
 }
 
 bool defineMacro(char *name, uint8_t argcount, char **arguments) {

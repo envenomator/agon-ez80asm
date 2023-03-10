@@ -9,6 +9,7 @@
 #include "macro.h"
 #include "mos-interface.h"
 #include "mos_posix.h"
+#include "malloc.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,12 +26,13 @@ int main(int argc, char *argv[])
 
     if((argc == 3) && (strcmp(argv[2], "-l") == 0)) consolelist_enabled = true;
 
-    // Init tables
+    // Initialization
     initGlobalLabelTable();
     initLocalLabelTable();
     initAnonymousLabelTable();
     initMacros();
-
+    init_agon_malloc();
+    
     // Assemble input to output
     assemble();
     if(global_errors) {
