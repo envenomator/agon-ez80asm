@@ -33,6 +33,7 @@ DEFINE __len_bss = length of BSS
  ".\str2num.obj", \
  ".\utils.obj", \
  ".\macro.obj", \
+ ".\mos_posix.obj", \
  "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.4\lib\std\chelpD.lib", \
  "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.4\lib\std\crtD.lib", \
  "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.4\lib\std\crtSD.lib", \

@@ -1,19 +1,29 @@
+#include "mos_posix.h"
+#include "./stdint.h"
+
+uint8_t _fileindex;
+uint8_t _mosfileid;
+
+void mos_posix_init(void) {
+    _fileindex = 0;
+    _mosfileid = 1;
+}
+
 #ifndef AGON
 
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include "mos-interface.h"
-#define MAXPOSIXFILES 256
 
 typedef struct {
     FILE *file;
     uint8_t mosfile;
 } posixfile;
 
+#define MAXPOSIXFILES 256
 posixfile _filearray[MAXPOSIXFILES];
-uint8_t _fileindex;
-uint8_t _mosfileid;
+
 
 /*
 void mos_posix_printable(void) {
@@ -25,13 +35,6 @@ void mos_posix_printable(void) {
     }
 }
 */
-
-void mos_posix_init(void) {
-    _fileindex = 0;
-    _mosfileid = 1;
-
-    //printf("Init _mosfileid == %d\n",_mosfileid);
-}
 
 // MOS API calls conversion to POSIX
 UINT8 mos_fopen(char * filename, UINT8 mode) // returns filehandle, or 0 on error

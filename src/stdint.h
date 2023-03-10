@@ -1,6 +1,9 @@
 #ifndef STDINT_H
 #define STDINT_H
 
+#include "config.h"
+
+#ifndef AGON
 #include <stdint.h>
 #include <stdbool.h>
 typedef int8_t INT8;
@@ -9,6 +12,7 @@ typedef int int24_t;
 typedef int INT24;
 typedef unsigned int uint24_t;
 typedef unsigned int UINT24;
+#endif
 
 #ifdef AGON
 typedef char int8_t;
