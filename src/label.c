@@ -58,7 +58,6 @@ void initLocalLabelTable(void) {
     localLabelCounter = 0;
     for(i = 0; i < LOCAL_LABEL_TABLE_SIZE; i++) {
         localLabelTable[i].name = NULL;
-        localLabelTable[i].type = LABEL_REGULAR;
     }
 }
 
@@ -191,7 +190,7 @@ bool insertLocalLabel(char *labelname, int24_t address) {
     return false;
 }
 
-bool insertGlobalLabel(char *labelname, int24_t address, uint8_t labeltype){
+bool insertGlobalLabel(char *labelname, int24_t address){
     int index,i,try,len;
     label *tmp;
 
@@ -207,7 +206,6 @@ bool insertGlobalLabel(char *labelname, int24_t address, uint8_t labeltype){
     globalLabelBufferIndex += len+1;
     strcpy(tmp->name, labelname);
     tmp->address = address;
-    tmp->type = labeltype;
     index = hash(labelname, GLOBAL_LABEL_TABLE_SIZE);
     for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++) {
         try = (i + index) % GLOBAL_LABEL_TABLE_SIZE;

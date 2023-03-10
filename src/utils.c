@@ -203,15 +203,17 @@ uint8_t getOperatorToken(tokentype *token, char *src) {
 
 bool openFile(uint8_t *file, char *name, uint8_t mode) {
     *file = mos_fopen(name, mode);
-
     if(*file) return true;
     printf("Error opening \"%s\"\n\r", name);
     return false;
 }
 
 bool reOpenFile(uint8_t number, uint8_t mode) {
+    bool result;
     if(filehandle[number]) mos_fclose(filehandle[number]);
-    return openFile(&filehandle[number], filename[number], mode);
+    result = openFile(&filehandle[number], filename[number], mode);
+    //printf("Re-opened mos id: %d\n",filehandle[number]);
+    return result;
 }
 
 void prepare_filenames(char *input_filename) {
@@ -259,6 +261,7 @@ char *agon_fgets(char *s, int size, uint8_t fileid) {
     c = 0;
 	cs = s;
 
+    //printf("fgets fileid : %d\n",fileid);
 	do {
 		eof = mos_feof(filehandle[fileid]);
 		c = mos_fgetc(filehandle[fileid]);

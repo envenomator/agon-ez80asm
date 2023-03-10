@@ -1,7 +1,4 @@
-PC      Output            Line   Source
-000000                    0001       .assume adl=1
-000000                    0002   label:
-000000  78                0003       ld a,b
-000001  3E 00             0004       ld a,label
-000003                    0005   
-
+PC     Output            Line Source
+040000 78                0001     ld a,b
+040001 41                0002     ld b,c
+040002                   0003 

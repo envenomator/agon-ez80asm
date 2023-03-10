@@ -542,7 +542,7 @@ void definelabel(int24_t num){
             }
         }
         else {
-            if(insertGlobalLabel(currentline.label, num, LABEL_REGULAR) == false){
+            if(insertGlobalLabel(currentline.label, num) == false){
                 error(message[ERROR_CREATINGLABEL]);
                 return;
             }
@@ -1211,12 +1211,13 @@ void handle_asm_endmacro(void) {
 }
 
 void handle_asm_definemacro(void) {
+    /*
     tokentype token;
     uint8_t i;
     uint8_t argcount = 0;
     char arglist[8][32];
     char temp[32];
-
+    
     if(pass == 1) {
         if(isEmpty(currentline.label)) {
             error("Macro has no name");
@@ -1270,6 +1271,7 @@ void handle_asm_definemacro(void) {
         }
         else error("Error writing macro file");
     }
+    */
     inmacro = true;
 }
 
@@ -1436,6 +1438,8 @@ bool assemble(void){
     listInit(consolelist_enabled);
     readLocalLabels();
     readAnonymousLabel();
+    
+    filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
     do {
         while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
             linenumber++;
@@ -1458,6 +1462,7 @@ bool assemble(void){
         else incfiles = false;
     }
     while(incfiles);
+    
     return true;
 }
 

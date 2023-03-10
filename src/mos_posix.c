@@ -12,8 +12,26 @@ typedef struct {
 } posixfile;
 
 posixfile _filearray[MAXPOSIXFILES];
-uint8_t _fileindex = 0;
-uint8_t _mosfileid = 0;
+uint8_t _fileindex;
+uint8_t _mosfileid;
+
+/*
+void mos_posix_printable(void) {
+    int i;
+
+    printf("MOS Posix file table\n");
+    for(i = 0; i < _fileindex; i++) {
+        printf("Index %d - %x mosid %d\n",i,_filearray[i].file, _filearray[i].mosfile);
+    }
+}
+*/
+
+void mos_posix_init(void) {
+    _fileindex = 0;
+    _mosfileid = 1;
+
+    //printf("Init _mosfileid == %d\n",_mosfileid);
+}
 
 // MOS API calls conversion to POSIX
 UINT8 mos_fopen(char * filename, UINT8 mode) // returns filehandle, or 0 on error
@@ -28,6 +46,8 @@ UINT8 mos_fopen(char * filename, UINT8 mode) // returns filehandle, or 0 on erro
         if(newfile.file == NULL) return 0;
         newfile.mosfile = _mosfileid++;
         _filearray[_fileindex++] = newfile;
+        //printf("MOS fopen %s - result %d %x\n",filename, newfile.mosfile,newfile.file);
+        //mos_posix_printable();
         return newfile.mosfile;
     }
     else return 0;
@@ -38,6 +58,7 @@ UINT8 mos_fclose(UINT8 fh)					 // returns number of still open files
     int index;
     bool found = false;
 
+    //printf("MOS fclose handle %d\n",fh);
     for(index = 0; index < _fileindex; index++) {
         if(_filearray[index].mosfile == fh) {
             found = true;
@@ -50,9 +71,11 @@ UINT8 mos_fclose(UINT8 fh)					 // returns number of still open files
             _filearray[index] = _filearray[index+1];
         }
         _fileindex--;
+        //printf("MOS fclose file index : %d\n",_fileindex);
+        //mos_posix_printable();
         return 1;
     }
-    else return 0;
+    return 0;
 }
 
 char	 mos_fgetc(UINT8 fh)					 // returns character from file
@@ -60,6 +83,7 @@ char	 mos_fgetc(UINT8 fh)					 // returns character from file
     int index;
     bool found = false;
 
+    //printf("FGETC fh %d\n",fh);
     for(index = 0; index < _fileindex; index++) {
         if(_filearray[index].mosfile == fh) {
             found = true;

@@ -8,9 +8,13 @@
 #include "./stdint.h"
 #include "macro.h"
 #include "mos-interface.h"
+#include "mos_posix.h"
 
 int main(int argc, char *argv[])
 {
+    // Init posix compatibility
+    mos_posix_init();    
+
     if(argc < 2){
         printf("Usage: asm <filename> [-l]\n\r");
         return 0;
@@ -26,7 +30,7 @@ int main(int argc, char *argv[])
     initLocalLabelTable();
     initAnonymousLabelTable();
     initMacros();
-    
+
     // Assemble input to output
     assemble();
     if(global_errors) {
