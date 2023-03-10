@@ -10,14 +10,12 @@
 #define LINEMAX                     128 // Input line length maximum
 #define FILENAMEMAXLENGTH            64
 #define FILES                       6+1 // +current
-#define MALLOC_BUFFERSIZE       0x40000 // global memory buffer
-#define GLOBAL_LABEL_BUFFERSIZE 0x40000 // 256KB global label space
+#define MALLOC_BUFFERSIZE       0x40000 // global 256KB memory buffer
 #define LOCAL_LABEL_BUFFERSIZE   0x4000 // 16KB local label space
 #define GLOBAL_LABEL_TABLE_SIZE   16384 // 16K global labels
 #define LOCAL_LABEL_TABLE_SIZE       64 //  64 local labels
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX                    64 // Token maximum length 
 #define MAXIMUM_MACROS               64 // Maximum number of macros
-#define MACRO_BUFFERSIZE         0x4000 // 16KB local macro space
 
 #endif // CONFIG_H

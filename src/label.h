@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "./stdint.h"
 #include "config.h"
+#include "malloc.h"
 
 enum {
     LABEL_REGULAR,
@@ -36,6 +37,4 @@ uint16_t getGlobalLabelCount(void);
 uint16_t getLocalLabelCount(void);
 void printLocalLabelTable(void);
 
-// debug
-void print_bufferspace();
 #endif // LABEL_H

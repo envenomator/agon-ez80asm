@@ -12,10 +12,7 @@ anonymouslabeltype an_prev;
 anonymouslabeltype an_next;
 label an_return;
 
-// memory buffer for sequentially storing label strings
-char globalLabelBuffer[GLOBAL_LABEL_BUFFERSIZE];
 char localLabelBuffer[LOCAL_LABEL_BUFFERSIZE];
-uint16_t globalLabelBufferIndex;
 uint16_t localLabelBufferIndex;
 
 // tables
@@ -38,7 +35,6 @@ uint16_t getLocalLabelCount(void) {
 void initGlobalLabelTable(void) {
     int i;
 
-    globalLabelBufferIndex = 0;
     globalLabelCounter = 0;
     for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
         globalLabelTable[i] = NULL;
@@ -195,15 +191,15 @@ bool insertGlobalLabel(char *labelname, int24_t address){
     label *tmp;
 
     len = strlen(labelname);
-    // check space first
-    if((globalLabelBufferIndex + len + 1 + sizeof(label)) > GLOBAL_LABEL_TABLE_SIZE-1)
-        return false; // no more space in buffer 
+
     // allocate space in buffer for label struct
-    tmp = (label *)&globalLabelBuffer[globalLabelBufferIndex];
-    globalLabelBufferIndex += sizeof(label);
+    tmp = (label *)agon_malloc(sizeof(label));
+    if(tmp == 0) return false;
+
     // allocate space in buffer for string and store it to buffer
-    tmp->name = &globalLabelBuffer[globalLabelBufferIndex];
-    globalLabelBufferIndex += len+1;
+    tmp->name = agon_malloc(len+1);
+    if(tmp->name == 0) return false;
+
     strcpy(tmp->name, labelname);
     tmp->address = address;
     index = hash(labelname, GLOBAL_LABEL_TABLE_SIZE);
@@ -216,10 +212,6 @@ bool insertGlobalLabel(char *labelname, int24_t address){
         } 
     }
     return false;
-}
-
-void print_bufferspace(){
-    printf("%d bytes available in label buffer\n", GLOBAL_LABEL_BUFFERSIZE - globalLabelBufferIndex );
 }
 
 label * findGlobalLabel(char *name){

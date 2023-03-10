@@ -19,6 +19,7 @@
 <file filter-key="">.\utils.c</file>
 <file filter-key="">.\macro.c</file>
 <file filter-key="">.\mos_posix.c</file>
+<file filter-key="">.\malloc.c</file>
 </files>
 
 <!-- configuration information -->
