@@ -1,7 +1,8 @@
     ld a,b
-    macro test 1,2
-    ld a,b
-    ld b,c
+    macro sum arg1, arg2
+    ld a,arg1
+    ld b,arg2
+    add a,b
     endmacro
 
     macro geinig arg1,arg2,arg3
@@ -9,8 +10,5 @@
     ld a, arg1
     endmacro
 
-    ld a,b
     geinig a,0,0
-    geinig b,0,0
-    geinig x,0,0
-
+    sum 10,15

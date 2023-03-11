@@ -24,17 +24,51 @@ void listInit(bool console) {
     _listObjectCount = 0;
 }
 
-void listStartLine(char *line) {
+void listStartLine(char *line) {    
     strcpy(_listLine, line);
     trimRight(_listLine);
     _listAddress = address;
     _listObjectCount = 0;
 }
 
+/*
+void listReconstructLine(void) {
+    char buffer[LINEMAX];
+    
+    if(currentExpandedMacro) {
+        buffer[0] = 0;
+        if(notEmpty(currentline.label)) {
+            strcpy(buffer, currentline.label);
+            strcat(buffer, ": ");
+        }
+        if(notEmpty(currentline.mnemonic)) {
+            strcat(buffer, currentline.mnemonic);
+            if(notEmpty(currentline.suffix)) {
+                strcat(buffer, ".");
+                strcat(buffer, currentline.suffix);
+            }
+            strcat(buffer, " ");
+        }
+        if(notEmpty(currentline.operand1)) {
+            strcat(buffer, currentline.operand1);
+        }
+        if(notEmpty(currentline.operand2)) {
+            strcat(buffer, ", ");
+            strcat(buffer, currentline.operand2);
+        }
+        if(notEmpty(currentline.comment)) {
+            strcat(buffer, " ");
+            strcat(buffer, currentline.comment);
+        }
+        strcpy(_listLine, buffer);
+    }
+}
+*/
 void listEndLine(bool console) {
     uint8_t i, lines, objectnum;
     uint8_t linemax;
 
+    //listReconstructLine();
     linemax = (_listObjectCount / LISTING_OBJECTS_PER_LINE);
     if(_listObjectCount % LISTING_OBJECTS_PER_LINE) linemax ++;
     if(linemax == 0) linemax = 1;

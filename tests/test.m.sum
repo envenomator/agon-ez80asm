@@ -1,0 +1,3 @@
+    ld a,arg1
+    ld b,arg2
+    add a,b

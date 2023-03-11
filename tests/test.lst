@@ -1,23 +1,20 @@
 PC     Output            Line Source
-040000 78                0001     ld a,b
-040001                   0002     macro test 1,2
-040001                   0003     ld a,b
-040001                   0004     ld b,c
-040001                   0005     endmacro
-040001                   0006 
-040001                   0007     macro geinig arg1,arg2,arg3
-040001                   0008     ld hl, $40000
-040001                   0009     ld a, arg1
-040001                   0010     endmacro
-040001                   0011 
-040001 78                0012     ld a,b
-040002                   0013     geinig a,0,0
-040002 21 00 00 04       0001     ld hl, $40000
-040006 7F                0002     ld a, arg1
-040007                   0014     geinig b,0,0
-040007 21 00 00 04       0001     ld hl, $40000
-04000B 78                0002     ld a, arg1
-04000C                   0015     geinig x,0,0
-04000C 21 00 00 04       0001     ld hl, $40000
-040010 3E 00             0002     ld a, arg1
-040012                   0016 
+040000 78                0001    ld a,b
+040001                   0002    macro sum arg1, arg2
+040001                   0003    ld a,arg1
+040001                   0004    ld b,arg2
+040001                   0005    add a,b
+040001                   0006    endmacro
+040001                   0007
+040001                   0008    macro geinig arg1,arg2,arg3
+040001                   0009    ld hl, $40000
+040001                   0010    ld a, arg1
+040001                   0011    endmacro
+040001                   0012
+040001                   0013    geinig a,0,0
+040001 21 00 00 04       0001    ld hl, $40000
+040005 7F                0002    ld a, arg1
+040006                   0014    sum 10,15
+040006 3E 0A             0001    ld a,arg1
+040008 06 0F             0002    ld b,arg2
+04000A 80                0003    add a,b
