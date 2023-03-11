@@ -10,4 +10,5 @@ PC     Output            Line Source
 040001                   0009     endmacro
 040001                   0010 
 040001 78                0011     ld a,b
-040002                   0012 
+040002                   0012     geinig bla
+040002                   0013 

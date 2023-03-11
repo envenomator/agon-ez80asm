@@ -5,6 +5,7 @@
 #include "./stdint.h"
 #include "instruction.h"
 #include "config.h"
+#include "macro.h"
 
 enum {
     FILE_CURRENT,
@@ -18,6 +19,7 @@ enum {
 
 typedef struct {
     instruction *current_instruction;
+    macro *current_macro;
     char *next;
     char label[32];
     char mnemonic[16];
@@ -40,7 +42,7 @@ extern uint8_t filehandle[FILES];
 
 extern unsigned int linenumber;
 extern unsigned int pass;
-extern bool inmacro;
+extern bool inMacroDefine;
 extern uint24_t address;
 extern uint24_t totalsize;
 extern uint16_t global_errors;

@@ -385,6 +385,7 @@ void parseLine(char *src) {
 
     // default current line items
     currentline.current_instruction = NULL;
+    currentline.current_macro = NULL;
     currentline.next = NULL;
     currentline.label[0] = 0;
     currentline.mnemonic[0] = 0;
@@ -453,9 +454,17 @@ void parseLine(char *src) {
 
                 currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
-                    error(message[ERROR_INVALIDMNEMONIC]);
-                    state = PS_ERROR;
-                    break;
+                    // check if a defined macro exists, before erroring out
+                    currentline.current_macro = findMacro(currentline.mnemonic);
+                    if(currentline.current_macro) {
+                        state = PS_DONE;
+                        break;
+                    }
+                    else {
+                        error(message[ERROR_INVALIDMNEMONIC]);
+                        state = PS_ERROR;
+                        break;
+                    }
                 }
                 if(currentline.current_instruction->type == ASSEMBLER) {
                     currentline.next = token.next;
@@ -469,7 +478,7 @@ void parseLine(char *src) {
                     break;
                 }
                 // Valid EZ80 instruction
-                if(!inmacro) {
+                if(!inMacroDefine) {
                     switch(token.terminator) {
                         case ';':
                             getLineToken(&token, token.next, 0);
@@ -1210,7 +1219,7 @@ void handle_asm_endmacro(void) {
         mos_fclose(filehandle[FILE_MACRO]);
         //printf("Closing handle %d\n",filehandle[FILE_MACRO]);
     }
-    inmacro = false;
+    inMacroDefine = false;
 }
 
 void handle_asm_definemacro(void) {
@@ -1280,7 +1289,7 @@ void handle_asm_definemacro(void) {
         else printf("Not found in memory\n");
     }
     */    
-    inmacro = true;
+    inMacroDefine = true;
 }
 
 void handle_assembler_command(void) {
@@ -1343,7 +1352,7 @@ void processInstructions(char *line){
     uint8_t listitem;
     bool match;
 
-    if(!inmacro) {
+    if(!inMacroDefine) {
         // return on empty lines
         if(isEmpty(currentline.mnemonic)) {
             // check if there is a single label on a line in during pass 1
@@ -1354,7 +1363,7 @@ void processInstructions(char *line){
 
     if(currentline.current_instruction) {
         if(currentline.current_instruction->type == EZ80) {
-            if(!inmacro) {
+            if(!inMacroDefine) {
                 // process this mnemonic by applying the instruction list as a filter to the operand-set
                 list = currentline.current_instruction->list;
                 match = false;
@@ -1378,6 +1387,9 @@ void processInstructions(char *line){
         }
         else handle_assembler_command();
     }
+    if(currentline.current_macro) {
+        printf("Macro expansion requested for \"%s\"\n",currentline.current_macro->name);
+    }
     return;
 }
 
@@ -1387,7 +1399,7 @@ void passInitialize(uint8_t passnumber) {
     linenumber = 0;
     address = START_ADDRESS;
     totalsize = 0;
-    inmacro = false;
+    inMacroDefine = false;
     // init the file stack and push the primary input file
     filestackInit();
 }

@@ -19,7 +19,7 @@ bool lineNumberNeedsReset;
 //FILE *file_list;
 unsigned int linenumber;
 unsigned int pass;
-bool inmacro;
+bool inMacroDefine;
 uint24_t address;
 uint24_t totalsize;      // total size of assembled binary
 uint16_t global_errors;
