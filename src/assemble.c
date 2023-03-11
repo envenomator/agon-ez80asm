@@ -457,6 +457,7 @@ void parseLine(char *src) {
                     // check if a defined macro exists, before erroring out
                     currentline.current_macro = findMacro(currentline.mnemonic);
                     if(currentline.current_macro) {
+                        currentline.next = token.next;
                         state = PS_DONE;
                         break;
                     }
@@ -498,6 +499,8 @@ void parseLine(char *src) {
                 break;
             case PS_OP1:
                 argcount++;
+                if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
+
                 if(argcount == 1) {
                     strcpy(currentline.operand1, token.start);
                     parse_operand(currentline.operand1, &operand1);
@@ -1347,6 +1350,56 @@ void handle_assembler_command(void) {
     return;
 }
 
+void expandMacroStart(macro *exp) {    
+    tokentype token;
+    uint8_t argcount = 0;
+    //uint8_t i;
+    filestackitem fsi;
+
+    currentExpandedMacro = currentline.current_macro;
+    if(pass == 2) {
+        // parse arguments into given macro substitution space
+        if(currentline.next) {
+            while(currentline.next) {
+                if(argcount >= exp->argcount) {
+                    error(message[ERROR_MACROARGCOUNT]);
+                    return;
+                }
+                getLineToken(&token, currentline.next, ',');
+                if(notEmpty(token.start)) {
+                    strcpy(exp->substitutions[argcount], token.start);
+                    argcount++;
+                }
+                if(token.terminator == ',') currentline.next = token.next;
+                else {
+                    if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+                    currentline.next = NULL; 
+                }
+            }
+        }
+        //printf("Macro expansion requested for \"%s\"\n",currentline.current_macro->name);
+        //printf("Arguments given: %d\n",argcount);
+        if(argcount != exp->argcount) error("Incorrect number of macro arguments");
+        //for(i = 0; i < argcount; i++) {
+        //    printf("Arg: <<%s>> replaced by <<%s>>\n",exp->arguments[i], exp->substitutions[i]);
+        //}
+
+        // push current file to the stack
+        fsi.linenumber = linenumber;
+        fsi.fp = filehandle[FILE_CURRENT];
+        strcpy(fsi.filename, filename[FILE_CURRENT]);
+        filestackPush(&fsi);
+        // Macro filename to read
+        getMacroFilename(filename[FILE_CURRENT], exp->name);
+        filehandle[FILE_CURRENT] = mos_fopen(filename[FILE_CURRENT], fa_read);
+        if(filehandle[FILE_CURRENT] == 0) {
+            filestackPop(&fsi);
+            error("Error opening macro file");
+        }
+        lineNumberNeedsReset = true;
+    }
+}
+
 void processInstructions(char *line){
     operandlist *list;
     uint8_t listitem;
@@ -1387,9 +1440,7 @@ void processInstructions(char *line){
         }
         else handle_assembler_command();
     }
-    if(currentline.current_macro) {
-        printf("Macro expansion requested for \"%s\"\n",currentline.current_macro->name);
-    }
+    if(currentline.current_macro) expandMacroStart(currentline.current_macro);
     return;
 }
 
@@ -1443,7 +1494,10 @@ bool assemble(void){
             filehandle[FILE_CURRENT] = fsitem.fp;
             strcpy(filename[FILE_CURRENT], fsitem.filename);
         }
-        else incfiles = false;
+        else {
+            incfiles = false;
+            currentExpandedMacro = NULL;
+        }
     }
     while(incfiles);
     writeLocalLabels();
@@ -1482,7 +1536,10 @@ bool assemble(void){
             filehandle[FILE_CURRENT] = fsitem.fp;
             strcpy(filename[FILE_CURRENT], fsitem.filename);
         }
-        else incfiles = false;
+        else {
+            incfiles = false;
+            currentExpandedMacro = NULL;
+        }
     }
     while(incfiles);
     

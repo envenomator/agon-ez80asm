@@ -20,6 +20,7 @@ bool lineNumberNeedsReset;
 unsigned int linenumber;
 unsigned int pass;
 bool inMacroDefine;
+macro *currentExpandedMacro;
 uint24_t address;
 uint24_t totalsize;      // total size of assembled binary
 uint16_t global_errors;

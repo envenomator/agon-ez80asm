@@ -43,6 +43,7 @@ extern uint8_t filehandle[FILES];
 extern unsigned int linenumber;
 extern unsigned int pass;
 extern bool inMacroDefine;
+extern macro *currentExpandedMacro;
 extern uint24_t address;
 extern uint24_t totalsize;
 extern uint16_t global_errors;
