@@ -73,5 +73,7 @@ char *message[] = {
     "Argument is not a power of 2",
     "Maximum include files reached",
     "Maximum number of macros reached",
-    "Macro already defined"
+    "Macro already defined",
+    "Invalid macro name",
+    "Maximum number of macro arguments reached"
 };

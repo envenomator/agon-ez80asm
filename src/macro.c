@@ -39,7 +39,7 @@ macro * findMacro(char *name){
     else return NULL;
 }
 
-bool defineMacro(char *name, uint8_t argcount, char **arguments) {
+bool defineMacro(char *name, uint8_t argcount, char *arguments) {
     int len,i,j;
     int index;
     char *ptr;
@@ -60,10 +60,10 @@ bool defineMacro(char *name, uint8_t argcount, char **arguments) {
                 newmacro.arguments = (char **)agon_malloc(argcount * sizeof(char *)); // allocate array of char*
                 if(newmacro.arguments == NULL) return false;
                 for(j = 0; j < argcount; j++) {
-                    len = strlen(arguments[j]);
+                    len = strlen(arguments + j*MACROARGLENGTH);
                     ptr = agon_malloc(len+1);
                     if(ptr == NULL) return false;
-                    strcpy(ptr, arguments[j]);
+                    strcpy(ptr, arguments + j*MACROARGLENGTH);
                     newmacro.arguments[j] = ptr;
                 }
             }
@@ -88,7 +88,3 @@ bool defineMacro(char *name, uint8_t argcount, char **arguments) {
     return false;
 }
 
-void getMacroFilename(char *filename, char *name) {
-    strcpy(filename, "macro.");
-    strcat(filename, name);
-}

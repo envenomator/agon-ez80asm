@@ -9,6 +9,8 @@
 #include "./stdint.h"
 #include "mos-interface.h"
 
+char _fileBasename[FILENAMEMAXLENGTH];
+
 // return a base filename, stripping the given extension from it
 void remove_ext (char* myStr, char extSep, char pathSep) {
     char *lastExt, *lastPath;
@@ -221,13 +223,20 @@ void prepare_filenames(char *input_filename) {
     strcpy(filename[FILE_INPUT], input_filename);
     strcpy(filename[FILE_OUTPUT], input_filename);
     remove_ext(filename[FILE_OUTPUT], '.', '/');
-    strcpy(filename[FILE_LOCAL_LABELS], filename[FILE_OUTPUT]);
-    strcpy(filename[FILE_ANONYMOUS_LABELS],filename[FILE_OUTPUT]);
-    strcpy(filename[FILE_LISTING],filename[FILE_OUTPUT]);
+    strcpy(_fileBasename, filename[FILE_OUTPUT]);
+    strcpy(filename[FILE_LOCAL_LABELS], _fileBasename);
+    strcpy(filename[FILE_ANONYMOUS_LABELS],_fileBasename);
+    strcpy(filename[FILE_LISTING],_fileBasename);
     strcat(filename[FILE_OUTPUT], ".bin");
     strcat(filename[FILE_LOCAL_LABELS], ".lcllbls");
     strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
     strcat(filename[FILE_LISTING], ".lst");
+}
+
+void getMacroFilename(char *filename, char *macroname) {
+    strcpy(filename, _fileBasename);
+    strcat(filename, ".m.");
+    strcat(filename, macroname);
 }
 
 void closeAllFiles() {

@@ -17,5 +17,7 @@
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX                    64 // Token maximum length 
 #define MAXIMUM_MACROS               64 // Maximum number of macros
+#define MACROMAXARGS                  8 // Maximum arguments to a macro
+#define MACROARGLENGTH               32 // Maximum length of macro argument
 
 #endif // CONFIG_H

@@ -22,6 +22,7 @@ uint8_t getOperatorToken(tokentype *token, char *src);
 bool openFile(uint8_t *file, char *name, uint8_t mode);
 bool reOpenFile(uint8_t number, uint8_t mode);
 void prepare_filenames(char *input_filename);
+void getMacroFilename(char *filename, char *macroname);
 void closeAllFiles();
 bool openfiles(void);
 

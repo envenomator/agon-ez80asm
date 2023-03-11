@@ -13,6 +13,7 @@
 #include "filestack.h"
 #include "./stdint.h"
 #include "mos-interface.h"
+#include "macro.h"
 
 void empty_operand(operand *op) {
     op->reg = R_NONE;
@@ -483,7 +484,8 @@ void parseLine(char *src) {
                             state = PS_OP1;
                             break;
                     }
-                } else state = PS_DONE;
+                } 
+                else state = PS_DONE;
                 break;
             case PS_OP1:
                 argcount++;
@@ -1205,73 +1207,78 @@ uint24_t delta;
 
 void handle_asm_endmacro(void) {
     if(pass == 1) {
-        inmacro = false;
         mos_fclose(filehandle[FILE_MACRO]);
     }
+    inmacro = false;
 }
 
 void handle_asm_definemacro(void) {
-    /*
+    
     tokentype token;
-    uint8_t i;
     uint8_t argcount = 0;
-    char arglist[8][32];
-    char temp[32];
+    char arglist[MACROMAXARGS][MACROARGLENGTH];
     
     if(pass == 1) {
-        if(isEmpty(currentline.label)) {
-            error("Macro has no name");
-            return;
-        }
-        if(currentline.label[0] == '@') {
-            error("Illegal macro name");
-            return;
-        }
-        if(insertGlobalLabel(currentline.label, 0 , LABEL_MACRO) == false){
-            error(message[ERROR_CREATINGLABEL]);
-            return;
-        }
+        // Output any label at this address
+        definelabel(address);
+
         // parse arguments into array
         if(currentline.next) {
-            while(currentline.next) {
-                getLineToken(&token, currentline.next, ',');
-                if(notEmpty(token.start)) {
-                    strcpy(arglist[argcount], token.start);
-                    argcount++;
+            getLineToken(&token, currentline.next, ' ');
+            if(notEmpty(token.start)) {
+                if(findMacro(currentline.mnemonic) != 0) {
+                    error(message[ERROR_MACRODEFINED]);
+                    return;
                 }
-                if(token.terminator == ',') currentline.next = token.next;
-                else {
-                    if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-                    currentline.next = NULL; 
+                strcpy(currentline.mnemonic, token.start);
+                currentline.next = token.next;
+                if((token.terminator == ' ') || (token.terminator == '\t')) {
+                    while(currentline.next) {
+                        if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT]);
+                        getLineToken(&token, currentline.next, ',');
+                        if(notEmpty(token.start)) {
+                            strcpy(arglist[argcount], token.start);
+                            argcount++;
+                        }
+                        if(token.terminator == ',') currentline.next = token.next;
+                        else {
+                            if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+                            currentline.next = NULL; 
+                        }
+                    }
                 }
+                // record the macro to memory
+                defineMacro(currentline.mnemonic, argcount, (char *)arglist);
+                // define macro filename
+                getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
+                if(openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always)) {
+                    // start writing macro lines to file, keep file open until 'endmacro'
+                    //printf("Writing to file <<%s>>\n",filename[FILE_MACRO]);
+                }
+                else error("Error writing macro file");
             }
+            else error(message[ERROR_MACRONAME]);
         }
-        // define macro meta filename
-        strcpy(filename[FILE_MACRO], "macro-data.");
-        strcat(filename[FILE_MACRO], currentline.label);
-        if(openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always)) {
-            // write arguments to file
-            sprintf(temp, "%d\r\n", argcount);
-            agon_fputs(temp, filehandle[FILE_MACRO]);
-            for(i = 0; i < argcount ; i++) {
-                agon_fputs(arglist[i], filehandle[FILE_MACRO]);
-                agon_fputs("\r\n", filehandle[FILE_MACRO]);
-            }
-            mos_fclose(filehandle[FILE_MACRO]);
-        }
-        else {
-            error("Error writing macro data file");
-            return;
-        }
-        // define macro filename
-        strcpy(filename[FILE_MACRO], "macro.");
-        strcat(filename[FILE_MACRO], currentline.label);
-        if(openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always)) {
-            // start writing macro lines to file, keep file open until 'endmacro'
-        }
-        else error("Error writing macro file");
+        else error(message[ERROR_MACRONAME]);
     }
-    */
+    /*
+    if(pass == 1) {
+        printf("Macro name: <<%s>>\n",currentline.mnemonic);
+        printf("Marco args: %d\n",argcount);
+        for(i = 0; i < argcount; i++) {
+            printf("Macro  arg: <<%s>>\n",arglist[i]);
+        }
+    
+        macro *test = findMacro(currentline.mnemonic);
+        if(test) {
+            printf("Macro name: [[%s]]\n",test->name);
+            for(i = 0; i < test->argcount; i++) {
+                printf("macro  arg: [[%s]]\n",test->arguments[i]);
+            }
+        }
+        else printf("Not found in memory\n");
+    }
+    */    
     inmacro = true;
 }
 
