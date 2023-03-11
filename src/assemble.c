@@ -1208,6 +1208,7 @@ uint24_t delta;
 void handle_asm_endmacro(void) {
     if(pass == 1) {
         mos_fclose(filehandle[FILE_MACRO]);
+        //printf("Closing handle %d\n",filehandle[FILE_MACRO]);
     }
     inmacro = false;
 }
@@ -1253,7 +1254,7 @@ void handle_asm_definemacro(void) {
                 getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
                 if(openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always)) {
                     // start writing macro lines to file, keep file open until 'endmacro'
-                    //printf("Writing to file <<%s>>\n",filename[FILE_MACRO]);
+                    //printf("Writing to file <<%s>>, handle <<%d>>\n",filename[FILE_MACRO], filehandle[FILE_MACRO]);
                 }
                 else error("Error writing macro file");
             }
@@ -1369,7 +1370,10 @@ void processInstructions(char *line){
                 return;
             }
             else {
-                if(pass == 1) agon_fputs(line, filehandle[FILE_MACRO]); // emit entire line to macro file
+                if(pass == 1) {
+                    //printf("Output macro line to handle %d\n",filehandle[FILE_MACRO]);
+                    agon_fputs(line, FILE_MACRO); // emit entire line to macro file
+                }
             }
         }
         else handle_assembler_command();

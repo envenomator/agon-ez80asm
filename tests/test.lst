@@ -5,5 +5,9 @@ PC     Output            Line Source
 040001                   0004     ld b,c
 040001                   0005     endmacro
 040001                   0006 
-040001 78                0007     ld a,b
-040002                   0008 
+040001                   0007     macro geinig arg1,arg2,arg3
+040001                   0008     ld hl, $40000
+040001                   0009     endmacro
+040001                   0010 
+040001 78                0011     ld a,b
+040002                   0012 
