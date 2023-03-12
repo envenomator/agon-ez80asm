@@ -133,25 +133,7 @@ void writeAnonymousLabel(int24_t address) {
     agon_fwrite(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS);
     agon_fwrite(&scope, sizeof(scope), 1, FILE_ANONYMOUS_LABELS);
 }
-/*
-void readAnonymousLabel(void) {
-    int24_t address;
 
-    if(agon_fread(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS)) {
-        if(an_next.defined) {
-            an_prev.address = an_next.address;
-            an_prev.defined = true;
-        }
-        an_next.address = address;
-        an_next.defined = true;            
-    }
-    else { // last label already read
-        an_prev.address = an_next.address;
-        an_prev.defined = true;
-        an_next.defined = false;
-    }
-}
-*/
 void readAnonymousLabel(void) {
     int24_t address;
     uint8_t scope;
@@ -174,8 +156,6 @@ void readAnonymousLabel(void) {
         an_prev.defined = true;
         an_next.defined = false;
     }
-
-
 }
 
 bool insertLocalLabel(char *labelname, int24_t address) {
@@ -275,7 +255,7 @@ label *findLabel(char *name) {
     if(name[0] == '@') {
         
         if(((tolower(name[1]) == 'f') || (tolower(name[1]) == 'n')) && name[2] == 0) {
-            printf("NEXT: PD: %d ND: %d Scope: %d\n",an_prev.defined,an_next.defined,filestackCount());
+            //printf("NEXT: PD: %d ND: %d Scope: %d\n",an_prev.defined,an_next.defined,filestackCount());
             if(an_next.defined && an_next.scope == filestackCount()) {
                 an_return.address = an_next.address;
                 return &an_return;
@@ -283,7 +263,7 @@ label *findLabel(char *name) {
             else return NULL;
         }
         if(((tolower(name[1]) == 'b') || (tolower(name[1]) == 'p')) && name[2] == 0) {
-            printf("PREV: PD: %d ND: %d Scope: %d\n",an_prev.defined,an_next.defined,filestackCount());
+            //printf("PREV: PD: %d ND: %d Scope: %d\n",an_prev.defined,an_next.defined,filestackCount());
             if(an_prev.defined && an_prev.scope == filestackCount()) {
                 an_return.address = an_prev.address;
                 return &an_return;

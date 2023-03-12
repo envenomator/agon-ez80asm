@@ -30,7 +30,7 @@ void empty_operand(operand *op) {
 void advanceLocalLabel(void) {
     if(currentline.label[0] == '@') {
         if(currentline.label[1] == '@') {
-            readAnonymousLabel();
+            if(!MacroDefineState) readAnonymousLabel();
         }
     }
 }
@@ -434,7 +434,7 @@ void parseLine(char *src) {
                 break;
             case PS_LABEL:
                 strcpy(currentline.label,token.start);
-                if(!MacroDefineState) advanceLocalLabel();
+                advanceLocalLabel();
                 x = getLineToken(&token, token.next, ' ');
                 if(x) state = PS_COMMAND;
                 else {
@@ -546,7 +546,7 @@ void parseLine(char *src) {
 
 void definelabel(int24_t num){
     if(strlen(currentline.label)) {
-        printf("Define label: %s <<%s>> %x - scope %d\n",filename[FILE_CURRENT], currentline.label,num, filestackCount());
+        //printf("Define label: %s <<%s>> %x - scope %d\n",filename[FILE_CURRENT], currentline.label,num, filestackCount());
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
                 writeAnonymousLabel(num);
@@ -1373,7 +1373,7 @@ void expandMacroStart(macro *exp) {
     }
     lineNumberNeedsReset = true;
 }
-
+/*
 void debug_line(void) {
     printf("-- Debug line %d pass %d --\n", linenumber, pass);
     printf("Label:    <<%s>>\n",currentline.label);
@@ -1384,13 +1384,11 @@ void debug_line(void) {
     printf("Macro expand: %x\n", currentExpandedMacro);
     printf("Current file: <<%s>>\n", filename[FILE_CURRENT]);
 }
-
+*/
 void processInstructions(char *line){
     operandlist *list;
     uint8_t listitem;
     bool match;
-
-    //debug_line();
 
     if(pass == 1) {
         if(MacroDefineState) {
@@ -1437,7 +1435,6 @@ void processInstructions(char *line){
             clearLocalLabels();
             readLocalLabels();
         }
-        //if(pass == 2)            printLocalLabelTable();
     }
     return;
 }
@@ -1483,13 +1480,7 @@ bool assemble(void){
             parseLine(line);
             processInstructions(line);
             processDelayedLineNumberReset();
-        }/*
-        if(currentExpandedMacro) {
-            writeLocalLabels(); // end of local space
-            clearLocalLabels();
         }
-        currentExpandedMacro = NULL;
-        */
         if(filestackCount()) {
             writeLocalLabels(); // end of local space
             clearLocalLabels();
@@ -1505,8 +1496,6 @@ bool assemble(void){
     writeLocalLabels();
     if(global_errors) return false;
 
-    //printGlobalLabelTable();
-
     // Pass 2
     printf("Pass 2...\n\r");
     reOpenFile(FILE_INPUT, fa_read);
@@ -1520,24 +1509,15 @@ bool assemble(void){
     filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
     do {
         while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
-            //printf("Line <<%s>>\n",line);
             if(global_errors) return false;
             linenumber++;
             listStartLine(line);
             parseLine(line);
-            //debug_line();
             refreshlocalLabels();
             processInstructions(line);
             listEndLine(consolelist_enabled);
             processDelayedLineNumberReset();
-                        //debug_line();
-        }/*
-        if(currentExpandedMacro) {
-            clearLocalLabels();
-            readLocalLabels();
         }
-        currentExpandedMacro = NULL;
-        */
         if(filestackCount()) {
             currentExpandedMacro = NULL;
             clearLocalLabels();
@@ -1552,4 +1532,3 @@ bool assemble(void){
     } while(incfileState);
     return true;
 }
-
