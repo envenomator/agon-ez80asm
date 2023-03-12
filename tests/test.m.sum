@@ -1,3 +1,3 @@
-    ld a,arg1
-    ld b,arg2
-    add a,b
+    ld a, arg2
+    add a, arg1
+    endmacro

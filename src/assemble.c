@@ -479,7 +479,7 @@ void parseLine(char *src) {
                     break;
                 }
                 // Valid EZ80 instruction
-                if(!inMacroDefine) {
+                if(!MacroDefineState) {
                     switch(token.terminator) {
                         case ';':
                             getLineToken(&token, token.next, 0);
@@ -1071,14 +1071,6 @@ void handle_asm_equ(void) {
         if(notEmpty(token.start)) {
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
             if(pass == 1) definelabel(getLabelValue(token.start));
-            /*
-            if(pass == 1) definelabel(0);
-            if(pass == 2) {
-                lbl = findLabel(currentline.label);
-                if(lbl) lbl->address = getLabelValue(token.start);
-                else error(message[ERROR_MISSINGLABEL]);
-            }
-            */
         }
         else error(message[ERROR_MISSINGOPERAND]);
     }
@@ -1105,7 +1097,7 @@ void handle_asm_org(void) {
     if(newaddress >= address) {
         if(pass == 1) {
             // Output label at this address
-            definelabel(address); // set address to current line
+            definelabel(address);
         }
         address = newaddress;
     }
@@ -1126,8 +1118,11 @@ void handle_asm_include(void) {
             filehandle[FILE_CURRENT] = mos_fopen(token.start+1, fa_read);
             strcpy(filename[FILE_CURRENT], token.start+1);
             if(filehandle[FILE_CURRENT] == 0) {
-                filestackPop(&fsi);
                 error(message[ERROR_INCLUDEFILE]);
+                filestackPop(&fsi);
+                linenumber = fsi.linenumber;
+                filehandle[FILE_CURRENT] = fsi.fp;
+                strcpy(filename[FILE_CURRENT], fsi.filename);
             }
             lineNumberNeedsReset = true;
         }
@@ -1136,8 +1131,6 @@ void handle_asm_include(void) {
     }
     else error(message[ERROR_MISSINGOPERAND]);
 }
-
-
 
 void handle_asm_blk(uint8_t width) {
     uint16_t num;
@@ -1152,14 +1145,12 @@ void handle_asm_blk(uint8_t width) {
     if(currentline.next) {
         getLineToken(&token, currentline.next, ',');
         if(notEmpty(token.start)) {
-            //num = str2num(token.start,true);
             num = getLabelValue(token.start);
 
             if(token.terminator == ',') {
                 getLineToken(&token, token.next, 0);
                 if(notEmpty(token.start)) {
                     if(token.start[0] == '\'') val = getAsciiValue(token.start);
-                    //else val = str2num(token.start,true);
                     else val = getLabelValue(token.start);
                 }
                 else error(message[ERROR_MISSINGOPERAND]);
@@ -1220,9 +1211,8 @@ uint24_t delta;
 void handle_asm_endmacro(void) {
     if(pass == 1) {
         mos_fclose(filehandle[FILE_MACRO]);
-        //printf("Closing handle %d\n",filehandle[FILE_MACRO]);
     }
-    inMacroDefine = false;
+    MacroDefineState = false;
 }
 
 void handle_asm_definemacro(void) {
@@ -1232,9 +1222,6 @@ void handle_asm_definemacro(void) {
     char arglist[MACROMAXARGS][MACROARGLENGTH];
     
     if(pass == 1) {
-        // Output any label at this address
-        definelabel(address);
-
         // parse arguments into array
         if(currentline.next) {
             getLineToken(&token, currentline.next, ' ');
@@ -1264,35 +1251,14 @@ void handle_asm_definemacro(void) {
                 defineMacro(currentline.mnemonic, argcount, (char *)arglist);
                 // define macro filename
                 getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
-                if(openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always)) {
-                    // start writing macro lines to file, keep file open until 'endmacro'
-                    //printf("Writing to file <<%s>>, handle <<%d>>\n",filename[FILE_MACRO], filehandle[FILE_MACRO]);
-                }
-                else error("Error writing macro file");
+                if(!openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always))
+                    error("Error writing macro file");
             }
             else error(message[ERROR_MACRONAME]);
         }
         else error(message[ERROR_MACRONAME]);
     }
-    /*
-    if(pass == 1) {
-        printf("Macro name: <<%s>>\n",currentline.mnemonic);
-        printf("Marco args: %d\n",argcount);
-        for(i = 0; i < argcount; i++) {
-            printf("Macro  arg: <<%s>>\n",arglist[i]);
-        }
-    
-        macro *test = findMacro(currentline.mnemonic);
-        if(test) {
-            printf("Macro name: [[%s]]\n",test->name);
-            for(i = 0; i < test->argcount; i++) {
-                printf("macro  arg: [[%s]]\n",test->arguments[i]);
-            }
-        }
-        else printf("Not found in memory\n");
-    }
-    */    
-    inMacroDefine = true;
+    MacroDefineState = true;
 }
 
 void handle_assembler_command(void) {
@@ -1353,51 +1319,45 @@ void handle_assembler_command(void) {
 void expandMacroStart(macro *exp) {    
     tokentype token;
     uint8_t argcount = 0;
-    //uint8_t i;
     filestackitem fsi;
 
+    if(pass == 1) definelabel(address);
+
     currentExpandedMacro = currentline.current_macro;
-    if(pass == 2) {
-        // parse arguments into given macro substitution space
-        if(currentline.next) {
-            while(currentline.next) {
-                if(argcount >= exp->argcount) {
-                    error(message[ERROR_MACROARGCOUNT]);
-                    return;
-                }
-                getLineToken(&token, currentline.next, ',');
-                if(notEmpty(token.start)) {
-                    strcpy(exp->substitutions[argcount], token.start);
-                    argcount++;
-                }
-                if(token.terminator == ',') currentline.next = token.next;
-                else {
-                    if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-                    currentline.next = NULL; 
-                }
+    // parse arguments into given macro substitution space
+    if(currentline.next) {
+        while(currentline.next) {
+            if(argcount >= exp->argcount) {
+                error(message[ERROR_MACROARGCOUNT]);
+                return;
+            }
+            getLineToken(&token, currentline.next, ',');
+            if(notEmpty(token.start)) {
+                strcpy(exp->substitutions[argcount], token.start);
+                argcount++;
+            }
+            if(token.terminator == ',') currentline.next = token.next;
+            else {
+                if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+                currentline.next = NULL; 
             }
         }
-        //printf("Macro expansion requested for \"%s\"\n",currentline.current_macro->name);
-        //printf("Arguments given: %d\n",argcount);
-        if(argcount != exp->argcount) error("Incorrect number of macro arguments");
-        //for(i = 0; i < argcount; i++) {
-        //    printf("Arg: <<%s>> replaced by <<%s>>\n",exp->arguments[i], exp->substitutions[i]);
-        //}
-
-        // push current file to the stack
-        fsi.linenumber = linenumber;
-        fsi.fp = filehandle[FILE_CURRENT];
-        strcpy(fsi.filename, filename[FILE_CURRENT]);
-        filestackPush(&fsi);
-        // Macro filename to read
-        getMacroFilename(filename[FILE_CURRENT], exp->name);
-        filehandle[FILE_CURRENT] = mos_fopen(filename[FILE_CURRENT], fa_read);
-        if(filehandle[FILE_CURRENT] == 0) {
-            filestackPop(&fsi);
-            error("Error opening macro file");
-        }
-        lineNumberNeedsReset = true;
     }
+    if(argcount != exp->argcount) error(message[ERROR_MACROINCORRECTARG]);
+    // push current file to the stack
+    fsi.linenumber = linenumber;
+    fsi.fp = filehandle[FILE_CURRENT];
+    strcpy(fsi.filename, filename[FILE_CURRENT]);
+    filestackPush(&fsi);
+    // Macro filename to read
+    getMacroFilename(filename[FILE_CURRENT], exp->name);
+    filehandle[FILE_CURRENT] = mos_fopen(filename[FILE_CURRENT], fa_read);
+    if(filehandle[FILE_CURRENT] == 0) {
+        filestackPop(&fsi);
+        error(message[ERROR_MACROFILEWRITE]);
+    }
+    lineNumberNeedsReset = true;
+
 }
 
 void processInstructions(char *line){
@@ -1405,18 +1365,22 @@ void processInstructions(char *line){
     uint8_t listitem;
     bool match;
 
-    if(!inMacroDefine) {
-        // return on empty lines
-        if(isEmpty(currentline.mnemonic)) {
-            // check if there is a single label on a line in during pass 1
-            if(pass == 1) definelabel(address);
-            return; // valid line, but empty
+    if(pass == 1) {
+        if(MacroDefineState) {
+            agon_fputs(line, FILE_MACRO);
+        }
+        else {
+            if(isEmpty(currentline.mnemonic)) {
+                // check if there is a single label on a line in during pass 1
+                if(pass == 1) definelabel(address);
+                return;
+            }
         }
     }
 
     if(currentline.current_instruction) {
         if(currentline.current_instruction->type == EZ80) {
-            if(!inMacroDefine) {
+            if(!MacroDefineState) {
                 // process this mnemonic by applying the instruction list as a filter to the operand-set
                 list = currentline.current_instruction->list;
                 match = false;
@@ -1431,12 +1395,6 @@ void processInstructions(char *line){
                 if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
                 return;
             }
-            else {
-                if(pass == 1) {
-                    //printf("Output macro line to handle %d\n",filehandle[FILE_MACRO]);
-                    agon_fputs(line, FILE_MACRO); // emit entire line to macro file
-                }
-            }
         }
         else handle_assembler_command();
     }
@@ -1450,7 +1408,7 @@ void passInitialize(uint8_t passnumber) {
     linenumber = 0;
     address = START_ADDRESS;
     totalsize = 0;
-    inMacroDefine = false;
+    MacroDefineState = false;
     // init the file stack and push the primary input file
     filestackInit();
 }
@@ -1466,7 +1424,7 @@ void processDelayedLineNumberReset(void) {
 bool assemble(void){
     char line[LINEMAX];
     filestackitem fsitem;
-    bool incfiles;
+    bool incfileState;
 
     global_errors = 0;
 
@@ -1483,33 +1441,27 @@ bool assemble(void){
             parseLine(line);
             processInstructions(line);
             processDelayedLineNumberReset();
-
-            //printLocalLabelTable();
-
         }
         if(filestackCount()) {
             mos_fclose(filehandle[FILE_CURRENT]);
-            incfiles = filestackPop(&fsitem);
+            incfileState = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
             filehandle[FILE_CURRENT] = fsitem.fp;
             strcpy(filename[FILE_CURRENT], fsitem.filename);
         }
         else {
-            incfiles = false;
+            incfileState = false;
             currentExpandedMacro = NULL;
         }
-    }
-    while(incfiles);
+        if(global_errors) return false;
+    } while(incfileState);
     writeLocalLabels();
     if(global_errors) return false;
 
     // Pass 2
     printf("Pass 2...\n\r");
-    //rewind(filehandle[FILE_INPUT]);
     reOpenFile(FILE_INPUT, fa_read);
-    //rewind(filehandle[FILE_LOCAL_LABELS]);
     reOpenFile(FILE_LOCAL_LABELS, fa_read);
-    //rewind(filehandle[FILE_ANONYMOUS_LABELS]);
     reOpenFile(FILE_ANONYMOUS_LABELS, fa_read);
     passInitialize(2);
     listInit(consolelist_enabled);
@@ -1526,23 +1478,19 @@ bool assemble(void){
             processInstructions(line);
             listEndLine(consolelist_enabled);
             processDelayedLineNumberReset();
-
-            //printLocalLabelTable();
         }
         if(filestackCount()) {
             mos_fclose(filehandle[FILE_CURRENT]);
-            incfiles = filestackPop(&fsitem);
+            incfileState = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
             filehandle[FILE_CURRENT] = fsitem.fp;
             strcpy(filename[FILE_CURRENT], fsitem.filename);
         }
         else {
-            incfiles = false;
+            incfileState = false;
             currentExpandedMacro = NULL;
         }
-    }
-    while(incfiles);
-    
+    } while(incfileState);
     return true;
 }
 

@@ -42,7 +42,7 @@ extern uint8_t filehandle[FILES];
 
 extern unsigned int linenumber;
 extern unsigned int pass;
-extern bool inMacroDefine;
+extern bool MacroDefineState;
 extern macro *currentExpandedMacro;
 extern uint24_t address;
 extern uint24_t totalsize;
@@ -102,7 +102,9 @@ enum {
     ERROR_MAXMACROS,
     ERROR_MACRODEFINED,
     ERROR_MACRONAME,
-    ERROR_MACROARGCOUNT
+    ERROR_MACROARGCOUNT,
+    ERROR_MACROFILEWRITE,
+    ERROR_MACROINCORRECTARG
 };
 // Error messages
 extern char *message[];

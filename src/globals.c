@@ -19,7 +19,7 @@ bool lineNumberNeedsReset;
 //FILE *file_list;
 unsigned int linenumber;
 unsigned int pass;
-bool inMacroDefine;
+bool MacroDefineState;
 macro *currentExpandedMacro;
 uint24_t address;
 uint24_t totalsize;      // total size of assembled binary
@@ -76,5 +76,7 @@ char *message[] = {
     "Maximum number of macros reached",
     "Macro already defined",
     "Invalid macro name",
-    "Maximum number of macro arguments reached"
+    "Maximum number of macro arguments reached",
+    "Error writing to macro file",
+    "Incorrect number of macro arguments"
 };
