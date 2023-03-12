@@ -1442,6 +1442,7 @@ bool assemble(void){
             processInstructions(line);
             processDelayedLineNumberReset();
         }
+        currentExpandedMacro = NULL;
         if(filestackCount()) {
             mos_fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
@@ -1451,7 +1452,7 @@ bool assemble(void){
         }
         else {
             incfileState = false;
-            currentExpandedMacro = NULL;
+            //currentExpandedMacro = NULL;
         }
         if(global_errors) return false;
     } while(incfileState);
@@ -1479,6 +1480,7 @@ bool assemble(void){
             listEndLine(consolelist_enabled);
             processDelayedLineNumberReset();
         }
+        currentExpandedMacro = NULL;
         if(filestackCount()) {
             mos_fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
@@ -1488,7 +1490,7 @@ bool assemble(void){
         }
         else {
             incfileState = false;
-            currentExpandedMacro = NULL;
+            //currentExpandedMacro = NULL;
         }
     } while(incfileState);
     return true;

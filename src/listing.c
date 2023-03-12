@@ -10,8 +10,9 @@ uint24_t _listAddress;
 uint8_t _listObjects[256];
 uint8_t _listObjectCount;
 bool _listFirstline = true;
+bool _expandedmacro;
 
-char _listHeader[] = "PC     Output            Line Source\n\r";
+char _listHeader[] = "PC     Output            Line   Source\n\r";
 
 char buffer[LINEMAX + 32];
 
@@ -29,6 +30,7 @@ void listStartLine(char *line) {
     trimRight(_listLine);
     _listAddress = address;
     _listObjectCount = 0;
+    _expandedmacro = (currentExpandedMacro != NULL);
 }
 
 /*
@@ -99,7 +101,7 @@ void listEndLine(bool console) {
             }
         }
         if(lines == 0) {
-            sprintf(buffer, "%04d %s\r\n",linenumber, _listLine);
+            sprintf(buffer, "%04d %c %s\r\n",linenumber, (_expandedmacro)?'E':' ', _listLine);
             agon_fputs(buffer, FILE_LISTING);
             if(console) printf("%s",buffer);
         }
