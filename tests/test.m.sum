@@ -1,3 +1,2 @@
     ld a, arg2
     add a, arg1
-    endmacro

@@ -1251,6 +1251,7 @@ void handle_asm_definemacro(void) {
                 defineMacro(currentline.mnemonic, argcount, (char *)arglist);
                 // define macro filename
                 getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
+                addFileDeleteList(filename[FILE_MACRO]);
                 if(!openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always))
                     error("Error writing macro file");
             }
@@ -1367,7 +1368,7 @@ void processInstructions(char *line){
 
     if(pass == 1) {
         if(MacroDefineState) {
-            agon_fputs(line, FILE_MACRO);
+            if(strcasecmp(currentline.mnemonic, ENDMACROCMD)) agon_fputs(line, FILE_MACRO);
         }
         else {
             if(isEmpty(currentline.mnemonic)) {

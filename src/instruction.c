@@ -687,7 +687,7 @@ instruction instructions[] = {
     {"ds",       ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
     {"dw",       ASSEMBLER, ASM_DW, 0, NULL, ASM_ARG_LIST},
     {"ei",       EZ80, 0, sizeof(operands_ei)/sizeof(operandlist), operands_ei},
-    {"endmacro", ASSEMBLER, ASM_MACRO_END, 0, NULL, ASM_ARG_SINGLE},
+    {ENDMACROCMD,ASSEMBLER, ASM_MACRO_END, 0, NULL, ASM_ARG_SINGLE},
     {"equ",      ASSEMBLER, ASM_EQU, 0, NULL, ASM_ARG_SINGLE},
     {"ex",       EZ80, 0, sizeof(operands_ex)/sizeof(operandlist), operands_ex},
     {"exx",      EZ80, 0, sizeof(operands_exx)/sizeof(operandlist), operands_exx},

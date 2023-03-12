@@ -25,6 +25,8 @@ void prepare_filenames(char *input_filename);
 void getMacroFilename(char *filename, char *macroname);
 void closeAllFiles();
 bool openfiles(void);
+void addFileDeleteList(char *name);
+void deleteFiles(void);
 
 char *agon_fgets(char *s, int size, uint8_t fileid);
 int agon_fputs(char *s, uint8_t fileid);

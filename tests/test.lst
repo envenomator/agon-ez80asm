@@ -1,17 +1,23 @@
-PC     Output            Line   Source
-040000                   0001       include "tests/test.inc"
-040000                   0001       macro sum arg1, arg2
-040000                   0002       ld a, arg2
-040000                   0003       add a, arg1
-040000                   0004       endmacro
-040000                   0002   start:
-040000 78                0003       ld a,b
-040001                   0004   @@:
-040001 21 01 00 04       0005       ld hl, @p
-040005                   0006   
-040005                   0007       sum 10,15
-040005 3E 0F             0001 E     ld a, arg2
-040007 C6 0A             0002 E     add a, arg1
-040009                   0003 E     endmacro
-040009                   0008   
-040009 78                0009       ld a,b
+PC     Output            Line Source
+040000                   0001     include "tests/test.inc"
+040000                   0001     macro sum arg1, arg2
+040000                   0002     ld a, arg2
+040000                   0003     add a, arg1
+040000                   0004     endmacro
+040000                   0002 start:
+040000 78                0003     ld a,b
+040001                   0004 @@:
+040001 21 01 00 04       0005     ld hl, @p
+040005                   0006 
+040005                   0007     macro negative arg1,arg2
+040005                   0008     ld a, arg1
+040005                   0009     endmacro
+040005                   0010 
+040005                   0011     sum 10,15
+040005 3E 0F             ----     ld a, arg2
+040007 C6 0A             ----     add a, arg1
+040009                   0012 
+040009 78                0013     ld a,b
+04000A                   0014     negative 10,15
+04000A 3E 0A             ----     ld a, arg1
+04000C                   0015 

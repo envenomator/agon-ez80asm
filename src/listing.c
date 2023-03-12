@@ -12,7 +12,7 @@ uint8_t _listObjectCount;
 bool _listFirstline = true;
 bool _expandedmacro;
 
-char _listHeader[] = "PC     Output            Line   Source\n\r";
+char _listHeader[] = "PC     Output            Line Source\n\r";
 
 char buffer[LINEMAX + 32];
 
@@ -101,7 +101,10 @@ void listEndLine(bool console) {
             }
         }
         if(lines == 0) {
-            sprintf(buffer, "%04d %c %s\r\n",linenumber, (_expandedmacro)?'E':' ', _listLine);
+            if(_expandedmacro)
+                sprintf(buffer, "---- %s\r\n",_listLine);
+            else
+                sprintf(buffer, "%04d %s\r\n",linenumber, _listLine);
             agon_fputs(buffer, FILE_LISTING);
             if(console) printf("%s",buffer);
         }

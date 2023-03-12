@@ -227,10 +227,12 @@ void prepare_filenames(char *input_filename) {
     strcpy(filename[FILE_LOCAL_LABELS], _fileBasename);
     strcpy(filename[FILE_ANONYMOUS_LABELS],_fileBasename);
     strcpy(filename[FILE_LISTING],_fileBasename);
+    strcpy(filename[FILE_DELETELIST],_fileBasename);
     strcat(filename[FILE_OUTPUT], ".bin");
     strcat(filename[FILE_LOCAL_LABELS], ".lcllbls");
     strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
     strcat(filename[FILE_LISTING], ".lst");
+    strcat(filename[FILE_DELETELIST], ".del");
 }
 
 void getMacroFilename(char *filename, char *macroname) {
@@ -239,15 +241,33 @@ void getMacroFilename(char *filename, char *macroname) {
     strcat(filename, macroname);
 }
 
+void addFileDeleteList(char *name) {
+    agon_fputs(name, FILE_DELETELIST);
+    agon_fputs("\n", FILE_DELETELIST);
+}
+
+void deleteFiles(void) {
+    char line[LINEMAX];
+    mos_del(filename[FILE_LOCAL_LABELS]);
+    mos_del(filename[FILE_ANONYMOUS_LABELS]);
+
+    // delete all files listed for cleanup
+    if(reOpenFile(FILE_DELETELIST, fa_read)) {
+        while (agon_fgets(line, sizeof(line), FILE_DELETELIST)){
+            trimRight(line);
+            //mos_del(line);
+        }
+    }
+    //mos_del(filename[FILE_DELETELIST]);
+}
+
 void closeAllFiles() {
-   // Cleanup
     if(filehandle[FILE_INPUT]) mos_fclose(filehandle[FILE_INPUT]);
     if(filehandle[FILE_OUTPUT]) mos_fclose(filehandle[FILE_OUTPUT]);
     if(filehandle[FILE_LOCAL_LABELS]) mos_fclose(filehandle[FILE_LOCAL_LABELS]);
     if(filehandle[FILE_ANONYMOUS_LABELS]) mos_fclose(filehandle[FILE_ANONYMOUS_LABELS]);
     if(filehandle[FILE_LISTING]) mos_fclose(filehandle[FILE_LISTING]);
-    mos_del(filename[FILE_LOCAL_LABELS]);
-    mos_del(filename[FILE_ANONYMOUS_LABELS]);
+    deleteFiles();
 }
 
 bool openfiles(void) {
@@ -258,6 +278,7 @@ bool openfiles(void) {
     status = status && openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], fa_write | fa_create_always);
     status = status && openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], fa_write | fa_create_always);
     status = status && openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], fa_write | fa_create_always);
+    status = status && openFile(&filehandle[FILE_DELETELIST], filename[FILE_DELETELIST], fa_write | fa_create_always);
     if(!status) closeAllFiles();
     return status;
 }

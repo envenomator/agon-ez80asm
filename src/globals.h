@@ -14,7 +14,8 @@ enum {
     FILE_LOCAL_LABELS,
     FILE_ANONYMOUS_LABELS,
     FILE_LISTING,
-    FILE_MACRO
+    FILE_MACRO,
+    FILE_DELETELIST
 };
 
 typedef struct {
