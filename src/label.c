@@ -26,6 +26,15 @@ void printLocalLabelTable(void) {
     printf("\r\nLocal table (%d entries):\n\r",localLabelCounter);
     for(i = 0; i < localLabelCounter; i++) printf("%08x - %s\n\r", localLabelTable[i].address, localLabelTable[i].name);
 }
+
+void printGlobalLabelTable(void) {
+    int i;
+    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++) {
+        if(globalLabelTable[i]) {
+            printf("%s - %x\n", globalLabelTable[i]->name, globalLabelTable[i]->address);
+        }
+    }
+}
 uint16_t getGlobalLabelCount(void) {
     return globalLabelCounter;
 }

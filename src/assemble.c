@@ -457,6 +457,7 @@ void parseLine(char *src) {
                     // check if a defined macro exists, before erroring out
                     currentline.current_macro = findMacro(currentline.mnemonic);
                     if(currentline.current_macro) {
+                        //printf("Parse Macro cmd found: %s - instruction: %x\n", currentline.current_macro->name, currentline.current_instruction);
                         currentline.next = token.next;
                         state = PS_DONE;
                         break;
@@ -500,7 +501,7 @@ void parseLine(char *src) {
             case PS_OP1:
                 argcount++;
                 if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-
+                //printf("Parse op %d <<%s>>\n", argcount, token.start);
                 if(argcount == 1) {
                     strcpy(currentline.operand1, token.start);
                     parse_operand(currentline.operand1, &operand1);
@@ -545,6 +546,7 @@ void parseLine(char *src) {
 
 void definelabel(int24_t num){
     if(strlen(currentline.label)) {
+        printf("Define label: %s <<%s>> %x\n",filename[FILE_CURRENT], currentline.label,num);
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
                 writeAnonymousLabel(num);
@@ -1107,6 +1109,16 @@ void handle_asm_org(void) {
 void handle_asm_include(void) {
     tokentype token;
     filestackitem fsi;
+
+    if(pass == 1) {
+        writeLocalLabels(); // new local label space inside macro expansion
+        clearLocalLabels();
+    }
+    if(pass == 2) {
+        clearLocalLabels();
+        readLocalLabels();
+    }
+
     if(currentline.next) {
         getLineToken(&token, currentline.next, 0);
         if(token.start[0] == '\"') {
@@ -1223,7 +1235,7 @@ void handle_asm_definemacro(void) {
     
     if(pass == 1) {
         definelabel(address);
-        
+
         // parse arguments into array
         if(currentline.next) {
             getLineToken(&token, currentline.next, ' ');
@@ -1360,7 +1372,17 @@ void expandMacroStart(macro *exp) {
         error(message[ERROR_MACROFILEWRITE]);
     }
     lineNumberNeedsReset = true;
+}
 
+void debug_line(void) {
+    printf("-- Debug line %d pass %d --\n", linenumber, pass);
+    printf("Label:    <<%s>>\n",currentline.label);
+    printf("Mnemonic: <<%s>>\n",currentline.mnemonic);
+    printf("Op1:      <<%s>>\n",currentline.operand1);
+    printf("Op2:      <<%s>>\n",currentline.operand2);
+    printf("Macro def:    %x\n", MacroDefineState);
+    printf("Macro expand: %x\n", currentExpandedMacro);
+    printf("Current file: <<%s>>\n", filename[FILE_CURRENT]);
 }
 
 void processInstructions(char *line){
@@ -1368,9 +1390,12 @@ void processInstructions(char *line){
     uint8_t listitem;
     bool match;
 
+    //debug_line();
+
     if(pass == 1) {
         if(MacroDefineState) {
             if(strcasecmp(currentline.mnemonic, ENDMACROCMD)) agon_fputs(line, FILE_MACRO);
+            if(notEmpty(currentline.label) && (currentline.label[0] != '@')) error("No global labels allowed in macro definition");
         }
         else {
             if(isEmpty(currentline.mnemonic)) {
@@ -1385,6 +1410,7 @@ void processInstructions(char *line){
         if(currentline.current_instruction->type == EZ80) {
             if(!MacroDefineState) {
                 // process this mnemonic by applying the instruction list as a filter to the operand-set
+                //printf("Mnemonic: %s - OpA: %s - OpB: %s\n",currentline.mnemonic, currentline.operand1, currentline.operand2);
                 list = currentline.current_instruction->list;
                 match = false;
                 for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
@@ -1401,7 +1427,18 @@ void processInstructions(char *line){
         }
         else handle_assembler_command();
     }
-    if(currentline.current_macro) expandMacroStart(currentline.current_macro);
+    if(currentline.current_macro) {
+        expandMacroStart(currentline.current_macro);
+        if(pass == 1) {
+            writeLocalLabels(); // new local label space inside macro expansion
+            clearLocalLabels();
+        }
+        if(pass == 2) {
+            clearLocalLabels();
+            readLocalLabels();
+        }
+        //if(pass == 2)            printLocalLabelTable();
+    }
     return;
 }
 
@@ -1412,7 +1449,7 @@ void passInitialize(uint8_t passnumber) {
     address = START_ADDRESS;
     totalsize = 0;
     MacroDefineState = false;
-    // init the file stack and push the primary input file
+    currentExpandedMacro = NULL;
     filestackInit();
 }
 
@@ -1440,27 +1477,34 @@ bool assemble(void){
     passInitialize(1);
     do {
         while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
+            if(global_errors) return false;
             linenumber++;
             parseLine(line);
             processInstructions(line);
             processDelayedLineNumberReset();
+        }/*
+        if(currentExpandedMacro) {
+            writeLocalLabels(); // end of local space
+            clearLocalLabels();
         }
         currentExpandedMacro = NULL;
+        */
         if(filestackCount()) {
+            writeLocalLabels(); // end of local space
+            clearLocalLabels();
+            currentExpandedMacro = NULL;
             mos_fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
             filehandle[FILE_CURRENT] = fsitem.fp;
             strcpy(filename[FILE_CURRENT], fsitem.filename);
         }
-        else {
-            incfileState = false;
-            //currentExpandedMacro = NULL;
-        }
-        if(global_errors) return false;
+        else incfileState = false;
     } while(incfileState);
     writeLocalLabels();
     if(global_errors) return false;
+
+    //printGlobalLabelTable();
 
     // Pass 2
     printf("Pass 2...\n\r");
@@ -1475,26 +1519,35 @@ bool assemble(void){
     filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
     do {
         while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
+            //printf("Line <<%s>>\n",line);
+            if(global_errors) return false;
             linenumber++;
             listStartLine(line);
             parseLine(line);
+            //debug_line();
             refreshlocalLabels();
             processInstructions(line);
             listEndLine(consolelist_enabled);
             processDelayedLineNumberReset();
+                        //debug_line();
+        }/*
+        if(currentExpandedMacro) {
+            clearLocalLabels();
+            readLocalLabels();
         }
         currentExpandedMacro = NULL;
+        */
         if(filestackCount()) {
+            currentExpandedMacro = NULL;
+            clearLocalLabels();
+            readLocalLabels();
             mos_fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
             linenumber = fsitem.linenumber;
             filehandle[FILE_CURRENT] = fsitem.fp;
             strcpy(filename[FILE_CURRENT], fsitem.filename);
         }
-        else {
-            incfileState = false;
-            //currentExpandedMacro = NULL;
-        }
+        else incfileState = false;
     } while(incfileState);
     return true;
 }
