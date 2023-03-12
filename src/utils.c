@@ -255,10 +255,10 @@ void deleteFiles(void) {
     if(reOpenFile(FILE_DELETELIST, fa_read)) {
         while (agon_fgets(line, sizeof(line), FILE_DELETELIST)){
             trimRight(line);
-            //mos_del(line);
+            mos_del(line);
         }
     }
-    //mos_del(filename[FILE_DELETELIST]);
+    mos_del(filename[FILE_DELETELIST]);
 }
 
 void closeAllFiles() {

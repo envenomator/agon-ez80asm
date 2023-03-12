@@ -1222,6 +1222,8 @@ void handle_asm_definemacro(void) {
     char arglist[MACROMAXARGS][MACROARGLENGTH];
     
     if(pass == 1) {
+        definelabel(address);
+        
         // parse arguments into array
         if(currentline.next) {
             getLineToken(&token, currentline.next, ' ');

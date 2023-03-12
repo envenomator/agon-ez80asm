@@ -9,7 +9,7 @@ PC     Output            Line Source
 040001                   0004 @@:
 040001 21 01 00 04       0005     ld hl, @p
 040005                   0006 
-040005                   0007     macro negative arg1,arg2
+040005                   0007 me:  macro negative arg1,arg2
 040005                   0008     ld a, arg1
 040005                   0009     endmacro
 040005                   0010 
@@ -20,4 +20,4 @@ PC     Output            Line Source
 040009 78                0013     ld a,b
 04000A                   0014     negative 10,15
 04000A 3E 0A             ----     ld a, arg1
-04000C                   0015 
+04000C 21 05 00 04       0015     ld hl,me

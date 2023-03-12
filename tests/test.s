@@ -4,7 +4,7 @@ start:
 @@:
     ld hl, @p
 
-    macro negative arg1,arg2
+me:  macro negative arg1,arg2
     ld a, arg1
     endmacro
 
@@ -12,4 +12,4 @@ start:
     
     ld a,b
     negative 10,15
-
+    ld hl,me
