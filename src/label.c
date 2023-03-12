@@ -210,6 +210,10 @@ bool insertGlobalLabel(char *labelname, int24_t address){
     int index,i,try,len;
     label *tmp;
 
+    if(findGlobalLabel(labelname)) {
+        error(message[ERROR_LABELDEFINED]);
+        return false;
+    }
     len = strlen(labelname);
 
     // allocate space in buffer for label struct

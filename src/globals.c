@@ -11,12 +11,6 @@ uint8_t filehandle[FILES];
 
 bool consolelist_enabled;
 bool lineNumberNeedsReset;
-//char currentInputFilename[FILENAMEMAXLENGTH];
-//FILE *file_currentinput;
-//FILE *file_bin;
-//FILE *file_locals;
-//FILE *file_anon;
-//FILE *file_list;
 unsigned int linenumber;
 unsigned int pass;
 bool MacroDefineState;

@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "macro.h": "c"
+        "macro.h": "c",
+        "str2num.h": "c"
     }
 }
