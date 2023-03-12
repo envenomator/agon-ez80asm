@@ -17,6 +17,7 @@ typedef struct {
 } label;
 
 typedef struct {
+    uint8_t scope;
     bool defined;
     int24_t address;
 } anonymouslabeltype;

@@ -1,5 +1,11 @@
     include "tests/test.inc"
 
     ld a,b
-@1:
-    jp @1
+    jp @n
+@@:
+    jp @p
+    jp @n
+@@:
+    jp @p
+
+

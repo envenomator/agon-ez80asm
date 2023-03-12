@@ -6,6 +6,7 @@
 #include "utils.h"
 #include "globals.h"
 #include "./stdint.h"
+#include "filestack.h"
 
 // memory for anonymous labels
 anonymouslabeltype an_prev;
@@ -126,9 +127,13 @@ void readLocalLabels(void) {
 }
 
 void writeAnonymousLabel(int24_t address) {
-    agon_fwrite(&address, 1, sizeof(address), FILE_ANONYMOUS_LABELS);
-}
+    uint8_t scope;
 
+    scope = filestackCount();
+    agon_fwrite(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS);
+    agon_fwrite(&scope, sizeof(scope), 1, FILE_ANONYMOUS_LABELS);
+}
+/*
 void readAnonymousLabel(void) {
     int24_t address;
 
@@ -145,6 +150,32 @@ void readAnonymousLabel(void) {
         an_prev.defined = true;
         an_next.defined = false;
     }
+}
+*/
+void readAnonymousLabel(void) {
+    int24_t address;
+    uint8_t scope;
+
+    if(agon_fread(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS)) {
+        agon_fread(&scope, sizeof(bool), 1, FILE_ANONYMOUS_LABELS);
+
+        if(an_next.defined) {
+            an_prev.address = an_next.address;
+            an_prev.scope = an_next.scope;
+            an_prev.defined = true;
+        }
+        an_next.address = address;
+        an_next.scope = scope;            
+        an_next.defined = true;
+    }
+    else { // last label already read
+        an_prev.address = an_next.address;
+        an_prev.scope = an_next.scope;
+        an_prev.defined = true;
+        an_next.defined = false;
+    }
+
+
 }
 
 bool insertLocalLabel(char *labelname, int24_t address) {
@@ -244,14 +275,16 @@ label *findLabel(char *name) {
     if(name[0] == '@') {
         
         if(((tolower(name[1]) == 'f') || (tolower(name[1]) == 'n')) && name[2] == 0) {
-            if(an_next.defined) {
+            printf("NEXT: PD: %d ND: %d Scope: %d\n",an_prev.defined,an_next.defined,filestackCount());
+            if(an_next.defined && an_next.scope == filestackCount()) {
                 an_return.address = an_next.address;
                 return &an_return;
             }
             else return NULL;
         }
         if(((tolower(name[1]) == 'b') || (tolower(name[1]) == 'p')) && name[2] == 0) {
-            if(an_prev.defined) {
+            printf("PREV: PD: %d ND: %d Scope: %d\n",an_prev.defined,an_next.defined,filestackCount());
+            if(an_prev.defined && an_prev.scope == filestackCount()) {
                 an_return.address = an_prev.address;
                 return &an_return;
             }

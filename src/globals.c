@@ -27,6 +27,7 @@ uint16_t global_errors;
 bool adlmode;
 
 tokenline currentline;
+
 operand operand1;
 operand operand2;
 opcodesequence output;

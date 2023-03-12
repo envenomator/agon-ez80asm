@@ -434,7 +434,7 @@ void parseLine(char *src) {
                 break;
             case PS_LABEL:
                 strcpy(currentline.label,token.start);
-                advanceLocalLabel();
+                if(!MacroDefineState) advanceLocalLabel();
                 x = getLineToken(&token, token.next, ' ');
                 if(x) state = PS_COMMAND;
                 else {
@@ -546,7 +546,7 @@ void parseLine(char *src) {
 
 void definelabel(int24_t num){
     if(strlen(currentline.label)) {
-        printf("Define label: %s <<%s>> %x\n",filename[FILE_CURRENT], currentline.label,num);
+        printf("Define label: %s <<%s>> %x - scope %d\n",filename[FILE_CURRENT], currentline.label,num, filestackCount());
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
                 writeAnonymousLabel(num);
@@ -1451,6 +1451,7 @@ void passInitialize(uint8_t passnumber) {
     MacroDefineState = false;
     currentExpandedMacro = NULL;
     filestackInit();
+    initAnonymousLabelTable();
 }
 
 // Assembler directives may demand a late reset of the linenumber, after the listing has been done

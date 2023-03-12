@@ -248,8 +248,8 @@ void addFileDeleteList(char *name) {
 
 void deleteFiles(void) {
     char line[LINEMAX];
-    mos_del(filename[FILE_LOCAL_LABELS]);
-    mos_del(filename[FILE_ANONYMOUS_LABELS]);
+    //mos_del(filename[FILE_LOCAL_LABELS]);
+    //mos_del(filename[FILE_ANONYMOUS_LABELS]);
 
     // delete all files listed for cleanup
     if(reOpenFile(FILE_DELETELIST, fa_read)) {
