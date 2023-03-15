@@ -1096,14 +1096,11 @@ void handle_asm_org(void) {
     parse_asm_single_immediate(); // get address from next token
     newaddress = operand1.immediate;
     if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE]); 
-    if(newaddress >= address) {
-        if(pass == 1) {
-            // Output label at this address
-            definelabel(address);
-        }
-        address = newaddress;
+    if(pass == 1) {
+        // Output label at this address
+        definelabel(address);
     }
-    else error(message[ERROR_ADDRESSLOWER]);
+    address = newaddress;
 }
 
 void handle_asm_include(void) {

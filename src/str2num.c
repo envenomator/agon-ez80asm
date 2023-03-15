@@ -71,6 +71,7 @@ int24_t str2dec(char *string) {
 // BINARY:  0%..., %..., ...b
 // HEX:     0x..., ...h, $...
 // DECIMAL ...
+// Returns current program counter with just '$'
 int24_t str2num(char *string, bool errorhalt) {
     char *ptr = string;
     char *start = string;
@@ -94,6 +95,7 @@ int24_t str2num(char *string, bool errorhalt) {
                             return result;
                         }
                         else {
+                            if(*ptr == '$') return address;
                             state = ERROR;
                             errorhalt = true;
                         }

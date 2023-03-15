@@ -277,7 +277,6 @@ void closeAllFiles() {
 }
 
 bool openfiles(void) {
-    int i;
     bool status = true;
 
     status = status && openFile(&filehandle[FILE_DELETELIST], filename[FILE_DELETELIST], fa_write | fa_create_always);
