@@ -2,6 +2,7 @@
 *.d
 
 # Object files
+*.bin
 *.o
 *.ko
 *.obj
@@ -33,6 +34,7 @@
 *.su
 *.idb
 *.pdb
+*.lst
 
 # Kernel Module Compile Results
 *.mod*
@@ -45,3 +47,4 @@ dkms.conf
 
 # Debug directories
 Debug/
+

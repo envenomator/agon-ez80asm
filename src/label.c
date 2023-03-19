@@ -210,10 +210,10 @@ bool insertGlobalLabel(char *labelname, int24_t address){
     int index,i,try,len;
     label *tmp;
 
-    if(findGlobalLabel(labelname)) {
-        error(message[ERROR_LABELDEFINED]);
-        return false;
-    }
+    //if(findGlobalLabel(labelname)) {
+    //    error(message[ERROR_LABELDEFINED]);
+    //    return false;
+    //}
     len = strlen(labelname);
 
     // allocate space in buffer for label struct
@@ -233,6 +233,10 @@ bool insertGlobalLabel(char *labelname, int24_t address){
             globalLabelTable[try] = tmp;
             globalLabelCounter++;
             return true;
+        }
+        if(strcasecmp(globalLabelTable[try]->name, tmp->name) == 0) {
+            error(message[ERROR_LABELDEFINED]);
+            return false;
         } 
     }
     return false;
