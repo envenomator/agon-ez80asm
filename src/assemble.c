@@ -93,6 +93,7 @@ int24_t getLabelValue(char *string) {
         if(operator == '!') error(message[ERROR_OPERATOR]);
         if(operator == '+') total += tmp;
         if(operator == '-') total -= tmp;
+        if(operator == '*') total *= tmp;
         if(operator == '<') total = total << tmp;
         if(operator == '>') total = total >> tmp;
         operator = token.terminator;

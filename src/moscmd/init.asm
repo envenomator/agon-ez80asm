@@ -43,7 +43,12 @@ _start:		PUSH	AF			; Preserve the registers
 			PUSH	DE
 			PUSH	IX
 			PUSH	IY
-			
+
+			LD		A, MB			; Save MB
+			PUSH 	AF
+			XOR 	A
+			LD		MB, A                   ; Clear to zero so MOS API calls know how to use 24-bit addresses.
+
 			PUSH	HL			; parameter string
 			; Load module into memory at start address
 			LD		HL, _load_name
@@ -68,7 +73,11 @@ _start2:
 			LD		B, 0				;  C: argc
 			CALL	user_start			; Start user code
 			
-_exit:		POP		IY					; Restore registers
+_exit:		
+			POP		AF
+			LD		MB, A
+
+			POP		IY					; Restore registers
 			POP		IX
 			POP		DE
 			POP		BC
