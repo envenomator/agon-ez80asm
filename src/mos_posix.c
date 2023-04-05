@@ -105,7 +105,7 @@ UINT8 mos_feof(UINT8 fh)					 // returns 1 if EOF, 0 otherwise
         }
     }
     if(found) return feof(_filearray[index].file);
-    else return 0;
+    else return 1;
 }
 
 UINT8 mos_save(char *filename, UINT24 address, UINT24 nbytes)

@@ -696,6 +696,7 @@ instruction instructions[] = {
     {"in",       EZ80, 0, sizeof(operands_in)/sizeof(operandlist), operands_in},
     {"in0",      EZ80, 0, sizeof(operands_in0)/sizeof(operandlist), operands_in0},
     {"inc",      EZ80, 0, sizeof(operands_inc)/sizeof(operandlist), operands_inc},
+    {"incbin",   ASSEMBLER, ASM_INCBIN, 0, NULL, ASM_ARG_SINGLE},
     {"include",  ASSEMBLER, ASM_INCLUDE, 0, NULL, ASM_ARG_SINGLE},
     {"ind",      EZ80, 0, sizeof(operands_ind)/sizeof(operandlist), operands_ind},
     {"ind2",     EZ80, 0, sizeof(operands_ind2)/sizeof(operandlist), operands_ind2},

@@ -298,8 +298,8 @@ char *agon_fgets(char *s, int size, uint8_t fileid) {
 	cs = s;
 
 	do {
-		eof = mos_feof(filehandle[fileid]);
 		c = mos_fgetc(filehandle[fileid]);
+		eof = mos_feof(filehandle[fileid]);
 		if((*cs++ = c) == '\n') break;		
 	}
 	while(--size > 0 && !eof);

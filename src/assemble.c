@@ -1142,6 +1142,93 @@ void handle_asm_include(void) {
     else error(message[ERROR_MISSINGOPERAND]);
 }
 
+/*
+void handle_asm_incbin(void) {
+    tokentype token;
+    filestackitem fsi;
+    bool eof;
+    char c;
+
+    if(pass == 1) {
+        writeLocalLabels(); // new local label space inside macro expansion
+        clearLocalLabels();
+    }
+    if(pass == 2) {
+        clearLocalLabels();
+        readLocalLabels();
+    }
+
+    if(currentline.next) {
+        getLineToken(&token, currentline.next, 0);
+        if(token.start[0] == '\"') {
+            token.start[strlen(token.start)-1] = 0;
+            fsi.linenumber = linenumber;
+            fsi.fp = filehandle[FILE_CURRENT];
+            strcpy(fsi.filename, filename[FILE_CURRENT]);
+            filestackPush(&fsi);
+            filehandle[FILE_CURRENT] = mos_fopen(token.start+1, fa_read);
+            strcpy(filename[FILE_CURRENT], token.start+1);
+
+            if(filehandle[FILE_CURRENT]) {
+                do {
+                    c = mos_fgetc(filehandle[FILE_CURRENT]);
+                    eof = mos_feof(filehandle[FILE_CURRENT]);
+                    if(!eof) emit_8bit(c);
+                }
+                while(!eof);
+                mos_fclose(filehandle[FILE_CURRENT]);
+            }
+            else error(message[ERROR_INCLUDEFILE]);
+            
+            filestackPop(&fsi);
+            linenumber = fsi.linenumber;
+            filehandle[FILE_CURRENT] = fsi.fp;
+            strcpy(filename[FILE_CURRENT], fsi.filename);
+        }
+        else error(message[ERROR_STRINGFORMAT]);
+        if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+}
+*/
+void handle_asm_incbin(void) {
+    tokentype token;
+    uint8_t fh;
+    bool eof;
+    char c;
+
+    if(pass == 1) {
+        writeLocalLabels(); // new local label space inside macro expansion
+        clearLocalLabels();
+    }
+    if(pass == 2) {
+        clearLocalLabels();
+        readLocalLabels();
+    }
+
+    if(currentline.next) {
+        getLineToken(&token, currentline.next, 0);
+        if(token.start[0] == '\"') {
+            token.start[strlen(token.start)-1] = 0;
+            fh = mos_fopen(token.start+1, fa_read);
+
+            if(fh) {
+                do {
+                    c = mos_fgetc(fh);
+                    eof = mos_feof(fh);
+                    if(!eof) emit_8bit(c);
+                }
+                while(!eof);
+                mos_fclose(fh);
+            }
+            else error(message[ERROR_INCLUDEFILE]);            
+        }
+        else error(message[ERROR_STRINGFORMAT]);
+        if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+}
+
 void handle_asm_blk(uint8_t width) {
     uint16_t num;
     int24_t val = 0;
@@ -1324,6 +1411,9 @@ void handle_assembler_command(void) {
         break;
     case(ASM_MACRO_END):
         handle_asm_endmacro();
+        break;
+    case(ASM_INCBIN):
+        handle_asm_incbin();
         break;
     }
     return;

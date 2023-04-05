@@ -1,0 +1,33 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "ZDS Rebuild all",
+            "type": "shell",
+            "command": "make rebuildall -f ../ez80asm.mak",
+            "options": {
+                "cwd": "${workspaceFolder}/src/Debug"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "ZDS build changed files",
+            "type": "shell",
+            "command": "make -f ../ez80asm.mak",
+            "options": {
+                "cwd": "${workspaceFolder}/src/Debug"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        }
+    ]
+}
