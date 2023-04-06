@@ -289,21 +289,33 @@ bool openfiles(void) {
     return status;
 }
 
-
-char *agon_fgets(char *s, int size, uint8_t fileid) {
+// Get a maximum of 'maxsize' characters from a file
+char *agon_fgets(char *s, int maxsize, uint8_t fileid) {
 	int c;
 	char *cs;
 	bool eof;
     c = 0;
 	cs = s;
 
+    #ifdef AGON
+    eof = 0;
+	do {
+		c = mos_fgetc(filehandle[fileid]);
+		if((*cs++ = c) == '\n') break;		
+		eof = mos_feof(filehandle[fileid]);
+	}
+	while(--maxsize > 0 && !eof);
+    #endif
+
+    #ifndef AGON
 	do {
 		c = mos_fgetc(filehandle[fileid]);
 		eof = mos_feof(filehandle[fileid]);
 		if((*cs++ = c) == '\n') break;		
 	}
-	while(--size > 0 && !eof);
-	
+	while(--maxsize > 0 && !eof);
+    #endif
+
 	*cs = '\0';
 
 	return (eof) ? NULL : s;

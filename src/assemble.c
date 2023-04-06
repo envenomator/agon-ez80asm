@@ -1213,12 +1213,18 @@ void handle_asm_incbin(void) {
             fh = mos_fopen(token.start+1, fa_read);
 
             if(fh) {
-                do {
+                while(1) {
                     c = mos_fgetc(fh);
+                    #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
+                    emit_8bit(c);
+                    #endif
                     eof = mos_feof(fh);
-                    if(!eof) emit_8bit(c);
+                    //printf("C: %02x  EOF: %d\r\n",c,eof);
+                    if(eof) break;
+                    #ifndef AGON
+                    emit_8bit(c);
+                    #endif
                 }
-                while(!eof);
                 mos_fclose(fh);
             }
             else error(message[ERROR_INCLUDEFILE]);            
