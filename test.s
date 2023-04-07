@@ -1,12 +1,8 @@
-MAX_ARGS:   equ 2
+  ld IX, uart_config
+  di
+  djnz uart_config
+;
+uart_config:
+    dl 115200
+    db 8
 
-_main:
-    ld hl, test_bitmap
-    ld bc, end-test_bitmap
-    rst.lil $18
-    ret
-
-test_bitmap:
-    db 23,27,0,0
-    incbin "sample.bin"
-end:

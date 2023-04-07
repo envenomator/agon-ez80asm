@@ -297,7 +297,7 @@ char *agon_fgets(char *s, int maxsize, uint8_t fileid) {
     c = 0;
 	cs = s;
 
-    #ifdef AGON
+    #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
     eof = 0;
 	do {
 		c = mos_fgetc(filehandle[fileid]);
