@@ -60,6 +60,7 @@ void trimRight(char *str) {
 typedef enum {
     TOKEN_REGULAR,
     TOKEN_STRING,
+    TOKEN_LITERAL,
     TOKEN_BRACKET
 } tokenclass;
 
@@ -119,11 +120,26 @@ uint8_t getLineToken(tokentype *token, char *src, char terminator) {
                         break;
                 }
                 break;
+            case TOKEN_LITERAL:
+                switch(*src) {
+                    case '\\':
+                        escaped = !escaped;
+                        break;
+                    case '\'':
+                        if(!escaped) state = TOKEN_REGULAR;
+                        escaped = false;
+                        break;
+                    default:
+                        escaped = false;
+                        break;
+                }
+                break;
             case TOKEN_BRACKET:
                 if(*src == ')') state = TOKEN_REGULAR;
                 break;
             case TOKEN_REGULAR:
                 if(*src == '\"') state = TOKEN_STRING;
+                if(*src == '\'') state = TOKEN_LITERAL;
                 if(*src == '(') state = TOKEN_BRACKET;
                 terminated = ((*src == ';') || (*src == terminator));
                 if(terminator == ' ') terminated = terminated || (*src == '\t'); 
@@ -156,6 +172,7 @@ uint8_t getLineToken(tokentype *token, char *src, char terminator) {
 uint8_t getOperatorToken(tokentype *token, char *src) {
     char *target;
     uint8_t index = 0;
+    bool literal;
 
     // remove leading space
     while(*src) {
@@ -169,22 +186,35 @@ uint8_t getOperatorToken(tokentype *token, char *src) {
         token->next = NULL;
         return 0;
     }
+
+    literal = (*src == '\''); // are we a '' literal value?
+
     // copy content
     target = token->start;
     while(true) {
-        if((*src == 0) || (*src == '+') || (*src == '-') || (*src == '*') || (*src == '<') || (*src == '>')) {
-            if(((*src == '<') || (*src == '>'))) {
-                if((*(src+1) == *src)) src += 1;
-                else {
-                    token->terminator = '!'; // ERROR
-                    break;
-                }
+
+        if(literal) {
+            if(*src == 0) {
+                token->terminator = *src;
+                break;
             }
-            token->terminator = *src;
-            break;
+        }
+        else {
+            if((*src == 0) || (*src == '+') || (*src == '-') || (*src == '*') || (*src == '<') || (*src == '>')) {
+                if(((*src == '<') || (*src == '>'))) {
+                    if((*(src+1) == *src)) src += 1;
+                    else {
+                        token->terminator = '!'; // ERROR
+                        break;
+                    }
+                }
+                token->terminator = *src;
+                break;
+            }
         }
         *target++ = *src++;
         index++;
+        if(literal && *src == '\'') literal = false;
     }
     // remove trailing space
     while(index) {

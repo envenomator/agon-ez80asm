@@ -1073,7 +1073,10 @@ void handle_asm_equ(void) {
         getLineToken(&token, currentline.next, 0);
         if(notEmpty(token.start)) {
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
-            if(pass == 1) definelabel(getLabelValue(token.start));
+            if(pass == 1) {
+                if(strlen(currentline.label)) definelabel(getLabelValue(token.start));
+                else error(message[ERROR_MISSINGLABEL]);
+            }
         }
         else error(message[ERROR_MISSINGOPERAND]);
     }
@@ -1253,8 +1256,9 @@ void handle_asm_blk(uint8_t width) {
             if(token.terminator == ',') {
                 getLineToken(&token, token.next, 0);
                 if(notEmpty(token.start)) {
-                    if(token.start[0] == '\'') val = getAsciiValue(token.start);
-                    else val = getLabelValue(token.start);
+//                    if(token.start[0] == '\'') val = getAsciiValue(token.start);
+//                    else val = getLabelValue(token.start);
+                    val = getLabelValue(token.start);
                 }
                 else error(message[ERROR_MISSINGOPERAND]);
             }
