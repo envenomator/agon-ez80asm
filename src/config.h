@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-//#define AGON
+#define AGON
 
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
