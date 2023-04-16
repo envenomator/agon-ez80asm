@@ -10,6 +10,8 @@
 #include "mos-interface.h"
 
 char _fileBasename[FILENAMEMAXLENGTH];
+char _outputbuffer[OUTPUT_BUFFERSIZE];
+unsigned int _outputbuffersize;
 
 // return a base filename, stripping the given extension from it
 void remove_ext (char* myStr, char extSep, char pathSep) {
@@ -258,12 +260,12 @@ void prepare_filenames(char *input_filename) {
     strcpy(_fileBasename, filename[FILE_OUTPUT]);
     strcpy(filename[FILE_LOCAL_LABELS], _fileBasename);
     strcpy(filename[FILE_ANONYMOUS_LABELS],_fileBasename);
-    strcpy(filename[FILE_LISTING],_fileBasename);
+    if(list_enabled) strcpy(filename[FILE_LISTING],_fileBasename);
     strcpy(filename[FILE_DELETELIST],_fileBasename);
     strcat(filename[FILE_OUTPUT], ".bin");
     strcat(filename[FILE_LOCAL_LABELS], ".lcllbls");
     strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
-    strcat(filename[FILE_LISTING], ".lst");
+    if(list_enabled) strcat(filename[FILE_LISTING], ".lst");
     strcat(filename[FILE_DELETELIST], ".del");
 }
 
@@ -300,7 +302,7 @@ void closeAllFiles() {
     if(filehandle[FILE_OUTPUT]) mos_fclose(filehandle[FILE_OUTPUT]);
     if(filehandle[FILE_LOCAL_LABELS]) mos_fclose(filehandle[FILE_LOCAL_LABELS]);
     if(filehandle[FILE_ANONYMOUS_LABELS]) mos_fclose(filehandle[FILE_ANONYMOUS_LABELS]);
-    if(filehandle[FILE_LISTING]) mos_fclose(filehandle[FILE_LISTING]);
+    if(list_enabled && filehandle[FILE_LISTING]) mos_fclose(filehandle[FILE_LISTING]);
     if(filehandle[FILE_MACRO]) mos_fclose(filehandle[FILE_MACRO]);
 
     deleteFiles();
@@ -314,7 +316,7 @@ bool openfiles(void) {
     status = status && openFile(&filehandle[FILE_OUTPUT], filename[FILE_OUTPUT], fa_write | fa_create_always);
     status = status && openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], fa_write | fa_create_always);
     status = status && openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], fa_write | fa_create_always);
-    status = status && openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], fa_write | fa_create_always);
+    if(list_enabled) status = status && openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], fa_write | fa_create_always);
     if(!status) closeAllFiles();
     return status;
 }
@@ -361,6 +363,7 @@ int agon_fputs(char *s, uint8_t fileid) {
     return number;
 }
 
+/*
 size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
     size_t n, s, result = 0;
     char *t = (char *)ptr;
@@ -374,7 +377,9 @@ size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
     }
     return result;
 }
+*/
 
+/*
 size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
     size_t n, s, result = 0;
     char *t = (char *)ptr;
@@ -390,6 +395,21 @@ size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid) {
         }
     }
     return result;
+}
+*/
+
+void outputBufferedWrite(unsigned char s) {
+    _outputbuffer[_outputbuffersize++] = s;
+    if(_outputbuffersize == OUTPUT_BUFFERSIZE) outputBufferFlush();
+}
+
+void outputBufferInit(void) {
+    _outputbuffersize = 0;
+}
+
+void outputBufferFlush(void) {
+    mos_fwrite(filehandle[FILE_OUTPUT], _outputbuffer, _outputbuffersize);
+    _outputbuffersize = 0;
 }
 
 #ifdef AGON

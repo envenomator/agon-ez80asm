@@ -33,6 +33,10 @@ int agon_fputs(char *s, uint8_t fileid);
 size_t agon_fwrite(void *ptr, size_t size, size_t nmemb, uint8_t fileid);
 size_t agon_fread(void *ptr, size_t size, size_t nmemb, uint8_t fileid);
 
+void outputBufferedWrite(unsigned char s);
+void outputBufferInit(void);
+void outputBufferFlush(void);
+
 #ifdef AGON
 int strcasecmp(char *s1, char *s2);
 #endif

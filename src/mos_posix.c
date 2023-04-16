@@ -113,6 +113,34 @@ UINT8 mos_save(char *filename, UINT24 address, UINT24 nbytes)
     return 0;
 }
 
+UINT24 mos_fwrite(UINT8 fh, char *buffer, UINT24 numbytes) {
+    int index;
+    bool found = false;
+
+    for(index = 0; index < _fileindex; index++) {
+        if(_filearray[index].mosfile == fh) {
+            found = true;
+            break;
+        }
+    }
+    if(found) return fwrite(buffer, numbytes, 1, _filearray[index].file);
+    else return 0;
+}
+
+extern UINT24 mos_fread(UINT8 fh, char *buffer, UINT24 numbytes) {
+    int index;
+    bool found = false;
+
+    for(index = 0; index < _fileindex; index++) {
+        if(_filearray[index].mosfile == fh) {
+            found = true;
+            break;
+        }
+    }
+    if(found) return fread(buffer, numbytes, 1, _filearray[index].file);
+    else return 0;
+}
+
 UINT8 mos_del(char *filename) {
     remove(filename);
     return 0;

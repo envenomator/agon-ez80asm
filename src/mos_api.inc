@@ -2,7 +2,7 @@
 ; Title:	AGON MOS - API for user projects
 ; Author:	Dean Belfield
 ; Created:	03/08/2022
-; Last Updated:	24/09/2022
+; Last Updated:	15/04/2023
 ;
 ; Modinfo:
 ; 05/08/2022:	Added mos_feof
@@ -10,6 +10,30 @@
 ; 18/08/2022:	Added system variables: scrchar, scrpixel, audioChannel, audioSuccess, vpd_pflags
 ; 05/09/2022:	Added mos_ren, vdp_pflag_mode
 ; 24/09/2022:	Added mos_getError, mos_mkdir
+; 13/10/2022:	Added mos_oscli
+; 23/02/2023:	Added more sysvars, fixed typo in sysvar_audioSuccess, offsets for sysvar_scrCols, sysvar_scrRows
+; 04/03/2023:	Added sysvar_scrpixelIndex
+; 08/03/2023:	Renamed sysvar_keycode to sysvar_keyascii, added sysvar_vkeycode
+; 15/03/2023:	Added mos_copy, mos_getrtc, mos_setrtc, rtc, vdp_pflag_rtc
+; 21/03/2023:	Added mos_setintvector, sysvars for keyboard status, vdu codes for vdp
+; 22/03/2023:	The VDP commands are now indexed from 0x80
+; 29/03/2023:	Added mos_uopen, mos_uclose, mos_ugetc, mos_uputc
+; 13/04/2023:	Added FatFS file structures (FFOBJID, FIL, DIR, FILINFO)
+; 15/04/2023:	Added mos_getfil, mos_fread, mos_fwrite and mos_flseek
+
+; VDP control (VDU 23, 0, n)
+;
+vdp_gp:			EQU 	80h
+vdp_keycode:		EQU 	81h
+vdp_cursor:		EQU	82h
+vdp_scrchar:		EQU	83h
+vdp_scrpixel:		EQU	84h
+vdp_audio:		EQU	85h
+vdp_mode:		EQU	86h
+vdp_rtc:		EQU	87h
+vdp_keystate:		EQU	88h
+vdp_logicalcoords:	EQU	C0h
+vdp_terminalmode:	EQU	FFh
 
 ; MOS high level functions
 ;
@@ -29,6 +53,19 @@ mos_fgetc:		EQU	0Ch
 mos_fputc:		EQU	0Dh
 mos_feof:		EQU	0Eh
 mos_getError:		EQU	0Fh
+mos_oscli:		EQU	10h
+mos_copy:		EQU	11h
+mos_getrtc:		EQU	12h
+mos_setrtc:		EQU	13h
+mos_setintvector:	EQU	14h
+mos_uopen:		EQU	15h
+mos_uclose:		EQU	16h
+mos_ugetc:		EQU	17h
+mos_uputc:		EQU 	18h
+mos_getfil:		EQU	19h
+mos_fread:		EQU	1Ah
+mos_fwrite:		EQU	1Bh
+mos_flseek:		EQU	1Ch
 
 ; FatFS file access functions
 ;
@@ -36,7 +73,7 @@ ffs_fopen:		EQU	80h
 ffs_fclose:		EQU	81h
 ffs_fread:		EQU	82h
 ffs_fwrite:		EQU	83h
-ffs_fseek:		EQU	84h
+ffs_flseek:		EQU	84h
 ffs_ftruncate:		EQU	85h
 ffs_fsync:		EQU	86h
 ffs_fforward:		EQU	87h
@@ -93,25 +130,90 @@ fa_open_append:		EQU	30h
 ; System variable indexes for api_sysvars
 ; Index into _sysvars in globals.asm
 ;
-sysvar_time:		EQU	00h
-sysvar_vpd_pflags:	EQU	04h
-sysvar_keycode:		EQU	05h
-sysvar_keymods:		EQU	06h
-sysvar_cursorX:		EQU	07h
-sysvar_cursorY:		EQU	08h
-sysvar_scrchar:		EQU	09h
-sysvar_scrpixel:	EQU	0Ah
-sysvar_audioChannel:	EQU	0Dh
-syscar_audioSuccess:	EQU	0Eh
+sysvar_time:		EQU	00h	; 4: Clock timer in centiseconds (incremented by 2 every VBLANK)
+sysvar_vpd_pflags:	EQU	04h	; 1: Flags to indicate completion of VDP commands
+sysvar_keyascii:	EQU	05h	; 1: ASCII keycode, or 0 if no key is pressed
+sysvar_keymods:		EQU	06h	; 1: Keycode modifiers
+sysvar_cursorX:		EQU	07h	; 1: Cursor X position
+sysvar_cursorY:		EQU	08h	; 1: Cursor Y position
+sysvar_scrchar:		EQU	09h	; 1: Character read from screen
+sysvar_scrpixel:	EQU	0Ah	; 3: Pixel data read from screen (R,B,G)
+sysvar_audioChannel:	EQU	0Dh	; 1: Audio channel 
+sysvar_audioSuccess:	EQU	0Eh	; 1: Audio channel note queued (0 = no, 1 = yes)
+sysvar_scrWidth:	EQU	0Fh	; 2: Screen width in pixels
+sysvar_scrHeight:	EQU	11h	; 2: Screen height in pixels
+sysvar_scrCols:		EQU	13h	; 1: Screen columns in characters
+sysvar_scrRows:		EQU	14h	; 1: Screen rows in characters
+sysvar_scrColours:	EQU	15h	; 1: Number of colours displayed
+sysvar_scrpixelIndex:	EQU	16h	; 1: Index of pixel data read from screen
+sysvar_vkeycode:	EQU	17h	; 1: Virtual key code from FabGL
+sysvar_vkeydown		EQU	18h	; 1: Virtual key state from FabGL (0=up, 1=down)
+sysvar_vkeycount:	EQU	19h	; 1: Incremented every time a key packet is received
+sysvar_rtc:		EQU	1Ah	; 8: Real time clock data
+sysvar_keydelay:	EQU	22h	; 2: Keyboard repeat delay
+sysvar_keyrate:		EQU	24h	; 2: Keyboard repeat reat
+sysvar_keyled:		EQU	26h	; 1: Keyboard LED status
 	
 ; Flags for the VPD protocol
 ;
-vdp_pflag_cursor:	EQU		00000001b
-vdp_pflag_scrchar:	EQU		00000010b
-vdp_pflag_point:	EQU		00000100b
-vdp_pflag_audio:	EQU		00001000b
-vdp_pflag_mode:		EQU		00010000b
-	
+vdp_pflag_cursor:	EQU	00000001b
+vdp_pflag_scrchar:	EQU	00000010b
+vdp_pflag_point:	EQU	00000100b
+vdp_pflag_audio:	EQU	00001000b
+vdp_pflag_mode:		EQU	00010000b
+vdp_pflag_rtc:		EQU	00100000b
+
+;
+; FatFS structures
+; These mirror the structures contained in src_fatfs/ff.h in the MOS project
+;
+; Object ID and allocation information (FFOBJID)
+;
+FFOBJID	.STRUCT
+	fs:		DS	3	; Pointer to the hosting volume of this object
+	id:		DS	2	; Hosting volume mount ID
+	attr:		DS	1	; Object attribute
+	stat:		DS	1	; Object chain status (b1-0: =0:not contiguous, =2:contiguous, =3:fragmented in this session, b2:sub-directory stretched)
+	sclust:		DS	4	; Object data start cluster (0:no cluster or root directory)
+	objsize:	DS	4	; Object size (valid when sclust != 0)
+FFOBJID_SIZE .ENDSTRUCT FFOBJID
+;
+; File object structure (FIL)
+;
+FIL .STRUCT
+	obj:		.TAG	FFOBJID	; Object identifier
+	flag:		DS	1	; File status flags
+	err:		DS	1	; Abort flag (error code)
+	fptr:		DS	4	; File read/write pointer (Zeroed on file open)
+	clust:		DS	4	; Current cluster of fpter (invalid when fptr is 0)
+	sect:		DS	4	; Sector number appearing in buf[] (0:invalid)
+	dir_sect:	DS	4	; Sector number containing the directory entry
+	dir_ptr:	DS	3	; Pointer to the directory entry in the win[]
+FIL_SIZE .ENDSTRUCT FIL
+;
+; Directory object structure (DIR)
+; 
+DIR .STRUCT
+	obj:		.TAG	FFOBJID	; Object identifier
+	dptr:		DS	4	; Current read/write offset
+	clust:		DS	4	; Current cluster
+	sect:		DS	4	; Current sector (0:Read operation has terminated)
+	dir:		DS	3	; Pointer to the directory item in the win[]
+	fn:		DS	12	; SFN (in/out) {body[8],ext[3],status[1]}
+	blk_ofs:	DS	4	; Offset of current entry block being processed (0xFFFFFFFF:Invalid)
+DIR_SIZE .ENDSTRUCT DIR
+;
+; File information structure (FILINFO)
+;
+FILINFO .STRUCT
+	fsize:		DS 	4	; File size
+	fdate:		DS	2	; Modified date
+	ftime:		DS	2	; Modified time
+	fattrib:	DS	1	; File attribute
+	altname:	DS	13	; Alternative file name
+	fname:		DS	256	; Primary file name
+FILINFO_SIZE .ENDSTRUCT FILINFO
+
 ;
 ; Macro for calling the API
 ; Parameters:

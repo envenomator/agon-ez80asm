@@ -9,6 +9,7 @@
 char filename[FILES][FILENAMEMAXLENGTH];
 uint8_t filehandle[FILES];
 
+bool list_enabled;
 bool consolelist_enabled;
 bool lineNumberNeedsReset;
 unsigned int linenumber;

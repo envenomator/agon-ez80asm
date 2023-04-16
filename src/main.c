@@ -21,12 +21,14 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    list_enabled = ((argc == 3) && (strcmp(argv[2], "-l") == 0));     
+    consolelist_enabled = false;
+
     prepare_filenames(argv[1]);
     if(!openfiles()) return 0;
 
-    if((argc == 3) && (strcmp(argv[2], "-l") == 0)) consolelist_enabled = true;
-
     // Initialization
+    outputBufferInit();
     initGlobalLabelTable();
     initLocalLabelTable();
     initAnonymousLabelTable();
@@ -40,7 +42,8 @@ int main(int argc, char *argv[])
         printf("Error in input\r\n");
     }
     else printf("Done\r\n");
- 
+
+    outputBufferFlush();
     closeAllFiles();   
     return 0;
 }

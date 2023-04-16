@@ -14,6 +14,7 @@
 #define LOCAL_LABEL_BUFFERSIZE   0x4000 // 16KB local label space
 #define GLOBAL_LABEL_TABLE_SIZE   16384 // 16K global labels
 #define LOCAL_LABEL_TABLE_SIZE       64 //  64 local labels
+#define OUTPUT_BUFFERSIZE          1024
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX                    64 // Token maximum length 
 #define MAXIMUM_MACROS               64 // Maximum number of macros

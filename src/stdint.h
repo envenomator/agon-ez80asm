@@ -6,12 +6,17 @@
 #ifndef AGON
 #include <stdint.h>
 #include <stdbool.h>
+typedef uint8_t BYTE;
 typedef int8_t INT8;
 typedef uint8_t UINT8;
+typedef int16_t INT16;
+typedef uint16_t UINT16;
 typedef int int24_t;
 typedef int INT24;
 typedef unsigned int uint24_t;
 typedef unsigned int UINT24;
+typedef int32_t INT32;
+typedef uint32_t UINT32;
 #endif
 
 #ifdef AGON

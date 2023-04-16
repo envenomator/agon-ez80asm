@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "./stdint.h"
 #include "filestack.h"
+#include "mos-interface.h"
 
 // memory for anonymous labels
 anonymouslabeltype an_prev;
@@ -100,15 +101,22 @@ void writeLocalLabels(void) {
     int i;
     uint16_t delta;
     // number of bytes in the string buffer
-    agon_fwrite(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
+    //agon_fwrite(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
+    mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
     // the actual bytes from the string buffer
-    if(localLabelBufferIndex) agon_fwrite(localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
+    //if(localLabelBufferIndex) agon_fwrite(localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
+    if(localLabelBufferIndex) 
+        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelBuffer, localLabelBufferIndex);
+    
     // the number of labels
-    agon_fwrite(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
+    //agon_fwrite(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
+    mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelCounter, sizeof(localLabelCounter));
     for(i = 0; i < localLabelCounter; i++) {
         delta = localLabelTable[i].name - localLabelBuffer;
-        agon_fwrite(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
-        agon_fwrite(&localLabelTable[i].address, 4, 1, FILE_LOCAL_LABELS);
+        //agon_fwrite(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
+        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&delta, sizeof(delta));
+        //agon_fwrite(&localLabelTable[i].address, 4, 1, FILE_LOCAL_LABELS);
+        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelTable[i].address, 4);
     }
 }
 
@@ -116,12 +124,18 @@ void readLocalLabels(void) {
     int i;
     uint16_t delta;
 
-    agon_fread(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
-    if(localLabelBufferIndex) agon_fread(&localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
-    agon_fread(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
+    //agon_fread(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
+    mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
+    //if(localLabelBufferIndex) agon_fread(&localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
+    if(localLabelBufferIndex) 
+        mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBuffer, localLabelBufferIndex);
+    //agon_fread(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
+    mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelCounter, sizeof(localLabelCounter));
     for(i = 0; i < localLabelCounter; i++) {
-        agon_fread(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
-        agon_fread(&localLabelTable[i].address, 4, 1, FILE_LOCAL_LABELS);
+        //agon_fread(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
+        mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&delta, sizeof(delta));
+        //agon_fread(&localLabelTable[i].address, 4, 1, FILE_LOCAL_LABELS);
+        mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelTable[i].address, 4);        
         localLabelTable[i].name = localLabelBuffer + delta;
     }
 }
@@ -130,17 +144,20 @@ void writeAnonymousLabel(int24_t address) {
     uint8_t scope;
 
     scope = filestackCount();
-    agon_fwrite(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS);
-    agon_fwrite(&scope, sizeof(scope), 1, FILE_ANONYMOUS_LABELS);
+    //agon_fwrite(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS);
+    mos_fwrite(filehandle[FILE_ANONYMOUS_LABELS], (char*)&address, sizeof(address));
+    //agon_fwrite(&scope, sizeof(scope), 1, FILE_ANONYMOUS_LABELS);
+    mos_fwrite(filehandle[FILE_ANONYMOUS_LABELS], (char*)&scope, sizeof(scope));
 }
 
 void readAnonymousLabel(void) {
     int24_t address;
     uint8_t scope;
 
-    if(agon_fread(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS)) {
-        agon_fread(&scope, sizeof(bool), 1, FILE_ANONYMOUS_LABELS);
-
+//    if(agon_fread(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS)) {
+    if(mos_fread(filehandle[FILE_ANONYMOUS_LABELS], (char*)&address, sizeof(address))) {
+        //agon_fread(&scope, sizeof(bool), 1, FILE_ANONYMOUS_LABELS);
+        mos_fread(filehandle[FILE_ANONYMOUS_LABELS], (char*)&scope, sizeof(bool));
         if(an_next.defined) {
             an_prev.address = an_next.address;
             an_prev.scope = an_next.scope;

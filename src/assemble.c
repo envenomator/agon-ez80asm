@@ -873,8 +873,9 @@ void emit_instruction(operandlist *list) {
 
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
-        listEmit8bit(value);
-        agon_fwrite(&value, sizeof(char), 1, FILE_OUTPUT);
+        if(list_enabled) listEmit8bit(value);
+        //mos_fputc(filehandle[FILE_OUTPUT], value);
+        outputBufferedWrite(value);
     }
     address++;
     totalsize++;
