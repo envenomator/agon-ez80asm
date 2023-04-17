@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "utils.h"
 #include "./stdint.h"
+#include "io.h"
 
 char _listLine[LINEMAX];
 uint24_t _listAddress;

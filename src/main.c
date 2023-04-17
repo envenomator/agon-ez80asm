@@ -10,6 +10,7 @@
 #include "mos-interface.h"
 #include "mos_posix.h"
 #include "malloc.h"
+#include "io.h"
 
 int main(int argc, char *argv[])
 {

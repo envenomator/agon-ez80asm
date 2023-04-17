@@ -8,6 +8,7 @@
 #include "./stdint.h"
 #include "filestack.h"
 #include "mos-interface.h"
+#include "io.h"
 
 // memory for anonymous labels
 anonymouslabeltype an_prev;

@@ -14,6 +14,7 @@
 #include "./stdint.h"
 #include "mos-interface.h"
 #include "macro.h"
+#include "io.h"
 
 void empty_operand(operand *op) {
     op->reg = R_NONE;

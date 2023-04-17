@@ -208,6 +208,14 @@ clean:
             $(RM) "$(WORKDIR)\malloc.lst"
 	@if exist "$(WORKDIR)\malloc.src"  \
             $(RM) "$(WORKDIR)\malloc.src"
+	@if exist "$(WORKDIR)\io.obj"  \
+            $(RM) "$(WORKDIR)\io.obj"
+	@if exist "$(WORKDIR)\io.lis"  \
+            $(RM) "$(WORKDIR)\io.lis"
+	@if exist "$(WORKDIR)\io.lst"  \
+            $(RM) "$(WORKDIR)\io.lst"
+	@if exist "$(WORKDIR)\io.src"  \
+            $(RM) "$(WORKDIR)\io.src"
 
 relist: 
 	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
@@ -242,6 +250,8 @@ relist:
             C:\source\agon-ez80asm\src\Debug\mos_posix.src
 	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
             C:\source\agon-ez80asm\src\Debug\malloc.src
+	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
+            C:\source\agon-ez80asm\src\Debug\io.src
 
 # pre-4.11.0 compatibility
 rebuildall: buildall 
@@ -264,7 +274,8 @@ OBJS =  \
             $(WORKDIR_ESCSPACE)\utils.obj  \
             $(WORKDIR_ESCSPACE)\macro.obj  \
             $(WORKDIR_ESCSPACE)\mos_posix.obj  \
-            $(WORKDIR_ESCSPACE)\malloc.obj
+            $(WORKDIR_ESCSPACE)\malloc.obj  \
+            $(WORKDIR_ESCSPACE)\io.obj
 
 ez80asm: $(OBJS)
 	 $(LD) $(LDFLAGS)
@@ -284,6 +295,7 @@ $(WORKDIR_ESCSPACE)\main.obj :  \
             $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\instruction.h  \
+            $(PRJDIR_ESCSPACE)\io.h  \
             $(PRJDIR_ESCSPACE)\label.h  \
             $(PRJDIR_ESCSPACE)\macro.h  \
             $(PRJDIR_ESCSPACE)\malloc.h  \
@@ -319,6 +331,7 @@ $(WORKDIR_ESCSPACE)\assemble.obj :  \
             $(PRJDIR_ESCSPACE)\filestack.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\instruction.h  \
+            $(PRJDIR_ESCSPACE)\io.h  \
             $(PRJDIR_ESCSPACE)\label.h  \
             $(PRJDIR_ESCSPACE)\listing.h  \
             $(PRJDIR_ESCSPACE)\macro.h  \
@@ -376,12 +389,15 @@ $(WORKDIR_ESCSPACE)\label.obj :  \
             $(INCLUDE_ESCSPACE)\std\Format.h  \
             $(INCLUDE_ESCSPACE)\std\Stdio.h  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
+            $(INCLUDE_ESCSPACE)\zilog\defines.h  \
             $(PRJDIR_ESCSPACE)\filestack.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\hash.h  \
+            $(PRJDIR_ESCSPACE)\io.h  \
             $(PRJDIR_ESCSPACE)\label.h  \
             $(PRJDIR_ESCSPACE)\macro.h  \
             $(PRJDIR_ESCSPACE)\malloc.h  \
+            $(PRJDIR_ESCSPACE)\mos-interface.h  \
             $(PRJDIR_ESCSPACE)\stdint.h  \
             $(PRJDIR_ESCSPACE)\str2num.h  \
             $(PRJDIR_ESCSPACE)\utils.h
@@ -450,4 +466,8 @@ $(WORKDIR_ESCSPACE)\malloc.obj :  \
             $(PRJDIR_ESCSPACE)\malloc.c  \
             $(PRJDIR_ESCSPACE)\malloc.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\malloc.c"
+
+$(WORKDIR_ESCSPACE)\io.obj :  \
+            $(PRJDIR_ESCSPACE)\io.c
+	 $(CC) $(CFLAGS) "$(PRJDIR)\io.c"
 
