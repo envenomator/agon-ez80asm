@@ -7,8 +7,11 @@
 
 typedef struct {
     uint16_t linenumber;
-    uint8_t fp;
-    char filename[FILENAMEMAXLENGTH];
+    uint8_t  fp;
+    char     filename[FILENAMEMAXLENGTH];
+    char *   filebuffer;
+    uint24_t filebuffersize;
+    bool     fileEOF;
 } filestackitem;
 
 void filestackInit(void);

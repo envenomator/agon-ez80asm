@@ -2,6 +2,7 @@
 #define IO_H
 
 #include "config.h"
+#include "filestack.h"
 
 // Global variables
 extern bool list_enabled;
@@ -28,6 +29,9 @@ int   io_puts(uint8_t fh, char *s);                  // buffered write of a stri
 char  io_getc(uint8_t fh);                           // buffered read of a single byte / fallback
 char* io_gets(uint8_t fh, char *s, int size);        // buffered read of a string / fallback
 void  io_addDeleteList(char *name);                  // add name of file to delete list at io_close
+void  io_getCurrent(filestackitem *fsi);             // retrieve CURRENT as fsi
+void  io_setCurrent(filestackitem *fsi);             // set CURRENT from fsi
+void  io_resetCurrentInput(void);                    // set FILE_CURRENT to FILE_INPUT specs
 
 void getMacroFilename(char *filename, char *macroname);
 

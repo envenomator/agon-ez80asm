@@ -6,6 +6,7 @@
 #include "mos-interface.h"
 #include "io.h"
 #include "listing.h"
+#include "filestack.h"
 
 // Global variables
 char     filename[FILES][FILENAMEMAXLENGTH];
@@ -289,4 +290,30 @@ void io_close(void) {
     _io_flushOutput();
     _closeAllFiles();
     _deleteFiles();
+}
+
+void io_getCurrent(filestackitem *fsi) {
+    fsi->fp = filehandle[FILE_CURRENT];
+    fsi->filebuffer = _filebuffer[FILE_CURRENT];
+    fsi->filebuffersize = _filebuffersize[FILE_CURRENT];
+    strcpy(fsi->filename, filename[FILE_CURRENT]);
+    fsi->linenumber = linenumber;
+    fsi->fileEOF = _fileEOF[FILE_CURRENT];
+}
+
+void io_setCurrent(filestackitem *fsi) {
+    filehandle[FILE_CURRENT] = fsi->fp;
+    _filebuffer[FILE_CURRENT] = fsi->filebuffer;
+    _filebuffersize[FILE_CURRENT] = fsi->filebuffersize;
+    strcpy(filename[FILE_CURRENT], fsi->filename);
+    linenumber = fsi->linenumber;
+    _fileEOF[FILE_CURRENT] = fsi->fileEOF;
+} 
+
+void io_resetCurrentInput(void) {
+    strcpy(filename[FILE_CURRENT], filename[FILE_INPUT]);
+    filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
+    _filebuffer[FILE_CURRENT] = _filebuffer[FILE_INPUT];
+    _filebuffersize[FILE_CURRENT] = _filebuffersize[FILE_INPUT];
+    _fileEOF[FILE_CURRENT] = false;    
 }
