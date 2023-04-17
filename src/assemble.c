@@ -1126,19 +1126,29 @@ void handle_asm_include(void) {
         getLineToken(&token, currentline.next, 0);
         if(token.start[0] == '\"') {
             token.start[strlen(token.start)-1] = 0;
-            fsi.linenumber = linenumber;
-            fsi.fp = filehandle[FILE_CURRENT];
-            strcpy(fsi.filename, filename[FILE_CURRENT]);
+            //fsi.linenumber = linenumber;
+            //fsi.fp = filehandle[FILE_CURRENT];
+            //strcpy(fsi.filename, filename[FILE_CURRENT]);
+            io_getCurrent(&fsi);
             filestackPush(&fsi);
-            filehandle[FILE_CURRENT] = mos_fopen(token.start+1, fa_read);
-            strcpy(filename[FILE_CURRENT], token.start+1);
-            if(filehandle[FILE_CURRENT] == 0) {
-                error(message[ERROR_INCLUDEFILE]);
-                filestackPop(&fsi);
-                linenumber = fsi.linenumber;
-                filehandle[FILE_CURRENT] = fsi.fp;
-                strcpy(filename[FILE_CURRENT], fsi.filename);
-            }
+            //filehandle[FILE_CURRENT] = mos_fopen(token.start+1, fa_read);
+            //strcpy(filename[FILE_CURRENT], token.start+1);
+            strcpy(fsi.filename, token.start+1);
+            fsi.fp = mos_fopen(token.start+1, fa_read);
+            fsi.filebuffer = 0;
+            fsi.filebuffersize = 0;
+            fsi.bufferstart = 0;
+            fsi.fileEOF = 0;
+            fsi.linenumber = 1;
+            io_setCurrent(&fsi);
+            
+            //if(filehandle[FILE_CURRENT] == 0) {
+            //    error(message[ERROR_INCLUDEFILE]);
+            //    filestackPop(&fsi);
+            //    linenumber = fsi.linenumber;
+            //    filehandle[FILE_CURRENT] = fsi.fp;
+            //    strcpy(filename[FILE_CURRENT], fsi.filename);
+            //}
             lineNumberNeedsReset = true;
         }
         else error(message[ERROR_STRINGFORMAT]);
@@ -1388,6 +1398,7 @@ void expandMacroStart(macro *exp) {
     tokentype token;
     uint8_t argcount = 0;
     filestackitem fsi;
+    char macrofilename[FILENAMEMAXLENGTH];
 
     if(pass == 1) definelabel(address);
 
@@ -1413,17 +1424,25 @@ void expandMacroStart(macro *exp) {
     }
     if(argcount != exp->argcount) error(message[ERROR_MACROINCORRECTARG]);
     // push current file to the stack
-    fsi.linenumber = linenumber;
-    fsi.fp = filehandle[FILE_CURRENT];
-    strcpy(fsi.filename, filename[FILE_CURRENT]);
+    io_getCurrent(&fsi);
     filestackPush(&fsi);
     // Macro filename to read
-    getMacroFilename(filename[FILE_CURRENT], exp->name);
-    filehandle[FILE_CURRENT] = mos_fopen(filename[FILE_CURRENT], fa_read);
-    if(filehandle[FILE_CURRENT] == 0) {
-        filestackPop(&fsi);
-        error(message[ERROR_MACROFILEWRITE]);
-    }
+    getMacroFilename(macrofilename, exp->name);
+    
+    strcpy(fsi.filename, macrofilename);
+    fsi.fp = mos_fopen(macrofilename, fa_read);
+    fsi.filebuffer = 0;
+    fsi.filebuffersize = 0;
+    fsi.bufferstart = 0;
+    fsi.fileEOF = 0;
+    fsi.linenumber = 1;
+    io_setCurrent(&fsi);
+
+
+//    if(filehandle[FILE_CURRENT] == 0) {
+//        filestackPop(&fsi);
+//        error(message[ERROR_MACROFILEWRITE]);
+//    }
     lineNumberNeedsReset = true;
 }
 /*
@@ -1520,15 +1539,12 @@ bool assemble(void){
 
     global_errors = 0;
 
-    //filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
-    //strcpy(filename[FILE_CURRENT], filename[FILE_INPUT]);
-    io_resetCurrentInput();
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\n\r");
+    io_resetCurrentInput();
     passInitialize(1);
     do {
-        //while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
         while(io_gets(FILE_CURRENT, line, sizeof(line))) {
             if(global_errors) return false;
             linenumber++;
@@ -1542,9 +1558,7 @@ bool assemble(void){
             currentExpandedMacro = NULL;
             mos_fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
-            linenumber = fsitem.linenumber;
-            filehandle[FILE_CURRENT] = fsitem.fp;
-            strcpy(filename[FILE_CURRENT], fsitem.filename);
+            io_setCurrent(&fsitem);
         }
         else incfileState = false;
     } while(incfileState);
@@ -1558,10 +1572,8 @@ bool assemble(void){
     readLocalLabels();
     readAnonymousLabel();
     
-    //filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
     io_resetCurrentInput();
     do {
-        //while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
         while(io_gets(FILE_CURRENT, line, sizeof(line))) {
             if(global_errors) return false;
             linenumber++;
@@ -1578,9 +1590,7 @@ bool assemble(void){
             readLocalLabels();
             mos_fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
-            linenumber = fsitem.linenumber;
-            filehandle[FILE_CURRENT] = fsitem.fp;
-            strcpy(filename[FILE_CURRENT], fsitem.filename);
+            io_setCurrent(&fsitem);
         }
         else incfileState = false;
     } while(incfileState);

@@ -166,7 +166,12 @@ void _io_flush(uint8_t fh) {
 
 // Will be called for reading INPUT buffer
 void _io_fillbuffer(uint8_t fh) {
-    if(_bufferlayout[fh]) _filebuffersize[fh] = mos_fread(filehandle[fh], _filebuffer[fh], FILE_BUFFERSIZE);
+    if(_bufferlayout[fh]) {
+        _filebuffersize[fh] = mos_fread(filehandle[fh], _bufferlayout[fh], FILE_BUFFERSIZE);
+        _filebuffer[fh] = _bufferlayout[fh];
+    }
+    //printf("Fillbuffer called: %d bytes read\r\n",_filebuffersize[fh]);
+    //printf("Fillbuffer content: %s\r\n",_filebuffer[fh]);
 }
 
 // Flush all output files
@@ -221,8 +226,9 @@ char* io_gets(uint8_t fh, char *s, int size) {
 	cs = s;
 
     if(_bufferlayout[fh]) {
+        //printf("fread mode %d\r\n",linenumber);
         do { // io_getc
-            if(_filebuffersize == 0) {
+            if(_filebuffersize[fh] == 0) {
                 _io_fillbuffer(fh);
                 if(_filebuffersize[fh] == 0) {
                     _fileEOF[fh] = true;
@@ -230,14 +236,16 @@ char* io_gets(uint8_t fh, char *s, int size) {
                 }
             }
             _filebuffersize[fh]--;
-            _filebuffer[fh]--;
             c = *(_filebuffer[fh]);
+            _filebuffer[fh]++;
+            //printf("[%c]",c);
             if((*cs++ = c) == '\n') break;
         }
         while(--size > 0 && !_fileEOF[fh]);
         eof = _fileEOF[fh];
     }
     else {
+        //printf("Traditional mode %d\r\n",linenumber);
         #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
         eof = 0;
         do {
@@ -295,6 +303,7 @@ void io_close(void) {
 void io_getCurrent(filestackitem *fsi) {
     fsi->fp = filehandle[FILE_CURRENT];
     fsi->filebuffer = _filebuffer[FILE_CURRENT];
+    fsi->bufferstart = _bufferlayout[FILE_CURRENT];
     fsi->filebuffersize = _filebuffersize[FILE_CURRENT];
     strcpy(fsi->filename, filename[FILE_CURRENT]);
     fsi->linenumber = linenumber;
@@ -304,6 +313,7 @@ void io_getCurrent(filestackitem *fsi) {
 void io_setCurrent(filestackitem *fsi) {
     filehandle[FILE_CURRENT] = fsi->fp;
     _filebuffer[FILE_CURRENT] = fsi->filebuffer;
+    _bufferlayout[FILE_CURRENT] = fsi->bufferstart;
     _filebuffersize[FILE_CURRENT] = fsi->filebuffersize;
     strcpy(filename[FILE_CURRENT], fsi->filename);
     linenumber = fsi->linenumber;
@@ -311,6 +321,8 @@ void io_setCurrent(filestackitem *fsi) {
 } 
 
 void io_resetCurrentInput(void) {
+    _bufferlayout[FILE_CURRENT] = _bufferlayout[FILE_INPUT];
+
     strcpy(filename[FILE_CURRENT], filename[FILE_INPUT]);
     filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
     _filebuffer[FILE_CURRENT] = _filebuffer[FILE_INPUT];

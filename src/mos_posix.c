@@ -127,9 +127,10 @@ UINT24 mos_fwrite(UINT8 fh, char *buffer, UINT24 numbytes) {
     else return 0;
 }
 
-extern UINT24 mos_fread(UINT8 fh, char *buffer, UINT24 numbytes) {
+UINT24 mos_fread(UINT8 fh, char *buffer, UINT24 numbytes) {
     int index;
     bool found = false;
+    //uint24_t number;
 
     for(index = 0; index < _fileindex; index++) {
         if(_filearray[index].mosfile == fh) {
@@ -137,7 +138,10 @@ extern UINT24 mos_fread(UINT8 fh, char *buffer, UINT24 numbytes) {
             break;
         }
     }
-    if(found) return fread(buffer, numbytes, 1, _filearray[index].file);
+    //number = fread(buffer, numbytes, 1, _filearray[index].file);
+    //printf("FREAD: %d\r\n",number);
+    //return number;
+    if(found) return fread(buffer, 1, numbytes, _filearray[index].file);
     else return 0;
 }
 

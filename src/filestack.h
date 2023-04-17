@@ -10,6 +10,7 @@ typedef struct {
     uint8_t  fp;
     char     filename[FILENAMEMAXLENGTH];
     char *   filebuffer;
+    char *   bufferstart;
     uint24_t filebuffersize;
     bool     fileEOF;
 } filestackitem;
