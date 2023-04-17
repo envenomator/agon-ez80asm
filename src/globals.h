@@ -21,10 +21,7 @@ typedef struct {
 } tokenline;
 
 // Global variables
-extern bool list_enabled;
-extern bool consolelist_enabled;
 extern bool lineNumberNeedsReset;
-
 extern unsigned int linenumber;
 extern unsigned int pass;
 extern bool MacroDefineState;
@@ -34,6 +31,7 @@ extern uint24_t totalsize;
 extern uint16_t global_errors;
 extern bool adlmode;
 extern tokenline currentline;
+
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code
 extern operand operand1;

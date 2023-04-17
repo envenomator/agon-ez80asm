@@ -6,8 +6,6 @@
  * Global variables
  */
 
-bool list_enabled;
-bool consolelist_enabled;
 bool lineNumberNeedsReset;
 unsigned int linenumber;
 unsigned int pass;

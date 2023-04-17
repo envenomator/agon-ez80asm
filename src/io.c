@@ -5,6 +5,7 @@
 #include "./stdint.h"
 #include "mos-interface.h"
 #include "io.h"
+#include "listing.h"
 
 // Global variables
 char filename[FILES][FILENAMEMAXLENGTH];

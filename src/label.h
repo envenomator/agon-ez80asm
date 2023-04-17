@@ -6,6 +6,10 @@
 #include "config.h"
 #include "malloc.h"
 
+// Global variables
+extern bool list_enabled;
+extern bool consolelist_enabled;
+
 enum {
     LABEL_REGULAR,
     LABEL_MACRO
