@@ -875,8 +875,8 @@ void emit_instruction(operandlist *list) {
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
         if(list_enabled) listEmit8bit(value);
-        //mos_fputc(filehandle[FILE_OUTPUT], value);
-        outputBufferedWrite(value);
+        //io_putc(FILE_OUTPUT, value);
+        mos_fputc(FILE_OUTPUT, value);
     }
     address++;
     totalsize++;
@@ -1362,9 +1362,11 @@ void handle_asm_definemacro(void) {
                 defineMacro(currentline.mnemonic, argcount, (char *)arglist);
                 // define macro filename
                 getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
-                addFileDeleteList(filename[FILE_MACRO]);
-                if(!openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always))
-                    error("Error writing macro file");
+                io_addDeleteList(filename[FILE_MACRO]);
+                filehandle[FILE_MACRO] = mos_fopen(filename[FILE_MACRO], fa_write | fa_create_always);
+                //if(!openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always))
+                //    error("Error writing macro file");
+                if(!filehandle[FILE_MACRO]) error("Error writing macro file");
             }
             else error(message[ERROR_MACRONAME]);
         }
@@ -1547,6 +1549,7 @@ void passInitialize(uint8_t passnumber) {
     totalsize = 0;
     MacroDefineState = false;
     currentExpandedMacro = NULL;
+    io_setpass(passnumber);
     filestackInit();
     initAnonymousLabelTable();
 }
@@ -1598,9 +1601,6 @@ bool assemble(void){
 
     // Pass 2
     printf("Pass 2...\n\r");
-    reOpenFile(FILE_INPUT, fa_read);
-    reOpenFile(FILE_LOCAL_LABELS, fa_read);
-    reOpenFile(FILE_ANONYMOUS_LABELS, fa_read);
     passInitialize(2);
     listInit(consolelist_enabled);
     readLocalLabels();

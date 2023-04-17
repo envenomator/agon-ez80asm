@@ -25,11 +25,9 @@ int main(int argc, char *argv[])
     list_enabled = ((argc == 3) && (strcmp(argv[2], "-l") == 0));     
     consolelist_enabled = false;
 
-    prepare_filenames(argv[1]);
-    if(!openfiles()) return 0;
+    if(!io_init(argv[1])) return 0;
 
     // Initialization
-    outputBufferInit();
     initGlobalLabelTable();
     initLocalLabelTable();
     initAnonymousLabelTable();
@@ -39,12 +37,11 @@ int main(int argc, char *argv[])
     // Assemble input to output
     assemble();
     if(global_errors) {
-        mos_del(filename[FILE_OUTPUT]);
+        io_addDeleteList(filename[FILE_OUTPUT]);
         printf("Error in input\r\n");
     }
     else printf("Done\r\n");
 
-    outputBufferFlush();
-    closeAllFiles();   
+    io_close();   
     return 0;
 }

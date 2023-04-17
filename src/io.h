@@ -20,20 +20,17 @@ enum {
     FILE_MACRO
 };
 
-bool openFile(uint8_t *file, char *name, uint8_t mode);
-bool reOpenFile(uint8_t number, uint8_t mode);
-void prepare_filenames(char *input_filename);
+bool io_init(char *input_filename);                 // init - called once at start
+bool io_setpass(uint8_t pass);                      // assembly pass, set needed state of files
+void io_close(void);                                // close everything at end, do cleanup
+void io_putc(uint8_t fh, unsigned char c);          // buffered write of a single byte / fallback
+int  io_puts(uint8_t fh, char *s);                  // buffered write of a string / fallback
+void io_addDeleteList(char *name);                  // add name of file to delete list at io_close
+
 void getMacroFilename(char *filename, char *macroname);
-void closeAllFiles();
-bool openfiles(void);
-void addFileDeleteList(char *name);
-void deleteFiles(void);
+
 
 char *agon_fgets(char *s, int size, uint8_t fileid);
 int agon_fputs(char *s, uint8_t fileid);
-
-void outputBufferedWrite(unsigned char s);
-void outputBufferInit(void);
-void outputBufferFlush(void);
 
 #endif // IO_H

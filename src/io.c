@@ -8,20 +8,38 @@
 #include "listing.h"
 
 // Global variables
-char filename[FILES][FILENAMEMAXLENGTH];
-uint8_t filehandle[FILES];
-
+char     filename[FILES][FILENAMEMAXLENGTH];
+uint8_t  filehandle[FILES];
 // Local variables
-char _fileBasename[FILENAMEMAXLENGTH];
-char _outputbuffer[OUTPUT_BUFFERSIZE];
-unsigned int _outputbuffersize;
+char *   _bufferlayout[FILES];          // statically set start of buffer to each file
+char *   _filebuffer[FILES];            // actual moving pointers in buffer
+uint24_t _filebuffersize[FILES];        // current fill size of each buffer
+char     _inputbuffer[FILE_BUFFERSIZE];
+char     _outputbuffer[FILE_BUFFERSIZE];
+char    _fileBasename[FILENAMEMAXLENGTH];
 
+void _initFileBufferLayout(void) {
+    int n;
 
-bool openFile(uint8_t *file, char *name, uint8_t mode) {
+    for(n = 0; n < FILES; n++) _bufferlayout[n] = 0;
+    // static layout
+    _bufferlayout[FILE_INPUT] = _inputbuffer;
+    _bufferlayout[FILE_OUTPUT] = _outputbuffer;
+}
+
+void _initFileBuffers(void) {
+    int n;
+    // dynamic layout
+    for(n = 0; n < FILES; n++) {
+        _filebuffer[n] = _bufferlayout[n];
+        _filebuffersize[n] = 0;
+    }
+}
+
+// opens a file a places the result at the file pointer
+bool _openFile(uint8_t *file, char *name, uint8_t mode) {
     *file = mos_fopen(name, mode);
-    //printf("Opened file \"%s\", id %d\r\n", name, *file);
     if(*file) return true;
-    //printf("Error opening \"%s\"\n\r", name);
     return false;
 }
 
@@ -29,12 +47,12 @@ bool reOpenFile(uint8_t number, uint8_t mode) {
     bool result;
     //printf("Re-opening    id: %d\r\n",filehandle[number]);
     if(filehandle[number]) mos_fclose(filehandle[number]);
-    result = openFile(&filehandle[number], filename[number], mode);
+    result = _openFile(&filehandle[number], filename[number], mode);
     //printf("Re-opened mos id: %d\r\n",filehandle[number]);
     return result;
 }
 
-void prepare_filenames(char *input_filename) {
+void _prepare_filenames(char *input_filename) {
     // prepare filenames
     strcpy(filename[FILE_INPUT], input_filename);
     strcpy(filename[FILE_OUTPUT], input_filename);
@@ -57,12 +75,12 @@ void getMacroFilename(char *filename, char *macroname) {
     strcat(filename, macroname);
 }
 
-void addFileDeleteList(char *name) {
+void io_addDeleteList(char *name) {
     agon_fputs(name, FILE_DELETELIST);
     agon_fputs("\n", FILE_DELETELIST);
 }
 
-void deleteFiles(void) {
+void _deleteFiles(void) {
     char line[LINEMAX];
     mos_del(filename[FILE_LOCAL_LABELS]);
     mos_del(filename[FILE_ANONYMOUS_LABELS]);
@@ -78,7 +96,7 @@ void deleteFiles(void) {
     mos_del(filename[FILE_DELETELIST]);
 }
 
-void closeAllFiles() {
+void _closeAllFiles() {
     if(filehandle[FILE_CURRENT]) mos_fclose(filehandle[FILE_CURRENT]);
     if(filehandle[FILE_INPUT]) mos_fclose(filehandle[FILE_INPUT]);
     if(filehandle[FILE_OUTPUT]) mos_fclose(filehandle[FILE_OUTPUT]);
@@ -86,20 +104,18 @@ void closeAllFiles() {
     if(filehandle[FILE_ANONYMOUS_LABELS]) mos_fclose(filehandle[FILE_ANONYMOUS_LABELS]);
     if(list_enabled && filehandle[FILE_LISTING]) mos_fclose(filehandle[FILE_LISTING]);
     if(filehandle[FILE_MACRO]) mos_fclose(filehandle[FILE_MACRO]);
-
-    deleteFiles();
 }
 
-bool openfiles(void) {
+bool _openfiles(void) {
     bool status = true;
 
-    status = status && openFile(&filehandle[FILE_DELETELIST], filename[FILE_DELETELIST], fa_write | fa_create_always);
-    status = status && openFile(&filehandle[FILE_INPUT], filename[FILE_INPUT], fa_read);
-    status = status && openFile(&filehandle[FILE_OUTPUT], filename[FILE_OUTPUT], fa_write | fa_create_always);
-    status = status && openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], fa_write | fa_create_always);
-    status = status && openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], fa_write | fa_create_always);
-    if(list_enabled) status = status && openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], fa_write | fa_create_always);
-    if(!status) closeAllFiles();
+    status = status && _openFile(&filehandle[FILE_DELETELIST], filename[FILE_DELETELIST], fa_write | fa_create_always);
+    status = status && _openFile(&filehandle[FILE_INPUT], filename[FILE_INPUT], fa_read);
+    status = status && _openFile(&filehandle[FILE_OUTPUT], filename[FILE_OUTPUT], fa_write | fa_create_always);
+    status = status && _openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], fa_write | fa_create_always);
+    status = status && _openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], fa_write | fa_create_always);
+    if(list_enabled) status = status && _openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], fa_write | fa_create_always);
+    if(!status) _closeAllFiles();
     return status;
 }
 
@@ -145,16 +161,68 @@ int agon_fputs(char *s, uint8_t fileid) {
     return number;
 }
 
-void outputBufferedWrite(unsigned char s) {
-    _outputbuffer[_outputbuffersize++] = s;
-    if(_outputbuffersize == OUTPUT_BUFFERSIZE) outputBufferFlush();
+// Will be called for output files only
+// These files will have a buffer set up previously
+void _io_flush(uint8_t fh) {
+    mos_fwrite(filehandle[fh], (char*)_bufferlayout[fh], _filebuffersize[fh]);
+    _filebuffer[fh] = _bufferlayout[fh];
+    _filebuffersize[fh] = 0;
 }
 
-void outputBufferInit(void) {
-    _outputbuffersize = 0;
+// Flush all output files
+void _io_flushOutput(void) {
+    _io_flush(FILE_OUTPUT);
+    _io_flush(FILE_LISTING);
 }
 
-void outputBufferFlush(void) {
-    mos_fwrite(filehandle[FILE_OUTPUT], _outputbuffer, _outputbuffersize);
-    _outputbuffersize = 0;
+// Only called on output-mode files
+void io_putc(uint8_t fh, unsigned char c) {
+    if(_bufferlayout[fh]) {
+        // Buffered IO
+        *(_filebuffer[fh]++) = c;
+        _filebuffersize[fh]++;
+        if(_filebuffersize[fh] == FILE_BUFFERSIZE) _io_flush(fh);
+    }
+    else mos_fputc(fh, c); // regular non-buffered IO
+}
+
+int io_puts(uint8_t fh, char *s) {
+    int number = 0;
+    while(*s) {
+        io_putc(fh, *s);
+        number++;
+        s++;
+    }
+    return number;
+}
+
+bool io_init(char *input_filename) {
+    _prepare_filenames(input_filename);
+    _initFileBufferLayout();
+    _initFileBuffers();
+    return _openfiles();
+}
+
+bool io_setpass(uint8_t pass) {
+    bool result = true;
+    switch(pass) {
+        case 1:
+            return true;
+            break;
+        case 2:
+            _initFileBuffers();
+            result = result && reOpenFile(FILE_INPUT, fa_read);
+            result = result && reOpenFile(FILE_LOCAL_LABELS, fa_read);
+            result = result && reOpenFile(FILE_ANONYMOUS_LABELS, fa_read);
+            if(!result) error("Error re-opening input file\r\n");
+            return result;
+            break;
+    }
+    return false;
+}
+
+void io_close(void) {
+    _io_flushOutput();
+    _closeAllFiles();
+    _deleteFiles();
 }
