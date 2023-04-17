@@ -12,28 +12,28 @@
 char     filename[FILES][FILENAMEMAXLENGTH];
 uint8_t  filehandle[FILES];
 // Local variables
-char *   _bufferlayout[FILES];          // statically set start of buffer to each file
+char *   _bufferstart[FILES];          // statically set start of buffer to each file
 char *   _filebuffer[FILES];            // actual moving pointers in buffer
 uint24_t _filebuffersize[FILES];        // current fill size of each buffer
 bool     _fileEOF[FILES];
 char     _inputbuffer[FILE_BUFFERSIZE];
 char     _outputbuffer[FILE_BUFFERSIZE];
-char    _fileBasename[FILENAMEMAXLENGTH];
+char     _fileBasename[FILENAMEMAXLENGTH]; // base filename for all output files
 
 void _initFileBufferLayout(void) {
     int n;
 
-    for(n = 0; n < FILES; n++) _bufferlayout[n] = 0;
+    for(n = 0; n < FILES; n++) _bufferstart[n] = 0;
     // static layout
-    _bufferlayout[FILE_INPUT] = _inputbuffer;
-    _bufferlayout[FILE_OUTPUT] = _outputbuffer;
+    _bufferstart[FILE_INPUT] = _inputbuffer;
+    _bufferstart[FILE_OUTPUT] = _outputbuffer;
 }
 
 void _initFileBuffers(void) {
     int n;
     // dynamic layout
     for(n = 0; n < FILES; n++) {
-        _filebuffer[n] = _bufferlayout[n];
+        _filebuffer[n] = _bufferstart[n];
         _filebuffersize[n] = 0;
         _fileEOF[n] = false;
     }
@@ -72,7 +72,7 @@ void _prepare_filenames(char *input_filename) {
     strcat(filename[FILE_DELETELIST], ".del");
 }
 
-void getMacroFilename(char *filename, char *macroname) {
+void io_getMacroFilename(char *filename, char *macroname) {
     strcpy(filename, _fileBasename);
     strcat(filename, ".m.");
     strcat(filename, macroname);
@@ -123,52 +123,19 @@ bool _openfiles(void) {
     return status;
 }
 
-// Get a maximum of 'maxsize' characters from a file
-char *agon_fgets(char *s, int maxsize, uint8_t fileid) {
-	int c;
-	char *cs;
-	bool eof;
-    c = 0;
-	cs = s;
-
-    #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
-    eof = 0;
-	do {
-		c = mos_fgetc(filehandle[fileid]);
-		if((*cs++ = c) == '\n') break;		
-		eof = mos_feof(filehandle[fileid]);
-	}
-	while(--maxsize > 0 && !eof);
-    #endif
-
-    #ifndef AGON
-	do {
-		c = mos_fgetc(filehandle[fileid]);
-		eof = mos_feof(filehandle[fileid]);
-		if((*cs++ = c) == '\n') break;		
-	}
-	while(--maxsize > 0 && !eof);
-    #endif
-
-	*cs = '\0';
-
-	return (eof) ? NULL : s;
-}
-
-//*/
 // Will be called for output files only
 // These files will have a buffer set up previously
 void _io_flush(uint8_t fh) {
-    mos_fwrite(filehandle[fh], (char*)_bufferlayout[fh], _filebuffersize[fh]);
-    _filebuffer[fh] = _bufferlayout[fh];
+    mos_fwrite(filehandle[fh], (char*)_bufferstart[fh], _filebuffersize[fh]);
+    _filebuffer[fh] = _bufferstart[fh];
     _filebuffersize[fh] = 0;
 }
 
 // Will be called for reading INPUT buffer
 void _io_fillbuffer(uint8_t fh) {
-    if(_bufferlayout[fh]) {
-        _filebuffersize[fh] = mos_fread(filehandle[fh], _bufferlayout[fh], FILE_BUFFERSIZE);
-        _filebuffer[fh] = _bufferlayout[fh];
+    if(_bufferstart[fh]) {
+        _filebuffersize[fh] = mos_fread(filehandle[fh], _bufferstart[fh], FILE_BUFFERSIZE);
+        _filebuffer[fh] = _bufferstart[fh];
     }
     //printf("Fillbuffer called: %d bytes read\r\n",_filebuffersize[fh]);
     //printf("Fillbuffer content: %s\r\n",_filebuffer[fh]);
@@ -182,29 +149,13 @@ void _io_flushOutput(void) {
 
 // Only called on output-mode files
 void io_putc(uint8_t fh, unsigned char c) {
-    if(_bufferlayout[fh]) {
+    if(_bufferstart[fh]) {
         // Buffered IO
         *(_filebuffer[fh]++) = c;
         _filebuffersize[fh]++;
         if(_filebuffersize[fh] == FILE_BUFFERSIZE) _io_flush(fh);
     }
     else mos_fputc(filehandle[fh], c); // regular non-buffered IO
-}
-
-char io_getc(uint8_t fh) {
-    if(_bufferlayout[fh]) {
-        if(_filebuffersize == 0) {
-            _io_fillbuffer(fh);
-            if(_filebuffersize[fh] == 0) {
-                _fileEOF[fh] = true;
-                return 0;
-            }
-        }
-        _filebuffersize[fh]--;
-        _filebuffer[fh]--;
-        return *(_filebuffer[fh]);
-    }
-    else return mos_fgetc(filehandle[fh]);
 }
 
 int io_puts(uint8_t fh, char *s) {
@@ -225,7 +176,7 @@ char* io_gets(uint8_t fh, char *s, int size) {
     c = 0;
 	cs = s;
 
-    if(_bufferlayout[fh]) {
+    if(_bufferstart[fh]) {
         //printf("fread mode %d\r\n",linenumber);
         do { // io_getc
             if(_filebuffersize[fh] == 0) {
@@ -249,7 +200,7 @@ char* io_gets(uint8_t fh, char *s, int size) {
         #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
         eof = 0;
         do {
-            c = io_getc(filehandle[fh]);
+            c = mos_fgetc(filehandle[fh]);
             if((*cs++ = c) == '\n') break;		
             _fileEOF[fh] = mos_feof(filehandle[fh]);
         }
@@ -303,7 +254,7 @@ void io_close(void) {
 void io_getCurrent(filestackitem *fsi) {
     fsi->fp = filehandle[FILE_CURRENT];
     fsi->filebuffer = _filebuffer[FILE_CURRENT];
-    fsi->bufferstart = _bufferlayout[FILE_CURRENT];
+    fsi->bufferstart = _bufferstart[FILE_CURRENT];
     fsi->filebuffersize = _filebuffersize[FILE_CURRENT];
     strcpy(fsi->filename, filename[FILE_CURRENT]);
     fsi->linenumber = linenumber;
@@ -313,7 +264,7 @@ void io_getCurrent(filestackitem *fsi) {
 void io_setCurrent(filestackitem *fsi) {
     filehandle[FILE_CURRENT] = fsi->fp;
     _filebuffer[FILE_CURRENT] = fsi->filebuffer;
-    _bufferlayout[FILE_CURRENT] = fsi->bufferstart;
+    _bufferstart[FILE_CURRENT] = fsi->bufferstart;
     _filebuffersize[FILE_CURRENT] = fsi->filebuffersize;
     strcpy(filename[FILE_CURRENT], fsi->filename);
     linenumber = fsi->linenumber;
@@ -321,11 +272,21 @@ void io_setCurrent(filestackitem *fsi) {
 } 
 
 void io_resetCurrentInput(void) {
-    _bufferlayout[FILE_CURRENT] = _bufferlayout[FILE_INPUT];
+    _bufferstart[FILE_CURRENT] = _bufferstart[FILE_INPUT];
 
     strcpy(filename[FILE_CURRENT], filename[FILE_INPUT]);
     filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
     _filebuffer[FILE_CURRENT] = _filebuffer[FILE_INPUT];
     _filebuffersize[FILE_CURRENT] = _filebuffersize[FILE_INPUT];
     _fileEOF[FILE_CURRENT] = false;    
+}
+
+void io_getFileDefaults(filestackitem *fsi) {
+    fsi->filename[0] = 0;
+    fsi->fp = 0;
+    fsi->filebuffer = 0;
+    fsi->filebuffersize = 0;
+    fsi->bufferstart = 0;
+    fsi->fileEOF = 0;
+    fsi->linenumber = 1;
 }

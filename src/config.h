@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-//#define AGON
+#define AGON
 
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
@@ -14,7 +14,7 @@
 #define LOCAL_LABEL_BUFFERSIZE   0x4000 // 16KB local label space
 #define GLOBAL_LABEL_TABLE_SIZE   16384 // 16K global labels
 #define LOCAL_LABEL_TABLE_SIZE       64 //  64 local labels
-#define FILE_BUFFERSIZE            1024
+#define FILE_BUFFERSIZE            1024 // For each specified input/output file (io.c)
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX                    64 // Token maximum length 
 #define MAXIMUM_MACROS               64 // Maximum number of macros

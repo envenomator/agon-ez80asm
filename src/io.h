@@ -26,15 +26,12 @@ bool  io_setpass(uint8_t pass);                      // assembly pass, set neede
 void  io_close(void);                                // close everything at end, do cleanup
 void  io_putc(uint8_t fh, unsigned char c);          // buffered write of a single byte / fallback
 int   io_puts(uint8_t fh, char *s);                  // buffered write of a string / fallback
-char  io_getc(uint8_t fh);                           // buffered read of a single byte / fallback
 char* io_gets(uint8_t fh, char *s, int size);        // buffered read of a string / fallback
 void  io_addDeleteList(char *name);                  // add name of file to delete list at io_close
+void  io_getFileDefaults(filestackitem *fsi);        // set file defaults (traditional mode) to fsi object
 void  io_getCurrent(filestackitem *fsi);             // retrieve CURRENT as fsi
 void  io_setCurrent(filestackitem *fsi);             // set CURRENT from fsi
 void  io_resetCurrentInput(void);                    // set FILE_CURRENT to FILE_INPUT specs
-
-void getMacroFilename(char *filename, char *macroname);
-
-//char *agon_fgets(char *s, int size, uint8_t fileid);
+void  io_getMacroFilename(char *filename, char *macroname);
 
 #endif // IO_H

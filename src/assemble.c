@@ -1126,29 +1126,18 @@ void handle_asm_include(void) {
         getLineToken(&token, currentline.next, 0);
         if(token.start[0] == '\"') {
             token.start[strlen(token.start)-1] = 0;
-            //fsi.linenumber = linenumber;
-            //fsi.fp = filehandle[FILE_CURRENT];
-            //strcpy(fsi.filename, filename[FILE_CURRENT]);
             io_getCurrent(&fsi);
             filestackPush(&fsi);
-            //filehandle[FILE_CURRENT] = mos_fopen(token.start+1, fa_read);
-            //strcpy(filename[FILE_CURRENT], token.start+1);
             strcpy(fsi.filename, token.start+1);
+            // set new file
+            io_getFileDefaults(&fsi);
             fsi.fp = mos_fopen(token.start+1, fa_read);
-            fsi.filebuffer = 0;
-            fsi.filebuffersize = 0;
-            fsi.bufferstart = 0;
-            fsi.fileEOF = 0;
-            fsi.linenumber = 1;
             io_setCurrent(&fsi);
             
-            //if(filehandle[FILE_CURRENT] == 0) {
-            //    error(message[ERROR_INCLUDEFILE]);
-            //    filestackPop(&fsi);
-            //    linenumber = fsi.linenumber;
-            //    filehandle[FILE_CURRENT] = fsi.fp;
-            //    strcpy(filename[FILE_CURRENT], fsi.filename);
-            //}
+            if(filehandle[FILE_CURRENT] == 0) {
+                error(message[ERROR_INCLUDEFILE]);
+                filestackPop(&fsi);
+            }
             lineNumberNeedsReset = true;
         }
         else error(message[ERROR_STRINGFORMAT]);
@@ -1185,7 +1174,6 @@ void handle_asm_incbin(void) {
                     emit_8bit(c);
                     #endif
                     eof = mos_feof(fh);
-                    //printf("C: %02x  EOF: %d\r\n",c,eof);
                     if(eof) break;
                     #ifndef AGON
                     emit_8bit(c);
@@ -1322,7 +1310,7 @@ void handle_asm_definemacro(void) {
                 // record the macro to memory
                 defineMacro(currentline.mnemonic, argcount, (char *)arglist);
                 // define macro filename
-                getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
+                io_getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
                 io_addDeleteList(filename[FILE_MACRO]);
                 filehandle[FILE_MACRO] = mos_fopen(filename[FILE_MACRO], fa_write | fa_create_always);
                 //if(!openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always))
@@ -1398,7 +1386,7 @@ void expandMacroStart(macro *exp) {
     tokentype token;
     uint8_t argcount = 0;
     filestackitem fsi;
-    char macrofilename[FILENAMEMAXLENGTH];
+    //char macrofilename[FILENAMEMAXLENGTH];
 
     if(pass == 1) definelabel(address);
 
@@ -1426,23 +1414,18 @@ void expandMacroStart(macro *exp) {
     // push current file to the stack
     io_getCurrent(&fsi);
     filestackPush(&fsi);
-    // Macro filename to read
-    getMacroFilename(macrofilename, exp->name);
-    
-    strcpy(fsi.filename, macrofilename);
-    fsi.fp = mos_fopen(macrofilename, fa_read);
-    fsi.filebuffer = 0;
-    fsi.filebuffersize = 0;
-    fsi.bufferstart = 0;
-    fsi.fileEOF = 0;
-    fsi.linenumber = 1;
+
+    // set new file
+    io_getFileDefaults(&fsi);
+    io_getMacroFilename(fsi.filename, exp->name);    
+    fsi.fp = mos_fopen(fsi.filename, fa_read);
     io_setCurrent(&fsi);
 
 
-//    if(filehandle[FILE_CURRENT] == 0) {
-//        filestackPop(&fsi);
-//        error(message[ERROR_MACROFILEWRITE]);
-//    }
+    if(filehandle[FILE_CURRENT] == 0) {
+        filestackPop(&fsi);
+        error(message[ERROR_MACROFILEWRITE]);
+    }
     lineNumberNeedsReset = true;
 }
 /*
@@ -1522,6 +1505,7 @@ void passInitialize(uint8_t passnumber) {
     io_setpass(passnumber);
     filestackInit();
     initAnonymousLabelTable();
+    io_resetCurrentInput();
 }
 
 // Assembler directives may demand a late reset of the linenumber, after the listing has been done
@@ -1542,7 +1526,6 @@ bool assemble(void){
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\n\r");
-    io_resetCurrentInput();
     passInitialize(1);
     do {
         while(io_gets(FILE_CURRENT, line, sizeof(line))) {
@@ -1572,7 +1555,6 @@ bool assemble(void){
     readLocalLabels();
     readAnonymousLabel();
     
-    io_resetCurrentInput();
     do {
         while(io_gets(FILE_CURRENT, line, sizeof(line))) {
             if(global_errors) return false;
