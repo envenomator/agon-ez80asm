@@ -116,7 +116,7 @@ void listEndLine(bool console) {
         }
         else {
             sprintf(buffer, "\r\n");
-            agon_fputs("buffer", FILE_LISTING);
+            agon_fputs(buffer, FILE_LISTING);
             if(console) printf("%s",buffer);
         }
     }
