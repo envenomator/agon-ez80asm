@@ -1494,7 +1494,7 @@ void processInstructions(char *line){
 
     if(pass == 1) {
         if(MacroDefineState) {
-            if(strcasecmp(currentline.mnemonic, ENDMACROCMD)) agon_fputs(line, FILE_MACRO);
+            if(strcasecmp(currentline.mnemonic, ENDMACROCMD)) io_puts(FILE_MACRO, line);
             if(notEmpty(currentline.label) && (currentline.label[0] != '@')) error("No global labels allowed in macro definition");
         }
         else {
@@ -1577,7 +1577,8 @@ bool assemble(void){
     printf("Pass 1...\n\r");
     passInitialize(1);
     do {
-        while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
+        //while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
+        while(io_gets(FILE_CURRENT, line, sizeof(line))) {
             if(global_errors) return false;
             linenumber++;
             parseLine(line);
@@ -1608,7 +1609,8 @@ bool assemble(void){
     
     filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
     do {
-        while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
+        //while (agon_fgets(line, sizeof(line), FILE_CURRENT)){
+        while(io_gets(FILE_CURRENT, line, sizeof(line))) {
             if(global_errors) return false;
             linenumber++;
             listStartLine(line);

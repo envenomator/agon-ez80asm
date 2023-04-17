@@ -14,6 +14,7 @@ uint8_t  filehandle[FILES];
 char *   _bufferlayout[FILES];          // statically set start of buffer to each file
 char *   _filebuffer[FILES];            // actual moving pointers in buffer
 uint24_t _filebuffersize[FILES];        // current fill size of each buffer
+bool     _fileEOF[FILES];
 char     _inputbuffer[FILE_BUFFERSIZE];
 char     _outputbuffer[FILE_BUFFERSIZE];
 char    _fileBasename[FILENAMEMAXLENGTH];
@@ -33,6 +34,7 @@ void _initFileBuffers(void) {
     for(n = 0; n < FILES; n++) {
         _filebuffer[n] = _bufferlayout[n];
         _filebuffersize[n] = 0;
+        _fileEOF[n] = false;
     }
 }
 
@@ -76,8 +78,8 @@ void getMacroFilename(char *filename, char *macroname) {
 }
 
 void io_addDeleteList(char *name) {
-    agon_fputs(name, FILE_DELETELIST);
-    agon_fputs("\n", FILE_DELETELIST);
+    io_puts(FILE_DELETELIST, name);
+    io_puts(FILE_DELETELIST, "\n");
 }
 
 void _deleteFiles(void) {
@@ -87,7 +89,8 @@ void _deleteFiles(void) {
 
     // delete all files listed for cleanup
     if(reOpenFile(FILE_DELETELIST, fa_read)) {
-        while (agon_fgets(line, sizeof(line), FILE_DELETELIST)){
+        //while (agon_fgets(line, sizeof(line), FILE_DELETELIST)){
+        while(io_gets(FILE_DELETELIST, line, sizeof(line))) {
             trimRight(line);
             if(CLEANUPFILES) mos_del(line);
         }
@@ -151,22 +154,18 @@ char *agon_fgets(char *s, int maxsize, uint8_t fileid) {
 	return (eof) ? NULL : s;
 }
 
-int agon_fputs(char *s, uint8_t fileid) {
-    int number = 0;
-    while(*s) {
-        mos_fputc(filehandle[fileid], *s);
-        number++;
-        s++;
-    }
-    return number;
-}
-
+//*/
 // Will be called for output files only
 // These files will have a buffer set up previously
 void _io_flush(uint8_t fh) {
     mos_fwrite(filehandle[fh], (char*)_bufferlayout[fh], _filebuffersize[fh]);
     _filebuffer[fh] = _bufferlayout[fh];
     _filebuffersize[fh] = 0;
+}
+
+// Will be called for reading INPUT buffer
+void _io_fillbuffer(uint8_t fh) {
+    if(_bufferlayout[fh]) _filebuffersize[fh] = mos_fread(filehandle[fh], _filebuffer[fh], FILE_BUFFERSIZE);
 }
 
 // Flush all output files
@@ -183,7 +182,23 @@ void io_putc(uint8_t fh, unsigned char c) {
         _filebuffersize[fh]++;
         if(_filebuffersize[fh] == FILE_BUFFERSIZE) _io_flush(fh);
     }
-    else mos_fputc(fh, c); // regular non-buffered IO
+    else mos_fputc(filehandle[fh], c); // regular non-buffered IO
+}
+
+char io_getc(uint8_t fh) {
+    if(_bufferlayout[fh]) {
+        if(_filebuffersize == 0) {
+            _io_fillbuffer(fh);
+            if(_filebuffersize[fh] == 0) {
+                _fileEOF[fh] = true;
+                return 0;
+            }
+        }
+        _filebuffersize[fh]--;
+        _filebuffer[fh]--;
+        return *(_filebuffer[fh]);
+    }
+    else return mos_fgetc(filehandle[fh]);
 }
 
 int io_puts(uint8_t fh, char *s) {
@@ -194,6 +209,55 @@ int io_puts(uint8_t fh, char *s) {
         s++;
     }
     return number;
+}
+
+// Get a maximum of 'size' characters from a file, ends at CR or EOF
+char* io_gets(uint8_t fh, char *s, int size) {
+	int c;
+	char *cs;
+    bool eof;
+    c = 0;
+	cs = s;
+
+    if(_bufferlayout[fh]) {
+        do { // io_getc
+            if(_filebuffersize == 0) {
+                _io_fillbuffer(fh);
+                if(_filebuffersize[fh] == 0) {
+                    _fileEOF[fh] = true;
+                    return 0;
+                }
+            }
+            _filebuffersize[fh]--;
+            _filebuffer[fh]--;
+            c = *(_filebuffer[fh]);
+            if((*cs++ = c) == '\n') break;
+        }
+        while(--size > 0 && !_fileEOF[fh]);
+        eof = _fileEOF[fh];
+    }
+    else {
+        #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
+        eof = 0;
+        do {
+            c = io_getc(filehandle[fh]);
+            if((*cs++ = c) == '\n') break;		
+            _fileEOF[fh] = mos_feof(filehandle[fh]);
+        }
+        while(--size > 0 && !eof);
+        #endif
+
+        #ifndef AGON
+        do {
+            c = mos_fgetc(filehandle[fh]);
+            eof = mos_feof(filehandle[fh]);
+            if((*cs++ = c) == '\n') break;		
+        }
+        while(--size > 0 && !eof);
+        #endif
+    }
+	*cs = '\0';
+	return (eof) ? NULL : s;
 }
 
 bool io_init(char *input_filename) {

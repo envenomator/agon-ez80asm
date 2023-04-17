@@ -24,7 +24,7 @@ char buffer[LINEMAX + 32];
 
 void listInit(bool console) {
     sprintf(buffer, "%s", _listHeader);
-    agon_fputs(buffer, FILE_LISTING);
+    io_puts(FILE_LISTING, buffer);
     if(console) printf("%s", _listHeader);
     _listFirstline = false;
     _listLine[0] = 0;
@@ -85,24 +85,24 @@ void listEndLine(bool console) {
     for(lines = 0; lines < linemax; lines++) {
         if(lines == 0) {
             sprintf(buffer, "%06X ",_listAddress);
-            agon_fputs(buffer, FILE_LISTING);
+            io_puts(FILE_LISTING, buffer);
             if(console) printf("%s",buffer);
         }
         else {
             sprintf(buffer, "       ");
-            agon_fputs(buffer, FILE_LISTING);
+            io_puts(FILE_LISTING, buffer);
             if(console) printf("%s",buffer);
         }
         for(i = 0; i < LISTING_OBJECTS_PER_LINE; i++) {
             if(objectnum < _listObjectCount) {
                 sprintf(buffer, "%02X ",_listObjects[objectnum]);
-                agon_fputs(buffer, FILE_LISTING);
+                io_puts(FILE_LISTING, buffer);
                 if(console) printf("%s",buffer);
                 objectnum++;
             }
             else {
                 sprintf(buffer, "   ");
-                agon_fputs(buffer, FILE_LISTING);
+                io_puts(FILE_LISTING, buffer);
                 if(console) printf("%s",buffer);
             }
         }
@@ -111,12 +111,12 @@ void listEndLine(bool console) {
                 sprintf(buffer, "---- %s\r\n",_listLine);
             else
                 sprintf(buffer, "%04d %s\r\n",linenumber, _listLine);
-            agon_fputs(buffer, FILE_LISTING);
+            io_puts(FILE_LISTING, buffer);
             if(console) printf("%s",buffer);
         }
         else {
             sprintf(buffer, "\r\n");
-            agon_fputs(buffer, FILE_LISTING);
+            io_puts(FILE_LISTING, buffer);
             if(console) printf("%s",buffer);
         }
     }
