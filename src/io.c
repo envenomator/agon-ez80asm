@@ -90,7 +90,6 @@ void _deleteFiles(void) {
 
     // delete all files listed for cleanup
     if(reOpenFile(FILE_DELETELIST, fa_read)) {
-        //while (agon_fgets(line, sizeof(line), FILE_DELETELIST)){
         while(io_gets(FILE_DELETELIST, line, sizeof(line))) {
             trimRight(line);
             if(CLEANUPFILES) mos_del(line);
@@ -137,8 +136,6 @@ void _io_fillbuffer(uint8_t fh) {
         _filebuffersize[fh] = mos_fread(filehandle[fh], _bufferstart[fh], FILE_BUFFERSIZE);
         _filebuffer[fh] = _bufferstart[fh];
     }
-    //printf("Fillbuffer called: %d bytes read\r\n",_filebuffersize[fh]);
-    //printf("Fillbuffer content: %s\r\n",_filebuffer[fh]);
 }
 
 // Flush all output files
@@ -177,8 +174,8 @@ char* io_gets(uint8_t fh, char *s, int size) {
 	cs = s;
 
     if(_bufferstart[fh]) {
-        //printf("fread mode %d\r\n",linenumber);
         do { // io_getc
+            #ifndef AGON
             if(_filebuffersize[fh] == 0) {
                 _io_fillbuffer(fh);
                 if(_filebuffersize[fh] == 0) {
@@ -186,23 +183,29 @@ char* io_gets(uint8_t fh, char *s, int size) {
                     return 0;
                 }
             }
+            #endif
+            #ifdef AGON
+            if(_filebuffersize[fh] == 0) {
+                _fileEOF[fh] = mos_feof(filehandle[fh]);
+                if(_fileEOF[fh]) return 0;
+                _io_fillbuffer(fh);
+            }
+            #endif
             _filebuffersize[fh]--;
             c = *(_filebuffer[fh]);
             _filebuffer[fh]++;
-            //printf("[%c]",c);
             if((*cs++ = c) == '\n') break;
         }
         while(--size > 0 && !_fileEOF[fh]);
         eof = _fileEOF[fh];
     }
     else {
-        //printf("Traditional mode %d\r\n",linenumber);
         #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
         eof = 0;
         do {
             c = mos_fgetc(filehandle[fh]);
             if((*cs++ = c) == '\n') break;		
-            _fileEOF[fh] = mos_feof(filehandle[fh]);
+            eof = mos_feof(filehandle[fh]);
         }
         while(--size > 0 && !eof);
         #endif

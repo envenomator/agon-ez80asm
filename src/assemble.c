@@ -274,15 +274,11 @@ void parse_operand(char *string, operand *operand) {
                             return;
                         case '+':
                         case '-':
-                            //if(isdigit(*ptr)) {
-                                operand->reg = R_IY;
-                                operand->displacement_provided = true;
-                                //if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr,true);
-                                //else operand->displacement = (int16_t) str2num(ptr,true);
-                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getLabelValue(ptr);
-                                else operand->displacement = (int16_t) getLabelValue(ptr);
-                                return;
-                            //}
+                            operand->reg = R_IY;
+                            operand->displacement_provided = true;
+                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getLabelValue(ptr);
+                            else operand->displacement = (int16_t) getLabelValue(ptr);
+                            return;
                             break;
                         default:
                             break;
@@ -459,7 +455,6 @@ void parseLine(char *src) {
                     // check if a defined macro exists, before erroring out
                     currentline.current_macro = findMacro(currentline.mnemonic);
                     if(currentline.current_macro) {
-                        //printf("Parse Macro cmd found: %s - instruction: %x\n", currentline.current_macro->name, currentline.current_instruction);
                         currentline.next = token.next;
                         state = PS_DONE;
                         break;
@@ -503,7 +498,6 @@ void parseLine(char *src) {
             case PS_OP1:
                 argcount++;
                 if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-                //printf("Parse op %d <<%s>>\n", argcount, token.start);
                 if(argcount == 1) {
                     strcpy(currentline.operand1, token.start);
                     parse_operand(currentline.operand1, &operand1);
@@ -548,7 +542,6 @@ void parseLine(char *src) {
 
 void definelabel(int24_t num){
     if(strlen(currentline.label)) {
-        //printf("Define label: %s <<%s>> %x - scope %d\n",filename[FILE_CURRENT], currentline.label,num, filestackCount());
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
                 writeAnonymousLabel(num);
@@ -863,7 +856,6 @@ void emit_instruction(operandlist *list) {
     if((operand1.immediate_provided) && ((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N))) emit_8bit(operand1.immediate & 0xFF);
     if((operand2.immediate_provided) && ((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N))) emit_8bit(operand2.immediate & 0xFF);
 
-
     // opcode in DDCBdd/DFCBdd position
     if(ddbeforeopcode) emit_8bit(output.opcode);
 
@@ -875,8 +867,7 @@ void emit_instruction(operandlist *list) {
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
         if(list_enabled) listEmit8bit(value);
-        //io_putc(FILE_OUTPUT, value);
-        mos_fputc(FILE_OUTPUT, value);
+        io_putc(FILE_OUTPUT, value);
     }
     address++;
     totalsize++;
@@ -1207,8 +1198,6 @@ void handle_asm_blk(uint8_t width) {
             if(token.terminator == ',') {
                 getLineToken(&token, token.next, 0);
                 if(notEmpty(token.start)) {
-//                    if(token.start[0] == '\'') val = getAsciiValue(token.start);
-//                    else val = getLabelValue(token.start);
                     val = getLabelValue(token.start);
                 }
                 else error(message[ERROR_MISSINGOPERAND]);
@@ -1313,8 +1302,6 @@ void handle_asm_definemacro(void) {
                 io_getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
                 io_addDeleteList(filename[FILE_MACRO]);
                 filehandle[FILE_MACRO] = mos_fopen(filename[FILE_MACRO], fa_write | fa_create_always);
-                //if(!openFile(&filehandle[FILE_MACRO], filename[FILE_MACRO], fa_write | fa_create_always))
-                //    error("Error writing macro file");
                 if(!filehandle[FILE_MACRO]) error("Error writing macro file");
             }
             else error(message[ERROR_MACRONAME]);
@@ -1386,7 +1373,6 @@ void expandMacroStart(macro *exp) {
     tokentype token;
     uint8_t argcount = 0;
     filestackitem fsi;
-    //char macrofilename[FILENAMEMAXLENGTH];
 
     if(pass == 1) definelabel(address);
 
@@ -1420,7 +1406,6 @@ void expandMacroStart(macro *exp) {
     io_getMacroFilename(fsi.filename, exp->name);    
     fsi.fp = mos_fopen(fsi.filename, fa_read);
     io_setCurrent(&fsi);
-
 
     if(filehandle[FILE_CURRENT] == 0) {
         filestackPop(&fsi);

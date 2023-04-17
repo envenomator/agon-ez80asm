@@ -587,7 +587,7 @@ _mos_fread:
 	ld		de, (ix+12)	; number of bytes to read
 	ld a,	mos_fread
 	rst.lil	08h
-	ld		de, hl		; number of bytes read
+	ld		hl, de		; number of bytes read
 	ld		sp,ix
 	pop		ix
 	ret
@@ -601,7 +601,7 @@ _mos_fwrite:
 	ld		de, (ix+12)	; number of bytes to write
 	ld a,	mos_fwrite
 	rst.lil	08h
-	ld		de, hl		; number of bytes written
+	ld		hl, de		; number of bytes written
 	ld		sp,ix
 	pop		ix
 	ret
