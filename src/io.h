@@ -3,6 +3,20 @@
 
 #include "config.h"
 
+enum {
+    FILE_DELETELIST,
+    FILE_CURRENT,
+    FILE_INPUT,
+    FILE_OUTPUT,
+    FILE_LOCAL_LABELS,
+    FILE_ANONYMOUS_LABELS,
+    FILE_LISTING,
+    FILE_MACRO
+};
+
+extern char filename[FILES][FILENAMEMAXLENGTH];    // 0 - current, 1 - input, 2 - binary output, 3 - local labels, 4 - anonymous labels, 5 - listing
+extern uint8_t filehandle[FILES];
+
 bool openFile(uint8_t *file, char *name, uint8_t mode);
 bool reOpenFile(uint8_t number, uint8_t mode);
 void prepare_filenames(char *input_filename);

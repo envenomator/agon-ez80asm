@@ -8,6 +8,7 @@
 #include "instruction.h"
 #include "./stdint.h"
 #include "mos-interface.h"
+#include "io.h"
 
 // return a base filename, stripping the given extension from it
 void remove_ext (char* myStr, char extSep, char pathSep) {

@@ -7,17 +7,6 @@
 #include "config.h"
 #include "macro.h"
 
-enum {
-    FILE_DELETELIST,
-    FILE_CURRENT,
-    FILE_INPUT,
-    FILE_OUTPUT,
-    FILE_LOCAL_LABELS,
-    FILE_ANONYMOUS_LABELS,
-    FILE_LISTING,
-    FILE_MACRO
-};
-
 typedef struct {
     instruction *current_instruction;
     macro *current_macro;
@@ -31,17 +20,10 @@ typedef struct {
     uint16_t size;      // byte size of the assembler-command output in db/defb/dw/defw
 } tokenline;
 
-
 // Global variables
 extern bool list_enabled;
 extern bool consolelist_enabled;
 extern bool lineNumberNeedsReset;
-
-extern char filename[FILES][FILENAMEMAXLENGTH];    // 0 - current, 1 - input, 2 - binary output, 3 - local labels, 4 - anonymous labels, 5 - listing
-extern uint8_t filehandle[FILES];
-
-//extern FILE *file_currentinput;
-//extern char currentInputFilename[FILENAMEMAXLENGTH];
 
 extern unsigned int linenumber;
 extern unsigned int pass;

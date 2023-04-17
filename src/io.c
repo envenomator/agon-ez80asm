@@ -6,6 +6,11 @@
 #include "mos-interface.h"
 #include "io.h"
 
+// Global variables
+char filename[FILES][FILENAMEMAXLENGTH];
+uint8_t filehandle[FILES];
+
+// Local variables
 char _fileBasename[FILENAMEMAXLENGTH];
 char _outputbuffer[OUTPUT_BUFFERSIZE];
 unsigned int _outputbuffersize;
