@@ -16,6 +16,9 @@
 #include "macro.h"
 #include "io.h"
 
+// Local file buffer
+char _buffer[FILE_BUFFERSIZE];
+
 void empty_operand(operand *op) {
     op->reg = R_NONE;
     op->reg_index = 0;
@@ -1141,7 +1144,7 @@ void handle_asm_incbin(void) {
     tokentype token;
     uint8_t fh;
     bool eof;
-    char c;
+    uint24_t size,n;
 
     if(pass == 1) {
         writeLocalLabels(); // new local label space inside macro expansion
@@ -1160,15 +1163,10 @@ void handle_asm_incbin(void) {
 
             if(fh) {
                 while(1) {
-                    c = mos_fgetc(fh);
-                    #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
-                    emit_8bit(c);
-                    #endif
+                    size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
+                    for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
                     eof = mos_feof(fh);
                     if(eof) break;
-                    #ifndef AGON
-                    emit_8bit(c);
-                    #endif
                 }
                 mos_fclose(fh);
             }
