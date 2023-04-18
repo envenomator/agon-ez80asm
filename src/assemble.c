@@ -18,6 +18,7 @@
 
 // Local file buffer
 char _buffer[FILE_BUFFERSIZE];
+char _incbuffer[FILESTACK_MAXFILES][FILE_BUFFERSIZE];
 
 void empty_operand(operand *op) {
     op->reg = R_NONE;
@@ -1106,6 +1107,7 @@ void handle_asm_org(void) {
 void handle_asm_include(void) {
     tokentype token;
     filestackitem fsi;
+    uint8_t inclevel;
 
     if(pass == 1) {
         writeLocalLabels(); // new local label space inside macro expansion
@@ -1120,19 +1122,25 @@ void handle_asm_include(void) {
         getLineToken(&token, currentline.next, 0);
         if(token.start[0] == '\"') {
             token.start[strlen(token.start)-1] = 0;
-            io_getCurrent(&fsi);
-            filestackPush(&fsi);
-            strcpy(fsi.filename, token.start+1);
-            // set new file
-            io_getFileDefaults(&fsi);
-            fsi.fp = mos_fopen(token.start+1, fa_read);
-            io_setCurrent(&fsi);
-            
-            if(filehandle[FILE_CURRENT] == 0) {
-                error(message[ERROR_INCLUDEFILE]);
-                filestackPop(&fsi);
+            inclevel = filestackCount();
+            if(inclevel < FILESTACK_MAXFILES + 1) { // we check before pushing to the stack, so +1
+                io_getCurrent(&fsi);
+                filestackPush(&fsi);
+                strcpy(fsi.filename, token.start+1);
+                // set new file
+                io_getFileDefaults(&fsi);
+                fsi.fp = mos_fopen(token.start+1, fa_read);
+                fsi.bufferstart = &_incbuffer[inclevel][0];
+                fsi.filebuffer = fsi.bufferstart;
+                io_setCurrent(&fsi);
+                
+                if(filehandle[FILE_CURRENT] == 0) {
+                    error(message[ERROR_INCLUDEFILE]);
+                    filestackPop(&fsi);
+                }
+                lineNumberNeedsReset = true;
             }
-            lineNumberNeedsReset = true;
+            else error(message[ERROR_MAXINCLUDEFILES]);
         }
         else error(message[ERROR_STRINGFORMAT]);
         if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);

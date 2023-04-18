@@ -174,6 +174,7 @@ char* io_gets(uint8_t fh, char *s, int size) {
 	cs = s;
 
     if(_bufferstart[fh]) {
+        //printf("new mode read\r\n");
         do { // io_getc
             #ifndef AGON
             if(_filebuffersize[fh] == 0) {
