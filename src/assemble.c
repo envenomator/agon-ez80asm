@@ -615,13 +615,13 @@ uint8_t getADLsuffix(void) {
                 if(tolower(currentline.suffix[1]) != 'i') break; // illegal suffix
                 switch(tolower(currentline.suffix[0])) {
                     case 's':
-                        if(currentline.suffix[2] == 's') return S_SIS; // SIS
-                        if(currentline.suffix[2] == 'l') return S_SIL; // SIL
+                        if(tolower(currentline.suffix[2]) == 's') return S_SIS; // SIS
+                        if(tolower(currentline.suffix[2]) == 'l') return S_SIL; // SIL
                         // illegal suffix
                         break;
                     case 'l':
-                        if(currentline.suffix[2] == 's') return S_LIS; // LIS
-                        if(currentline.suffix[2] == 'l') return S_LIL; // LIL
+                        if(tolower(currentline.suffix[2]) == 's') return S_LIS; // LIS
+                        if(tolower(currentline.suffix[2]) == 'l') return S_LIL; // LIL
                         // illegal suffix
                         break;
                     default: // illegal suffix
