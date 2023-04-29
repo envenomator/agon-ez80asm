@@ -1,4 +1,12 @@
-PROJECTNAME=project
+#PROJECTNAME=project
+ifeq ($(OS),Windows_NT)
+	include windows.mk
+else
+	include unix.mk
+endif
+
+.DEFAULT_GOAL := all
+
 # project directories
 SRCDIR=src
 OBJDIR=obj
@@ -9,32 +17,37 @@ SRCS=$(wildcard $(SRCDIR)/*.c)
 OBJS=$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 # Target project binary
 BIN=$(BINDIR)/$(PROJECTNAME)
-# Tools and arguments
-CC=gcc
-CFLAGS=-g -Wall
 
 # Default rule
-all:$(BIN)
+all: setupdirs $(BIN)
 
 # Release with optimal settings for release target
-release: CFLAGS=-Wall -O2 -DNDEBUG
+release: CFLAGS=$(RELEASE_CFLAGS)
+release: LFLAGS=$(RELEASE_LFLAGS)
 release: clean
 release: $(BIN)
 
 # Linking all compiled objects into final binary
 $(BIN):$(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@
+ifeq ($(CC),gcc)
+	$(CC) $(LFLAGS) $(OBJS) $(OUTFLAG) $@
+else
+	$(LINKER) $(LINKERFLAGS)$@ $(OBJS)
+endif
 
 # Compile each .c file into .o file
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+ifeq ($(CC),gcc)
+	$(CC) $(CFLAGS) $< $(OUTFLAG) $@
+else
+	$(CC) $(CFLAGS)$@ $<
+endif
 
 # Initial project setup helper
 setupdirs:
-	@echo Creating project directories
-	@if test -d $(SRCDIR); then echo Re-using existing directory \'$(SRCDIR)\' ; else mkdir $(SRCDIR); fi
-	@if test -d $(OBJDIR); then echo Re-using existing directory \'$(OBJDIR)\' ; else mkdir $(OBJDIR); fi
-	@if test -d $(BINDIR); then echo Re-using existing directory \'$(BINDIR)\' ; else mkdir $(BINDIR); fi
+	@if ! test -d $(SRCDIR); then mkdir $(SRCDIR); fi
+	@if ! test -d $(OBJDIR); then mkdir $(OBJDIR); fi
+	@if ! test -d $(BINDIR); then mkdir $(BINDIR); fi
 
 clean:
 	$(RM) -r $(BINDIR)/* $(OBJDIR)/*
