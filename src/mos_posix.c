@@ -64,7 +64,7 @@ UINT8 mos_fclose(UINT8 fh)					 // returns number of still open files
     return 0;
 }
 
-char	 mos_fgetc(UINT8 fh)					 // returns character from file
+char mos_fgetc(UINT8 fh)					 // returns character from file
 {
     int index;
     bool found = false;
@@ -79,7 +79,7 @@ char	 mos_fgetc(UINT8 fh)					 // returns character from file
     else return 0;
 }
 
-void	 mos_fputc(UINT8 fh, char c)			 // writes character to file
+void mos_fputc(UINT8 fh, char c)			 // writes character to file
 {
     int index;
     bool found = false;
@@ -108,11 +108,6 @@ UINT8 mos_feof(UINT8 fh)					 // returns 1 if EOF, 0 otherwise
     else return 1;
 }
 
-UINT8 mos_save(char *filename, UINT24 address, UINT24 nbytes)
-{
-    return 0;
-}
-
 UINT24 mos_fwrite(UINT8 fh, char *buffer, UINT24 numbytes) {
     int index;
     bool found = false;
@@ -130,7 +125,6 @@ UINT24 mos_fwrite(UINT8 fh, char *buffer, UINT24 numbytes) {
 UINT24 mos_fread(UINT8 fh, char *buffer, UINT24 numbytes) {
     int index;
     bool found = false;
-    //uint24_t number;
 
     for(index = 0; index < _fileindex; index++) {
         if(_filearray[index].mosfile == fh) {
@@ -138,9 +132,6 @@ UINT24 mos_fread(UINT8 fh, char *buffer, UINT24 numbytes) {
             break;
         }
     }
-    //number = fread(buffer, numbytes, 1, _filearray[index].file);
-    //printf("FREAD: %d\r\n",number);
-    //return number;
     if(found) return fread(buffer, 1, numbytes, _filearray[index].file);
     else return 0;
 }
@@ -151,7 +142,7 @@ UINT8 mos_del(char *filename) {
 }
 
 
-int  putch(int a) {
+int putch(int a) {
     return putchar(a);
 }
 
