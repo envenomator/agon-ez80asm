@@ -35,7 +35,7 @@ void empty_operand(operand *op) {
 void advanceLocalLabel(void) {
     if(currentline.label[0] == '@') {
         if(currentline.label[1] == '@') {
-            if(!MacroDefineState) readAnonymousLabel();
+            if(!recordingMacro) readAnonymousLabel();
         }
     }
 }
@@ -72,7 +72,7 @@ uint8_t getAsciiValue(char *string) {
 // labelb-1
 // labela+labelb+offset1-1
 // The string should not contain any spaces, needs to be a single token
-int24_t getLabelValue(char *string) {
+int24_t getValue(char *string) {
     int24_t total, tmp;
     char operator, *ptr;
     label *lbl;
@@ -85,6 +85,7 @@ int24_t getLabelValue(char *string) {
         tmp = 0;
         getOperatorToken(&token, ptr);
         if(notEmpty(token.start)) {
+            if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
             lbl = findLabel(token.start);
             if(lbl) tmp = lbl->address;
             else {
@@ -250,15 +251,11 @@ void parse_operand(char *string, operand *operand) {
                             return;
                         case '+':
                         case '-':
-                            //if(isdigit(*ptr)) {
-                                operand->reg = R_IX;
-                                operand->displacement_provided = true;
-                                //if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) str2num(ptr,true);
-                                //else operand->displacement = (int16_t) str2num(ptr,true);
-                                if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getLabelValue(ptr);
-                                else operand->displacement = (int16_t) getLabelValue(ptr);
-                                return;
-                            //}
+                            operand->reg = R_IX;
+                            operand->displacement_provided = true;
+                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr);
+                            else operand->displacement = (int16_t) getValue(ptr);
+                            return;
                             break;
                         default:
                             break;
@@ -280,8 +277,8 @@ void parse_operand(char *string, operand *operand) {
                         case '-':
                             operand->reg = R_IY;
                             operand->displacement_provided = true;
-                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getLabelValue(ptr);
-                            else operand->displacement = (int16_t) getLabelValue(ptr);
+                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr);
+                            else operand->displacement = (int16_t) getValue(ptr);
                             return;
                             break;
                         default:
@@ -371,8 +368,8 @@ void parse_operand(char *string, operand *operand) {
             break;
     }
     if(*string) {
-        if(operand->indirect) operand->immediate = getLabelValue(string + 1);
-        else operand->immediate = getLabelValue(string);
+        if(operand->indirect) operand->immediate = getValue(string + 1);
+        else operand->immediate = getValue(string);
         operand->immediate_provided = true;
         operand->wasLabel = true;
     }
@@ -481,7 +478,7 @@ void parseLine(char *src) {
                     break;
                 }
                 // Valid EZ80 instruction
-                if(!MacroDefineState) {
+                if(!recordingMacro) {
                     switch(token.terminator) {
                         case ';':
                             getLineToken(&token, token.next, 0);
@@ -969,7 +966,7 @@ void parse_asm_single_immediate(void) {
     if(currentline.next) {
         getLineToken(&token, currentline.next,0);
         if(notEmpty(token.start)) {
-            operand1.immediate = str2num(token.start,true);
+            operand1.immediate = getValue(token.start);
             operand1.immediate_provided = true;
             if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
         }
@@ -983,11 +980,12 @@ void parse_asm_keyval_pair(void) {
 
     if(currentline.next) {
         getLineToken(&token, currentline.next, '=');
+        if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
         strcpy(currentline.operand1, token.start);
         if(token.terminator == '=') {
             getLineToken(&token, token.next, 0);
             if(notEmpty(token.start)) {
-                operand2.immediate = str2num(token.start,true);
+                operand2.immediate = getValue(token.start);
                 operand2.immediate_provided = true;
             }
             else error(message[ERROR_MISSINGOPERAND]);
@@ -1000,24 +998,22 @@ void parse_asm_keyval_pair(void) {
 void handle_asm_db(void) {
     tokentype token;
 
-    if(pass == 1) {
-        // Output label at this address
-        definelabel(address);
-    }
+    if(pass == 1) definelabel(address);
+
     if(currentline.next) {
         while(currentline.next) {
             getLineToken(&token, currentline.next, ',');
             if(notEmpty(token.start)) {
+                if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
                 switch(token.start[0]) {
                     case '\"':
                         emit_quotedstring(token.start);
                         break;
                     default:
-                        operand1.immediate = getLabelValue(token.start);
+                        operand1.immediate = getValue(token.start);
                         if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
                         emit_8bit(operand1.immediate);
                         break;
-                        
                 }
             }
             if(token.terminator == ',') currentline.next = token.next;
@@ -1033,18 +1029,16 @@ void handle_asm_db(void) {
 void handle_asm_dw(bool longword) {
     label *lbl;
     tokentype token;
-    if(pass == 1) {
-        // Output label at this address
-        definelabel(address);
-    }
+    if(pass == 1) definelabel(address);
+
     if(currentline.next) {
         while(currentline.next) {
             getLineToken(&token, currentline.next, ',');
             if(notEmpty(token.start)) {
+                if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
                 lbl = findLabel(token.start);
                 if(lbl) operand1.immediate = lbl->address;
-                else operand1.immediate = str2num(token.start,true);
-                
+                else operand1.immediate = getValue(token.start);
                 if(longword) {
                     emit_24bit(operand1.immediate);
                 }
@@ -1071,7 +1065,7 @@ void handle_asm_equ(void) {
         if(notEmpty(token.start)) {
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
             if(pass == 1) {
-                if(strlen(currentline.label)) definelabel(getLabelValue(token.start));
+                if(strlen(currentline.label)) definelabel(getValue(token.start));
                 else error(message[ERROR_MISSINGLABEL]);
             }
         }
@@ -1097,10 +1091,7 @@ void handle_asm_org(void) {
     parse_asm_single_immediate(); // get address from next token
     newaddress = operand1.immediate;
     if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE]); 
-    if(pass == 1) {
-        // Output label at this address
-        definelabel(address);
-    }
+    if(pass == 1) definelabel(address);
     address = newaddress;
 }
 
@@ -1130,6 +1121,7 @@ void handle_asm_include(void) {
                 // set new file
                 io_getFileDefaults(&fsi);
                 fsi.fp = mos_fopen(token.start+1, fa_read);
+                strncpy(fsi.filename, token.start+1, sizeof(fsi.filename));
                 fsi.bufferstart = &_incbuffer[inclevel][0];
                 fsi.filebuffer = fsi.bufferstart;
                 io_setCurrent(&fsi);
@@ -1162,9 +1154,11 @@ void handle_asm_incbin(void) {
         clearLocalLabels();
         readLocalLabels();
     }
+    if(recordingMacro) return;
 
     if(currentline.next) {
         getLineToken(&token, currentline.next, 0);
+        if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
         if(token.start[0] == '\"') {
             token.start[strlen(token.start)-1] = 0;
             fh = mos_fopen(token.start+1, fa_read);
@@ -1191,20 +1185,19 @@ void handle_asm_blk(uint8_t width) {
     int24_t val = 0;
     tokentype token;
 
-    if(pass == 1) {
-        // Output label at this address
-        definelabel(address);
-    }
+    if(pass == 1) definelabel(address);
 
     if(currentline.next) {
         getLineToken(&token, currentline.next, ',');
         if(notEmpty(token.start)) {
-            num = getLabelValue(token.start);
+            if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
+            num = getValue(token.start);
 
             if(token.terminator == ',') {
                 getLineToken(&token, token.next, 0);
                 if(notEmpty(token.start)) {
-                    val = getLabelValue(token.start);
+                    if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
+                    val = getValue(token.start);
                 }
                 else error(message[ERROR_MISSINGOPERAND]);
             }
@@ -1236,10 +1229,7 @@ uint24_t alignment;
 uint24_t base;
 uint24_t delta;
 
-    if(pass == 1) {
-        // Output label at this address
-        definelabel(address);
-    }
+    if(pass == 1) definelabel(address);
 
     parse_asm_single_immediate();
     if(operand1.immediate > 0) {
@@ -1262,10 +1252,8 @@ uint24_t delta;
 }
 
 void handle_asm_endmacro(void) {
-    if(pass == 1) {
-        mos_fclose(filehandle[FILE_MACRO]);
-    }
-    MacroDefineState = false;
+    if(pass == 1) mos_fclose(filehandle[FILE_MACRO]);
+    recordingMacro = false;
 }
 
 void handle_asm_definemacro(void) {
@@ -1314,64 +1302,65 @@ void handle_asm_definemacro(void) {
         }
         else error(message[ERROR_MACRONAME]);
     }
-    MacroDefineState = true;
+    recordingMacro = true;
 }
 
 void handle_assembler_command(void) {
-    switch(currentline.current_instruction->asmtype) {
-    case(ASM_ADL):
-        handle_asm_adl();
-        break;
-    case(ASM_ORG):
-        handle_asm_org();
-        break;
-    case(ASM_DB):
-        handle_asm_db();
-        break;
-    case(ASM_DS):
-        handle_asm_blk(1);
-        break;
-    case(ASM_DW):
-        handle_asm_dw(false);
-        break;
-    case(ASM_DW24):
-        handle_asm_dw(true);
-        break;
-    case(ASM_ASCIZ):
-        handle_asm_db();
-        emit_8bit(0);
-        break;
-    case(ASM_EQU):
-        handle_asm_equ();
-        break;
-    case(ASM_INCLUDE):
-        handle_asm_include();
-        break;
-    case(ASM_BLKB):
-        handle_asm_blk(1);
-        break;
-    case(ASM_BLKW):
-        handle_asm_blk(2);
-        break;
-    case(ASM_BLKP):
-        handle_asm_blk(3);
-        break;
-    case(ASM_BLKL):
-        handle_asm_blk(4);
-        break;
-    case(ASM_ALIGN):
-        handle_asm_align();
-        break;
-    case(ASM_MACRO_START):
-        handle_asm_definemacro();
-        break;
-    case(ASM_MACRO_END):
-        handle_asm_endmacro();
-        break;
-    case(ASM_INCBIN):
-        handle_asm_incbin();
-        break;
+    if(!recordingMacro) {
+        switch(currentline.current_instruction->asmtype) {
+        case(ASM_ADL):
+            handle_asm_adl();
+            break;
+        case(ASM_ORG):
+            handle_asm_org();
+            break;
+        case(ASM_DB):
+            handle_asm_db();
+            break;
+        case(ASM_DS):
+            handle_asm_blk(1);
+            break;
+        case(ASM_DW):
+            handle_asm_dw(false);
+            break;
+        case(ASM_DW24):
+            handle_asm_dw(true);
+            break;
+        case(ASM_ASCIZ):
+            handle_asm_db();
+            emit_8bit(0);
+            break;
+        case(ASM_EQU):
+            handle_asm_equ();
+            break;
+        case(ASM_INCLUDE):
+            handle_asm_include();
+            break;
+        case(ASM_BLKB):
+            handle_asm_blk(1);
+            break;
+        case(ASM_BLKW):
+            handle_asm_blk(2);
+            break;
+        case(ASM_BLKP):
+            handle_asm_blk(3);
+            break;
+        case(ASM_BLKL):
+            handle_asm_blk(4);
+            break;
+        case(ASM_ALIGN):
+            handle_asm_align();
+            break;
+        case(ASM_MACRO_START):
+            handle_asm_definemacro();
+            break;
+        case(ASM_INCBIN):
+            handle_asm_incbin();
+            break;
+        }
+        return;
     }
+    if(currentline.current_instruction->asmtype == ASM_MACRO_END) handle_asm_endmacro();
     return;
 }
 
@@ -1426,7 +1415,7 @@ void debug_line(void) {
     printf("Mnemonic: <<%s>>\n",currentline.mnemonic);
     printf("Op1:      <<%s>>\n",currentline.operand1);
     printf("Op2:      <<%s>>\n",currentline.operand2);
-    printf("Macro def:    %x\n", MacroDefineState);
+    printf("Macro def:    %x\n", recordingMacro);
     printf("Macro expand: %x\n", currentExpandedMacro);
     printf("Current file: <<%s>>\n", filename[FILE_CURRENT]);
 }
@@ -1437,7 +1426,7 @@ void processInstructions(char *line){
     bool match;
 
     if(pass == 1) {
-        if(MacroDefineState) {
+        if(recordingMacro) {
             if(strcasecmp(currentline.mnemonic, ENDMACROCMD)) io_puts(FILE_MACRO, line);
             if(notEmpty(currentline.label) && (currentline.label[0] != '@')) error("No global labels allowed in macro definition");
         }
@@ -1452,7 +1441,7 @@ void processInstructions(char *line){
 
     if(currentline.current_instruction) {
         if(currentline.current_instruction->type == EZ80) {
-            if(!MacroDefineState) {
+            if(!recordingMacro) {
                 // process this mnemonic by applying the instruction list as a filter to the operand-set
                 //printf("Mnemonic: %s - OpA: %s - OpB: %s\n",currentline.mnemonic, currentline.operand1, currentline.operand2);
                 list = currentline.current_instruction->list;
@@ -1491,7 +1480,7 @@ void passInitialize(uint8_t passnumber) {
     linenumber = 0;
     address = START_ADDRESS;
     totalsize = 0;
-    MacroDefineState = false;
+    recordingMacro = false;
     currentExpandedMacro = NULL;
     io_setpass(passnumber);
     filestackInit();

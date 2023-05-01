@@ -9,7 +9,7 @@
 bool lineNumberNeedsReset;
 unsigned int linenumber;
 unsigned int pass;
-bool MacroDefineState;
+bool recordingMacro;
 macro *currentExpandedMacro;
 uint24_t address;
 uint24_t totalsize;      // total size of assembled binary

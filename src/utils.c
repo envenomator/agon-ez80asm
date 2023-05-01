@@ -44,7 +44,9 @@ bool notEmpty(const char *str) {
 
 void error(char* msg)
 {
-    printf("\"%s\" - line %d - %s\n\r", filename[FILE_CURRENT], linenumber, msg);
+    if(currentExpandedMacro) printf("MACRO [%s]",currentExpandedMacro->name);
+    else printf("\"%s\"", filename[FILE_CURRENT]);
+    printf(" - line %d - %s\n\r",  linenumber, msg);
     global_errors++;
 }
 

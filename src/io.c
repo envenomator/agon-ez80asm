@@ -97,6 +97,7 @@ void _deleteFiles(void) {
         mos_fclose(filehandle[FILE_DELETELIST]);
     }
     mos_del(filename[FILE_DELETELIST]);
+
 }
 
 void _closeAllFiles() {

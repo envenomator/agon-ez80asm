@@ -28,6 +28,5 @@
 #define MAXIMUM_MACROS               64 // Maximum number of macros
 #define MACROMAXARGS                  8 // Maximum arguments to a macro
 #define MACROARGLENGTH               32 // Maximum length of macro argument
-
 #define CLEANUPFILES              true
 #endif // CONFIG_H

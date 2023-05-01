@@ -24,7 +24,7 @@ typedef struct {
 extern bool lineNumberNeedsReset;
 extern unsigned int linenumber;
 extern unsigned int pass;
-extern bool MacroDefineState;
+extern bool recordingMacro;
 extern macro *currentExpandedMacro;
 extern uint24_t address;
 extern uint24_t totalsize;
