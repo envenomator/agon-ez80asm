@@ -369,26 +369,10 @@ void parse_operand(char *string, operand *operand) {
             break;
     }
     if(*string) {
-        //printf("DEBUG OP1: %s\r\n",string);
         if(operand->indirect) string++;
-
         operand->immediate = getValue(string);
         operand->wasLabel = (str2num(string, false) == 0);
         operand->immediate_provided = true;
-
-        /*
-        if(operand->indirect) {
-            operand->immediate = getValue(string + 1);
-            operand->wasLabel = (str2num(string+1, false) == 0);
-        }
-        else {
-            operand->immediate = getValue(string);
-            operand->wasLabel = (str2num(string, false) == 0);        
-        }
-        printf("DEBUG OP1: VALUE %d\r\n",operand->immediate);
-        operand->immediate_provided = true;
-        //operand->wasLabel = true;
-        */
     }
 }
 
@@ -560,26 +544,25 @@ void parseLine(char *src) {
 }
 
 void definelabel(int24_t num){
-    if(strlen(currentline.label)) {
-        if(currentline.label[0] == '@') {
-            if(currentline.label[1] == '@') {
-                writeAnonymousLabel(num);
-                return;
-            }
-            if(insertLocalLabel(currentline.label, num) == false) {
-                error(message[ERROR_CREATINGLABEL]);
-                return;
-            }
+    if(strlen(currentline.label) == 0) return;
+
+    if(currentline.label[0] == '@') {
+        if(currentline.label[1] == '@') {
+            writeAnonymousLabel(num);
+            return;
         }
-        else {
-            if(insertGlobalLabel(currentline.label, num) == false){
-                error(message[ERROR_CREATINGLABEL]);
-                return;
-            }
-            writeLocalLabels();
-            clearLocalLabels();
+        if(insertLocalLabel(currentline.label, num) == false) {
+            error(message[ERROR_CREATINGLABEL]);
+            return;
         }
+        return;
     }
+    if(insertGlobalLabel(currentline.label, num) == false){
+        error(message[ERROR_CREATINGLABEL]);
+        return;
+    }
+    writeLocalLabels();
+    clearLocalLabels();
 }
 
 void refreshlocalLabels(void) {
@@ -799,7 +782,6 @@ void transform_instruction(operand *op, permittype type) {
                 // label still potentially unknown in pass 1, so output the existing '0' in pass 1
                 if(op->wasLabel) rel = op->immediate - address - 2;
                 else rel = op->immediate; // user asked for specific offset
-                //printf("DEBUG: %d\r\n",rel);
                 if((rel > 127) || (rel < -128)) error(message[ERROR_RELATIVEJUMPTOOLARGE]);
                 op->immediate = ((int8_t)(rel & 0xFF));
                 op->immediate_provided = true;
