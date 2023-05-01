@@ -44,11 +44,6 @@ void advanceLocalLabel(void) {
 uint8_t getAsciiValue(char *string) {
     uint8_t len = strlen(string);
 
-    //if((!((len == 3) && (string[2]) == '\'') && !((len == 4) && (string[3]) == '\''))) {
-    //    error(message[ERROR_ASCIIFORMAT]);
-    //    return 0;
-    //}
-
     if((len == 3) && (string[2] == '\'')) {
         return string[1];
     }
@@ -571,13 +566,9 @@ void definelabel(int24_t num){
 }
 
 void refreshlocalLabels(void) {
-    if(pass == 2) {
-        if(notEmpty(currentline.label)) {
-            if(currentline.label[0] != '@') {
-                clearLocalLabels();
-                readLocalLabels();
-            }
-        }
+    if((pass == 2) && (notEmpty(currentline.label)) && (currentline.label[0] != '@')) {
+        clearLocalLabels();
+        readLocalLabels();
     }
 }
 
