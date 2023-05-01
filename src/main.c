@@ -14,18 +14,18 @@
 
 int main(int argc, char *argv[])
 {
-    // Init posix compatibility
-    mos_posix_init();    
-
     if(argc < 2){
         printf("Usage: asm <filename> [-l]\n\r");
         return 0;
     }
+    mos_posix_init();       // Init posix compatibility for non-MOS builds, before io_init
+    if(!io_init(argv[1])) {
+        printf("Error opening \"%s\"\r\n", argv[1]);
+        return 0;
+    }
 
-    list_enabled = ((argc == 3) && (strcmp(argv[2], "-l") == 0));     
+    list_enabled = ((argc == 3) && (strcmp(argv[2], "-l") == 0));
     consolelist_enabled = false;
-
-    if(!io_init(argv[1])) return 0;
 
     // Initialization
     initGlobalLabelTable();
@@ -42,6 +42,6 @@ int main(int argc, char *argv[])
     }
     else printf("Done\r\n");
 
-    io_close();   
+    io_close();
     return 0;
 }
