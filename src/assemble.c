@@ -905,46 +905,48 @@ uint8_t get_escaped_char(char n) {
 void emit_quotedstring(char *str) {
     bool escaped = false;
 
-    if(*str == '\"') {
-        str++;
-        while(*str) {
-            switch(*str) {
-                case '\\':
-                    if(escaped) {
-                        emit_8bit('\\');
-                        escaped = false;
-                    }
-                    else escaped = true;
-                    break;
-                case 'n':
-                case 'r':
-                case 't':
-                case 'b':
-                case 'e':
-                case '\'':
-                    if(escaped) emit_8bit(get_escaped_char(*str));
-                    else emit_8bit(*str); // the normal character
-                    escaped = false;
-                    break;
-                case '\"':
-                    if(escaped) {
-                        emit_8bit('\"');
-                        escaped = false;
-                    }
-                    else {
-                        if(*(str+1) != 0) error(message[ERROR_STRINGFORMAT]);
-                        return; // end of quoted string
-                    }
-                    break;
-                default:
-                    emit_8bit(*str);
-            }
-            str++;
-        }
-        // we missed an end-quote to this string, we shouldn't reach this
+    if(*str != '\"') {
         error(message[ERROR_STRINGFORMAT]);
+        return;
     }
-    else error(message[ERROR_STRINGFORMAT]);
+
+    str++;
+    while(*str) {
+        switch(*str) {
+            case '\\':
+                if(escaped) {
+                    emit_8bit('\\');
+                    escaped = false;
+                }
+                else escaped = true;
+                break;
+            case 'n':
+            case 'r':
+            case 't':
+            case 'b':
+            case 'e':
+            case '\'':
+                if(escaped) emit_8bit(get_escaped_char(*str));
+                else emit_8bit(*str); // the normal character
+                escaped = false;
+                break;
+            case '\"':
+                if(escaped) {
+                    emit_8bit('\"');
+                    escaped = false;
+                }
+                else {
+                    if(*(str+1) != 0) error(message[ERROR_STRINGFORMAT]);
+                    return; // end of quoted string
+                }
+                break;
+            default:
+                emit_8bit(*str);
+        }
+        str++;
+    }
+    // we missed an end-quote to this string, we shouldn't reach this
+    error(message[ERROR_STRINGFORMAT]);
 }
 
 void parse_asm_single_immediate(void) {
