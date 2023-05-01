@@ -1,4 +1,4 @@
-	.assume adl=1
+	;.assume adl=1
 	daa
 	dec (hl)
 	dec ixh
@@ -21,7 +21,8 @@
 	dec hl
 	dec sp
 	di
-	djnz 5
+label:
+	djnz label
 	ei
 	ex af, af'
 	ex de, hl

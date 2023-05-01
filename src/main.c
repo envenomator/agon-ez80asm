@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     }
 
     list_enabled = ((argc == 3) && (strcmp(argv[2], "-l") == 0));     
-    consolelist_enabled = true;
+    consolelist_enabled = false;
 
     if(!io_init(argv[1])) return 0;
 

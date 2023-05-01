@@ -369,10 +369,26 @@ void parse_operand(char *string, operand *operand) {
             break;
     }
     if(*string) {
-        if(operand->indirect) operand->immediate = getValue(string + 1);
-        else operand->immediate = getValue(string);
+        //printf("DEBUG OP1: %s\r\n",string);
+        if(operand->indirect) string++;
+
+        operand->immediate = getValue(string);
+        operand->wasLabel = (str2num(string, false) == 0);
         operand->immediate_provided = true;
-        operand->wasLabel = true;
+
+        /*
+        if(operand->indirect) {
+            operand->immediate = getValue(string + 1);
+            operand->wasLabel = (str2num(string+1, false) == 0);
+        }
+        else {
+            operand->immediate = getValue(string);
+            operand->wasLabel = (str2num(string, false) == 0);        
+        }
+        printf("DEBUG OP1: VALUE %d\r\n",operand->immediate);
+        operand->immediate_provided = true;
+        //operand->wasLabel = true;
+        */
     }
 }
 
@@ -717,27 +733,16 @@ void prefix_ddfd_suffix(operandlist *op) {
     prefix1 = get_ddfd_prefix(operand1.reg);
     prefix2 = get_ddfd_prefix(operand2.reg);
 
-
     // prefix in either of these two cases
     if(prefix1) {
         if(prefix2) {
             // both prefixes set
-            if(operand1.indirect) {
-                output.prefix1 = prefix1;
-            }
-            else {
-                output.prefix1 = prefix2;
-            }
+            if(operand1.indirect) output.prefix1 = prefix1;
+            else output.prefix1 = prefix2;
         }
-        else {
-            output.prefix1 = prefix1;
-        }
+        else output.prefix1 = prefix1;
     }
-    else {
-        if(prefix2) {
-            output.prefix1 = prefix2;
-        }
-    }
+    else if(prefix2) output.prefix1 = prefix2;
 }
 
 void transform_instruction(operand *op, permittype type) {
@@ -794,6 +799,7 @@ void transform_instruction(operand *op, permittype type) {
                 // label still potentially unknown in pass 1, so output the existing '0' in pass 1
                 if(op->wasLabel) rel = op->immediate - address - 2;
                 else rel = op->immediate; // user asked for specific offset
+                //printf("DEBUG: %d\r\n",rel);
                 if((rel > 127) || (rel < -128)) error(message[ERROR_RELATIVEJUMPTOOLARGE]);
                 op->immediate = ((int8_t)(rel & 0xFF));
                 op->immediate_provided = true;

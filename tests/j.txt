@@ -13,7 +13,7 @@ labela:
 	jp (iy)
 	jp $aabbcc
 	jr nz, labela
-	jr z, 5
-	jr nc,5
-	jr c, 5
-	jr 5
+	jr z, labela
+	jr nc,labela
+	jr c, labela
+	jr labela
