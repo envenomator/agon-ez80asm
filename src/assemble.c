@@ -44,24 +44,30 @@ void advanceLocalLabel(void) {
 uint8_t getAsciiValue(char *string) {
     uint8_t len = strlen(string);
 
-    if((len == 3) || (len == 4)) {
-        if(*string == '\'') {
-            if((len == 4) && (string[3] == '\'') && (string[1] == '\\')) {
-                switch(string[2]) {
-                    case 'n': return '\n';
-                    case 'r': return '\r';
-                    case 't': return '\t';
-                    case 'b': return '\b';
-                    case '\\': return '\\';
-                    case '\"': return '\"';
-                    case '\'': return '\'';
-                }
-            }
-            if((len == 3) && (string[2] == '\'')) {
-                return string[1];
-            }
+    //if((!((len == 3) && (string[2]) == '\'') && !((len == 4) && (string[3]) == '\''))) {
+    //    error(message[ERROR_ASCIIFORMAT]);
+    //    return 0;
+    //}
+
+    if((len == 3) && (string[2] == '\'')) {
+        return string[1];
+    }
+
+    if((len == 4) && (string[3] == '\'')) {
+        switch(string[2]) {
+            case 'n': return '\n';
+            case 'r': return '\r';
+            case 't': return '\t';
+            case 'b': return '\b';
+            case '\\': return '\\';
+            case '\"': return '\"';
+            case '\'': return '\'';
+            default:
+                error(message[ERROR_CHARCONSTANT]);
+                return 0;
         }
     }
+
     error(message[ERROR_ASCIIFORMAT]);
     return 0;
 }
