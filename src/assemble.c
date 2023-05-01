@@ -394,7 +394,8 @@ void parseLine(char *src) {
     currentline.operand2[0] = 0;
     currentline.comment[0] = 0;
     currentline.size = 0;
-
+    currentline.suffixpresent = false;
+    
     empty_operand(&operand1);
     empty_operand(&operand2);
 
@@ -450,7 +451,7 @@ void parseLine(char *src) {
                 break;
             case PS_COMMAND:
                 if(token.start[0] == '.') strcpy(currentline.mnemonic, token.start+1);
-                else split_suffix(currentline.mnemonic, currentline.suffix, token.start);
+                else currentline.suffixpresent = split_suffix(currentline.mnemonic, currentline.suffix, token.start);
 
                 currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
@@ -574,59 +575,60 @@ void refreshlocalLabels(void) {
 
 // return ADL prefix bitfield, or 0 if none present
 uint8_t getADLsuffix(void) {
-    if(notEmpty(currentline.suffix)) {
-        switch(strlen(currentline.suffix)) {
-            case 1: // .s or .l
-                switch(tolower(currentline.suffix[0])) {
-                    case 's':
-                        if(adlmode) return S_SIL;  // SIL
-                        else return S_SIS;         // SIS
-                        break;
-                    case 'l':
-                        if(adlmode) return S_LIL;  // LIL
-                        else return S_LIS;         // LIS
-                        break;
-                    default: // illegal suffix
-                        break;
-                }
-                break;
-            case 2: // .is or .il
-                if(tolower(currentline.suffix[0]) != 'i') break; // illegal suffix
-                switch(tolower(currentline.suffix[1])) {
-                    case 's':
-                        if(adlmode) return S_LIS;  // LIS
-                        else return S_SIS;         // SIS
-                        break;
-                    case 'l':
-                        if(adlmode) return S_LIL;  // LIL
-                        else return S_SIL;         // SIL
-                        break;
-                    default: // illegal suffix
-                        break;
-                }
-                break;
-            case 3:
-                if(tolower(currentline.suffix[1]) != 'i') break; // illegal suffix
-                switch(tolower(currentline.suffix[0])) {
-                    case 's':
-                        if(tolower(currentline.suffix[2]) == 's') return S_SIS; // SIS
-                        if(tolower(currentline.suffix[2]) == 'l') return S_SIL; // SIL
-                        // illegal suffix
-                        break;
-                    case 'l':
-                        if(tolower(currentline.suffix[2]) == 's') return S_LIS; // LIS
-                        if(tolower(currentline.suffix[2]) == 'l') return S_LIL; // LIL
-                        // illegal suffix
-                        break;
-                    default: // illegal suffix
-                        break;
-                }
-                break;
-            default: // illegal suffix
-                break;
-        }
-        error(message[ERROR_INVALIDSUFFIX]);
+
+    if((isEmpty(currentline.suffix) && !currentline.suffixpresent)) return 0; 
+
+    switch(strlen(currentline.suffix)) {
+        case 1: // .s or .l
+            switch(tolower(currentline.suffix[0])) {
+                case 's':
+                    if(adlmode) return S_SIL;  // SIL
+                    else return S_SIS;         // SIS
+                    break;
+                case 'l':
+                    if(adlmode) return S_LIL;  // LIL
+                    else return S_LIS;         // LIS
+                    break;
+                default: // illegal suffix
+                    break;
+            }
+            break;
+        case 2: // .is or .il
+            if(tolower(currentline.suffix[0]) != 'i') break; // illegal suffix
+            switch(tolower(currentline.suffix[1])) {
+                case 's':
+                    if(adlmode) return S_LIS;  // LIS
+                    else return S_SIS;         // SIS
+                    break;
+                case 'l':
+                    if(adlmode) return S_LIL;  // LIL
+                    else return S_SIL;         // SIL
+                    break;
+                default: // illegal suffix
+                    break;
+            }
+            break;
+        case 3:
+            if(tolower(currentline.suffix[1]) != 'i') break; // illegal suffix
+            switch(tolower(currentline.suffix[0])) {
+                case 's':
+                    if(tolower(currentline.suffix[2]) == 's') return S_SIS; // SIS
+                    if(tolower(currentline.suffix[2]) == 'l') return S_SIL; // SIL
+                    // illegal suffix
+                    break;
+                case 'l':
+                    if(tolower(currentline.suffix[2]) == 's') return S_LIS; // LIS
+                    if(tolower(currentline.suffix[2]) == 'l') return S_LIL; // LIL
+                    // illegal suffix
+                    break;
+                default: // illegal suffix
+                    break;
+            }
+            break;
+        default: // illegal suffix
+            break;
     }
+    error(message[ERROR_INVALIDSUFFIX]);
     return 0;
 }
 

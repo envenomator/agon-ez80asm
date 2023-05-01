@@ -15,7 +15,7 @@ void trimRight(char *str);
 void error(char* msg);
 bool isEmpty(const char *str);
 bool notEmpty(const char *str);
-void split_suffix(char *mnemonic, char *suffix, char *buffer);
+bool split_suffix(char *mnemonic, char *suffix, char *buffer);
 uint8_t getLineToken(tokentype *token, char *src, char terminator);
 uint8_t getOperatorToken(tokentype *token, char *src);
 

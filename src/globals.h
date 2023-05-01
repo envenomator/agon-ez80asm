@@ -17,6 +17,7 @@ typedef struct {
     char operand1[32];
     char operand2[32];
     char comment[128];
+    bool suffixpresent;
     uint16_t size;      // byte size of the assembler-command output in db/defb/dw/defw
 } tokenline;
 

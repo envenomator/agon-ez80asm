@@ -65,14 +65,19 @@ typedef enum {
     TOKEN_BRACKET
 } tokenclass;
 
-// split a 'command.suffix' token in two parts 
-void split_suffix(char *mnemonic, char *suffix, char *buffer) {
+// split a 'command.suffix' token in two parts
+// returns if a suffix should be present
+bool split_suffix(char *mnemonic, char *suffix, char *buffer) {
     bool cmd = true;
+    bool suffixpresent = false;
 
     while(*buffer) {
         if(cmd) {
             *mnemonic = *buffer;
-            if(*buffer == '.') cmd = false;
+            if(*buffer == '.') {
+                cmd = false;
+                suffixpresent = true;
+            }
             else mnemonic++;
         }
         else *suffix++ = *buffer;
@@ -80,6 +85,7 @@ void split_suffix(char *mnemonic, char *suffix, char *buffer) {
     }
     *suffix = 0;
     *mnemonic = 0;
+    return suffixpresent;
 }
 
 uint8_t getLineToken(tokentype *token, char *src, char terminator) {
