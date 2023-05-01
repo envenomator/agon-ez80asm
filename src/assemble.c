@@ -989,30 +989,32 @@ void handle_asm_db(void) {
 
     if(pass == 1) definelabel(address);
 
-    if(currentline.next) {
-        while(currentline.next) {
-            getLineToken(&token, currentline.next, ',');
-            if(notEmpty(token.start)) {
-                if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-                switch(token.start[0]) {
-                    case '\"':
-                        emit_quotedstring(token.start);
-                        break;
-                    default:
-                        operand1.immediate = getValue(token.start);
-                        if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
-                        emit_8bit(operand1.immediate);
-                        break;
-                }
-            }
-            if(token.terminator == ',') currentline.next = token.next;
-            else {
-                if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-                currentline.next = NULL; 
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+        return;
+    }
+
+    while(currentline.next) {
+        getLineToken(&token, currentline.next, ',');
+        if(notEmpty(token.start)) {
+            if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
+            switch(token.start[0]) {
+                case '\"':
+                    emit_quotedstring(token.start);
+                    break;
+                default:
+                    operand1.immediate = getValue(token.start);
+                    if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
+                    emit_8bit(operand1.immediate);
+                    break;
             }
         }
+        if(token.terminator == ',') currentline.next = token.next;
+        else {
+            if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+            currentline.next = NULL; 
+        }
     }
-    else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
 }
 
 void handle_asm_dw(bool longword) {
@@ -1020,58 +1022,66 @@ void handle_asm_dw(bool longword) {
     tokentype token;
     if(pass == 1) definelabel(address);
 
-    if(currentline.next) {
-        while(currentline.next) {
-            getLineToken(&token, currentline.next, ',');
-            if(notEmpty(token.start)) {
-                if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-                lbl = findLabel(token.start);
-                if(lbl) operand1.immediate = lbl->address;
-                else operand1.immediate = getValue(token.start);
-                if(longword) {
-                    emit_24bit(operand1.immediate);
-                }
-                else {
-                    if(operand1.immediate > 0xffffff) error(message[ERROR_ADLWORDSIZE]);
-                    emit_16bit(operand1.immediate);
-                }
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+        return;
+    }
+
+    while(currentline.next) {
+        getLineToken(&token, currentline.next, ',');
+        if(notEmpty(token.start)) {
+            if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
+            lbl = findLabel(token.start);
+            if(lbl) operand1.immediate = lbl->address;
+            else operand1.immediate = getValue(token.start);
+            if(longword) {
+                emit_24bit(operand1.immediate);
             }
-            if(token.terminator == ',') currentline.next = token.next;
             else {
-                if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-                currentline.next = NULL; 
+                if(operand1.immediate > 0xffffff) error(message[ERROR_ADLWORDSIZE]);
+                emit_16bit(operand1.immediate);
             }
         }
+        if(token.terminator == ',') currentline.next = token.next;
+        else {
+            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+            currentline.next = NULL; 
+        }
     }
-    else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
 }
 
 void handle_asm_equ(void) {
     tokentype token;
 
-    if(currentline.next) {
-        getLineToken(&token, currentline.next, 0);
-        if(notEmpty(token.start)) {
-            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
-            if(pass == 1) {
-                if(strlen(currentline.label)) definelabel(getValue(token.start));
-                else error(message[ERROR_MISSINGLABEL]);
-            }
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+        return;
+    }
+
+    getLineToken(&token, currentline.next, 0);
+    if(notEmpty(token.start)) {
+        if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
+        if(pass == 1) {
+            if(strlen(currentline.label)) definelabel(getValue(token.start));
+            else error(message[ERROR_MISSINGLABEL]);
         }
-        else error(message[ERROR_MISSINGOPERAND]);
     }
     else error(message[ERROR_MISSINGOPERAND]);
 }
 
 void handle_asm_adl(void) {
     parse_asm_keyval_pair();
-    if(strcasecmp(currentline.operand1, "adl") == 0) {
-        if((operand2.immediate == 0) || (operand2.immediate == 1)) {
-            adlmode = operand2.immediate;
-        }
-        else error(message[ERROR_INVALID_ADLMODE]);
+
+    if(strcasecmp(currentline.operand1, "adl")) {
+        error(message[ERROR_INVALIDOPERAND]);
+        return;
     }
-    else error(message[ERROR_INVALIDOPERAND]);
+
+    if((operand2.immediate != 0) && (operand2.immediate != 1)) {
+        error(message[ERROR_INVALID_ADLMODE]);
+    }
+
+    adlmode = operand2.immediate;
 }
 
 void handle_asm_org(void) {
@@ -1097,36 +1107,39 @@ void handle_asm_include(void) {
         clearLocalLabels();
         readLocalLabels();
     }
-
-    if(currentline.next) {
-        getLineToken(&token, currentline.next, 0);
-        if(token.start[0] == '\"') {
-            token.start[strlen(token.start)-1] = 0;
-            inclevel = filestackCount();
-            if(inclevel < FILESTACK_MAXFILES + 1) { // we check before pushing to the stack, so +1
-                io_getCurrent(&fsi);
-                filestackPush(&fsi);
-                strcpy(fsi.filename, token.start+1);
-                // set new file
-                io_getFileDefaults(&fsi);
-                fsi.fp = mos_fopen(token.start+1, fa_read);
-                strncpy(fsi.filename, token.start+1, sizeof(fsi.filename));
-                fsi.bufferstart = &_incbuffer[inclevel][0];
-                fsi.filebuffer = fsi.bufferstart;
-                io_setCurrent(&fsi);
-                
-                if(filehandle[FILE_CURRENT] == 0) {
-                    error(message[ERROR_INCLUDEFILE]);
-                    filestackPop(&fsi);
-                }
-                lineNumberNeedsReset = true;
-            }
-            else error(message[ERROR_MAXINCLUDEFILES]);
-        }
-        else error(message[ERROR_STRINGFORMAT]);
-        if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGOPERAND]);
+        return;
     }
-    else error(message[ERROR_MISSINGOPERAND]);
+    inclevel = filestackCount();
+    if(inclevel > FILESTACK_MAXFILES) {
+        error(message[ERROR_MAXINCLUDEFILES]);
+        return;
+    }
+    getLineToken(&token, currentline.next, 0);
+    if(token.start[0] != '\"') {
+        error(message[ERROR_STRINGFORMAT]);
+        return;
+    }
+
+    token.start[strlen(token.start)-1] = 0;
+    io_getCurrent(&fsi);
+    filestackPush(&fsi);
+    strcpy(fsi.filename, token.start+1);
+    // set new file
+    io_getFileDefaults(&fsi);
+    fsi.fp = mos_fopen(token.start+1, fa_read);
+    strncpy(fsi.filename, token.start+1, sizeof(fsi.filename));
+    fsi.bufferstart = &_incbuffer[inclevel][0];
+    fsi.filebuffer = fsi.bufferstart;
+    io_setCurrent(&fsi);
+    
+    if(filehandle[FILE_CURRENT] == 0) {
+        error(message[ERROR_INCLUDEFILE]);
+        filestackPop(&fsi);
+    }
+    lineNumberNeedsReset = true;
+    if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
 }
 
 void handle_asm_incbin(void) {
@@ -1145,28 +1158,33 @@ void handle_asm_incbin(void) {
     }
     if(recordingMacro) return;
 
-    if(currentline.next) {
-        getLineToken(&token, currentline.next, 0);
-        if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-        if(token.start[0] == '\"') {
-            token.start[strlen(token.start)-1] = 0;
-            fh = mos_fopen(token.start+1, fa_read);
-
-            if(fh) {
-                while(1) {
-                    size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
-                    for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
-                    eof = mos_feof(fh);
-                    if(eof) break;
-                }
-                mos_fclose(fh);
-            }
-            else error(message[ERROR_INCLUDEFILE]);            
-        }
-        else error(message[ERROR_STRINGFORMAT]);
-        if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGOPERAND]);
+        return;
     }
-    else error(message[ERROR_MISSINGOPERAND]);
+
+    getLineToken(&token, currentline.next, 0);
+    if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
+    if(token.start[0] != '\"') {
+        error(message[ERROR_STRINGFORMAT]);
+        return;
+    }
+
+    token.start[strlen(token.start)-1] = 0;
+    fh = mos_fopen(token.start+1, fa_read);
+
+    if(!fh) {
+        error(message[ERROR_INCLUDEFILE]);            
+        return;
+    }
+    while(1) {
+        size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
+        for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
+        eof = mos_feof(fh);
+        if(eof) break;
+    }
+    mos_fclose(fh);
+    if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
 }
 
 void handle_asm_blk(uint8_t width) {
@@ -1176,41 +1194,47 @@ void handle_asm_blk(uint8_t width) {
 
     if(pass == 1) definelabel(address);
 
-    if(currentline.next) {
-        getLineToken(&token, currentline.next, ',');
-        if(notEmpty(token.start)) {
-            if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-            num = getValue(token.start);
-
-            if(token.terminator == ',') {
-                getLineToken(&token, token.next, 0);
-                if(notEmpty(token.start)) {
-                    if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-                    val = getValue(token.start);
-                }
-                else error(message[ERROR_MISSINGOPERAND]);
-            }
-            else if((token.terminator != 0)  && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-            while(num--) {
-                switch(width) {
-                    case 1:
-                        emit_8bit(val);
-                        break;
-                    case 2:
-                        emit_16bit(val);
-                        break;
-                    case 3:
-                        emit_24bit(val);
-                        break;
-                    case 4:
-                        emit_32bit(val);
-                        break;
-                }
-            }
-        }
-        else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGOPERAND]);
+        return;
     }
-    else error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+
+    getLineToken(&token, currentline.next, ',');
+    if(isEmpty(token.start)) {
+        error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+        return;
+    }
+
+    if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
+    num = getValue(token.start);
+
+    if(token.terminator == ',') {
+        getLineToken(&token, token.next, 0);
+        if(isEmpty(token.start)) {
+            error(message[ERROR_MISSINGOPERAND]);
+            return;
+        }
+        if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
+        val = getValue(token.start);
+    }
+    else if((token.terminator != 0)  && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+
+    while(num--) {
+        switch(width) {
+            case 1:
+                emit_8bit(val);
+                break;
+            case 2:
+                emit_16bit(val);
+                break;
+            case 3:
+                emit_24bit(val);
+                break;
+            case 4:
+                emit_32bit(val);
+                break;
+        }
+    }
 }
 
 void handle_asm_align(void) {
@@ -1218,26 +1242,28 @@ uint24_t alignment;
 uint24_t base;
 uint24_t delta;
 
-    if(pass == 1) definelabel(address);
-
     parse_asm_single_immediate();
-    if(operand1.immediate > 0) {
-        if((operand1.immediate & (operand1.immediate - 1)) == 0) {
-            alignment = operand1.immediate;
-            base = (~(operand1.immediate - 1) & address);
-
-            if(address & (operand1.immediate -1)) base += alignment;
-            delta = base - address;
-            while(delta--) emit_8bit(FILLBYTE);
-
-            address = base;
-            if(pass == 1) {
-                definelabel(address); // set address to current line
-            }
-        }
-        else error(message[ERROR_POWER2]); 
+    if(operand1.immediate <= 0) {
+        error(message[ERROR_INVALIDNUMBER]);
+        return;
     }
-    else error(message[ERROR_INVALIDNUMBER]);
+
+    if((operand1.immediate & (operand1.immediate - 1)) != 0) {
+        error(message[ERROR_POWER2]); 
+        return;
+    }
+    
+    alignment = operand1.immediate;
+    base = (~(operand1.immediate - 1) & address);
+
+    if(address & (operand1.immediate -1)) base += alignment;
+    delta = base - address;
+    while(delta--) emit_8bit(FILLBYTE);
+
+    address = base;
+    if(pass == 1) {
+        definelabel(address); // set address to current line
+    }
 }
 
 void handle_asm_endmacro(void) {
@@ -1251,47 +1277,51 @@ void handle_asm_definemacro(void) {
     uint8_t argcount = 0;
     char arglist[MACROMAXARGS][MACROARGLENGTH];
     
-    if(pass == 1) {
-        definelabel(address);
-
-        // parse arguments into array
-        if(currentline.next) {
-            getLineToken(&token, currentline.next, ' ');
-            if(notEmpty(token.start)) {
-                if(findMacro(currentline.mnemonic) != 0) {
-                    error(message[ERROR_MACRODEFINED]);
-                    return;
-                }
-                strcpy(currentline.mnemonic, token.start);
-                currentline.next = token.next;
-                if((token.terminator == ' ') || (token.terminator == '\t')) {
-                    while(currentline.next) {
-                        if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT]);
-                        getLineToken(&token, currentline.next, ',');
-                        if(notEmpty(token.start)) {
-                            strcpy(arglist[argcount], token.start);
-                            argcount++;
-                        }
-                        if(token.terminator == ',') currentline.next = token.next;
-                        else {
-                            if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-                            currentline.next = NULL; 
-                        }
-                    }
-                }
-                // record the macro to memory
-                defineMacro(currentline.mnemonic, argcount, (char *)arglist);
-                // define macro filename
-                io_getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
-                io_addDeleteList(filename[FILE_MACRO]);
-                filehandle[FILE_MACRO] = mos_fopen(filename[FILE_MACRO], fa_write | fa_create_always);
-                if(!filehandle[FILE_MACRO]) error("Error writing macro file");
-            }
-            else error(message[ERROR_MACRONAME]);
-        }
-        else error(message[ERROR_MACRONAME]);
-    }
     recordingMacro = true;
+
+    if(pass == 2) return;
+
+    // Only define macros in pass 1
+    definelabel(address);
+
+    // parse arguments into array
+    if(!currentline.next) {
+        error(message[ERROR_MACRONAME]);
+        return;
+    }
+    getLineToken(&token, currentline.next, ' ');
+    if(isEmpty(token.start)) {
+        error(message[ERROR_MACRONAME]);
+        return;
+    }
+    if(findMacro(currentline.mnemonic) != 0) {
+        error(message[ERROR_MACRODEFINED]);
+        return;
+    }
+    strcpy(currentline.mnemonic, token.start);
+    currentline.next = token.next;
+    if((token.terminator == ' ') || (token.terminator == '\t')) {
+        while(currentline.next) {
+            if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT]);
+            getLineToken(&token, currentline.next, ',');
+            if(notEmpty(token.start)) {
+                strcpy(arglist[argcount], token.start);
+                argcount++;
+            }
+            if(token.terminator == ',') currentline.next = token.next;
+            else {
+                if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+                currentline.next = NULL; 
+            }
+        }
+    }
+    // record the macro to memory
+    defineMacro(currentline.mnemonic, argcount, (char *)arglist);
+    // define macro filename
+    io_getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
+    io_addDeleteList(filename[FILE_MACRO]);
+    filehandle[FILE_MACRO] = mos_fopen(filename[FILE_MACRO], fa_write | fa_create_always);
+    if(!filehandle[FILE_MACRO]) error("Error writing macro file");
 }
 
 void handle_assembler_command(void) {
@@ -1362,22 +1392,20 @@ void expandMacroStart(macro *exp) {
 
     currentExpandedMacro = currentline.current_macro;
     // parse arguments into given macro substitution space
-    if(currentline.next) {
-        while(currentline.next) {
-            if(argcount >= exp->argcount) {
-                error(message[ERROR_MACROARGCOUNT]);
-                return;
-            }
-            getLineToken(&token, currentline.next, ',');
-            if(notEmpty(token.start)) {
-                strcpy(exp->substitutions[argcount], token.start);
-                argcount++;
-            }
-            if(token.terminator == ',') currentline.next = token.next;
-            else {
-                if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-                currentline.next = NULL; 
-            }
+    while(currentline.next) {
+        if(argcount >= exp->argcount) {
+            error(message[ERROR_MACROARGCOUNT]);
+            return;
+        }
+        getLineToken(&token, currentline.next, ',');
+        if(notEmpty(token.start)) {
+            strcpy(exp->substitutions[argcount], token.start);
+            argcount++;
+        }
+        if(token.terminator == ',') currentline.next = token.next;
+        else {
+            if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+            currentline.next = NULL; 
         }
     }
     if(argcount != exp->argcount) error(message[ERROR_MACROINCORRECTARG]);
@@ -1432,7 +1460,6 @@ void processInstructions(char *line){
         if(currentline.current_instruction->type == EZ80) {
             if(!recordingMacro) {
                 // process this mnemonic by applying the instruction list as a filter to the operand-set
-                //printf("Mnemonic: %s - OpA: %s - OpB: %s\n",currentline.mnemonic, currentline.operand1, currentline.operand2);
                 list = currentline.current_instruction->list;
                 match = false;
                 for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {

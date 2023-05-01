@@ -7,4 +7,5 @@ next:
     jp @test
     jp next
 
-    db "String",0,"Next",0
+    ;db "String",0,"Next",0
+    db

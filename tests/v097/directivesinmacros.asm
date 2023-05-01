@@ -1,5 +1,9 @@
     include "test.inc"
 
+    macro empty
+    ld a,0
+    endmacro
+
     macro defspace num,value
     ds num,value
     endmacro
@@ -37,3 +41,5 @@ load_sprites:
 bizar:
     orgspecial 0x1000, 0x10
     ld a,b
+
+    empty
