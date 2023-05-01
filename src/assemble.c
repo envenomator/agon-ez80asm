@@ -712,30 +712,30 @@ uint8_t get_ddfd_prefix(cpuregister reg) {
 void prefix_ddfd_suffix(operandlist *op) {
     uint8_t prefix1, prefix2;
 
-    if(op->ddfdpermitted) {
-        prefix1 = get_ddfd_prefix(operand1.reg);
-        prefix2 = get_ddfd_prefix(operand2.reg);
+    if(!op->ddfdpermitted) return;
+
+    prefix1 = get_ddfd_prefix(operand1.reg);
+    prefix2 = get_ddfd_prefix(operand2.reg);
 
 
-        // prefix in either of these two cases
-        if(prefix1) {
-            if(prefix2) {
-                // both prefixes set
-                if(operand1.indirect) {
-                    output.prefix1 = prefix1;
-                }
-                else {
-                    output.prefix1 = prefix2;
-                }
+    // prefix in either of these two cases
+    if(prefix1) {
+        if(prefix2) {
+            // both prefixes set
+            if(operand1.indirect) {
+                output.prefix1 = prefix1;
             }
             else {
-                output.prefix1 = prefix1;
+                output.prefix1 = prefix2;
             }
         }
         else {
-            if(prefix2) {
-                output.prefix1 = prefix2;
-            }
+            output.prefix1 = prefix1;
+        }
+    }
+    else {
+        if(prefix2) {
+            output.prefix1 = prefix2;
         }
     }
 }
