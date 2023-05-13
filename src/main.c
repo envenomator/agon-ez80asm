@@ -16,12 +16,12 @@ int main(int argc, char *argv[])
 {
     if(argc < 2){
         printf("Usage: asm <filename> [-l]\n\r");
-        return 0;
+        return 2;
     }
     mos_posix_init();       // Init posix compatibility for non-MOS builds, before io_init
     if(!io_init(argv[1])) {
         printf("Error opening \"%s\"\r\n", argv[1]);
-        return 0;
+        return 2;
     }
 
     list_enabled = ((argc == 3) && (strcmp(argv[2], "-l") == 0));
@@ -39,9 +39,10 @@ int main(int argc, char *argv[])
     if(global_errors) {
         io_addDeleteList(filename[FILE_OUTPUT]);
         printf("Error in input\r\n");
+        io_close();
+        return 1;
     }
-    else printf("Done\r\n");
-
+    printf("Done\r\n");
     io_close();
     return 0;
 }

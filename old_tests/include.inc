@@ -1,0 +1,27 @@
+TERROR:			EQU     85H
+LINE_:			EQU     86H
+ELSE_:			EQU     8BH
+THEN:			EQU     8CH
+LINO:			EQU     8DH
+FN:			EQU     A4H
+TO:			EQU     B8H
+REN:			EQU     CCH
+DATA_:			EQU     DCH
+DIM:			EQU     DEH
+FOR:			EQU     E3H
+GOSUB:			EQU     E4H
+GOTO:			EQU     E5H
+TIF:			EQU     E7H
+LOCAL_:			EQU     EAH
+NEXT:			EQU     EDH
+ON_:			EQU     EEH
+PROC:			EQU     F2H
+REM:			EQU     F4H
+REPEAT:			EQU     F5H
+RESTOR:			EQU     F7H
+TRACE:			EQU     FCH
+UNTIL:			EQU     FDH
+;
+TOKLO:			EQU     8FH
+TOKHI:			EQU     93H
+OFFSET:			EQU     TOKLO

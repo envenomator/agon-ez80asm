@@ -1,7 +1,0 @@
-PC     Output            Line Source
-040000                   0001     .assume adl=1
-040000                   0002     .org $40000
-040000                   0003 start:
-040000 C9                0004     ret
-040001                   0005 
-

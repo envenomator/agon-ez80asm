@@ -1,0 +1,373 @@
+Pass 1...
+93 lines
+0 labels
+Pass 2...
+address: 00000000
+input:   daa
+output:  27:
+
+address: 00000001
+input:   dec (hl)
+output:  35:
+
+address: 00000002
+input:   dec ixh
+output:  dd:25:
+
+address: 00000004
+input:   dec ixl
+output:  dd:2d:
+
+address: 00000006
+input:   dec iyh
+output:  fd:25:
+
+address: 00000008
+input:   dec iyl
+output:  fd:2d:
+
+address: 0000000a
+input:   dec ix
+output:  dd:2b:
+
+address: 0000000c
+input:   dec iy
+output:  fd:2b:
+
+address: 0000000e
+input:   dec (ix+5)
+output:  dd:35:05:
+
+address: 00000011
+input:   dec (iy+5)
+output:  fd:35:05:
+
+address: 00000014
+input:   dec a
+output:  3d:
+
+address: 00000015
+input:   dec b
+output:  05:
+
+address: 00000016
+input:   dec c
+output:  0d:
+
+address: 00000017
+input:   dec d
+output:  15:
+
+address: 00000018
+input:   dec e
+output:  1d:
+
+address: 00000019
+input:   dec h
+output:  25:
+
+address: 0000001a
+input:   dec l
+output:  2d:
+
+address: 0000001b
+input:   dec bc
+output:  0b:
+
+address: 0000001c
+input:   dec de
+output:  1b:
+
+address: 0000001d
+input:   dec hl
+output:  2b:
+
+address: 0000001e
+input:   dec sp
+output:  3b:
+
+address: 0000001f
+input:   di
+output:  f3:
+
+address: 00000020
+input:   djnz 5
+output:  10:05:
+
+address: 00000022
+input:   ei
+output:  fb:
+
+address: 00000023
+input:   ex af, af'
+output:  08:
+
+address: 00000024
+input:   ex de, hl
+output:  eb:
+
+address: 00000025
+input:   ex (sp), hl
+output:  e3:
+
+address: 00000026
+input:   ex (sp), ix
+output:  dd:e3:
+
+address: 00000028
+input:   ex (sp), iy
+output:  fd:e3:
+
+address: 0000002a
+input:   exx
+output:  d9:
+
+address: 0000002b
+input:   halt
+output:  76:
+
+address: 0000002c
+input:   im 0
+output:  ed:46:
+
+address: 0000002e
+input:   im 1
+output:  ed:56:
+
+address: 00000030
+input:   im 2
+output:  ed:5e:
+
+address: 00000032
+input:   in a, (bc)
+output:  ed:78:
+
+address: 00000034
+input:   in b, (bc)
+output:  ed:40:
+
+address: 00000036
+input:   in c, (bc)
+output:  ed:48:
+
+address: 00000038
+input:   in d, (bc)
+output:  ed:50:
+
+address: 0000003a
+input:   in e, (bc)
+output:  ed:58:
+
+address: 0000003c
+input:   in h, (bc)
+output:  ed:60:
+
+address: 0000003e
+input:   in l, (bc)
+output:  ed:68:
+
+address: 00000040
+input:   in a, (c)
+output:  ed:78:
+
+address: 00000042
+input:   in b, (c)
+output:  ed:40:
+
+address: 00000044
+input:   in c, (c)
+output:  ed:48:
+
+address: 00000046
+input:   in d, (c)
+output:  ed:50:
+
+address: 00000048
+input:   in e, (c)
+output:  ed:58:
+
+address: 0000004a
+input:   in h, (c)
+output:  ed:60:
+
+address: 0000004c
+input:   in l, (c)
+output:  ed:68:
+
+address: 0000004e
+input:   in0 a, (5)
+output:  ed:38:05:
+
+address: 00000051
+input:   in0 b, (5)
+output:  ed:00:05:
+
+address: 00000054
+input:   in0 c, (5)
+output:  ed:08:05:
+
+address: 00000057
+input:   in0 d, (5)
+output:  ed:10:05:
+
+address: 0000005a
+input:   in0 e, (5)
+output:  ed:18:05:
+
+address: 0000005d
+input:   in0 h, (5)
+output:  ed:20:05:
+
+address: 00000060
+input:   in0 l, (5)
+output:  ed:28:05:
+
+address: 00000063
+input:   inc (hl)
+output:  34:
+
+address: 00000064
+input:   inc ixh
+output:  dd:24:
+
+address: 00000066
+input:   inc ixl
+output:  dd:2c:
+
+address: 00000068
+input:   inc iyh
+output:  fd:24:
+
+address: 0000006a
+input:   inc iyl
+output:  fd:2c:
+
+address: 0000006c
+input:   inc ix
+output:  dd:23:
+
+address: 0000006e
+input:   inc iy
+output:  fd:23:
+
+address: 00000070
+input:   inc (ix+5)
+output:  dd:34:05:
+
+address: 00000073
+input:   inc (iy+5)
+output:  fd:34:05:
+
+address: 00000076
+input:   inc a
+output:  3c:
+
+address: 00000077
+input:   inc b
+output:  04:
+
+address: 00000078
+input:   inc c
+output:  0c:
+
+address: 00000079
+input:   inc d
+output:  14:
+
+address: 0000007a
+input:   inc e
+output:  1c:
+
+address: 0000007b
+input:   inc h
+output:  24:
+
+address: 0000007c
+input:   inc l
+output:  2c:
+
+address: 0000007d
+input:   inc bc
+output:  03:
+
+address: 0000007e
+input:   inc de
+output:  13:
+
+address: 0000007f
+input:   inc hl
+output:  23:
+
+address: 00000080
+input:   inc sp
+output:  33:
+
+address: 00000081
+input:   ind
+output:  ed:aa:
+
+address: 00000083
+input:   ind2
+output:  ed:8c:
+
+address: 00000085
+input:   ind2r
+output:  ed:9c:
+
+address: 00000087
+input:   indm
+output:  ed:8a:
+
+address: 00000089
+input:   indmr
+output:  ed:9a:
+
+address: 0000008b
+input:   indr
+output:  ed:ba:
+
+address: 0000008d
+input:   indrx
+output:  ed:ca:
+
+address: 0000008f
+input:   ini
+output:  ed:a2:
+
+address: 00000091
+input:   ini2
+output:  ed:84:
+
+address: 00000093
+input:   ini2r
+output:  ed:94:
+
+address: 00000095
+input:   inim
+output:  ed:82:
+
+address: 00000097
+input:   inimr
+output:  ed:92:
+
+address: 00000099
+input:   inir
+output:  ed:b2:
+
+address: 0000009b
+input:   inirx
+output:  ed:c2:
+
+address: 0000009d
+input:   
+output:  
+
+address: 0000009d
+input:   
+output:  
+
+address: 0000009d
+input:   
+output:  
+
+
