@@ -1,4 +1,0 @@
-@@: 
-    ld a, arg1
-    add a, arg2
-    jp nz, @p
