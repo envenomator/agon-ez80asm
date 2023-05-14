@@ -13,7 +13,7 @@
 
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
-#define FILLBYTE                   0x00 // NOP
+#define FILLBYTE                   0xFF // Same as ZDS
 #define FILESTACK_MAXFILES            2 // Maximum simultaneous include 'depth'
 #define LINEMAX                     128 // Input line length maximum
 #define FILENAMEMAXLENGTH            64

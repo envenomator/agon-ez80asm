@@ -15,6 +15,8 @@ uint24_t address;
 uint24_t totalsize;      // total size of assembled binary
 uint16_t global_errors;
 bool adlmode;
+bool list_enabled;
+bool consolelist_enabled;
 
 tokenline currentline;
 

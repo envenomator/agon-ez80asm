@@ -32,6 +32,8 @@ extern uint24_t totalsize;
 extern uint16_t global_errors;
 extern bool adlmode;
 extern tokenline currentline;
+extern bool list_enabled;
+extern bool consolelist_enabled;
 
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code

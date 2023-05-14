@@ -6,10 +6,6 @@
 #include "./stdint.h"
 #include "io.h"
 
-// Global variables
-bool list_enabled;
-bool consolelist_enabled;
-
 // Local variables
 char _listLine[LINEMAX];
 uint24_t _listAddress;

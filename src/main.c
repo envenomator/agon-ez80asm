@@ -18,14 +18,14 @@ int main(int argc, char *argv[])
         printf("Usage: asm <filename> [-l]\n\r");
         return 2;
     }
+    list_enabled = ((argc == 3) && (strcmp(argv[2], "-l") == 0));
+    consolelist_enabled = false;
+
     mos_posix_init();       // Init posix compatibility for non-MOS builds, before io_init
     if(!io_init(argv[1])) {
         printf("Error opening \"%s\"\r\n", argv[1]);
         return 2;
     }
-
-    list_enabled = ((argc == 3) && (strcmp(argv[2], "-l") == 0));
-    consolelist_enabled = false;
 
     // Initialization
     initGlobalLabelTable();
