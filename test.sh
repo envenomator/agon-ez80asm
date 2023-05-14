@@ -17,13 +17,13 @@ for FILE in *; do
                 pass=0
             else
                 if [ $testresult -eq 2 ]; then
-                    echo "ERROR"
+                    echo "CONFIG ERROR"
                     exit 1
                 fi
                 echo "OK"
             fi
         else
-            echo "Testscript missing for $FILE"
+            echo "\"$FILE\" - Testscript missing for $FILE"
             exit 1
         fi
         cd ..

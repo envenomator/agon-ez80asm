@@ -1,12 +1,12 @@
- call nz,$aabbcc
- call z,$aabbcc
- call nc,$aabbcc
- call c,$aabbcc
- call po,$aabbcc
- call pe,$aabbcc
- call p,$aabbcc
- call m,$aabbcc
- call $aabbcc
+ call nz,aabbcch
+ call z,aabbcch
+ call nc,aabbcch
+ call c,aabbcch
+ call po,aabbcch
+ call pe,aabbcch
+ call p,aabbcch
+ call m,aabbcch
+ call aabbcch
  ccf
  cp a,(hl)
  cp a, ixh

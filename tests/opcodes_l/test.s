@@ -3,7 +3,7 @@
 	ld a, (ix+5)
 	ld a, (iy+5)
 	ld a, mb
-	ld a, ($aabbcc)
+	ld a, (aabbcch)
 	ld a, r
 	ld a, (bc)
 	ld a, (de)
@@ -62,10 +62,10 @@
 	ld iy, (ix+5)
 	ld ix, (iy+5)
 	ld iy, (iy+5)
-	ld ix, $aabbcc
-	ld iy, $aabbcc
-	ld ix, ($aabbcc)
-	ld iy, ($aabbcc)
+	ld ix, aabbcch
+	ld iy, aabbcch
+	ld ix, (aabbcch)
+	ld iy, (aabbcch)
 	ld (ix+5), ix
 	ld (ix+5), iy
 	ld (iy+5), ix
@@ -93,13 +93,13 @@
 	ld (iy+5), de
 	ld (iy+5), hl
 	ld mb, a
-	ld ($aabbcc), a
-	ld ($aabbcc), ix
-	ld ($aabbcc), iy
-	ld ($aabbcc), bc
-	ld ($aabbcc), de
-	ld ($aabbcc), hl
-	ld ($aabbcc), sp
+	ld (aabbcch), a
+	ld (aabbcch), ix
+	ld (aabbcch), iy
+	ld (aabbcch), bc
+	ld (aabbcch), de
+	ld (aabbcch), hl
+	ld (aabbcch), sp
 	ld r, a
 	ld a, (hl)
 	ld b, (hl)
@@ -159,20 +159,20 @@
 	ld bc, (iy+5)
 	ld de, (iy+5)
 	ld hl, (iy+5)
-	ld bc, $aabbcc
-	ld de, $aabbcc
-	ld hl, $aabbcc
-	ld bc, ($aabbcc)
-	ld de, ($aabbcc)
-	ld hl, ($aabbcc)
+	ld bc, aabbcch
+	ld de, aabbcch
+	ld hl, aabbcch
+	ld bc, (aabbcch)
+	ld de, (aabbcch)
+	ld hl, (aabbcch)
 	ld (bc), a
 	ld (de), a
 	ld (hl), a
 	ld sp, hl
 	ld sp, ix
 	ld sp, iy
-	ld sp, $aabbcc
-	ld sp, ($aabbcc)
+	ld sp, aabbcch
+	ld sp, (aabbcch)
 	ldd
 	lddr
 	ldi
