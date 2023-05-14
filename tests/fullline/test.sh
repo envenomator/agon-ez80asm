@@ -4,7 +4,7 @@
 # return 1 on issue during test
 # return 2 on error in test SETUP
 #
-CHECKBIN=0
+CHECKBIN=1
 #
 if [ -f "test.s" ]; then
     $ASMBIN test.s > asm.output

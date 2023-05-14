@@ -124,6 +124,7 @@ void parse_operand(char *string, operand *operand) {
         if(string[len-1] == ')') string[len-1] = 0; // terminate on closing bracket
         else error(message[ERROR_CLOSINGBRACKET]);
         ptr = &string[1];
+        while(isspace(*ptr)) ptr++; // eat spaces
     }
     else {
         operand->indirect = false;
@@ -163,7 +164,7 @@ void parse_operand(char *string, operand *operand) {
                     operand->reg_index = R_INDEX_B;
                     return;
                 case 'c':
-                    if(tolower(*ptr == 0)) {
+                    if((tolower(*ptr) == 0) || isspace(*ptr)) {
                         operand->reg = R_BC;
                         operand->reg_index = R_INDEX_BC;
                         return;
@@ -192,13 +193,10 @@ void parse_operand(char *string, operand *operand) {
                     operand->reg_index = R_INDEX_D;
                     return;
                 case 'e':
-                    switch(tolower(*ptr++)) {
-                        case 0:
-                            operand->reg = R_DE;
-                            operand->reg_index = R_INDEX_DE;
-                            return;
-                        default:
-                            break;
+                    if((tolower(*ptr) == 0) || isspace(*ptr)) {
+                        operand->reg = R_DE;
+                        operand->reg_index = R_INDEX_DE;
+                        return;
                     }
                     break;
                 default:
@@ -222,7 +220,7 @@ void parse_operand(char *string, operand *operand) {
                     operand->reg_index = R_INDEX_H;
                     return;
                 case 'l':
-                    if(tolower(*ptr == 0)) {
+                    if(tolower(*ptr == 0) || isspace(*ptr)) {
                         operand->reg = R_HL;
                         operand->reg_index = R_INDEX_HL;
                         return;
@@ -239,6 +237,7 @@ void parse_operand(char *string, operand *operand) {
                     operand->reg_index = R_INDEX_I;
                     return;
                 case 'x':
+                    while(isspace(*ptr)) ptr++; // eat spaces
                     switch(tolower(*ptr++)) {
                         case 0:
                             operand->reg = R_IX;
@@ -263,6 +262,7 @@ void parse_operand(char *string, operand *operand) {
                     }
                     break;
                 case 'y':
+                    while(isspace(*ptr)) ptr++; // eat spaces
                     switch(tolower(*ptr++)) {
                         case 0:
                             operand->reg = R_IY;
