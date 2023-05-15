@@ -1,29 +1,34 @@
 #!/bin/bash
 export ASMBIN=../../bin/asm
+NOCOLOR='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+FORMAT='%-20.20s'
 
-pass=1
 testresult=2
+failed=0
 
 cd tests
 for FILE in *; do
     if [ -d "$FILE" ]; then
         cd "$FILE"
+        printf $FORMAT $FILE
         if [ -f "test.sh" ]; then
-            echo -n "Testing \"$FILE\" - "
             ./test.sh > ./test.output
             testresult=$?
             if [ $testresult -eq 1 ]; then
-                echo "FAIL"
-                pass=0
+                echo -e "${RED}FAIL${NOCOLOR}"
+                failed=$((failed+1))
             else
                 if [ $testresult -eq 2 ]; then
-                    echo "CONFIG ERROR"
+                    echo -e "${RED}Config error${NOCOLOR}"
                     exit 1
                 fi
-                echo "OK"
+                echo -e "${GREEN}OK${NOCOLOR}"
             fi
         else
-            echo "\"$FILE\" - Testscript missing for $FILE"
+            echo -e "${RED}Testscript missing${NOCOLOR}"
+            echo -e "${RED}Test aborted${NOCOLOR}"
             exit 1
         fi
         cd ..
@@ -31,6 +36,11 @@ for FILE in *; do
 done
 cd ..
 
-if [ $pass -eq 1 ]; then echo "All tests passed"
-else echo "Test(s) failed"
+if [ $failed -eq 0 ]; then echo -e "${GREEN}All tests passed${NOCOLOR}"
+else
+    echo -e -n "${RED}${failed} test"
+    if [ $failed -gt 1 ]; then
+        echo -n "s"
+    fi
+    echo -e " failed${NOCOLOR}"
 fi
