@@ -1,8 +1,3 @@
 Pass 1...
-Read string: .org 0x40000
-
-Read string:     ld u,b
-
-"test.s" - line 2 - Operand(s) not matching mnemonic
-Read string: 
-Error in input
+"test.s" - line 2 - Operand(s) not matching mnemonic
+Error in input

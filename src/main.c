@@ -15,6 +15,7 @@
 int main(int argc, char *argv[])
 {
     if(argc < 2){
+        printf("ez80asm version %s\r\n\r\n",VERSION);
         printf("Usage: asm <filename> [-l]\n\r");
         return 2;
     }

@@ -1,55 +1,3 @@
 Pass 1...
-Read string:         .assume adl=1
-
-Read string:         db 1
-
-Read string:         db 2
-
-Read string:         .align 16
-
-Read string: label1: 
-
-Read string:         db 1
-
-Read string:         .align 64
-
-Read string: label2: 
-
-Read string:         db 1
-
-Read string:         ld hl, label2
-
-Read string:         .align 256
-
-Read string:         ld hl, label1
-
-Read string:         
-Read string: 
-Pass 2...
-Read string:         .assume adl=1
-
-Read string:         db 1
-
-Read string:         db 2
-
-Read string:         .align 16
-
-Read string: label1: 
-
-Read string:         db 1
-
-Read string:         .align 64
-
-Read string: label2: 
-
-Read string:         db 1
-
-Read string:         ld hl, label2
-
-Read string:         .align 256
-
-Read string:         ld hl, label1
-
-Read string:         
-Read string: 
-Done
+Pass 2...
+Done

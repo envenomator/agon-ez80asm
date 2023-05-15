@@ -176,32 +176,16 @@ char* io_gets(uint8_t fh, char *s, int size) {
 	int c;
 	char *cs;
     bool eof;
+    bool finalread = false;
     c = 0;
 	cs = s;
-    bool final_read = false;
-
+    
     if(_bufferstart[fh]) {
         //printf("new mode read\r\n");
-        #ifdef AGON
-        do {
-            if(_filebuffersize[fh] == 0) {
-                _fileEOF[fh] = mos_feof(filehandle[fh]);
-                if(_fileEOF[fh]) return 0;
-                _io_fillbuffer(fh);
-            }
-            _filebuffersize[fh]--;
-            c = *(_filebuffer[fh]);
-            _filebuffer[fh]++;
-            if((*cs++ = c) == '\n') break;
-        }
-        while(--size > 0 && !_fileEOF[fh]);
-        #endif
-
-        #ifndef AGON
         do {
             if(_filebuffersize[fh] == 0) {
                 _io_fillbuffer(fh);
-                if(_filebuffersize[fh] < FILE_BUFFERSIZE) final_read = true;
+                if(_filebuffersize[fh] < FILE_BUFFERSIZE) finalread = true;
             }
             else {
                 _filebuffersize[fh]--;
@@ -209,10 +193,9 @@ char* io_gets(uint8_t fh, char *s, int size) {
                 _filebuffer[fh]++;
                 if((*cs++ = c) == '\n') break;
             }
-            _fileEOF[fh] = (_filebuffersize[fh] == 0) && final_read;
+            _fileEOF[fh] = (_filebuffersize[fh] == 0) && finalread;
         }
         while(--size > 0 && !_fileEOF[fh]);
-        #endif
 
         *cs = '\0';
         //printf("Read string: %s\r\n",s);
