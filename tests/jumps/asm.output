@@ -1,3 +1,69 @@
 Pass 1...
-Pass 2...
-Done
+Read string: label:
+
+Read string:         djnz label
+
+Read string:         jp label
+
+Read string:         jr nz, label
+
+Read string:         jr z, label
+
+Read string:         jr nc, label
+
+Read string:         jr c, label
+
+Read string:         jr label
+
+Read string:         djnz label2
+
+Read string:         jp label2
+
+Read string:         jr nz, label2
+
+Read string:         jr z, label2
+
+Read string:         jr nc, label2
+
+Read string:         jr c, label2
+
+Read string:         jr label2
+
+Read string: label2:
+
+Read string: 
+Pass 2...
+Read string: label:
+
+Read string:         djnz label
+
+Read string:         jp label
+
+Read string:         jr nz, label
+
+Read string:         jr z, label
+
+Read string:         jr nc, label
+
+Read string:         jr c, label
+
+Read string:         jr label
+
+Read string:         djnz label2
+
+Read string:         jp label2
+
+Read string:         jr nz, label2
+
+Read string:         jr z, label2
+
+Read string:         jr nc, label2
+
+Read string:         jr c, label2
+
+Read string:         jr label2
+
+Read string: label2:
+
+Read string: 
+Done

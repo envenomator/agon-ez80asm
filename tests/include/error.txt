@@ -1,0 +1,12 @@
+Pass 1...
+Read 14 bytes
+EOF
+Read string:         ld a,b
+Read 0 bytes
+Pass 2...
+Read 14 bytes
+EOF
+Read string:         ld a,b
+Read 0 bytes
+Done
+Read string: ÿ

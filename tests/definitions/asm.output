@@ -1,3 +1,57 @@
 Pass 1...
-Pass 2...
-Done
+Read string: five:   equ 5
+
+Read string: ten:    equ 10
+
+Read string: twelve: equ ten+2
+
+Read string: eleven: equ twelve-1
+
+Read string: fifteen:equ eleven + 3;comment
+
+Read string: twenty: equ ten * 2
+
+Read string: 
+
+Read string:     ld a, five
+
+Read string:     ld a, ten
+
+Read string:     ld a, twelve
+
+Read string:     ld a, eleven
+
+Read string:     ld a, fifteen
+
+Read string:     ld a, twenty
+
+Read string: 
+Pass 2...
+Read string: five:   equ 5
+
+Read string: ten:    equ 10
+
+Read string: twelve: equ ten+2
+
+Read string: eleven: equ twelve-1
+
+Read string: fifteen:equ eleven + 3;comment
+
+Read string: twenty: equ ten * 2
+
+Read string: 
+
+Read string:     ld a, five
+
+Read string:     ld a, ten
+
+Read string:     ld a, twelve
+
+Read string:     ld a, eleven
+
+Read string:     ld a, fifteen
+
+Read string:     ld a, twenty
+
+Read string: 
+Done

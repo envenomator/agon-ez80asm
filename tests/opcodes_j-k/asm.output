@@ -1,3 +1,81 @@
 Pass 1...
-Pass 2...
-Done
+Read string: 	.assume adl=1
+
+Read string: 	jp nz, aabbcch
+
+Read string: 	jp z, aabbcch
+
+Read string: 	jp nc, aabbcch
+
+Read string: 	jp c, aabbcch
+
+Read string: 	jp po, aabbcch
+
+Read string: 	jp pe, aabbcch
+
+Read string: 	jp p, aabbcch
+
+Read string: 	jp m, aabbcch
+
+Read string: labela:
+
+Read string: 	jp (hl)
+
+Read string: 	jp (ix)
+
+Read string: 	jp (iy)
+
+Read string: 	jp aabbcch
+
+Read string: 	jr nz, labela
+
+Read string: 	jr z, labela
+
+Read string: 	jr nc,labela
+
+Read string: 	jr c, labela
+
+Read string: 	jr labela
+
+Read string: 
+Pass 2...
+Read string: 	.assume adl=1
+
+Read string: 	jp nz, aabbcch
+
+Read string: 	jp z, aabbcch
+
+Read string: 	jp nc, aabbcch
+
+Read string: 	jp c, aabbcch
+
+Read string: 	jp po, aabbcch
+
+Read string: 	jp pe, aabbcch
+
+Read string: 	jp p, aabbcch
+
+Read string: 	jp m, aabbcch
+
+Read string: labela:
+
+Read string: 	jp (hl)
+
+Read string: 	jp (ix)
+
+Read string: 	jp (iy)
+
+Read string: 	jp aabbcch
+
+Read string: 	jr nz, labela
+
+Read string: 	jr z, labela
+
+Read string: 	jr nc,labela
+
+Read string: 	jr c, labela
+
+Read string: 	jr labela
+
+Read string: 
+Done

@@ -1,3 +1,763 @@
 Pass 1...
-Pass 2...
-Done
+Read string: 	.assume adl=1	
+
+Read string: 	ld a, i
+
+Read string: 	ld a, (ix+5)
+
+Read string: 	ld a, (iy+5)
+
+Read string: 	ld a, mb
+
+Read string: 	ld a, (aabbcch)
+
+Read string: 	ld a, r
+
+Read string: 	ld a, (bc)
+
+Read string: 	ld a, (de)
+
+Read string: 	ld a, (hl)
+
+Read string: 	ld hl, i
+
+Read string: 	ld (hl), ix
+
+Read string: 	ld (hl), iy
+
+Read string: 	ld (hl), 5
+
+Read string: 	ld (hl), a
+
+Read string: 	ld (hl), b
+
+Read string: 	ld (hl), c
+
+Read string: 	ld (hl), d
+
+Read string: 	ld (hl), e
+
+Read string: 	ld (hl), h
+
+Read string: 	ld (hl), l
+
+Read string: 	ld (hl), bc
+
+Read string: 	ld (hl), de
+
+Read string: 	ld (hl), hl
+
+Read string: 	ld i, hl
+
+Read string: 	ld i, a
+
+Read string: 	ld ixh, ixh
+
+Read string: 	ld ixh, ixl
+
+Read string: 	ld ixl, ixh
+
+Read string: 	ld ixl, ixl
+
+Read string: 	ld iyh, iyh
+
+Read string: 	ld iyh, iyl
+
+Read string: 	ld iyl, iyh
+
+Read string: 	ld iyl, iyl
+
+Read string: 	ld ixh, 5
+
+Read string: 	ld ixl, 5
+
+Read string: 	ld iyh, 5
+
+Read string: 	ld iyl, 5
+
+Read string: 	ld ixh, a
+
+Read string: 	ld ixh, b
+
+Read string: 	ld ixh, c
+
+Read string: 	ld ixh, d
+
+Read string: 	ld ixh, e
+
+Read string: 	ld ixl, a
+
+Read string: 	ld ixl, b
+
+Read string: 	ld ixl, c
+
+Read string: 	ld ixl, d
+
+Read string: 	ld ixl, e
+
+Read string: 	ld iyh, a
+
+Read string: 	ld iyh, b
+
+Read string: 	ld iyh, c
+
+Read string: 	ld iyh, d
+
+Read string: 	ld iyh, e
+
+Read string: 	ld iyl, a
+
+Read string: 	ld iyl, b
+
+Read string: 	ld iyl, c
+
+Read string: 	ld iyl, d
+
+Read string: 	ld iyl, e
+
+Read string: 	ld ix, (hl)
+
+Read string: 	ld iy, (hl)
+
+Read string: 	ld ix, (ix+5)
+
+Read string: 	ld iy, (ix+5)
+
+Read string: 	ld ix, (iy+5)
+
+Read string: 	ld iy, (iy+5)
+
+Read string: 	ld ix, aabbcch
+
+Read string: 	ld iy, aabbcch
+
+Read string: 	ld ix, (aabbcch)
+
+Read string: 	ld iy, (aabbcch)
+
+Read string: 	ld (ix+5), ix
+
+Read string: 	ld (ix+5), iy
+
+Read string: 	ld (iy+5), ix
+
+Read string: 	ld (iy+5), iy
+
+Read string: 	ld (ix+5), 10
+
+Read string: 	ld (iy+5), 10
+
+Read string: 	ld (ix+5), a
+
+Read string: 	ld (ix+5), b
+
+Read string: 	ld (ix+5), c
+
+Read string: 	ld (ix+5), d
+
+Read string: 	ld (ix+5), e
+
+Read string: 	ld (ix+5), h
+
+Read string: 	ld (ix+5), l
+
+Read string: 	ld (iy+5), a
+
+Read string: 	ld (iy+5), b
+
+Read string: 	ld (iy+5), c
+
+Read string: 	ld (iy+5), d
+
+Read string: 	ld (iy+5), e
+
+Read string: 	ld (iy+5), h
+
+Read string: 	ld (iy+5), l
+
+Read string: 	ld (ix+5), bc
+
+Read string: 	ld (ix+5), de
+
+Read string: 	ld (ix+5), hl
+
+Read string: 	ld (iy+5), bc
+
+Read string: 	ld (iy+5), de
+
+Read string: 	ld (iy+5), hl
+
+Read string: 	ld mb, a
+
+Read string: 	ld (aabbcch), a
+
+Read string: 	ld (aabbcch), ix
+
+Read string: 	ld (aabbcch), iy
+
+Read string: 	ld (aabbcch), bc
+
+Read string: 	ld (aabbcch), de
+
+Read string: 	ld (aabbcch), hl
+
+Read string: 	ld (aabbcch), sp
+
+Read string: 	ld r, a
+
+Read string: 	ld a, (hl)
+
+Read string: 	ld b, (hl)
+
+Read string: 	ld c, (hl)
+
+Read string: 	ld d, (hl)
+
+Read string: 	ld e, (hl)
+
+Read string: 	ld h, (hl)
+
+Read string: 	ld l, (hl)
+
+Read string: 	ld a, ixh
+
+Read string: 	ld a, ixl
+
+Read string: 	ld a, iyh
+
+Read string: 	ld a, iyl
+
+Read string: 	ld b, ixh
+
+Read string: 	ld b, ixl
+
+Read string: 	ld b, iyh
+
+Read string: 	ld b, iyl
+
+Read string: 	ld c, ixh
+
+Read string: 	ld c, ixl
+
+Read string: 	ld c, iyh
+
+Read string: 	ld c, iyl
+
+Read string: 	ld d, ixh
+
+Read string: 	ld d, ixl
+
+Read string: 	ld d, iyh
+
+Read string: 	ld d, iyl
+
+Read string: 	ld e, ixh
+
+Read string: 	ld e, ixl
+
+Read string: 	ld e, iyh
+
+Read string: 	ld e, iyl
+
+Read string: 	ld a, (ix+5)
+
+Read string: 	ld b, (ix+5)
+
+Read string: 	ld c, (ix+5)
+
+Read string: 	ld d, (ix+5)
+
+Read string: 	ld e, (ix+5)
+
+Read string: 	ld h, (ix+5)
+
+Read string: 	ld l, (ix+5)
+
+Read string: 	ld a, (iy+5)
+
+Read string: 	ld b, (iy+5)
+
+Read string: 	ld c, (iy+5)
+
+Read string: 	ld d, (iy+5)
+
+Read string: 	ld e, (iy+5)
+
+Read string: 	ld h, (iy+5)
+
+Read string: 	ld l, (iy+5)
+
+Read string: 	ld a, 5
+
+Read string: 	ld b, 5
+
+Read string: 	ld c, 5
+
+Read string: 	ld d, 5
+
+Read string: 	ld e, 5
+
+Read string: 	ld h, 5
+
+Read string: 	ld l, 5
+
+Read string: 	ld a, a
+
+Read string: 	ld bc, (hl)
+
+Read string: 	ld de, (hl)
+
+Read string: 	ld hl, (hl)
+
+Read string: 	ld bc, (ix+5)
+
+Read string: 	ld de, (ix+5)
+
+Read string: 	ld hl, (ix+5)
+
+Read string: 	ld bc, (iy+5)
+
+Read string: 	ld de, (iy+5)
+
+Read string: 	ld hl, (iy+5)
+
+Read string: 	ld bc, aabbcch
+
+Read string: 	ld de, aabbcch
+
+Read string: 	ld hl, aabbcch
+
+Read string: 	ld bc, (aabbcch)
+
+Read string: 	ld de, (aabbcch)
+
+Read string: 	ld hl, (aabbcch)
+
+Read string: 	ld (bc), a
+
+Read string: 	ld (de), a
+
+Read string: 	ld (hl), a
+
+Read string: 	ld sp, hl
+
+Read string: 	ld sp, ix
+
+Read string: 	ld sp, iy
+
+Read string: 	ld sp, aabbcch
+
+Read string: 	ld sp, (aabbcch)
+
+Read string: 	ldd
+
+Read string: 	lddr
+
+Read string: 	ldi
+
+Read string: 	ldir
+
+Read string: 	lea ix, ix+5
+
+Read string: 	lea iy, ix+5
+
+Read string: 	lea ix, iy+5
+
+Read string: 	lea iy, iy+5
+
+Read string: 	lea bc, ix+5
+
+Read string: 	lea de, ix+5
+
+Read string: 	lea hl, ix+5
+
+Read string: 	lea bc, iy+5
+
+Read string: 	lea de, iy+5
+
+Read string: 	lea hl, iy+5
+
+Read string: 	
+Read string: 
+Pass 2...
+Read string: 	.assume adl=1	
+
+Read string: 	ld a, i
+
+Read string: 	ld a, (ix+5)
+
+Read string: 	ld a, (iy+5)
+
+Read string: 	ld a, mb
+
+Read string: 	ld a, (aabbcch)
+
+Read string: 	ld a, r
+
+Read string: 	ld a, (bc)
+
+Read string: 	ld a, (de)
+
+Read string: 	ld a, (hl)
+
+Read string: 	ld hl, i
+
+Read string: 	ld (hl), ix
+
+Read string: 	ld (hl), iy
+
+Read string: 	ld (hl), 5
+
+Read string: 	ld (hl), a
+
+Read string: 	ld (hl), b
+
+Read string: 	ld (hl), c
+
+Read string: 	ld (hl), d
+
+Read string: 	ld (hl), e
+
+Read string: 	ld (hl), h
+
+Read string: 	ld (hl), l
+
+Read string: 	ld (hl), bc
+
+Read string: 	ld (hl), de
+
+Read string: 	ld (hl), hl
+
+Read string: 	ld i, hl
+
+Read string: 	ld i, a
+
+Read string: 	ld ixh, ixh
+
+Read string: 	ld ixh, ixl
+
+Read string: 	ld ixl, ixh
+
+Read string: 	ld ixl, ixl
+
+Read string: 	ld iyh, iyh
+
+Read string: 	ld iyh, iyl
+
+Read string: 	ld iyl, iyh
+
+Read string: 	ld iyl, iyl
+
+Read string: 	ld ixh, 5
+
+Read string: 	ld ixl, 5
+
+Read string: 	ld iyh, 5
+
+Read string: 	ld iyl, 5
+
+Read string: 	ld ixh, a
+
+Read string: 	ld ixh, b
+
+Read string: 	ld ixh, c
+
+Read string: 	ld ixh, d
+
+Read string: 	ld ixh, e
+
+Read string: 	ld ixl, a
+
+Read string: 	ld ixl, b
+
+Read string: 	ld ixl, c
+
+Read string: 	ld ixl, d
+
+Read string: 	ld ixl, e
+
+Read string: 	ld iyh, a
+
+Read string: 	ld iyh, b
+
+Read string: 	ld iyh, c
+
+Read string: 	ld iyh, d
+
+Read string: 	ld iyh, e
+
+Read string: 	ld iyl, a
+
+Read string: 	ld iyl, b
+
+Read string: 	ld iyl, c
+
+Read string: 	ld iyl, d
+
+Read string: 	ld iyl, e
+
+Read string: 	ld ix, (hl)
+
+Read string: 	ld iy, (hl)
+
+Read string: 	ld ix, (ix+5)
+
+Read string: 	ld iy, (ix+5)
+
+Read string: 	ld ix, (iy+5)
+
+Read string: 	ld iy, (iy+5)
+
+Read string: 	ld ix, aabbcch
+
+Read string: 	ld iy, aabbcch
+
+Read string: 	ld ix, (aabbcch)
+
+Read string: 	ld iy, (aabbcch)
+
+Read string: 	ld (ix+5), ix
+
+Read string: 	ld (ix+5), iy
+
+Read string: 	ld (iy+5), ix
+
+Read string: 	ld (iy+5), iy
+
+Read string: 	ld (ix+5), 10
+
+Read string: 	ld (iy+5), 10
+
+Read string: 	ld (ix+5), a
+
+Read string: 	ld (ix+5), b
+
+Read string: 	ld (ix+5), c
+
+Read string: 	ld (ix+5), d
+
+Read string: 	ld (ix+5), e
+
+Read string: 	ld (ix+5), h
+
+Read string: 	ld (ix+5), l
+
+Read string: 	ld (iy+5), a
+
+Read string: 	ld (iy+5), b
+
+Read string: 	ld (iy+5), c
+
+Read string: 	ld (iy+5), d
+
+Read string: 	ld (iy+5), e
+
+Read string: 	ld (iy+5), h
+
+Read string: 	ld (iy+5), l
+
+Read string: 	ld (ix+5), bc
+
+Read string: 	ld (ix+5), de
+
+Read string: 	ld (ix+5), hl
+
+Read string: 	ld (iy+5), bc
+
+Read string: 	ld (iy+5), de
+
+Read string: 	ld (iy+5), hl
+
+Read string: 	ld mb, a
+
+Read string: 	ld (aabbcch), a
+
+Read string: 	ld (aabbcch), ix
+
+Read string: 	ld (aabbcch), iy
+
+Read string: 	ld (aabbcch), bc
+
+Read string: 	ld (aabbcch), de
+
+Read string: 	ld (aabbcch), hl
+
+Read string: 	ld (aabbcch), sp
+
+Read string: 	ld r, a
+
+Read string: 	ld a, (hl)
+
+Read string: 	ld b, (hl)
+
+Read string: 	ld c, (hl)
+
+Read string: 	ld d, (hl)
+
+Read string: 	ld e, (hl)
+
+Read string: 	ld h, (hl)
+
+Read string: 	ld l, (hl)
+
+Read string: 	ld a, ixh
+
+Read string: 	ld a, ixl
+
+Read string: 	ld a, iyh
+
+Read string: 	ld a, iyl
+
+Read string: 	ld b, ixh
+
+Read string: 	ld b, ixl
+
+Read string: 	ld b, iyh
+
+Read string: 	ld b, iyl
+
+Read string: 	ld c, ixh
+
+Read string: 	ld c, ixl
+
+Read string: 	ld c, iyh
+
+Read string: 	ld c, iyl
+
+Read string: 	ld d, ixh
+
+Read string: 	ld d, ixl
+
+Read string: 	ld d, iyh
+
+Read string: 	ld d, iyl
+
+Read string: 	ld e, ixh
+
+Read string: 	ld e, ixl
+
+Read string: 	ld e, iyh
+
+Read string: 	ld e, iyl
+
+Read string: 	ld a, (ix+5)
+
+Read string: 	ld b, (ix+5)
+
+Read string: 	ld c, (ix+5)
+
+Read string: 	ld d, (ix+5)
+
+Read string: 	ld e, (ix+5)
+
+Read string: 	ld h, (ix+5)
+
+Read string: 	ld l, (ix+5)
+
+Read string: 	ld a, (iy+5)
+
+Read string: 	ld b, (iy+5)
+
+Read string: 	ld c, (iy+5)
+
+Read string: 	ld d, (iy+5)
+
+Read string: 	ld e, (iy+5)
+
+Read string: 	ld h, (iy+5)
+
+Read string: 	ld l, (iy+5)
+
+Read string: 	ld a, 5
+
+Read string: 	ld b, 5
+
+Read string: 	ld c, 5
+
+Read string: 	ld d, 5
+
+Read string: 	ld e, 5
+
+Read string: 	ld h, 5
+
+Read string: 	ld l, 5
+
+Read string: 	ld a, a
+
+Read string: 	ld bc, (hl)
+
+Read string: 	ld de, (hl)
+
+Read string: 	ld hl, (hl)
+
+Read string: 	ld bc, (ix+5)
+
+Read string: 	ld de, (ix+5)
+
+Read string: 	ld hl, (ix+5)
+
+Read string: 	ld bc, (iy+5)
+
+Read string: 	ld de, (iy+5)
+
+Read string: 	ld hl, (iy+5)
+
+Read string: 	ld bc, aabbcch
+
+Read string: 	ld de, aabbcch
+
+Read string: 	ld hl, aabbcch
+
+Read string: 	ld bc, (aabbcch)
+
+Read string: 	ld de, (aabbcch)
+
+Read string: 	ld hl, (aabbcch)
+
+Read string: 	ld (bc), a
+
+Read string: 	ld (de), a
+
+Read string: 	ld (hl), a
+
+Read string: 	ld sp, hl
+
+Read string: 	ld sp, ix
+
+Read string: 	ld sp, iy
+
+Read string: 	ld sp, aabbcch
+
+Read string: 	ld sp, (aabbcch)
+
+Read string: 	ldd
+
+Read string: 	lddr
+
+Read string: 	ldi
+
+Read string: 	ldir
+
+Read string: 	lea ix, ix+5
+
+Read string: 	lea iy, ix+5
+
+Read string: 	lea ix, iy+5
+
+Read string: 	lea iy, iy+5
+
+Read string: 	lea bc, ix+5
+
+Read string: 	lea de, ix+5
+
+Read string: 	lea hl, ix+5
+
+Read string: 	lea bc, iy+5
+
+Read string: 	lea de, iy+5
+
+Read string: 	lea hl, iy+5
+
+Read string: 	
+Read string: 
+Done

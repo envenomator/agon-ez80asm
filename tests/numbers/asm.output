@@ -1,3 +1,181 @@
 Pass 1...
-Pass 2...
-Done
+Read string: ; line with label, opcode, tokens
+
+Read string: ; objective: correct parsing of different number systems
+
+Read string: ;
+
+Read string: ; Basic 1-byte number tests
+
+Read string: .org $40000
+
+Read string: ; Hexadecimal
+
+Read string:     ld a, 0xA
+
+Read string:     ld a, 0x0A
+
+Read string:     ld a, 0x00A ; test overflow test in operand parsing
+
+Read string:     ld a, #A
+
+Read string:     ld a, #0A
+
+Read string:     ld a, #00A
+
+Read string:     ld a, $A
+
+Read string:     ld a, $0A
+
+Read string:     ld a, $00A
+
+Read string:     ld a, Ah
+
+Read string:     ld a, 0Ah
+
+Read string:     ld a, 00Ah
+
+Read string: ; Binary
+
+Read string:     ld a, 0b0
+
+Read string:     ld a, 0b1
+
+Read string:     ld a, 0b01
+
+Read string:     ld a, 0b10
+
+Read string:     ld a, 0b11111111
+
+Read string:     ld a, 0b00000000
+
+Read string:     ld a, 0b000000001 ; test overflow test in operand parsing
+
+Read string:     ld a, %0
+
+Read string:     ld a, %1
+
+Read string:     ld a, %01
+
+Read string:     ld a, %10
+
+Read string:     ld a, %11111111
+
+Read string:     ld a, %00000000
+
+Read string:     ld a, %000000001 ; test overflow test in operand parsing
+
+Read string:     ld a, 0b
+
+Read string:     ld a, 1b
+
+Read string:     ld a, 01b
+
+Read string:     ld a, 10b
+
+Read string:     ld a, 11111111b
+
+Read string:     ld a, 00000000b
+
+Read string:     ld a, 000000001b ; test overflow test in operand parsing
+
+Read string: ; Decimal
+
+Read string:     ld a, 0
+
+Read string:     ld a, 128
+
+Read string:     ld a, 255
+
+Read string: 
+Pass 2...
+Read string: ; line with label, opcode, tokens
+
+Read string: ; objective: correct parsing of different number systems
+
+Read string: ;
+
+Read string: ; Basic 1-byte number tests
+
+Read string: .org $40000
+
+Read string: ; Hexadecimal
+
+Read string:     ld a, 0xA
+
+Read string:     ld a, 0x0A
+
+Read string:     ld a, 0x00A ; test overflow test in operand parsing
+
+Read string:     ld a, #A
+
+Read string:     ld a, #0A
+
+Read string:     ld a, #00A
+
+Read string:     ld a, $A
+
+Read string:     ld a, $0A
+
+Read string:     ld a, $00A
+
+Read string:     ld a, Ah
+
+Read string:     ld a, 0Ah
+
+Read string:     ld a, 00Ah
+
+Read string: ; Binary
+
+Read string:     ld a, 0b0
+
+Read string:     ld a, 0b1
+
+Read string:     ld a, 0b01
+
+Read string:     ld a, 0b10
+
+Read string:     ld a, 0b11111111
+
+Read string:     ld a, 0b00000000
+
+Read string:     ld a, 0b000000001 ; test overflow test in operand parsing
+
+Read string:     ld a, %0
+
+Read string:     ld a, %1
+
+Read string:     ld a, %01
+
+Read string:     ld a, %10
+
+Read string:     ld a, %11111111
+
+Read string:     ld a, %00000000
+
+Read string:     ld a, %000000001 ; test overflow test in operand parsing
+
+Read string:     ld a, 0b
+
+Read string:     ld a, 1b
+
+Read string:     ld a, 01b
+
+Read string:     ld a, 10b
+
+Read string:     ld a, 11111111b
+
+Read string:     ld a, 00000000b
+
+Read string:     ld a, 000000001b ; test overflow test in operand parsing
+
+Read string: ; Decimal
+
+Read string:     ld a, 0
+
+Read string:     ld a, 128
+
+Read string:     ld a, 255
+
+Read string: 
+Done

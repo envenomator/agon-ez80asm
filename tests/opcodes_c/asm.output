@@ -1,3 +1,125 @@
 Pass 1...
-Pass 2...
-Done
+Read string:  call nz,aabbcch
+
+Read string:  call z,aabbcch
+
+Read string:  call nc,aabbcch
+
+Read string:  call c,aabbcch
+
+Read string:  call po,aabbcch
+
+Read string:  call pe,aabbcch
+
+Read string:  call p,aabbcch
+
+Read string:  call m,aabbcch
+
+Read string:  call aabbcch
+
+Read string:  ccf
+
+Read string:  cp a,(hl)
+
+Read string:  cp a, ixh
+
+Read string:  cp a, ixl
+
+Read string:  cp a, iyh
+
+Read string:  cp a, iyl
+
+Read string:  cp a, (ix+5)
+
+Read string:  cp a, (iy+5)
+
+Read string:  cp a, 5
+
+Read string:  cp a, a
+
+Read string:  cp a, b
+
+Read string:  cp a, c
+
+Read string:  cp a, d
+
+Read string:  cp a, e
+
+Read string:  cp a, h
+
+Read string:  cp a, l
+
+Read string:  cpd
+
+Read string:  cpdr
+
+Read string:  cpi
+
+Read string:  cpir
+
+Read string:  cpl
+
+Read string: 
+Pass 2...
+Read string:  call nz,aabbcch
+
+Read string:  call z,aabbcch
+
+Read string:  call nc,aabbcch
+
+Read string:  call c,aabbcch
+
+Read string:  call po,aabbcch
+
+Read string:  call pe,aabbcch
+
+Read string:  call p,aabbcch
+
+Read string:  call m,aabbcch
+
+Read string:  call aabbcch
+
+Read string:  ccf
+
+Read string:  cp a,(hl)
+
+Read string:  cp a, ixh
+
+Read string:  cp a, ixl
+
+Read string:  cp a, iyh
+
+Read string:  cp a, iyl
+
+Read string:  cp a, (ix+5)
+
+Read string:  cp a, (iy+5)
+
+Read string:  cp a, 5
+
+Read string:  cp a, a
+
+Read string:  cp a, b
+
+Read string:  cp a, c
+
+Read string:  cp a, d
+
+Read string:  cp a, e
+
+Read string:  cp a, h
+
+Read string:  cp a, l
+
+Read string:  cpd
+
+Read string:  cpdr
+
+Read string:  cpi
+
+Read string:  cpir
+
+Read string:  cpl
+
+Read string: 
+Done

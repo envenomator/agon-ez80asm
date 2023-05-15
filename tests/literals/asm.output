@@ -1,3 +1,113 @@
 Pass 1...
-Pass 2...
-Done
+Read string: label1:  
+
+Read string:         db 'a'
+
+Read string:         db 'a',0
+
+Read string:         db 'a', 'b', 0
+
+Read string:         db 'a' , 'b' , 0
+
+Read string:         db 'b';comment
+
+Read string:         db 'b'	; comment
+
+Read string: charliterals:
+
+Read string:         db '\n'
+
+Read string:         db '\r'
+
+Read string:         db '\t'
+
+Read string:         db '\b'
+
+Read string:         db '\\'
+
+Read string:         db "\'" ; ZDS assembler can't handle '\'', we'll test this later in string
+
+Read string:         db '\"'
+
+Read string: label2:
+
+Read string:         db "A string",0
+
+Read string:         db "\"A double quoted string\"",0
+
+Read string:         db "\'A single quoted string\'",0
+
+Read string:         db "\"A weirdly quoted string\'",0
+
+Read string:         db "\nString with\n newlines\n",0
+
+Read string:         db "\rString with\r returns\r",0
+
+Read string:         db "\tString with\t tabs\t",0
+
+Read string:         db "\bString with\b backspaces\b",0
+
+Read string:         db "\\String with\\ backslashed\\",0
+
+Read string:         ;db "";empty string - ZDS assembler can't handle this
+
+Read string:         
+
+Read string: 
+Pass 2...
+Read string: label1:  
+
+Read string:         db 'a'
+
+Read string:         db 'a',0
+
+Read string:         db 'a', 'b', 0
+
+Read string:         db 'a' , 'b' , 0
+
+Read string:         db 'b';comment
+
+Read string:         db 'b'	; comment
+
+Read string: charliterals:
+
+Read string:         db '\n'
+
+Read string:         db '\r'
+
+Read string:         db '\t'
+
+Read string:         db '\b'
+
+Read string:         db '\\'
+
+Read string:         db "\'" ; ZDS assembler can't handle '\'', we'll test this later in string
+
+Read string:         db '\"'
+
+Read string: label2:
+
+Read string:         db "A string",0
+
+Read string:         db "\"A double quoted string\"",0
+
+Read string:         db "\'A single quoted string\'",0
+
+Read string:         db "\"A weirdly quoted string\'",0
+
+Read string:         db "\nString with\n newlines\n",0
+
+Read string:         db "\rString with\r returns\r",0
+
+Read string:         db "\tString with\t tabs\t",0
+
+Read string:         db "\bString with\b backspaces\b",0
+
+Read string:         db "\\String with\\ backslashed\\",0
+
+Read string:         ;db "";empty string - ZDS assembler can't handle this
+
+Read string:         
+
+Read string: 
+Done

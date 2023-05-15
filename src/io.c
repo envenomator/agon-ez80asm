@@ -137,6 +137,11 @@ void _io_fillbuffer(uint8_t fh) {
         _filebuffersize[fh] = mos_fread(filehandle[fh], _bufferstart[fh], FILE_BUFFERSIZE);
         _filebuffer[fh] = _bufferstart[fh];
     }
+
+    //char *ptr = _filebuffer[fh];
+    //int n;
+    //for(n = 0; n < _filebuffersize[fh];n++) printf("%02x-", *ptr++);
+    //printf("\r\n");
 }
 
 // Flush all output files
@@ -173,35 +178,48 @@ char* io_gets(uint8_t fh, char *s, int size) {
     bool eof;
     c = 0;
 	cs = s;
+    bool final_read = false;
 
     if(_bufferstart[fh]) {
         //printf("new mode read\r\n");
-        do { // io_getc
-            #ifndef AGON
-            if(_filebuffersize[fh] == 0) {
-                _io_fillbuffer(fh);
-                if(_filebuffersize[fh] == 0) {
-                    _fileEOF[fh] = true;
-                    return 0;
-                }
-            }
-            #endif
-            #ifdef AGON
+        #ifdef AGON
+        do {
             if(_filebuffersize[fh] == 0) {
                 _fileEOF[fh] = mos_feof(filehandle[fh]);
                 if(_fileEOF[fh]) return 0;
                 _io_fillbuffer(fh);
             }
-            #endif
             _filebuffersize[fh]--;
             c = *(_filebuffer[fh]);
             _filebuffer[fh]++;
             if((*cs++ = c) == '\n') break;
         }
         while(--size > 0 && !_fileEOF[fh]);
-        eof = _fileEOF[fh];
+        #endif
+
+        #ifndef AGON
+        do {
+            if(_filebuffersize[fh] == 0) {
+                _io_fillbuffer(fh);
+                if(_filebuffersize[fh] < FILE_BUFFERSIZE) final_read = true;
+            }
+            else {
+                _filebuffersize[fh]--;
+                c = *(_filebuffer[fh]);
+                _filebuffer[fh]++;
+                if((*cs++ = c) == '\n') break;
+            }
+            _fileEOF[fh] = (_filebuffersize[fh] == 0) && final_read;
+        }
+        while(--size > 0 && !_fileEOF[fh]);
+        #endif
+
+        *cs = '\0';
+        //printf("Read string: %s\r\n",s);
+        return (*s == 0)? NULL:s;
     }
     else {
+        //printf("normal mode read\r\n");
         #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
         eof = 0;
         do {
@@ -220,9 +238,10 @@ char* io_gets(uint8_t fh, char *s, int size) {
         }
         while(--size > 0 && !eof);
         #endif
+        *cs = '\0';
+        //printf("Read string: %s\r\n",s);
+        return (eof) ? NULL : s;
     }
-	*cs = '\0';
-	return (eof) ? NULL : s;
 }
 
 bool io_init(char *input_filename) {
