@@ -1,17 +1,17 @@
 ; define macro without arguments
-addhla: MACRO
+        macro addhla
         add a,l
-        jr nc, $1
+        jr nc, @1
         inc h
-$1:
+@1:
         ld l,a
-        ENDMAC addhla
+        endmacro
 
 ; define marcro with two arguments
-pointless: MACRO arg1, arg2
+        macro pointless arg1, arg2
         ld a, arg1
         ld l, arg2
-        ENDMAC pointless
+        endmacro
 
 ; invoke
         addhla
