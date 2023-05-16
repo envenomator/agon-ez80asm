@@ -2,7 +2,6 @@
 *.d
 
 # Object files
-*.bin
 *.o
 *.ko
 *.obj
