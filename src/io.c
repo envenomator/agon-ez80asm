@@ -7,6 +7,7 @@
 #include "io.h"
 #include "listing.h"
 #include "filestack.h"
+#include "macro.h"
 
 // Global variables
 char     filename[FILES][FILENAMEMAXLENGTH];
@@ -64,12 +65,10 @@ void _prepare_filenames(char *input_filename) {
     strcpy(filename[FILE_LOCAL_LABELS], _fileBasename);
     strcpy(filename[FILE_ANONYMOUS_LABELS],_fileBasename);
     if(list_enabled) strcpy(filename[FILE_LISTING],_fileBasename);
-    strcpy(filename[FILE_DELETELIST],_fileBasename);
     strcat(filename[FILE_OUTPUT], ".bin");
     strcat(filename[FILE_LOCAL_LABELS], ".lcllbls");
     strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
     if(list_enabled) strcat(filename[FILE_LISTING], ".lst");
-    strcat(filename[FILE_DELETELIST], ".del");
 }
 
 void io_getMacroFilename(char *filename, char *macroname) {
@@ -78,26 +77,19 @@ void io_getMacroFilename(char *filename, char *macroname) {
     strcat(filename, macroname);
 }
 
-void io_addDeleteList(char *name) {
-    io_puts(FILE_DELETELIST, name);
-    io_puts(FILE_DELETELIST, "\n");
-}
-
 void _deleteFiles(void) {
-    char line[LINEMAX];
+    char macrofilename[FILENAMEMAXLENGTH];
+    int n;
+
     mos_del(filename[FILE_LOCAL_LABELS]);
     mos_del(filename[FILE_ANONYMOUS_LABELS]);
 
-    // delete all files listed for cleanup
-    if(reOpenFile(FILE_DELETELIST, fa_read)) {
-        while(io_gets(FILE_DELETELIST, line, sizeof(line))) {
-            trimRight(line);
-            if(CLEANUPFILES) mos_del(line);
-        }
-        mos_fclose(filehandle[FILE_DELETELIST]);
+    for(n = 0; n < macroTableCounter; n++) {
+        io_getMacroFilename(macrofilename, macroTable[n].name);
+        mos_del(macrofilename);
     }
-    mos_del(filename[FILE_DELETELIST]);
 
+    if(global_errors) mos_del(filename[FILE_OUTPUT]);
 }
 
 void _closeAllFiles() {
@@ -113,7 +105,6 @@ void _closeAllFiles() {
 bool _openfiles(void) {
     bool status = true;
 
-    status = status && _openFile(&filehandle[FILE_DELETELIST], filename[FILE_DELETELIST], fa_write | fa_create_always);
     status = status && _openFile(&filehandle[FILE_INPUT], filename[FILE_INPUT], fa_read);
     status = status && _openFile(&filehandle[FILE_OUTPUT], filename[FILE_OUTPUT], fa_write | fa_create_always);
     status = status && _openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], fa_write | fa_create_always);

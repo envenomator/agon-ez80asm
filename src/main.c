@@ -37,13 +37,10 @@ int main(int argc, char *argv[])
     
     // Assemble input to output
     assemble();
-    if(global_errors) {
-        io_addDeleteList(filename[FILE_OUTPUT]);
-        printf("Error in input\r\n");
-        io_close();
-        return 1;
-    }
-    printf("Done\r\n");
+    if(global_errors) printf("Error in input\r\n");
+    else printf("Done\r\n");
     io_close();
+
+    if(global_errors) return 1;
     return 0;
 }

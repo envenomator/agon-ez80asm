@@ -1316,7 +1316,6 @@ void handle_asm_definemacro(void) {
     defineMacro(currentline.mnemonic, argcount, (char *)arglist);
     // define macro filename
     io_getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
-    io_addDeleteList(filename[FILE_MACRO]);
     filehandle[FILE_MACRO] = mos_fopen(filename[FILE_MACRO], fa_write | fa_create_always);
     if(!filehandle[FILE_MACRO]) error("Error writing macro file");
 }

@@ -15,6 +15,9 @@ typedef struct {
     char**  substitutions;
 } macro;
 
+extern macro macroTable[MAXIMUM_MACROS]; // indexed table
+extern uint8_t macroTableCounter;
+
 void    initMacros(void);
 bool    defineMacro(char *name, uint8_t argcount, char *arguments);
 macro * findMacro(char *name);
