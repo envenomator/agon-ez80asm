@@ -128,7 +128,6 @@ typedef struct {
     bool                displacement_provided;
     bool                immediate_provided;
     int24_t             immediate;
-    bool                wasLabel;
 } operand;
 
 typedef struct {

@@ -1,0 +1,2 @@
+label:
+    jr label

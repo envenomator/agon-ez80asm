@@ -29,7 +29,6 @@ void empty_operand(operand *op) {
     op->displacement_provided = false;
     op->immediate = 0;
     op->immediate_provided = false;
-    op->wasLabel = false;
 }
 
 void advanceLocalLabel(void) {
@@ -371,7 +370,6 @@ void parse_operand(char *string, operand *operand) {
     if(*string) {
         if(operand->indirect) string++;
         operand->immediate = getValue(string);
-        operand->wasLabel = (str2num(string, false) == 0);
         operand->immediate_provided = true;
     }
 }
@@ -780,8 +778,7 @@ void transform_instruction(operand *op, permittype type) {
         case TRANSFORM_REL:
             if(pass == 2) {
                 // label still potentially unknown in pass 1, so output the existing '0' in pass 1
-                if(op->wasLabel) rel = op->immediate - address - 2;
-                else rel = op->immediate; // user asked for specific offset
+                rel = op->immediate - address - 2;
                 if((rel > 127) || (rel < -128)) error(message[ERROR_RELATIVEJUMPTOOLARGE]);
                 op->immediate = ((int8_t)(rel & 0xFF));
                 op->immediate_provided = true;
