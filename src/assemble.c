@@ -96,12 +96,22 @@ int24_t getValue(char *string) {
                 }
             }
         }
-        if(operator == '!') error(message[ERROR_OPERATOR]);
-        if(operator == '+') total += tmp;
-        if(operator == '-') total -= tmp;
-        if(operator == '*') total *= tmp;
-        if(operator == '<') total = total << tmp;
-        if(operator == '>') total = total >> tmp;
+        switch(operator) {
+            case '+': total += tmp; break;
+            case '-': total -= tmp; break;
+            case '*': total *= tmp; break;
+            case '<': total = total << tmp; break;
+            case '>': total = total >> tmp; break;
+            case '&': total = total & tmp;  break;
+            case '|': total = total | tmp;  break;
+            case '^': total = total ^ tmp;  break;
+            case '~': total = total + ~tmp; break;
+            case '/': total = total / tmp;  break;
+            case '!':
+            default:
+                error(message[ERROR_OPERATOR]);
+                return total;
+        }
         operator = token.terminator;
 
         if(operator) ptr = token.next;
