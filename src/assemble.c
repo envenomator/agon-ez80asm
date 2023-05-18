@@ -861,7 +861,7 @@ void emit_instruction(operandlist *list) {
 
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
-        if(list_enabled) listEmit8bit(value);
+        if(list_enabled || consolelist_enabled) listEmit8bit(value);
         io_putc(FILE_OUTPUT, value);
     }
     address++;
@@ -1265,7 +1265,7 @@ uint24_t delta;
 
     if(address & (operand1.immediate -1)) base += alignment;
     delta = base - address;
-    while(delta--) emit_8bit(FILLBYTE);
+    while(delta--) emit_8bit(fillbyte);
 
     address = base;
     if(pass == 1) {
@@ -1498,9 +1498,9 @@ void processInstructions(char *line){
 
 void passInitialize(uint8_t passnumber) {
     pass = passnumber;
-    adlmode = ADLMODE_START;
+    adlmode = adlmode_start;
     linenumber = 0;
-    address = START_ADDRESS;
+    address = start_address;
     totalsize = 0;
     recordingMacro = false;
     currentExpandedMacro = NULL;

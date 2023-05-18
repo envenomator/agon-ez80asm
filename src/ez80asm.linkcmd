@@ -36,6 +36,7 @@ DEFINE __len_bss = length of BSS
  ".\mos_posix.obj", \
  ".\malloc.obj", \
  ".\io.obj", \
+ ".\getopt.obj", \
  "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\std\chelpD.lib", \
  "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\std\crtD.lib", \
  "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\std\crtSD.lib", \

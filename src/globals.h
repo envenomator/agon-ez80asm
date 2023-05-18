@@ -34,7 +34,9 @@ extern bool adlmode;
 extern tokenline currentline;
 extern bool list_enabled;
 extern bool consolelist_enabled;
-//extern bool advance_linenumber;     // used by io_gets to indicate single/multiline
+extern uint8_t fillbyte;
+extern bool adlmode_start;
+extern uint24_t start_address;
 
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code

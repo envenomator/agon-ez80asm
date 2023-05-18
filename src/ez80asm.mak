@@ -216,6 +216,14 @@ clean:
             $(RM) "$(WORKDIR)\io.lst"
 	@if exist "$(WORKDIR)\io.src"  \
             $(RM) "$(WORKDIR)\io.src"
+	@if exist "$(WORKDIR)\getopt.obj"  \
+            $(RM) "$(WORKDIR)\getopt.obj"
+	@if exist "$(WORKDIR)\getopt.lis"  \
+            $(RM) "$(WORKDIR)\getopt.lis"
+	@if exist "$(WORKDIR)\getopt.lst"  \
+            $(RM) "$(WORKDIR)\getopt.lst"
+	@if exist "$(WORKDIR)\getopt.src"  \
+            $(RM) "$(WORKDIR)\getopt.src"
 
 relist: 
 	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
@@ -252,6 +260,8 @@ relist:
             C:\source\agon-ez80asm\src\Debug\malloc.src
 	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
             C:\source\agon-ez80asm\src\Debug\io.src
+	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
+            C:\source\agon-ez80asm\src\Debug\getopt.src
 
 # pre-4.11.0 compatibility
 rebuildall: buildall 
@@ -275,7 +285,8 @@ OBJS =  \
             $(WORKDIR_ESCSPACE)\macro.obj  \
             $(WORKDIR_ESCSPACE)\mos_posix.obj  \
             $(WORKDIR_ESCSPACE)\malloc.obj  \
-            $(WORKDIR_ESCSPACE)\io.obj
+            $(WORKDIR_ESCSPACE)\io.obj  \
+            $(WORKDIR_ESCSPACE)\getopt.obj
 
 ez80asm: $(OBJS)
 	 $(LD) $(LDFLAGS)
@@ -293,6 +304,7 @@ $(WORKDIR_ESCSPACE)\main.obj :  \
             $(INCLUDE_ESCSPACE)\zilog\defines.h  \
             $(PRJDIR_ESCSPACE)\assemble.h  \
             $(PRJDIR_ESCSPACE)\config.h  \
+            $(PRJDIR_ESCSPACE)\getopt.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\instruction.h  \
             $(PRJDIR_ESCSPACE)\io.h  \
@@ -409,6 +421,7 @@ $(WORKDIR_ESCSPACE)\listing.obj :  \
             $(INCLUDE_ESCSPACE)\std\Stdio.h  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
+            $(PRJDIR_ESCSPACE)\io.h  \
             $(PRJDIR_ESCSPACE)\listing.h  \
             $(PRJDIR_ESCSPACE)\macro.h  \
             $(PRJDIR_ESCSPACE)\stdint.h  \
@@ -434,6 +447,7 @@ $(WORKDIR_ESCSPACE)\utils.obj :  \
             $(INCLUDE_ESCSPACE)\zilog\defines.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\instruction.h  \
+            $(PRJDIR_ESCSPACE)\io.h  \
             $(PRJDIR_ESCSPACE)\label.h  \
             $(PRJDIR_ESCSPACE)\macro.h  \
             $(PRJDIR_ESCSPACE)\malloc.h  \
@@ -468,6 +482,23 @@ $(WORKDIR_ESCSPACE)\malloc.obj :  \
 	 $(CC) $(CFLAGS) "$(PRJDIR)\malloc.c"
 
 $(WORKDIR_ESCSPACE)\io.obj :  \
-            $(PRJDIR_ESCSPACE)\io.c
+            $(PRJDIR_ESCSPACE)\io.c  \
+            $(INCLUDE_ESCSPACE)\std\CTYPE.H  \
+            $(INCLUDE_ESCSPACE)\std\Format.h  \
+            $(INCLUDE_ESCSPACE)\std\Stdio.h  \
+            $(INCLUDE_ESCSPACE)\std\String.h  \
+            $(INCLUDE_ESCSPACE)\zilog\defines.h  \
+            $(PRJDIR_ESCSPACE)\filestack.h  \
+            $(PRJDIR_ESCSPACE)\globals.h  \
+            $(PRJDIR_ESCSPACE)\io.h  \
+            $(PRJDIR_ESCSPACE)\listing.h  \
+            $(PRJDIR_ESCSPACE)\macro.h  \
+            $(PRJDIR_ESCSPACE)\mos-interface.h  \
+            $(PRJDIR_ESCSPACE)\stdint.h  \
+            $(PRJDIR_ESCSPACE)\utils.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\io.c"
+
+$(WORKDIR_ESCSPACE)\getopt.obj :  \
+            $(PRJDIR_ESCSPACE)\getopt.c
+	 $(CC) $(CFLAGS) "$(PRJDIR)\getopt.c"
 

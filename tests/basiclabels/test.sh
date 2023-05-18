@@ -7,7 +7,7 @@
 CHECKBIN=0
 #
 if [ -f "test.s" ]; then
-    $ASMBIN test.s > asm.output
+    $ASMBIN test.s -b 0xFF > asm.output
     if [ $? -eq 1 ]; then 
         echo "Assembler error(s)"
         exit 1

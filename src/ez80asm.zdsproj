@@ -21,6 +21,7 @@
 <file filter-key="">.\mos_posix.c</file>
 <file filter-key="">.\malloc.c</file>
 <file filter-key="">.\io.c</file>
+<file filter-key="">.\getopt.c</file>
 </files>
 
 <!-- configuration information -->

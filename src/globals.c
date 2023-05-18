@@ -17,7 +17,9 @@ uint16_t global_errors;
 bool adlmode;
 bool list_enabled;
 bool consolelist_enabled;
-//bool advance_linenumber;     // used by io_gets to indicate single/multiline
+uint8_t fillbyte;
+bool adlmode_start;
+uint24_t start_address;
 
 tokenline currentline;
 
