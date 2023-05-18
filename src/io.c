@@ -162,15 +162,19 @@ int io_puts(uint8_t fh, char *s) {
     return number;
 }
 
-// Get a maximum of 'size' characters from a file, ends at CR or EOF
+// Get a maximum of 'size' characters from a file, ends at CR, EOF or '\' with space to allow for multiline packs
 char* io_gets(uint8_t fh, char *s, int size) {
 	int c;
 	char *cs;
     bool eof;
+    //bool escaped;
     bool finalread = false;
     c = 0;
 	cs = s;
     
+    //escaped = false;
+    //advance_linenumber = true;
+
     if(_bufferstart[fh]) {
         //printf("new mode read\r\n");
         do {
@@ -182,6 +186,20 @@ char* io_gets(uint8_t fh, char *s, int size) {
                 _filebuffersize[fh]--;
                 c = *(_filebuffer[fh]);
                 _filebuffer[fh]++;
+                /*
+                if(c == '\n') break;
+                if(escaped) {
+                    if(c == ' ') {
+                        cs = cs - 2;
+                        _filebuffer[fh]--; // return space to buffer for next read
+                        advance_linenumber = false; // multiline
+                        break;
+                    }
+                    if(strchr("nrtb\\\'\"",c)) escaped = false; // escaped code found
+                }
+                else if(c == '\\') escaped = true;
+                *cs++ = c;
+                */
                 if((*cs++ = c) == '\n') break;
             }
             _fileEOF[fh] = (_filebuffersize[fh] == 0) && finalread;

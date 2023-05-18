@@ -1531,6 +1531,7 @@ bool assemble(void){
     passInitialize(1);
     do {
         while(io_gets(FILE_CURRENT, line, sizeof(line))) {
+            //printf("<<%s>>\r\n",line);
             if(global_errors) return false;
             linenumber++;
             parseLine(line);
