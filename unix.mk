@@ -1,6 +1,6 @@
 # Makefile for Linux/Unix and Mac OS X
 OS=UNIX
-PROJECTNAME=asm
+PROJECTNAME=ez80asm
 
 # Tools and arguments
 CC=gcc

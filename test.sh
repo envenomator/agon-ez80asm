@@ -1,5 +1,5 @@
 #!/bin/bash
-export ASMBIN=../../bin/asm
+export ASMBIN=../../bin/ez80asm
 NOCOLOR='\033[0m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'

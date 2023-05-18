@@ -26,9 +26,8 @@ max_size:			EQU  6000h		; Max 384KB
 ; The header stuff is from byte 64 onwards
 ;
 
-_exec_name:		DB	"ASM.BIN", 0					; The executable name, only used in argv
-_load_name:		DB	"/MOS/ASM.LDR", 0					; The loadable module name
-_error_string:	DB	"Error loading /MOS/ASM.LDR\r\n",0
+_exec_name:		DB	"EZ80ASM.BIN", 0					; The executable name, only used in argv
+_load_name:		DB	"/MOS/EZ80ASM.LDR", 0					; The loadable module name
 
 			ALIGN	64
 			
@@ -166,6 +165,8 @@ _skip_spaces:		LD	A, (HL)			; Get the character from the parameter string
 			RET	NZ
 			INC	HL			; Advance to next character
 			JR	_skip_spaces		; Increment length
+
+_error_string:	DB	"Error loading /MOS/EZ80ASM.LDR\r\n",0
 
 ; Storage for the argv array pointers
 ;

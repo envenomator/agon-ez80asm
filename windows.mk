@@ -1,6 +1,6 @@
 # Makefile for Windows
 OS=WINDOWS
-PROJECTNAME=asm.exe
+PROJECTNAME=ez80asm.exe
 
 # Tools and arguments
 CC=cl.exe
