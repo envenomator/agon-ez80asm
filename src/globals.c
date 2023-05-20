@@ -75,5 +75,6 @@ char *message[] = {
     "Maximum number of macro arguments reached",
     "Error writing to macro file",
     "Incorrect number of macro arguments",
-    "Unsupported character constant"
+    "Unsupported character constant",
+    "Input line too long"
 };

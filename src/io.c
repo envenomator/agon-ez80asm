@@ -174,6 +174,7 @@ char* io_gets(uint8_t fh, char *s, int size) {
     if(_bufferstart[fh]) {
         //printf("new mode read\r\n");
         do {
+            size--;
             if(_filebuffersize[fh] == 0) {
                 _io_fillbuffer(fh);
                 if(_filebuffersize[fh] < FILE_BUFFERSIZE) finalread = true;
@@ -185,9 +186,13 @@ char* io_gets(uint8_t fh, char *s, int size) {
                 if((*cs++ = c) == '\n') break;
             }
             _fileEOF[fh] = (_filebuffersize[fh] == 0) && finalread;
+            if((size == 0) && !_fileEOF[fh]) {
+                error(message[ERROR_LINETOOLONG]);
+                break;
+            }
         }
-        while(--size > 0 && !_fileEOF[fh]);
-
+        //while(--size > 0 && !_fileEOF[fh]);
+        while(!_fileEOF[fh]);
         *cs = '\0';
         //printf("Read string: %s\r\n",s);
         return (*s == 0)? NULL:s;
@@ -197,20 +202,30 @@ char* io_gets(uint8_t fh, char *s, int size) {
         #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
         eof = 0;
         do {
+            --size;
             c = mos_fgetc(filehandle[fh]);
             if((*cs++ = c) == '\n') break;		
             eof = mos_feof(filehandle[fh]);
+            if((size == 0) && !eof) {
+                error(message[ERROR_LINETOOLONG]);
+                break;
+            }
         }
-        while(--size > 0 && !eof);
+        while(!eof);
         #endif
 
         #ifndef AGON
         do {
+            --size;
             c = mos_fgetc(filehandle[fh]);
             eof = mos_feof(filehandle[fh]);
+            if((size == 0) && !eof) {
+                error(message[ERROR_LINETOOLONG]);
+                break;
+            }
             if((*cs++ = c) == '\n') break;		
         }
-        while(--size > 0 && !eof);
+        while(!eof);
         #endif
         *cs = '\0';
         //printf("Read string: %s\r\n",s);
