@@ -964,7 +964,7 @@ void parse_asm_single_immediate(void) {
         if(notEmpty(token.start)) {
             operand1.immediate = getValue(token.start);
             operand1.immediate_provided = true;
-            if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
         }
         else error(message[ERROR_MISSINGOPERAND]);
     }
