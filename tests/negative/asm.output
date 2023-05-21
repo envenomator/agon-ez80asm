@@ -1,4 +1,1 @@
-Assembling test.s
-Pass 1...
-"test.s" - line 2 - Operand(s) not matching mnemonic
-Error in input
+ERROR - option b - Byte range error

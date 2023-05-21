@@ -187,7 +187,8 @@ enum {
     ASM_BLKL,
     ASM_MACRO_START,
     ASM_MACRO_END,
-    ASM_INCBIN
+    ASM_INCBIN,
+    ASM_FILLBYTE
 };
 
 typedef enum {

@@ -22,8 +22,8 @@ void printHelp(void) {
     printf("Usage: ez80asm <filename> [OPTION]\n\r\r\n");
     printf("  -v\tList version information\r\n");
     printf("  -h\tList help information\r\n");
-    printf("  -x\tStart address in hexadecimal format, default is 0x%06X\r\n", START_ADDRESS);
-    printf("  -b\tFillbyte in hexadecimal format xHH/0xHH, default is 0x%02X\r\n", FILLBYTE);
+    printf("  -o\tOrg start address in hexadecimal format, default is %06X\r\n", START_ADDRESS);
+    printf("  -b\tFillbyte in hexadecimal format, default is %02X\r\n", FILLBYTE);
     printf("  -a\tADL mode 1/0, default is %d\r\n", ADLMODE_START);
     printf("  -l\tListing to file with .lst extension\r\n");
     printf("  -d\tDirect listing to console\r\n");
@@ -33,17 +33,16 @@ void printHelp(void) {
 int main(int argc, char *argv[])
 {
     int opt;
-    int index;
-    char filename[FILENAMEMAXLENGTH];
+    char inputfilename[FILENAMEMAXLENGTH];
     int filenamecount = 0;
 
     // option defaults from compiled configuration
-    fillbyte = FILLBYTE;
+    fillbyte_start = FILLBYTE;
     list_enabled = false;
     adlmode_start = ADLMODE_START;
     start_address = START_ADDRESS;
 
-    while ((opt = getopt(argc, argv, "-:ldvhb:a:x:")) != -1) {
+    while ((opt = getopt(argc, argv, "-:ldvhb:a:o:")) != -1) {
         switch(opt) {
             case 'a':
                 if((strlen(optarg) != 1) || 
@@ -52,76 +51,73 @@ int main(int argc, char *argv[])
                     return 2;
                 }
                 adlmode_start = (*optarg == '1')?true:false;
-                //printf("ADL mode start is %d\r\n",adlmode_start);
+                printf("Setting ADL mode to %d\r\n",adlmode_start);
                 break;
             case 'd':
                 //printf("Listing to console\r\n");
                 consolelist_enabled = true;
                 break;
             case 'l':
-                //printf("Listing to file\r\n");
                 list_enabled = true;
                 break;
             case 'v':
                 printVersion();
-                return 0;
+                break;
             case 'h':
-                printVersion();
                 printHelp();
                 return 0;
             case 'b':
-                index = 0;
-                if((strncmp(optarg, "x", 1) == 0) && strlen(optarg) < 4) index = 1;
-                if((strncmp(optarg, "0x", 2) == 0) && strlen(optarg) < 5) index = 2;
-                if(index) {
-                    fillbyte = str2hex(optarg + index);
-                    if(!err_str2num) {
-                        //printf("Setting fillbyte to 0x%02x\r\n", fillbyte);
-                        break;
-                    }
+                if(strlen(optarg) > 2) {
+                    printf("ERROR - option b - Byte range error\r\n");
+                    return 2;
                 }
-                printf("Invalid format for option -b\r\n");
-                return 2;
-            case 'x':
-                index = 0;
-                if((strncmp(optarg, "x", 1) == 0) && strlen(optarg) < 8) index = 1;
-                if((strncmp(optarg, "0x", 2) == 0) && strlen(optarg) < 9) index = 2;
-                if(index) {
-                    start_address = str2hex(optarg + index);
-                    if(!err_str2num) {
-                        //printf("Setting address to 0x%06X\r\n", start_address);
-                        break;
-                    }
+                fillbyte_start = str2hex(optarg);
+                if(err_str2num) {
+                    printf("ERROR - option b - Invalid hexadecimal format\r\n");
+                    return 2;
                 }
-                printf("Invalid format for option -x\r\n");
-                return 2;
+                printf("Setting fillbyte to hex %02X\r\n", fillbyte_start);
+                break;
+            case 'o':
+                if(strlen(optarg) > 6) {
+                    printf("ERROR - option o - Address longer than 24bit\r\n");
+                    return 2;
+                }
+                start_address = str2hex(optarg);
+                if(err_str2num) {
+                    printf("ERROR - option o - Invalid hexadecimal format\r\n");
+                    return 2;
+                }
+                printf("Setting org address to hex %06X\r\n", start_address);
+                break;
             case '?':
-                printf("Missing argument or unknown option: %c\r\n", optopt);
+                printf("ERROR - Missing argument or unknown option: %c\r\n", optopt);
                 return 2;
             case 1:
                 filenamecount++;
-                strncpy(filename, optarg, FILENAMEMAXLENGTH);
+                strncpy(inputfilename, optarg, FILENAMEMAXLENGTH);
                 break;
         }
     }
     if((argc == 1) || (filenamecount == 0)) {
-        printVersion();
+        printf("ERROR - No filename given\r\n");
         printHelp();
         return 2;
     }
     if(filenamecount > 1) {
-        printf("Too many files provided as argument\r\n");
+        printf("ERROR - Too many files provided as argument\r\n");
         return 2;
     }
 
     mos_posix_init();       // Init posix compatibility for non-MOS builds, before io_init
 
-    if(!io_init(filename)) {
-        printf("Error opening \"%s\"\r\n", filename);
+    if(!io_init(inputfilename)) {
+        printf("Error opening \"%s\"\r\n", inputfilename);
         return 2;
     }
+    printf("Assembling %s\r\n", inputfilename);
+    if(list_enabled) printf("Listing to %s\r\n", filename[FILE_LISTING]);
 
-    printf("Assembling %s\r\n", filename);
     // Initialization
     initGlobalLabelTable();
     initLocalLabelTable();

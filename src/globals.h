@@ -35,6 +35,7 @@ extern tokenline currentline;
 extern bool list_enabled;
 extern bool consolelist_enabled;
 extern uint8_t fillbyte;
+extern uint8_t fillbyte_start;
 extern bool adlmode_start;
 extern uint24_t start_address;
 
@@ -57,6 +58,7 @@ enum {
     ERROR_OPERANDSNOTMATCHING,
     ERROR_TRANSFORMATION,
     WARNING_N_TOOLARGE,
+    ERROR_8BITRANGE,
     WARNING_N_8BITRANGE,
     ERROR_INVALIDSUFFIX,
     ERROR_MMN_TOOLARGE,

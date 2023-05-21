@@ -25,7 +25,7 @@ bool  io_setpass(uint8_t pass);                      // assembly pass, set neede
 void  io_close(void);                                // close everything at end, do cleanup
 void  io_putc(uint8_t fh, unsigned char c);          // buffered write of a single byte / fallback
 int   io_puts(uint8_t fh, char *s);                  // buffered write of a string / fallback
-char* io_gets(uint8_t fh, char *s, int size);        // buffered read of a string / fallback
+char* io_getline(uint8_t fh, char *s, int size);     // buffered read of a line / fallback
 void  io_getFileDefaults(filestackitem *fsi);        // set file defaults (traditional mode) to fsi object
 void  io_getCurrent(filestackitem *fsi);             // retrieve CURRENT as fsi
 void  io_setCurrent(filestackitem *fsi);             // set CURRENT from fsi

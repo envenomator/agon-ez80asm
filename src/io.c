@@ -162,8 +162,8 @@ int io_puts(uint8_t fh, char *s) {
     return number;
 }
 
-// Get a maximum of 'size' characters from a file, ends at CR, EOF or '\' with space to allow for multiline packs
-char* io_gets(uint8_t fh, char *s, int size) {
+// Read a line of characters from a file, ends at CR, EOF, or error at size
+char* io_getline(uint8_t fh, char *s, int size) {
 	int c;
 	char *cs;
     bool eof;
@@ -172,9 +172,7 @@ char* io_gets(uint8_t fh, char *s, int size) {
 	cs = s;
     
     if(_bufferstart[fh]) {
-        //printf("new mode read\r\n");
         do {
-            size--;
             if(_filebuffersize[fh] == 0) {
                 _io_fillbuffer(fh);
                 if(_filebuffersize[fh] < FILE_BUFFERSIZE) finalread = true;
@@ -183,6 +181,7 @@ char* io_gets(uint8_t fh, char *s, int size) {
                 _filebuffersize[fh]--;
                 c = *(_filebuffer[fh]);
                 _filebuffer[fh]++;
+                size--;
                 if((*cs++ = c) == '\n') break;
             }
             _fileEOF[fh] = (_filebuffersize[fh] == 0) && finalread;
@@ -191,14 +190,12 @@ char* io_gets(uint8_t fh, char *s, int size) {
                 break;
             }
         }
-        //while(--size > 0 && !_fileEOF[fh]);
         while(!_fileEOF[fh]);
         *cs = '\0';
-        //printf("Read string: %s\r\n",s);
         return (*s == 0)? NULL:s;
     }
     else {
-        //printf("normal mode read\r\n");
+        // regular non-buffered read
         #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
         eof = 0;
         do {
@@ -228,7 +225,6 @@ char* io_gets(uint8_t fh, char *s, int size) {
         while(!eof);
         #endif
         *cs = '\0';
-        //printf("Read string: %s\r\n",s);
         return (eof) ? NULL : s;
     }
 }

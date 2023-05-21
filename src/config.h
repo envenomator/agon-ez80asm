@@ -11,7 +11,7 @@
 #define strcasecmp _stricmp
 #endif
 
-#define VERSION                  "0.98"
+#define VERSION                  "0.99"
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
 #define FILLBYTE                   0xFF // Same as ZDS

@@ -1330,6 +1330,25 @@ void handle_asm_definemacro(void) {
     if(!filehandle[FILE_MACRO]) error("Error writing macro file");
 }
 
+void handle_asm_fillbyte(void) {
+    tokentype token;
+    int32_t val;
+
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+        return;
+    }
+
+    getLineToken(&token, currentline.next, 0);
+    if(notEmpty(token.start)) {
+        if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
+        val = getValue(token.start);
+        if((val < 0) || (val > 255)) error(message[ERROR_8BITRANGE]);
+        fillbyte = val;
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+}
+
 void handle_assembler_command(void) {
     if(!recordingMacro) {
         switch(currentline.current_instruction->asmtype) {
@@ -1381,6 +1400,9 @@ void handle_assembler_command(void) {
             break;
         case(ASM_INCBIN):
             handle_asm_incbin();
+            break;
+        case(ASM_FILLBYTE):
+            handle_asm_fillbyte();
             break;
         }
         return;
@@ -1501,6 +1523,7 @@ void passInitialize(uint8_t passnumber) {
     adlmode = adlmode_start;
     linenumber = 0;
     address = start_address;
+    fillbyte = fillbyte_start;
     totalsize = 0;
     recordingMacro = false;
     currentExpandedMacro = NULL;
@@ -1530,7 +1553,7 @@ bool assemble(void){
     printf("Pass 1...\n\r");
     passInitialize(1);
     do {
-        while(io_gets(FILE_CURRENT, line, sizeof(line))) {
+        while(io_getline(FILE_CURRENT, line, sizeof(line))) {
             //printf("<<%s>>\r\n",line);
             if(global_errors) return false;
             linenumber++;
@@ -1559,7 +1582,7 @@ bool assemble(void){
     readAnonymousLabel();
     
     do {
-        while(io_gets(FILE_CURRENT, line, sizeof(line))) {
+        while(io_getline(FILE_CURRENT, line, sizeof(line))) {
             if(global_errors) return false;
             linenumber++;
             listStartLine(line);

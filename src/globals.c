@@ -18,6 +18,7 @@ bool adlmode;
 bool list_enabled;
 bool consolelist_enabled;
 uint8_t fillbyte;
+uint8_t fillbyte_start;
 bool adlmode_start;
 uint24_t start_address;
 
@@ -39,7 +40,8 @@ char *message[] = {
     "Operand(s) not matching mnemonic",
     "Error in opcode transformation",
     "Range error in immediate",
-    "Value too large for 8-bits, truncation required",
+    "Invalid 8-bit range",
+    "Value too large for 8-bit, truncation required",
     "Invalid suffix",
     "Value too large for 16-bits, truncation required",
     "Suffix not matching mnemonic / ADL mode",

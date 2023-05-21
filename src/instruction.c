@@ -692,6 +692,7 @@ instruction instructions[] = {
     {"equ",      ASSEMBLER, ASM_EQU, 0, NULL, ASM_ARG_SINGLE},
     {"ex",       EZ80, 0, sizeof(operands_ex)/sizeof(operandlist), operands_ex},
     {"exx",      EZ80, 0, sizeof(operands_exx)/sizeof(operandlist), operands_exx},
+    {"fillbyte", ASSEMBLER, ASM_FILLBYTE, 0, NULL, ASM_ARG_SINGLE},
     {"halt",     EZ80, 0, sizeof(operands_halt)/sizeof(operandlist), operands_halt},
     {"im",       EZ80, 0, sizeof(operands_im)/sizeof(operandlist), operands_im},
     {"in",       EZ80, 0, sizeof(operands_in)/sizeof(operandlist), operands_in},
