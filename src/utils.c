@@ -9,6 +9,31 @@
 #include "./stdint.h"
 #include "mos-interface.h"
 #include "io.h"
+#include "vdp.h"
+
+void text_RED(void) {
+    #ifdef AGON
+    vdp_fgcolour(DARK_RED);
+    #else
+    printf("\033[31m");
+    #endif
+}
+
+void text_YELLOW(void) {
+    #ifdef AGON
+    vdp_fgcolour(DARK_YELLOW);
+    #else
+    printf("\033[33m");
+    #endif
+}
+
+void text_NORMAL(void) {
+    #ifdef AGON
+    vdp_fgcolour(BRIGHT_WHITE);
+    #else
+    printf("\033[39m");
+    #endif
+}
 
 // return a base filename, stripping the given extension from it
 void remove_ext (char* myStr, char extSep, char pathSep) {
@@ -42,11 +67,13 @@ bool notEmpty(const char *str) {
     return (str[0] != '\0');
 }
 
-void error(char* msg)
-{
+void error(char* msg) {
+    text_RED();
     if(currentExpandedMacro) printf("MACRO [%s]",currentExpandedMacro->name);
-    else printf("\"%s\"", filename[FILE_CURRENT]);
-    printf(" - line %d - %s\n\r",  linenumber, msg);
+    else if(strlen(filename[FILE_CURRENT])) printf("\"%s\"", filename[FILE_CURRENT]);
+    if(linenumber) printf(" - line %d - ", linenumber);
+    printf("%s\n\r",  msg);
+    text_NORMAL();
     global_errors++;
 }
 

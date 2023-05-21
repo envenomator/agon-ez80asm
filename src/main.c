@@ -14,17 +14,6 @@
 #include <getopt.h>
 #include "str2num.h"
 
-#include <stdarg.h>
-
-void WriteFormatted ( const char * format, ... )
-{
-  va_list args;
-  va_start (args, format);
-  vprintf (format, args);
-  va_end (args);
-}
-
-
 void printVersion(void) {
     printf("ez80asm version %s, (C)2023 - Jeroen Venema\r\n",VERSION);
 }
@@ -58,7 +47,7 @@ int main(int argc, char *argv[])
             case 'a':
                 if((strlen(optarg) != 1) || 
                    ((*optarg != '0') && (*optarg != '1'))) {
-                    printf("Incorrect ADL mode option -a\r\n");
+                    error("Incorrect ADL mode option -a");
                     return 2;
                 }
                 adlmode_start = (*optarg == '1')?true:false;
@@ -79,30 +68,32 @@ int main(int argc, char *argv[])
                 return 0;
             case 'b':
                 if(strlen(optarg) > 2) {
-                    printf("ERROR - option b - Byte range error\r\n");
+                    error("option -b: Byte range error");
                     return 2;
                 }
                 fillbyte_start = str2hex(optarg);
                 if(err_str2num) {
-                    printf("ERROR - option b - Invalid hexadecimal format\r\n");
+                    error("option -b: Invalid hexadecimal format");
                     return 2;
                 }
                 printf("Setting fillbyte to hex %02X\r\n", fillbyte_start);
                 break;
             case 'o':
                 if(strlen(optarg) > 6) {
-                    printf("ERROR - option o - Address longer than 24bit\r\n");
+                    error("option -o: Address longer than 24bit");
                     return 2;
                 }
                 start_address = str2hex(optarg);
                 if(err_str2num) {
-                    printf("ERROR - option o - Invalid hexadecimal format\r\n");
+                    error("option -o: Invalid hexadecimal format");
                     return 2;
                 }
                 printf("Setting org address to hex %06X\r\n", start_address);
                 break;
             case '?':
-                printf("ERROR - Missing argument or unknown option: %c\r\n", optopt);
+                text_RED();
+                printf("Missing argument or unknown option: %c\r\n", optopt);
+                text_NORMAL();
                 return 2;
             case 1:
                 filenamecount++;
@@ -111,19 +102,21 @@ int main(int argc, char *argv[])
         }
     }
     if((argc == 1) || (filenamecount == 0)) {
-        printf("ERROR - No filename given\r\n");
+        error("No input filename");
         printHelp();
         return 2;
     }
     if(filenamecount > 1) {
-        printf("ERROR - Too many files provided as argument\r\n");
+        error("Too many files provided as argument");
         return 2;
     }
 
     mos_posix_init();       // Init posix compatibility for non-MOS builds, before io_init
 
     if(!io_init(inputfilename)) {
+        text_RED();
         printf("Error opening \"%s\"\r\n", inputfilename);
+        text_NORMAL();
         return 2;
     }
     printf("Assembling %s\r\n", inputfilename);
@@ -138,8 +131,7 @@ int main(int argc, char *argv[])
     
     // Assemble input to output
     assemble();
-    if(global_errors) printf("Error in input\r\n");
-    else printf("Done\r\n");
+    if(!global_errors) printf("Done\r\n");
     io_close();
 
     if(global_errors) return 1;

@@ -1,3 +1,4 @@
+    .include "bla.inc"
     ld a,b
     .align 16
 label:ld a,b
@@ -8,3 +9,4 @@ label:ld a,b
     .align 16
     ld a,b
 
+    def 5

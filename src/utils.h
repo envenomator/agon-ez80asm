@@ -10,6 +10,10 @@ typedef struct {
     char    terminator;
 } tokentype;
 
+void text_RED(void);
+void text_YELLOW(void);
+void text_NORMAL(void);
+
 void remove_ext (char* myStr, char extSep, char pathSep);
 void trimRight(char *str);
 void error(char* msg);

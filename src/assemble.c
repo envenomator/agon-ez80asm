@@ -1547,19 +1547,23 @@ bool assemble(void){
     bool incfileState;
 
     global_errors = 0;
-
+    
     // Assemble in two passes
     // Pass 1
-    printf("Pass 1...\n\r");
+    printf("Pass 1...\r\n");
     passInitialize(1);
     do {
         while(io_getline(FILE_CURRENT, line, sizeof(line))) {
-            //printf("<<%s>>\r\n",line);
-            if(global_errors) return false;
             linenumber++;
             parseLine(line);
             processInstructions(line);
             processDelayedLineNumberReset();
+            if(global_errors) {
+                text_YELLOW();
+                printf("%s",line);
+                text_NORMAL();
+                return false;
+            }    
         }
         if(filestackCount()) {
             writeLocalLabels(); // end of local space
@@ -1572,10 +1576,11 @@ bool assemble(void){
         else incfileState = false;
     } while(incfileState);
     writeLocalLabels();
+
     if(global_errors) return false;
 
     // Pass 2
-    printf("Pass 2...\n\r");
+    printf("Pass 2...\r\n");
     passInitialize(2);
     listInit(consolelist_enabled);
     readLocalLabels();
@@ -1583,7 +1588,6 @@ bool assemble(void){
     
     do {
         while(io_getline(FILE_CURRENT, line, sizeof(line))) {
-            if(global_errors) return false;
             linenumber++;
             listStartLine(line);
             parseLine(line);
@@ -1591,6 +1595,12 @@ bool assemble(void){
             processInstructions(line);
             listEndLine(consolelist_enabled);
             processDelayedLineNumberReset();
+            if(global_errors) {
+                text_YELLOW();
+                printf("%s",line);
+                text_NORMAL();
+                return false;
+            }    
         }
         if(filestackCount()) {
             currentExpandedMacro = NULL;
