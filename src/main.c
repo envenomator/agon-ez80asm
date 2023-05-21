@@ -14,6 +14,17 @@
 #include <getopt.h>
 #include "str2num.h"
 
+#include <stdarg.h>
+
+void WriteFormatted ( const char * format, ... )
+{
+  va_list args;
+  va_start (args, format);
+  vprintf (format, args);
+  va_end (args);
+}
+
+
 void printVersion(void) {
     printf("ez80asm version %s, (C)2023 - Jeroen Venema\r\n",VERSION);
 }

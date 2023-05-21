@@ -32,21 +32,13 @@ void vdp_cursorGoto(unsigned char x, unsigned char y)
     putch(y);
 }
 
-void vdp_colour(unsigned char foreground, unsigned char r, unsigned char g, unsigned char b)
-{
-    putch(17); // COLOUR
-    putch(!foreground);
-    putch(r);
-    putch(g);
-    putch(b);
+void vdp_fgcolour(unsigned char colorindex) {
+	putch(17); // COLOUR
+	putch(colorindex);	
 }
 
-void vdp_fgcolour(unsigned char r, unsigned char g, unsigned char b)
-{
-    vdp_colour(1,r,g,b);
+void vdp_bgcolour(unsigned char colorindex) {
+	putch(17); // COLOUR
+	putch(colorindex | 0x80);	
 }
 
-void vdp_bgcolour(unsigned char r, unsigned char g, unsigned char b)
-{
-    vdp_colour(0,r,g,b);
-}

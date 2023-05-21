@@ -17,6 +17,33 @@
 #ifndef VDP_H
 #define VDP_H
 
+// DEFAULT COLOR INDEXES
+enum {
+    BLACK = 0,
+    DARK_RED,
+    DARK_GREEN,
+    DARK_YELLOW,
+    DARK_BLUE,
+    DARK_MAGENTA,
+    DARK_CYAN,
+    DARK_WHITE,
+    BRIGHT_BLACK,
+    BRIGHT_RED,
+    BRIGHT_GREEN,
+    BRIGHT_YELLOW,
+    BRIGHT_BLUE,
+    BRIGHT_MAGENTA,
+    BRIGHT_CYAN,
+    BRIGHT_WHITE
+};
+
+// VDP modes
+#define VDPMODE_1024x728_2C 0
+#define VDPMODE_512x384_16C 1
+#define VDPMODE_320x200_64C 2
+#define VDPMODE_640x480_16C 3
+#define VDPMODE_DEFAULT     1
+
 // Generic
 void vdp_mode(unsigned char mode);
 //
@@ -30,7 +57,7 @@ void  vdp_cls();
 void  vdp_cursorHome();
 void  vdp_cursorUp();
 void  vdp_cursorGoto(unsigned char x, unsigned char y);
-void  vdp_fgcolour(unsigned char r, unsigned char g, unsigned char b);
-void  vdp_bgcolour(unsigned char r, unsigned char g, unsigned char b);
+void  vdp_fgcolour(unsigned char colorindex);
+void  vdp_bgcolour(unsigned char colorindex);
 
 #endif //VDP_H
