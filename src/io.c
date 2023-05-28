@@ -244,10 +244,13 @@ bool io_setpass(uint8_t pass) {
             break;
         case 2:
             _initFileBuffers();
-            result = result && reOpenFile(FILE_INPUT, fa_read);
-            result = result && reOpenFile(FILE_LOCAL_LABELS, fa_read);
-            result = result && reOpenFile(FILE_ANONYMOUS_LABELS, fa_read);
-            if(!result) error("Error re-opening input file\r\n");
+            //result = result && reOpenFile(FILE_INPUT, fa_read);
+            //result = result && reOpenFile(FILE_LOCAL_LABELS, fa_read);
+            //result = result && reOpenFile(FILE_ANONYMOUS_LABELS, fa_read);
+            result = result && (mos_flseek(filehandle[FILE_INPUT], 0) == 0);
+            result = result && (mos_flseek(filehandle[FILE_LOCAL_LABELS], 0) == 0);
+            result = result && (mos_flseek(filehandle[FILE_ANONYMOUS_LABELS], 0) == 0);
+            if(!result) error("Error resetting input file(s)\r\n");
             return result;
             break;
     }

@@ -25,6 +25,21 @@ typedef struct {
 posixfile _filearray[MAXPOSIXFILES];
 
 // MOS API calls conversion to POSIX
+
+UINT8 mos_flseek(UINT8 fh, UINT32 offset) {
+    int index;
+    bool found = false;
+
+    for(index = 0; index < _fileindex; index++) {
+        if(_filearray[index].mosfile == fh) {
+            found = true;
+            break;
+        }
+    }
+    if(found) return fseek(_filearray[index].file, 0, SEEK_SET);
+    return 1; // non-zero on failure
+}
+
 UINT8 mos_fopen(char * filename, UINT8 mode) // returns filehandle, or 0 on error
 {
     posixfile newfile;
@@ -34,6 +49,7 @@ UINT8 mos_fopen(char * filename, UINT8 mode) // returns filehandle, or 0 on erro
         newfile.file = NULL;
         if(mode == fa_read) newfile.file = fopen(filename, "r");
         if(mode == (fa_write | fa_create_always)) newfile.file = fopen(filename, "wb+");
+        //printf("DEBUG: Open index %d - mosid %d\r\n",_fileindex, _mosfileid);
         if(newfile.file == NULL) return 0;
         newfile.mosfile = _mosfileid++;
         _filearray[_fileindex++] = newfile;
@@ -59,6 +75,7 @@ UINT8 mos_fclose(UINT8 fh)					 // returns number of still open files
             _filearray[index] = _filearray[index+1];
         }
         _fileindex--;
+        _mosfileid--;
         return 1;
     }
     return 0;
