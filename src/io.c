@@ -195,6 +195,7 @@ char* io_getline(uint8_t fh, char *s, int size) {
         return (*s == 0)? NULL:s;
     }
     else {
+        //printf("Unbuffered read\r\n");
         // regular non-buffered read
         #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
         eof = 0;

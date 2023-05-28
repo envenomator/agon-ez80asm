@@ -19,6 +19,7 @@
 // Local file buffer
 char _buffer[FILE_BUFFERSIZE];
 char _incbuffer[FILESTACK_MAXFILES][FILE_BUFFERSIZE];
+char _macrobuffer[FILE_BUFFERSIZE];
 
 void empty_operand(operand *op) {
     op->reg = R_NONE;
@@ -1445,6 +1446,9 @@ void expandMacroStart(macro *exp) {
     io_getFileDefaults(&fsi);
     io_getMacroFilename(fsi.filename, exp->name);    
     fsi.fp = mos_fopen(fsi.filename, fa_read);
+    // set up temporary buffer for file reads from macro
+    fsi.bufferstart = &_macrobuffer[0];
+    fsi.filebuffer = fsi.bufferstart;
     io_setCurrent(&fsi);
 
     if(filehandle[FILE_CURRENT] == 0) {
