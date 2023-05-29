@@ -1138,6 +1138,7 @@ void handle_asm_include(void) {
     io_getFileDefaults(&fsi);
     fsi.fp = mos_fopen(token.start+1, fa_read);
     strncpy(fsi.filename, token.start+1, sizeof(fsi.filename));
+    fsi.filename[sizeof(fsi.filename)-1] = '\0';
     fsi.bufferstart = &_incbuffer[inclevel][0];
     fsi.filebuffer = fsi.bufferstart;
     io_setCurrent(&fsi);

@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
                 return 2;
             case 1:
                 filenamecount++;
-                strncpy(inputfilename, optarg, FILENAMEMAXLENGTH);
+                strncpy(inputfilename, optarg, FILENAMEMAXLENGTH-1);
                 break;
         }
     }
