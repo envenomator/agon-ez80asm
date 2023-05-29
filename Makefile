@@ -1,10 +1,12 @@
-#PROJECTNAME=project
-ifeq ($(OS),Windows_NT)
-	include windows.mk
-else
-	include unix.mk
-endif
+PROJECTNAME=ez80asm
 
+# Tools and arguments
+CC=gcc
+LFLAGS=-g -Wall -DUNIX
+CFLAGS=$(LFLAGS) -c
+OUTFLAG=-o
+RELEASE_LFLAGS=-Wall -O2 -DNDEBUG -DUNIX
+RELEASE_CFLAGS=$(RELEASE_LFLAGS) -c
 .DEFAULT_GOAL := all
 
 # project directories
@@ -19,12 +21,13 @@ OBJS=$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 BIN=$(BINDIR)/$(PROJECTNAME)
 
 # Default rule
-all: setupdirs $(BIN)
+all: $(BINDIR) $(OBJDIR) $(BIN)
 
 # Release with optimal settings for release target
 release: CFLAGS=$(RELEASE_CFLAGS)
 release: LFLAGS=$(RELEASE_LFLAGS)
-release: clean
+release: $(BINDIR)
+release: $(OBJDIR)
 release: $(BIN)
 
 # Linking all compiled objects into final binary
@@ -43,11 +46,18 @@ else
 	$(CC) $(CFLAGS)$@ $<
 endif
 
-# Initial project setup helper
-setupdirs:
-	@if ! test -d $(SRCDIR); then mkdir $(SRCDIR); fi
-	@if ! test -d $(OBJDIR); then mkdir $(OBJDIR); fi
-	@if ! test -d $(BINDIR); then mkdir $(BINDIR); fi
+$(BINDIR):
+	mkdir $(BINDIR)
+
+$(OBJDIR):
+	mkdir $(OBJDIR)
 
 clean:
+ifdef OS
+	del /s /q $(BINDIR) >nul 2>&1
+	del /s /q $(OBJDIR) >nul 2>&1
+else
 	$(RM) -r $(BINDIR)/* $(OBJDIR)/*
+endif
+	rmdir $(BINDIR)
+	rmdir $(OBJDIR)
