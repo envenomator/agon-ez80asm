@@ -612,8 +612,8 @@ _mos_flseek:
 	add 	ix, sp
 	ld 		bc, (ix+6)	; file handle
 	ld		de, 0
-	ld		e,  (ix+9)	; Most significant byte
-	ld		hl, (ix+10)	; Least significant bytes
+	ld		hl, (ix+9)  ; 24 least significant bits
+	ld		e,  (ix+12)	; 8 most most significant bits
 	ld a,	mos_flseek
 	rst.lil	08h
 	ld		sp,ix

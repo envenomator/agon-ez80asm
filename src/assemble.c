@@ -88,12 +88,17 @@ int24_t getValue(char *string) {
         if(notEmpty(token.start)) {
             if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
             lbl = findLabel(token.start);
+            //printf("<<%s>>\r\n",token.start);
             if(lbl) tmp = lbl->address;
             else {
                 if(token.start[0] == '\'') tmp = getAsciiValue(token.start);
                 else {
                     tmp = str2num(token.start, false);
-                    if(err_str2num && (pass == 2)) error(message[ERROR_INVALIDLABEL]);
+                    if(err_str2num && (pass == 2)) {
+                        //printf("Case 1\r\n");
+                        //printf("<<%s>>\r\n",token.start);
+                        error(message[ERROR_INVALIDLABEL]);
+                    }
                 }
             }
         }
@@ -425,11 +430,13 @@ void parseLine(char *src) {
                                 break;
                             }
                             else {
+                                //printf("Case 2\r\n");
                                 error(message[ERROR_INVALIDLABEL]);
                                 state = PS_ERROR;
                             }
                             break;
                         default:
+                            //printf("Case 3\r\n");
                             error(message[ERROR_INVALIDLABEL]);
                             state = PS_ERROR;                        
                             break;

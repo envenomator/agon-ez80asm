@@ -107,8 +107,8 @@ bool _openfiles(void) {
 
     status = status && _openFile(&filehandle[FILE_INPUT], filename[FILE_INPUT], fa_read);
     status = status && _openFile(&filehandle[FILE_OUTPUT], filename[FILE_OUTPUT], fa_write | fa_create_always);
-    status = status && _openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], fa_write | fa_create_always);
-    status = status && _openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], fa_write | fa_create_always);
+    status = status && _openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], fa_read | fa_write | fa_create_always);
+    status = status && _openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], fa_read | fa_write | fa_create_always);
     if(list_enabled) status = status && _openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], fa_write | fa_create_always);
     if(!status) _closeAllFiles();
     return status;
