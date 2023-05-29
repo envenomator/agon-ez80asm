@@ -11,11 +11,11 @@
 #define strcasecmp _stricmp
 #endif
 
-#define VERSION                 "0.100"
+#define VERSION                "0.100b"
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
 #define FILLBYTE                   0xFF // Same as ZDS
-#define FILESTACK_MAXFILES            2 // Maximum simultaneous include 'depth'
+#define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'
 #define LINEMAX                     256 // Input line length maximum
 #define FILENAMEMAXLENGTH            64
 #define FILES                         7

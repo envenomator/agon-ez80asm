@@ -420,7 +420,14 @@ void parseLine(char *src) {
                             state = PS_LABEL;
                             break;
                         case ';':
-                            state = PS_COMMENT;
+                            if(*src == ';') { // only if first char is ';'
+                                state = PS_COMMENT;
+                                break;
+                            }
+                            else {
+                                error(message[ERROR_INVALIDLABEL]);
+                                state = PS_ERROR;
+                            }
                             break;
                         default:
                             error(message[ERROR_INVALIDLABEL]);
@@ -665,7 +672,8 @@ uint8_t get_immediate_size(operand *op, uint8_t suffix) {
             error(message[ERROR_INVALIDMNEMONIC]);
             return 0;
     }
-    if((num == 2) && (op->immediate > 0xFFFF)) error(message[ERROR_MMN_TOOLARGE]);
+    //if((num == 2) && (op->immediate > 0xFFFF)) error(message[ERROR_MMN_TOOLARGE]);
+    if(num == 2) op->immediate &= 0xFFFF;
     return num;
 }
 // Emit a 16 or 24 bit immediate number, according to
@@ -1422,14 +1430,18 @@ void expandMacroStart(macro *exp) {
     currentExpandedMacro = currentline.current_macro;
     // parse arguments into given macro substitution space
     while(currentline.next) {
-        if(argcount >= exp->argcount) {
-            error(message[ERROR_MACROARGCOUNT]);
-            return;
-        }
+        //printf("<<%s>>\r\n",currentline.next);
+        //printf("%s Args in macro: %d\r\n",exp->name, exp->argcount);
+        //printf("Actual counted args: %d\r\n",argcount);
         getLineToken(&token, currentline.next, ',');
+        //printf("Token start : <<%s>>\r\n",token.start);
         if(notEmpty(token.start)) {
-            strcpy(exp->substitutions[argcount], token.start);
             argcount++;
+            if(argcount > exp->argcount) {
+                error(message[ERROR_MACROARGCOUNT]);
+                return;
+            }
+            strcpy(exp->substitutions[argcount-1], token.start);
         }
         if(token.terminator == ',') currentline.next = token.next;
         else {

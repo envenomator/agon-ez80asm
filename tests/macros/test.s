@@ -14,6 +14,6 @@
         endmacro
 
 ; invoke
-        addhla
+        addhla ; empty command
         pointless 10,15
         pointless a,b
