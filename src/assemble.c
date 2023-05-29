@@ -1115,14 +1115,6 @@ void handle_asm_include(void) {
     filestackitem fsi;
     uint8_t inclevel;
 
-    if(pass == 1) {
-        writeLocalLabels(); // new local label space inside macro expansion
-        clearLocalLabels();
-    }
-    if(pass == 2) {
-        clearLocalLabels();
-        readLocalLabels();
-    }
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND]);
         return;
@@ -1164,14 +1156,6 @@ void handle_asm_incbin(void) {
     bool eof;
     uint24_t size,n;
 
-    if(pass == 1) {
-        writeLocalLabels(); // new local label space inside macro expansion
-        clearLocalLabels();
-    }
-    if(pass == 2) {
-        clearLocalLabels();
-        readLocalLabels();
-    }
     if(recordingMacro) return;
 
     if(!currentline.next) {
@@ -1522,14 +1506,6 @@ void processInstructions(char *line){
     }
     if(currentline.current_macro) {
         expandMacroStart(currentline.current_macro);
-        if(pass == 1) {
-            writeLocalLabels(); // new local label space inside macro expansion
-            clearLocalLabels();
-        }
-        if(pass == 2) {
-            clearLocalLabels();
-            readLocalLabels();
-        }
     }
     return;
 }
@@ -1582,8 +1558,6 @@ bool assemble(void){
             }    
         }
         if(filestackCount()) {
-            writeLocalLabels(); // end of local space
-            clearLocalLabels();
             currentExpandedMacro = NULL;
             mos_fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
@@ -1620,8 +1594,6 @@ bool assemble(void){
         }
         if(filestackCount()) {
             currentExpandedMacro = NULL;
-            clearLocalLabels();
-            readLocalLabels();
             mos_fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
             io_setCurrent(&fsitem);

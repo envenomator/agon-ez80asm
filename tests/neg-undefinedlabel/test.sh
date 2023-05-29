@@ -5,7 +5,7 @@
 # return 2 on error in test SETUP
 #
 if [ -f "test.s" ]; then
-    $ASMBIN test.s -b 0xFF > asm.output
+    $ASMBIN test.s -b FF > asm.output
     if [ $? -eq 0 ]; then 
         echo "Assembler incorrectly accepting negative test"
         exit 1
