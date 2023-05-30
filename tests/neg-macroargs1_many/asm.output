@@ -1,5 +1,3 @@
 Setting fillbyte to hex FF
-Assembling test.s
-Pass 1...
-[31mMACRO [test] - line 5 - Maximum number of macro arguments reached
-[39m[33m    test 15 ; this should error[39m
+[31mError opening "test.s"
+[39m

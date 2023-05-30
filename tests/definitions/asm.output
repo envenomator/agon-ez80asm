@@ -1,2 +1,3 @@
-[31moption -b: Byte range error
-[39m
+Setting fillbyte to hex FF
+[31mError opening "test.s"
+[39m

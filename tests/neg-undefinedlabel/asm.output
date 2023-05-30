@@ -1,6 +1,3 @@
 Setting fillbyte to hex FF
-Assembling test.s
-Pass 1...
-[31m"test.s" - line 1 - Invalid label reference
-[39m[33mlabel;this is not a label, but is has a comment that shouldn't confuse the parser
+[31mError opening "test.s"
 [39m
