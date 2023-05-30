@@ -13,8 +13,8 @@ uint8_t  _listObjects[LISTING_OBJECTS_PER_LINE];
 uint8_t  _listLineObjectCount;
 uint8_t  _listLineNumber;
 bool     _listConsole;
-uint24_t _listLinenumber;
-bool _expandedmacro;
+uint24_t _listSourceLineNumber;
+//bool _expandedmacro;
 
 char _listHeader[] = "PC     Output            Line Source\n\r";
 
@@ -33,8 +33,8 @@ void listStartLine(char *line) {
     trimRight(_listLine);
     _listAddress = address;
     _listLineObjectCount = 0;
-    _listLinenumber = currentExpandedMacro?_listLinenumber:linenumber; // remember upstream linenumber during macro expansion
-    _expandedmacro = (currentExpandedMacro != NULL);
+    _listSourceLineNumber = currentExpandedMacro?_listSourceLineNumber:linenumber; // remember upstream linenumber during macro expansion
+    //_expandedmacro = (currentExpandedMacro != NULL);
     _listLineObjectCount = 0;
     _listLineNumber = 0;
 }
@@ -64,7 +64,7 @@ void listPrintLine(void) {
         if(_listConsole) printf("%s",buffer);
     }
     if(_listLineNumber == 0) {
-        sprintf(buffer, "%04d %s\r\n",_listLinenumber, _listLine);
+        sprintf(buffer, "%04d %s\r\n",_listSourceLineNumber, _listLine);
         io_puts(FILE_LISTING, buffer);
         if(_listConsole) printf("%s",buffer);
     }
