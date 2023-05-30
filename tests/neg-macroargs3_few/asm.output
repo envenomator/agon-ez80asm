@@ -1,3 +1,5 @@
 Setting fillbyte to hex FF
-[31mError opening "test.s"
-[39m
+Assembling test.s
+Pass 1...
+[31mMACRO [test] - line 5 - Incorrect number of macro arguments
+[39m[33m    test ; this should error[39m
