@@ -878,6 +878,7 @@ void emit_instruction(operandlist *list) {
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
         if(list_enabled || consolelist_enabled) listEmit8bit(value);
+        //printf("DEBUG: Emitting %02x\r\n",value);
         io_putc(FILE_OUTPUT, value);
     }
     address++;
@@ -1591,7 +1592,7 @@ bool assemble(void){
             parseLine(line);
             refreshlocalLabels();
             processInstructions(line);
-            listEndLine(consolelist_enabled);
+            listEndLine();
             processDelayedLineNumberReset();
             if(global_errors) {
                 text_YELLOW();
