@@ -25,7 +25,8 @@
 #define LOCAL_LABEL_TABLE_SIZE       64 //  64 local labels
 #define FILE_BUFFERSIZE            2048 // For each specified input/output file (io.c)
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number
-#define TOKEN_MAX                   128 // Token maximum length 
+#define TOKEN_MAX                   128 // Token maximum length
+#define MAXNAMELENGTH                32 // Maximum name length of labels/macros/mnemonics
 #define MAXIMUM_MACROS               64 // Maximum number of macros
 #define MACROMAXARGS                  8 // Maximum arguments to a macro
 #define MACROARGLENGTH               32 // Maximum length of macro argument

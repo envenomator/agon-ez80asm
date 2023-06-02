@@ -3,7 +3,7 @@
 #include "utils.h"
 #include "./stdint.h"
 
-filestackitem _filestack[FILESTACK_MAXFILES];
+filestackitem _filestack[FILESTACK_MAXFILES + 1];
 uint8_t       _filestackCount;
 
 void filestackInit(void) {

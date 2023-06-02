@@ -10,7 +10,7 @@
 #include "macro.h"
 
 // Global variables
-char     filename[FILES][FILENAMEMAXLENGTH];
+char     filename[FILES][FILENAMEMAXLENGTH + 1];
 uint8_t  filehandle[FILES];
 // Local variables
 char *   _bufferstart[FILES];          // statically set start of buffer to each file
@@ -19,7 +19,7 @@ uint24_t _filebuffersize[FILES];        // current fill size of each buffer
 bool     _fileEOF[FILES];
 char     _inputbuffer[FILE_BUFFERSIZE];
 char     _outputbuffer[FILE_BUFFERSIZE];
-char     _fileBasename[FILENAMEMAXLENGTH]; // base filename for all output files
+char     _fileBasename[FILENAMEMAXLENGTH + 1]; // base filename for all output files
 
 void _initFileBufferLayout(void) {
     int n;

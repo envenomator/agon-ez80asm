@@ -11,12 +11,12 @@ typedef struct {
     instruction *current_instruction;
     macro *current_macro;
     char *next;
-    char label[32];
-    char mnemonic[16];
-    char suffix[16];
-    char operand1[32];
-    char operand2[32];
-    char comment[128];
+    char label[MAXNAMELENGTH + 1];
+    char mnemonic[MAXNAMELENGTH + 1];
+    char suffix[MAXNAMELENGTH + 1];
+    char operand1[MAXNAMELENGTH + 1];
+    char operand2[MAXNAMELENGTH + 1];
+    char comment[TOKEN_MAX + 1];
     bool suffixpresent;
     uint16_t size;      // byte size of the assembler-command output in db/defb/dw/defw
 } tokenline;
@@ -92,6 +92,8 @@ enum {
     ERROR_MAXMACROS,
     ERROR_MACRODEFINED,
     ERROR_MACRONAME,
+    ERROR_MACRONAMELENGTH,
+    ERROR_MACROARGLENGTH,
     ERROR_MACROARGCOUNT,
     ERROR_MACROFILEWRITE,
     ERROR_MACROINCORRECTARG,

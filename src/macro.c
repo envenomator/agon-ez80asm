@@ -52,6 +52,10 @@ bool defineMacro(char *name, uint8_t argcount, char *arguments) {
         if(macroTableCounter < MAXIMUM_MACROS) {
             // prep new macro structure
             len = strlen(name);
+            if(len > MAXNAMELENGTH) {
+                error(message[ERROR_MACRONAMELENGTH]);
+                return false;
+            }
             newmacro.name = agon_malloc(len+1);
             if(newmacro.name == NULL) return false;
             strcpy(newmacro.name, name);
@@ -63,11 +67,15 @@ bool defineMacro(char *name, uint8_t argcount, char *arguments) {
                 newmacro.substitutions = (char **)agon_malloc(argcount * sizeof(char *));
                 if((newmacro.arguments == NULL) || (newmacro.substitutions == NULL)) return false;
                 for(j = 0; j < argcount; j++) {
-                    len = strlen(arguments + j*MACROARGLENGTH);
+                    len = strlen(arguments + j*(MACROARGLENGTH+1));
+                    if(len > MACROARGLENGTH) {
+                        error(message[ERROR_MACROARGLENGTH]);
+                        return false;
+                    }
                     ptr = agon_malloc(len+1);
                     subs = agon_malloc(MACROARGLENGTH+1);
                     if((ptr == NULL) || (subs == NULL)) return false;
-                    strcpy(ptr, arguments + j*MACROARGLENGTH);
+                    strcpy(ptr, arguments + j*(MACROARGLENGTH+1));
                     newmacro.arguments[j] = ptr;
                     newmacro.substitutions[j] = subs;
                 }

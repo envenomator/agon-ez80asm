@@ -13,7 +13,14 @@
         ld l, arg2
         endmacro
 
+; define macro with long name and long arguments
+        macro abcdefg_bahjelsd__jkdfherkklliix 0123456789abcdef0123456789abcdef, x123456789abcdef0123456789abcdef
+        ld a, 0123456789abcdef0123456789abcdef
+        ld a, x123456789abcdef0123456789abcdef
+        endmacro
 ; invoke
         addhla ; empty command
         pointless 10,15
         pointless a,b
+	    abcdefg_bahjelsd__jkdfherkklliix 10,15
+

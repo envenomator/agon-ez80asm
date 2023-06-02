@@ -4,7 +4,7 @@
 #include "config.h"
 
 typedef struct {
-    char    start[TOKEN_MAX];
+    char    start[TOKEN_MAX + 1];
     uint8_t length;
     char    *next;
     char    terminator;

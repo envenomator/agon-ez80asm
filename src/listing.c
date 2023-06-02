@@ -7,7 +7,7 @@
 #include "io.h"
 
 // Local variables
-char     _listLine[LINEMAX];
+char     _listLine[LINEMAX + 1];
 uint24_t _listAddress;
 uint8_t  _listObjects[LISTING_OBJECTS_PER_LINE];
 uint8_t  _listLineObjectCount;
@@ -18,7 +18,7 @@ uint24_t _listSourceLineNumber;
 
 char _listHeader[] = "PC     Output            Line Source\n\r";
 
-char buffer[LINEMAX + 32];
+char buffer[LINEMAX * 2];
 
 void listInit(bool console) {
     sprintf(buffer, "%s", _listHeader);

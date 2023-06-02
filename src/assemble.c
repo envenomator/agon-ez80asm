@@ -1284,7 +1284,7 @@ void handle_asm_definemacro(void) {
     
     tokentype token;
     uint8_t argcount = 0;
-    char arglist[MACROMAXARGS][MACROARGLENGTH];
+    char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
     
     recordingMacro = true;
 
@@ -1543,7 +1543,7 @@ void processDelayedLineNumberReset(void) {
 }
 
 bool assemble(void){
-    char line[LINEMAX];
+    char line[LINEMAX + 1];
     filestackitem fsitem;
     bool incfileState;
 

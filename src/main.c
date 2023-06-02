@@ -33,7 +33,7 @@ void printHelp(void) {
 int main(int argc, char *argv[])
 {
     int opt;
-    char inputfilename[FILENAMEMAXLENGTH];
+    char inputfilename[FILENAMEMAXLENGTH + 1];
     int filenamecount = 0;
 
     // option defaults from compiled configuration
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
                 return 2;
             case 1:
                 filenamecount++;
-                strncpy(inputfilename, optarg, FILENAMEMAXLENGTH-1);
+                strncpy(inputfilename, optarg, FILENAMEMAXLENGTH);
                 break;
         }
     }

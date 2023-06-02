@@ -74,6 +74,8 @@ char *message[] = {
     "Maximum number of macros reached",
     "Macro already defined",
     "Invalid macro name",
+    "Macro maximum name length",
+    "Macro maximum arg length",
     "Maximum number of macro arguments reached",
     "Error writing to macro file",
     "Incorrect number of macro arguments",

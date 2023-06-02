@@ -8,7 +8,7 @@
 typedef struct {
     uint16_t linenumber;
     uint8_t  fp;
-    char     filename[FILENAMEMAXLENGTH];
+    char     filename[FILENAMEMAXLENGTH + 1];
     char *   filebuffer;
     char *   bufferstart;
     uint24_t filebuffersize;
