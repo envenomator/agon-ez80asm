@@ -36,6 +36,6 @@ label * findGlobalLabel(char *name);
 void initLocalLabelTable(void);
 uint16_t getGlobalLabelCount(void);
 uint16_t getLocalLabelCount(void);
-void printLocalLabelTable(void);
-void printGlobalLabelTable(void);
+//void printLocalLabelTable(void);
+//void printGlobalLabelTable(void);
 #endif // LABEL_H

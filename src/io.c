@@ -49,10 +49,8 @@ bool _openFile(uint8_t *file, char *name, uint8_t mode) {
 
 bool reOpenFile(uint8_t number, uint8_t mode) {
     bool result;
-    //printf("Re-opening    id: %d\r\n",filehandle[number]);
     if(filehandle[number]) mos_fclose(filehandle[number]);
     result = _openFile(&filehandle[number], filename[number], mode);
-    //printf("Re-opened mos id: %d\r\n",filehandle[number]);
     return result;
 }
 
@@ -128,11 +126,6 @@ void _io_fillbuffer(uint8_t fh) {
         _filebuffersize[fh] = mos_fread(filehandle[fh], _bufferstart[fh], FILE_BUFFERSIZE);
         _filebuffer[fh] = _bufferstart[fh];
     }
-
-    //char *ptr = _filebuffer[fh];
-    //int n;
-    //for(n = 0; n < _filebuffersize[fh];n++) printf("%02x-", *ptr++);
-    //printf("\r\n");
 }
 
 // Flush all output files
@@ -195,7 +188,6 @@ char* io_getline(uint8_t fh, char *s, int size) {
         return (*s == 0)? NULL:s;
     }
     else {
-        //printf("Unbuffered read\r\n");
         // regular non-buffered read
         #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
         eof = 0;
@@ -245,9 +237,6 @@ bool io_setpass(uint8_t pass) {
             break;
         case 2:
             _initFileBuffers();
-            //result = result && reOpenFile(FILE_INPUT, fa_read);
-            //result = result && reOpenFile(FILE_LOCAL_LABELS, fa_read);
-            //result = result && reOpenFile(FILE_ANONYMOUS_LABELS, fa_read);
             result = result && (mos_flseek(filehandle[FILE_INPUT], 0) == 0);
             result = result && (mos_flseek(filehandle[FILE_LOCAL_LABELS], 0) == 0);
             result = result && (mos_flseek(filehandle[FILE_ANONYMOUS_LABELS], 0) == 0);

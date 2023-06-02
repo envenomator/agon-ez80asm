@@ -49,18 +49,19 @@ CFLAGS =  \
 -keepasm -keeplst -NOlist -NOlistinc -NOmodsect -optsize -promote  \
 -NOreduceopt  \
 -stdinc:"\"..;C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\include\std;C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\include\zilog\""  \
--usrinc:"\"..;\"" -NOmultithread -NOpadbranch -debug -cpu:eZ80F92  \
+-usrinc:"\"..;\"" -NOmultithread -NOpadbranch -NOdebug  \
+-cpu:eZ80F92  \
 -asmsw:"   \
 	-define:_EZ80ACCLAIM!=1  \
 	-include:\"..;C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\include\std;C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\include\zilog\"  \
 	-list -NOlistmac -pagelen:0 -pagewidth:80 -quiet -sdiopt -warn  \
-	-debug -NOigcase -cpu:eZ80F92"
+	-NOdebug -NOigcase -cpu:eZ80F92"
 
 ASFLAGS =  \
 -define:_EZ80ACCLAIM!=1  \
 -include:"\"..;C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\include\std;C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\include\zilog\""  \
 -list -NOlistmac -name -pagelen:0 -pagewidth:80 -quiet -sdiopt  \
--warn -debug -NOigcase -cpu:eZ80F92
+-warn -NOdebug -NOigcase -cpu:eZ80F92
 
 LDFLAGS = @..\ez80asm.linkcmd
 build: ez80asm relist
@@ -314,6 +315,7 @@ $(WORKDIR_ESCSPACE)\main.obj :  \
             $(PRJDIR_ESCSPACE)\mos-interface.h  \
             $(PRJDIR_ESCSPACE)\mos_posix.h  \
             $(PRJDIR_ESCSPACE)\stdint.h  \
+            $(PRJDIR_ESCSPACE)\str2num.h  \
             $(PRJDIR_ESCSPACE)\utils.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\main.c"
 
@@ -454,7 +456,8 @@ $(WORKDIR_ESCSPACE)\utils.obj :  \
             $(PRJDIR_ESCSPACE)\mos-interface.h  \
             $(PRJDIR_ESCSPACE)\stdint.h  \
             $(PRJDIR_ESCSPACE)\str2num.h  \
-            $(PRJDIR_ESCSPACE)\utils.h
+            $(PRJDIR_ESCSPACE)\utils.h  \
+            $(PRJDIR_ESCSPACE)\vdp.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\utils.c"
 
 $(WORKDIR_ESCSPACE)\macro.obj :  \
@@ -499,6 +502,10 @@ $(WORKDIR_ESCSPACE)\io.obj :  \
 	 $(CC) $(CFLAGS) "$(PRJDIR)\io.c"
 
 $(WORKDIR_ESCSPACE)\getopt.obj :  \
-            $(PRJDIR_ESCSPACE)\getopt.c
+            $(PRJDIR_ESCSPACE)\getopt.c  \
+            $(INCLUDE_ESCSPACE)\std\Format.h  \
+            $(INCLUDE_ESCSPACE)\std\Stdio.h  \
+            $(INCLUDE_ESCSPACE)\std\String.h  \
+            $(PRJDIR_ESCSPACE)\getopt.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\getopt.c"
 

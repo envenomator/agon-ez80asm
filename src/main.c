@@ -15,7 +15,7 @@
 #include "str2num.h"
 
 void printVersion(void) {
-    printf("ez80asm version %s, (C)2023 - Jeroen Venema\r\n",VERSION);
+    printf("ez80asm version %d.%d, (C)2023 - Jeroen Venema\r\n",VERSION,REVISION);
 }
 
 void printHelp(void) {

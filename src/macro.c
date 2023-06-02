@@ -100,7 +100,6 @@ void macroArgFindSubst(char *op, macro *m) {
 
     for(i = 0; i < m->argcount; i++) {
         if(strcmp(op, m->arguments[i]) == 0) {
-            //printf("DEBUG - subst match - replace %s with %s\r\n", op, m->substitutions[i]);
             strcpy(op, m->substitutions[i]);
             return;
         }

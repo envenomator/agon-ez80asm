@@ -16,9 +16,6 @@ uint8_t filestackCount(void) {
 
 bool filestackPush(filestackitem *fs) {
     if(_filestackCount < FILESTACK_MAXFILES) {
-        //_filestack[_filestackCount].linenumber = fs->linenumber;
-        //_filestack[_filestackCount].fp = fs->fp;
-        //strcpy(_filestack[_filestackCount].filename,fs->filename);
         _filestack[_filestackCount] = *fs;
         _filestackCount++;
         return true;
@@ -30,9 +27,6 @@ bool filestackPush(filestackitem *fs) {
 bool filestackPop(filestackitem *fs) {
     if(_filestackCount) {
         _filestackCount--;
-        //fs->linenumber = _filestack[_filestackCount].linenumber;
-        //fs->fp = _filestack[_filestackCount].fp;
-        //strcpy(fs->filename, _filestack[_filestackCount].filename);
         *fs = _filestack[_filestackCount];
         return true;
     }

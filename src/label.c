@@ -24,6 +24,7 @@ uint16_t globalLabelCounter;
 label localLabelTable[LOCAL_LABEL_TABLE_SIZE]; // indexed table
 uint16_t localLabelCounter;
 
+/*
 void printLocalLabelTable(void) {
     int i;
     printf("\r\nLocal table (%d entries):\n\r",localLabelCounter);
@@ -38,6 +39,7 @@ void printGlobalLabelTable(void) {
         }
     }
 }
+*/
 uint16_t getGlobalLabelCount(void) {
     return globalLabelCounter;
 }
@@ -102,21 +104,16 @@ void writeLocalLabels(void) {
     int i;
     uint16_t delta;
     // number of bytes in the string buffer
-    //agon_fwrite(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
     mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
     // the actual bytes from the string buffer
-    //if(localLabelBufferIndex) agon_fwrite(localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
     if(localLabelBufferIndex) 
         mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelBuffer, localLabelBufferIndex);
     
     // the number of labels
-    //agon_fwrite(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
     mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelCounter, sizeof(localLabelCounter));
     for(i = 0; i < localLabelCounter; i++) {
         delta = localLabelTable[i].name - localLabelBuffer;
-        //agon_fwrite(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
         mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&delta, sizeof(delta));
-        //agon_fwrite(&localLabelTable[i].address, 4, 1, FILE_LOCAL_LABELS);
         mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelTable[i].address, 4);
     }
 }
@@ -125,17 +122,12 @@ void readLocalLabels(void) {
     int i;
     uint16_t delta;
 
-    //agon_fread(&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, FILE_LOCAL_LABELS);
     mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
-    //if(localLabelBufferIndex) agon_fread(&localLabelBuffer, localLabelBufferIndex, 1, FILE_LOCAL_LABELS);
     if(localLabelBufferIndex) 
         mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBuffer, localLabelBufferIndex);
-    //agon_fread(&localLabelCounter, sizeof(localLabelCounter), 1, FILE_LOCAL_LABELS);
     mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelCounter, sizeof(localLabelCounter));
     for(i = 0; i < localLabelCounter; i++) {
-        //agon_fread(&delta, sizeof(delta), 1, FILE_LOCAL_LABELS);
         mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&delta, sizeof(delta));
-        //agon_fread(&localLabelTable[i].address, 4, 1, FILE_LOCAL_LABELS);
         mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelTable[i].address, 4);        
         localLabelTable[i].name = localLabelBuffer + delta;
     }
@@ -145,9 +137,7 @@ void writeAnonymousLabel(int24_t address) {
     uint8_t scope;
 
     scope = filestackCount();
-    //agon_fwrite(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS);
     mos_fwrite(filehandle[FILE_ANONYMOUS_LABELS], (char*)&address, sizeof(address));
-    //agon_fwrite(&scope, sizeof(scope), 1, FILE_ANONYMOUS_LABELS);
     mos_fwrite(filehandle[FILE_ANONYMOUS_LABELS], (char*)&scope, sizeof(scope));
 }
 
@@ -155,9 +145,7 @@ void readAnonymousLabel(void) {
     int24_t address;
     uint8_t scope;
 
-//    if(agon_fread(&address, sizeof(address), 1, FILE_ANONYMOUS_LABELS)) {
     if(mos_fread(filehandle[FILE_ANONYMOUS_LABELS], (char*)&address, sizeof(address))) {
-        //agon_fread(&scope, sizeof(bool), 1, FILE_ANONYMOUS_LABELS);
         mos_fread(filehandle[FILE_ANONYMOUS_LABELS], (char*)&scope, sizeof(bool));
         if(an_next.defined) {
             an_prev.address = an_next.address;
@@ -228,10 +216,6 @@ bool insertGlobalLabel(char *labelname, int24_t address){
     int index,i,try,len;
     label *tmp;
 
-    //if(findGlobalLabel(labelname)) {
-    //    error(message[ERROR_LABELDEFINED]);
-    //    return false;
-    //}
     len = strlen(labelname);
 
     // allocate space in buffer for label struct
@@ -281,7 +265,6 @@ label *findLabel(char *name) {
     if(name[0] == '@') {
         
         if(((tolower(name[1]) == 'f') || (tolower(name[1]) == 'n')) && name[2] == 0) {
-            //printf("NEXT: PD: %d ND: %d Scope: %d\n",an_prev.defined,an_next.defined,filestackCount());
             if(an_next.defined && an_next.scope == filestackCount()) {
                 an_return.address = an_next.address;
                 return &an_return;
@@ -289,7 +272,6 @@ label *findLabel(char *name) {
             else return NULL;
         }
         if(((tolower(name[1]) == 'b') || (tolower(name[1]) == 'p')) && name[2] == 0) {
-            //printf("PREV: PD: %d ND: %d Scope: %d\n",an_prev.defined,an_next.defined,filestackCount());
             if(an_prev.defined && an_prev.scope == filestackCount()) {
                 an_return.address = an_prev.address;
                 return &an_return;
