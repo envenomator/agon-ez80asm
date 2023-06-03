@@ -54,16 +54,22 @@ bool reOpenFile(uint8_t number, uint8_t mode) {
     return result;
 }
 
-void _prepare_filenames(char *input_filename) {
+// Prepare filenames according to input filename
+// If output_filename is given, adopt that, 
+// otherwise append base inputfilename + .bin
+void _prepare_filenames(char *input_filename, char *output_filename) {
     // prepare filenames
     strcpy(filename[FILE_INPUT], input_filename);
-    strcpy(filename[FILE_OUTPUT], input_filename);
-    remove_ext(filename[FILE_OUTPUT], '.', '/');
-    strcpy(_fileBasename, filename[FILE_OUTPUT]);
+    strcpy(filename[FILE_OUTPUT], output_filename);
+    strcpy(_fileBasename, input_filename);
+    remove_ext(_fileBasename, '.', '/');
+    if((strlen(output_filename) == 0) || (output_filename == NULL)){
+        strcpy(filename[FILE_OUTPUT], _fileBasename);
+        strcat(filename[FILE_OUTPUT], ".bin");
+    }
     strcpy(filename[FILE_LOCAL_LABELS], _fileBasename);
     strcpy(filename[FILE_ANONYMOUS_LABELS],_fileBasename);
     if(list_enabled) strcpy(filename[FILE_LISTING],_fileBasename);
-    strcat(filename[FILE_OUTPUT], ".bin");
     strcat(filename[FILE_LOCAL_LABELS], ".lcllbls");
     strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
     if(list_enabled) strcat(filename[FILE_LISTING], ".lst");
@@ -222,8 +228,8 @@ char* io_getline(uint8_t fh, char *s, int size) {
     }
 }
 
-bool io_init(char *input_filename) {
-    _prepare_filenames(input_filename);
+bool io_init(char *input_filename, char *output_filename) {
+    _prepare_filenames(input_filename, output_filename);
     _initFileBufferLayout();
     _initFileBuffers();
     return _openfiles();

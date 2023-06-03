@@ -19,7 +19,7 @@ void printVersion(void) {
 }
 
 void printHelp(void) {
-    printf("Usage: ez80asm <filename> [OPTION]\n\r\r\n");
+    printf("Usage: ez80asm <filename> [output filename] [OPTION]\n\r\r\n");
     printf("  -v\tList version information\r\n");
     printf("  -h\tList help information\r\n");
     printf("  -o\tOrg start address in hexadecimal format, default is %06X\r\n", START_ADDRESS);
@@ -34,7 +34,10 @@ int main(int argc, char *argv[])
 {
     int opt;
     char inputfilename[FILENAMEMAXLENGTH + 1];
+    char outputfilename[FILENAMEMAXLENGTH + 1];
     int filenamecount = 0;
+
+    outputfilename[0] = 0;
 
     // option defaults from compiled configuration
     fillbyte_start = FILLBYTE;
@@ -54,7 +57,6 @@ int main(int argc, char *argv[])
                 printf("Setting ADL mode to %d\r\n",adlmode_start);
                 break;
             case 'd':
-                //printf("Listing to console\r\n");
                 consolelist_enabled = true;
                 break;
             case 'l':
@@ -92,12 +94,40 @@ int main(int argc, char *argv[])
                 break;
             case '?':
                 text_RED();
-                printf("Missing argument or unknown option: %c\r\n", optopt);
+                switch(optopt) {
+                    case 'b':
+                        printf("option -b: Missing fillbyte value\r\n");
+                        break;
+                    case 'a':
+                        printf("option -a: Missing ADL mode value\r\n");
+                        break;
+                    case 'o':
+                        printf("option -o: Missing start address value\r\n");
+                        break;
+                    default:
+                        printf("Unknown option \'%c\'\r\n",optopt);
+                        break;
+                }
                 text_NORMAL();
                 return 2;
             case 1:
+                if(strlen(optarg) > FILENAMEMAXLENGTH) {
+                    error("Filename too long");
+                    return 2;
+                }
                 filenamecount++;
-                strncpy(inputfilename, optarg, FILENAMEMAXLENGTH);
+                switch(filenamecount) {
+                    case 1:
+                        strncpy(inputfilename, optarg, FILENAMEMAXLENGTH);
+                        break;
+                    case 2:
+                        strncpy(outputfilename, optarg, FILENAMEMAXLENGTH);
+                        break;
+                    default:
+                        error("Too many filenames provided");
+                        return 2;
+                        break;
+                }
                 break;
         }
     }
@@ -106,14 +136,10 @@ int main(int argc, char *argv[])
         printHelp();
         return 2;
     }
-    if(filenamecount > 1) {
-        error("Too many files provided as argument");
-        return 2;
-    }
 
     mos_posix_init();       // Init posix compatibility for non-MOS builds, before io_init
 
-    if(!io_init(inputfilename)) {
+    if(!io_init(inputfilename, outputfilename)) {
         text_RED();
         printf("Error opening \"%s\"\r\n", inputfilename);
         text_NORMAL();
