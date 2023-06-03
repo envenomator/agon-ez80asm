@@ -17,7 +17,8 @@ enum {
     FILE_LOCAL_LABELS,
     FILE_ANONYMOUS_LABELS,
     FILE_LISTING,
-    FILE_MACRO
+    FILE_MACRO,
+    FILE_SYMBOLS
 };
 
 bool  io_init(char *input_filename, char *output_filename); // init - called once at start

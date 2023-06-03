@@ -40,6 +40,29 @@ void printGlobalLabelTable(void) {
     }
 }
 */
+
+void saveGlobalLabelTable(void) {
+    int i;
+    char *ptr;
+    char buffer[LINEMAX+1];
+
+    filehandle[FILE_SYMBOLS] = mos_fopen(filename[FILE_SYMBOLS], fa_write | fa_create_always);
+    if(filehandle[FILE_SYMBOLS] == 0) {
+        error("Couldn't open file for writing global label table");
+        return;
+    }
+
+    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++) {
+        if(globalLabelTable[i]) {
+            sprintf(buffer, "%s $%x\r\n", globalLabelTable[i]->name, globalLabelTable[i]->address);
+            ptr = buffer;
+            while(*ptr) mos_fputc(filehandle[FILE_SYMBOLS], *ptr++);
+        }
+    }
+
+    mos_fclose(filehandle[FILE_SYMBOLS]);
+}
+
 uint16_t getGlobalLabelCount(void) {
     return globalLabelCounter;
 }

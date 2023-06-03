@@ -13,6 +13,7 @@
 #include "io.h"
 #include <getopt.h>
 #include "str2num.h"
+#include "label.h"
 
 void printVersion(void) {
     printf("ez80asm version %d.%d, (C)2023 - Jeroen Venema\r\n",VERSION,REVISION);
@@ -26,6 +27,7 @@ void printHelp(void) {
     printf("  -b\tFillbyte in hexadecimal format, default is %02X\r\n", FILLBYTE);
     printf("  -a\tADL mode 1/0, default is %d\r\n", ADLMODE_START);
     printf("  -l\tListing to file with .lst extension\r\n");
+    printf("  -s\tExport symbols\r\n");
     printf("  -d\tDirect listing to console\r\n");
     printf("\r\n");
 }
@@ -33,10 +35,10 @@ void printHelp(void) {
 int main(int argc, char *argv[])
 {
     int opt;
+    bool exportsymbols;
     char inputfilename[FILENAMEMAXLENGTH + 1];
     char outputfilename[FILENAMEMAXLENGTH + 1];
     int filenamecount = 0;
-
     outputfilename[0] = 0;
 
     // option defaults from compiled configuration
@@ -44,8 +46,9 @@ int main(int argc, char *argv[])
     list_enabled = false;
     adlmode_start = ADLMODE_START;
     start_address = START_ADDRESS;
+    exportsymbols = false;
 
-    while ((opt = getopt(argc, argv, "-:ldvhb:a:o:")) != -1) {
+    while ((opt = getopt(argc, argv, "-:ldvhsb:a:o:")) != -1) {
         switch(opt) {
             case 'a':
                 if((strlen(optarg) != 1) || 
@@ -55,6 +58,10 @@ int main(int argc, char *argv[])
                 }
                 adlmode_start = (*optarg == '1')?true:false;
                 printf("Setting ADL mode to %d\r\n",adlmode_start);
+                break;
+            case 's':
+                printf("Exporting symbols\r\n");
+                exportsymbols = true;
                 break;
             case 'd':
                 consolelist_enabled = true;
@@ -161,5 +168,6 @@ int main(int argc, char *argv[])
     io_close();
 
     if(global_errors) return 1;
+    if(exportsymbols) saveGlobalLabelTable();
     return 0;
 }

@@ -38,4 +38,6 @@ uint16_t getGlobalLabelCount(void);
 uint16_t getLocalLabelCount(void);
 //void printLocalLabelTable(void);
 //void printGlobalLabelTable(void);
+void saveGlobalLabelTable(void);
+
 #endif // LABEL_H

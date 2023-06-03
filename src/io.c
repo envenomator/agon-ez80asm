@@ -69,10 +69,12 @@ void _prepare_filenames(char *input_filename, char *output_filename) {
     }
     strcpy(filename[FILE_LOCAL_LABELS], _fileBasename);
     strcpy(filename[FILE_ANONYMOUS_LABELS],_fileBasename);
+    strcpy(filename[FILE_SYMBOLS],_fileBasename);
     if(list_enabled) strcpy(filename[FILE_LISTING],_fileBasename);
     strcat(filename[FILE_LOCAL_LABELS], ".lcllbls");
     strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
     if(list_enabled) strcat(filename[FILE_LISTING], ".lst");
+    strcat(filename[FILE_SYMBOLS], ".symbols");
 }
 
 void io_getMacroFilename(char *filename, char *macroname) {
