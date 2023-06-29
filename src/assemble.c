@@ -1332,6 +1332,47 @@ void handle_asm_definemacro(void) {
     if(!filehandle[FILE_MACRO]) error("Error writing macro file");
 }
 
+
+void handle_asm_if(void) {
+    
+    tokentype token;
+    int24_t value;
+    
+    // No nested conditionals.
+    if(inConditionalSection != 0) {
+        error(message[ERROR_NESTEDCONDITIONALS]);
+        return;
+    }
+    if(!currentline.next) {
+        error(message[ERROR_CONDITIONALEXPRESSION]);
+        return;
+    }
+    getLineToken(&token, currentline.next, ' ');
+    value = getValue(token.start);
+
+    inConditionalSection = value ? 2 : 1;
+}
+
+
+void handle_asm_else(void) {
+    
+    tokentype token;
+    
+    // No nested conditionals.
+    if(inConditionalSection == 0) {
+        error(message[ERROR_INVALIDCONDITIONAL]);
+        return;
+    }
+    inConditionalSection = inConditionalSection == 1 ? 2 : 1;
+}
+
+void handle_asm_endif(void) {
+    
+    tokentype token;
+    
+    inConditionalSection = 0;
+}
+
 void handle_asm_fillbyte(void) {
     tokentype token;
     int32_t val;
@@ -1406,10 +1447,20 @@ void handle_assembler_command(void) {
         case(ASM_FILLBYTE):
             handle_asm_fillbyte();
             break;
+        case(ASM_IF):
+            handle_asm_if();
+            break;
+        case(ASM_ELSE):
+            handle_asm_else();
+            break;
+        case(ASM_ENDIF):
+            handle_asm_endif();
+            break;
         }
         return;
     }
     if(currentline.current_instruction->asmtype == ASM_MACRO_END) handle_asm_endmacro();
+    //if(currentline.current_instruction->asmtype == ASM_ENDIF) handle_asm_endif();
     return;
 }
 
@@ -1496,19 +1547,21 @@ void processInstructions(char *line){
     if(currentline.current_instruction) {
         if(currentline.current_instruction->type == EZ80) {
             if(!recordingMacro) {
-                // process this mnemonic by applying the instruction list as a filter to the operand-set
-                list = currentline.current_instruction->list;
-                match = false;
-                for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
-                    if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
+                if(inConditionalSection != 1) {
+                    // process this mnemonic by applying the instruction list as a filter to the operand-set
+                    list = currentline.current_instruction->list;
+                    match = false;
+                    for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
+                        if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
                         match = true;
                         emit_instruction(list);
                         break;
+                        }
+                        list++;
                     }
-                    list++;
+                    if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
+                    return;
                 }
-                if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
-                return;
             }
         }
         else handle_assembler_command();
