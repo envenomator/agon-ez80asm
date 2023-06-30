@@ -26,7 +26,7 @@ extern bool lineNumberNeedsReset;
 extern unsigned int linenumber;
 extern unsigned int pass;
 extern bool recordingMacro;
-extern int inConditionalSection;
+extern int inConditionalSection; // 0: outside conditional section, 1: negative section, 2: positive section
 extern macro *currentExpandedMacro;
 extern uint24_t address;
 extern uint24_t totalsize;
@@ -102,7 +102,8 @@ enum {
     ERROR_LINETOOLONG,
     ERROR_CONDITIONALEXPRESSION,
     ERROR_NESTEDCONDITIONALS,
-    ERROR_INVALIDCONDITIONAL
+    ERROR_MISSINGIFCONDITION,
+    ERROR_MISSINGENDIF
 };
 // Error messages
 extern char *message[];

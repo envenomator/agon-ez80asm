@@ -1355,21 +1355,19 @@ void handle_asm_if(void) {
 
 
 void handle_asm_else(void) {
-    
-    tokentype token;
-    
     // No nested conditionals.
     if(inConditionalSection == 0) {
-        error(message[ERROR_INVALIDCONDITIONAL]);
+        error(message[ERROR_MISSINGIFCONDITION]);
         return;
     }
     inConditionalSection = inConditionalSection == 1 ? 2 : 1;
 }
 
 void handle_asm_endif(void) {
-    
-    tokentype token;
-    
+    if(inConditionalSection == 0) {
+        error(message[ERROR_MISSINGIFCONDITION]);
+        return;
+    }
     inConditionalSection = 0;
 }
 
@@ -1581,6 +1579,7 @@ void passInitialize(uint8_t passnumber) {
     totalsize = 0;
     recordingMacro = false;
     currentExpandedMacro = NULL;
+    inConditionalSection = 0;
     io_setpass(passnumber);
     filestackInit();
     initAnonymousLabelTable();
@@ -1619,6 +1618,8 @@ bool assemble(void){
                 return false;
             }    
         }
+        if(inConditionalSection != 0) error(message[ERROR_MISSINGENDIF]);
+
         if(filestackCount()) {
             currentExpandedMacro = NULL;
             mos_fclose(filehandle[FILE_CURRENT]);

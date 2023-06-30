@@ -84,5 +84,6 @@ char *message[] = {
     "Input line too long",
     "Missing conditional expression",
     "Nested conditionals not supported",
-    "Invalid conditional"
+    "Missing IF directive",
+    "Missing ENDIF directive"
 };
