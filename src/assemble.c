@@ -430,13 +430,11 @@ void parseLine(char *src) {
                                 break;
                             }
                             else {
-                                //printf("Case 2\r\n");
                                 error(message[ERROR_INVALIDLABEL]);
                                 state = PS_ERROR;
                             }
                             break;
                         default:
-                            //printf("Case 3\r\n");
                             error(message[ERROR_INVALIDLABEL]);
                             state = PS_ERROR;                        
                             break;
@@ -1010,17 +1008,14 @@ void parse_asm_keyval_pair(void) {
 
 void handle_asm_db(void) {
     tokentype token;
+    uint24_t argcount = 0;
 
     if(pass == 1) definelabel(address);
-
-    if(!currentline.next) {
-        error(message[ERROR_MISSINGOPERAND]); // we need at least one value
-        return;
-    }
 
     while(currentline.next) {
         getLineToken(&token, currentline.next, ',');
         if(notEmpty(token.start)) {
+            argcount++;
             if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
             switch(token.start[0]) {
                 case '\"':
@@ -1039,21 +1034,20 @@ void handle_asm_db(void) {
             currentline.next = NULL; 
         }
     }
+    if(argcount == 0) error(message[ERROR_MISSINGOPERAND]);
 }
 
 void handle_asm_dw(bool longword) {
     label *lbl;
     tokentype token;
-    if(pass == 1) definelabel(address);
+    uint24_t argcount = 0;
 
-    if(!currentline.next) {
-        error(message[ERROR_MISSINGOPERAND]); // we need at least one value
-        return;
-    }
+    if(pass == 1) definelabel(address);
 
     while(currentline.next) {
         getLineToken(&token, currentline.next, ',');
         if(notEmpty(token.start)) {
+            argcount++;
             if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
             lbl = findLabel(token.start);
             if(lbl) operand1.immediate = lbl->address;
@@ -1072,18 +1066,16 @@ void handle_asm_dw(bool longword) {
             currentline.next = NULL; 
         }
     }
+    if(argcount == 0) error(message[ERROR_MISSINGOPERAND]);
 }
 
 void handle_asm_equ(void) {
     tokentype token;
-
-    if(!currentline.next) {
-        error(message[ERROR_MISSINGOPERAND]); // we need at least one value
-        return;
-    }
+    uint24_t argcount = 0;
 
     getLineToken(&token, currentline.next, 0);
     if(notEmpty(token.start)) {
+        argcount++;
         if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
         if(pass == 1) {
             if(strlen(currentline.label)) definelabel(getValue(token.start));
@@ -1091,6 +1083,8 @@ void handle_asm_equ(void) {
         }
     }
     else error(message[ERROR_MISSINGOPERAND]);
+
+    if(argcount == 0) error(message[ERROR_MISSINGOPERAND]);
 }
 
 void handle_asm_adl(void) {
@@ -1122,7 +1116,7 @@ void handle_asm_include(void) {
     tokentype token;
     filestackitem fsi;
     uint8_t inclevel;
-
+    
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND]);
         return;
@@ -1334,7 +1328,6 @@ void handle_asm_definemacro(void) {
 
 
 void handle_asm_if(void) {
-    
     tokentype token;
     int24_t value;
     
@@ -1343,11 +1336,11 @@ void handle_asm_if(void) {
         error(message[ERROR_NESTEDCONDITIONALS]);
         return;
     }
-    if(!currentline.next) {
+    getLineToken(&token, currentline.next, ' ');
+    if(isEmpty(token.start)) {
         error(message[ERROR_CONDITIONALEXPRESSION]);
         return;
     }
-    getLineToken(&token, currentline.next, ' ');
     value = getValue(token.start);
 
     inConditionalSection = value ? 2 : 1;
@@ -1374,11 +1367,6 @@ void handle_asm_endif(void) {
 void handle_asm_fillbyte(void) {
     tokentype token;
     int32_t val;
-
-    if(!currentline.next) {
-        error(message[ERROR_MISSINGOPERAND]); // we need at least one value
-        return;
-    }
 
     getLineToken(&token, currentline.next, 0);
     if(notEmpty(token.start)) {
