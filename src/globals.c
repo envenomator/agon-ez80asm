@@ -10,6 +10,7 @@ bool lineNumberNeedsReset;
 unsigned int linenumber;
 unsigned int pass;
 bool recordingMacro;
+int inConditionalSection;
 macro *currentExpandedMacro;
 uint24_t address;
 uint24_t totalsize;      // total size of assembled binary
@@ -80,5 +81,8 @@ char *message[] = {
     "Error writing to macro file",
     "Incorrect number of macro arguments",
     "Unsupported character constant",
-    "Input line too long"
+    "Input line too long",
+    "Missing conditional expression",
+    "Nested conditionals not supported",
+    "Invalid conditional"
 };
