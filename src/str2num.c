@@ -6,15 +6,6 @@
 
 bool err_str2num;
 
-enum {
-    BASESELECT,
-    FIND_PREFIX,
-    FIND_END,
-    LAST_ITEM,
-    DONE,
-    ERROR
-};
-
 // transform a binary string to a uint24_t number
 // string must end with 0 and contain only valid characters (0..1)
 int24_t str2bin(char *string) {
@@ -68,140 +59,72 @@ int24_t str2dec(char *string) {
 
 // Transforms a binary/hexadecimal/decimal string to an uint24_t number
 // Valid strings are
-// BINARY:  0%..., %..., ...b
+// BINARY:  %..., , 0b..., ...b
 // HEX:     0x..., ...h, $...
 // DECIMAL ...
 // Returns current program counter with just '$'
 int24_t str2num(char *string, bool errorhalt) {
-    char *ptr = string;
-    char *start = string;
+    char buffer[TOKEN_MAX];
+    int length;
     int24_t result = 0;
-    uint8_t state = BASESELECT;
-
     err_str2num = false;
 
-    while(1) {
-        switch(state) {
-            case(DONE):
-                return result;
-                break;
-            case(BASESELECT):
-                switch(*ptr) {
-                    case '$':
-                    case '#':
-                        if(strlen(ptr+1)) {
-                            result = str2hex(ptr+1);
-                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                            return result;
-                        }
-                        else {
-                            if(*ptr == '$') return address;
-                            state = ERROR;
-                            errorhalt = true;
-                        }
-                        break;
-                    case '%':
-                        if(strlen(ptr+1)) {
-                            result = str2bin(ptr+1);
-                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDBITNUMBER]);
-                            return result;
-                        }
-                        else {
-                            state = ERROR;
-                            errorhalt = true;
-                        }
-                        break;
-                    case '0':
-                        state = FIND_PREFIX;
-                        ptr++;
-                        break;
-                    case 0: // empty string
-                        state = DONE;
-                        break;
-                    default:
-                        if(isxdigit(*ptr)) state = FIND_END;
-                        else state = ERROR;
-                }
-                break;
-            case(FIND_PREFIX):
-                switch(tolower(*ptr)) {
-                    case 'x':
-                        if(strlen(ptr+1)) {
-                            result = str2hex(ptr+1);
-                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                            return result;
-                        }
-                        else { // labels shouldn't begin with 0x, so halt always
-                            errorhalt = true;
-                            state = ERROR;
-                        }
-                        break;
-                    case 'b': // also takes care of 0b, which is 0
-                        result = str2bin(ptr+1);
-                        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                        return result;
-                        break;
-                    case 'h':
-                    case 0:
-                        return 0; // special case 0h / 0
-                    default:
-                        if(isxdigit(*ptr)) {
-                            state = FIND_END;
-                            start = ptr;
-                        }
-                        else state = ERROR;
-                }
-                break;
-            case(FIND_END):
-                switch(*ptr) {
-                    case 0:
-                        state = DONE; // empty string
-                        break;
-                    default:
-                    if(ptr[1] == 0) state = LAST_ITEM;
-                    else ptr++;
-                }
-                break;
-            case(LAST_ITEM):
-                switch(tolower(*ptr)) {
-                    case 'b':
-                        *ptr = 0; // terminate string
-                        if(strlen(start)) {
-                            result = str2bin(start);
-                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                            return result;
-                        }
-                        else {  // just a 'b' given as part of an operand, not a register
-                            state = ERROR;
-                            errorhalt = true;
-                        }
-                        break;
-                    case 'h':
-                        *ptr = 0; // terminate string
-                        if(strlen(start)) {
-                            result = str2hex(start);
-                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                            return result;
-                        }
-                        else {  // just a 'h' given as part of an operand, not a register
-                            state = ERROR;
-                            errorhalt = true;
-                        }
-                        break;
-                    default:
-                        if(isdigit(*ptr)) {
-                            result = str2dec(start);
-                            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                            return result;
-                        }
-                        else state = ERROR;
-                }
-                break;
-            case(ERROR):
-                err_str2num = true;
-                if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-                state = DONE;
-                break;
+    if(*string == '$') {
+        if(*(string+1) == 0) return address;
+
+        result = str2hex(string+1);
+        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+        return result;
+    }
+    if(*string == '#') {
+        result = str2hex(string+1);
+        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+        return result;
+    }
+    if(*string == '%') {
+        result = str2bin(string+1);
+        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+        return result;
+    }
+
+    length = strlen(string);
+
+    if(length == 1) {
+        result = str2dec(string);
+        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+        return result;
+    }
+
+    if(string[length-1] == 'h') {
+        strcpy(buffer, string);
+        buffer[length-1] = 0;
+        result = str2hex(buffer);
+        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+        return result;
+    }
+
+    if(string[length-1] == 'b') {
+        strcpy(buffer, string);
+        buffer[length-1] = 0;
+        result = str2bin(buffer);
+        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+        return result;
+    }
+
+    if((*string == '0') && (length >= 2)) {
+        if(*(string+1) == 'x') {
+            result = str2hex(string+2);
+            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+            return result;
+        }
+        if(*(string+1) == 'b') {
+            result = str2bin(string+2);
+            if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+            return result;
         }
     }
+
+    result = str2dec(string);
+    if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+    return result;
 }

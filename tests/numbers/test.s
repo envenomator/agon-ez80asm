@@ -16,6 +16,9 @@
     ld a, Ah
     ld a, 0Ah
     ld a, 00Ah
+    ld a, 0bh  ; weird case, needs priority before binary
+    ld a, 0b0h ; idem
+    ld a, 0b1h ; idem
 ; Binary
     ld a, 0b0
     ld a, 0b1
@@ -40,5 +43,14 @@
     ld a, 000000001b ; test overflow test in operand parsing
 ; Decimal
     ld a, 0
+    ld a, 1
+    ld a, 2
+    ld a, 3
+    ld a, 4
+    ld a, 5
+    ld a, 6
+    ld a, 7
+    ld a, 8
+    ld a, 9
     ld a, 128
     ld a, 255

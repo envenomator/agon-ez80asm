@@ -14,6 +14,7 @@
 #include <getopt.h>
 #include "str2num.h"
 #include "label.h"
+//#include <time.h>
 
 void printVersion(void) {
     printf("ez80asm version %d.%d, (C)2023 - Jeroen Venema\r\n",VERSION,REVISION);
@@ -40,6 +41,9 @@ int main(int argc, char *argv[])
     char outputfilename[FILENAMEMAXLENGTH + 1];
     int filenamecount = 0;
     outputfilename[0] = 0;
+
+//    clock_t begin,end;
+//    double time_spent;
 
     // option defaults from compiled configuration
     fillbyte_start = FILLBYTE;
@@ -163,8 +167,12 @@ int main(int argc, char *argv[])
     init_agon_malloc();
     
     // Assemble input to output
+//    begin = clock();
     assemble();
+//    end = clock();
     if(!global_errors) printf("Done\r\n");
+//    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+//    printf("%f sec\r\n",time_spent);
     io_close();
 
     if(global_errors) return 1;
