@@ -1037,7 +1037,7 @@ void handle_asm_db(void) {
     if(argcount == 0) error(message[ERROR_MISSINGOPERAND]);
 }
 
-void handle_asm_dw(bool longword) {
+void handle_asm_dw(uint8_t wordtype) {
     label *lbl;
     tokentype token;
     uint24_t argcount = 0;
@@ -1052,12 +1052,21 @@ void handle_asm_dw(bool longword) {
             lbl = findLabel(token.start);
             if(lbl) operand1.immediate = lbl->address;
             else operand1.immediate = getValue(token.start);
-            if(longword) {
-                emit_24bit(operand1.immediate);
-            }
-            else {
-                if(operand1.immediate > 0xffffff) error(message[ERROR_ADLWORDSIZE]);
-                emit_16bit(operand1.immediate);
+            switch(wordtype) {
+                case ASM_DW:
+                    if(operand1.immediate > 0xffffff) error(message[ERROR_ADLWORDSIZE]);
+                    emit_16bit(operand1.immediate);
+                    break;
+                case ASM_DW24:
+                    emit_24bit(operand1.immediate);
+                    break;
+                case ASM_DW32:
+                    emit_8bit(operand1.immediate & 0xFF);
+                    emit_24bit(operand1.immediate >> 8);
+                    break;
+                default:
+                    error(message[ERROR_INTERNAL]);
+                    break;
             }
         }
         if(token.terminator == ',') currentline.next = token.next;
@@ -1394,10 +1403,13 @@ void handle_assembler_command(void) {
             handle_asm_blk(1);
             break;
         case(ASM_DW):
-            handle_asm_dw(false);
+            handle_asm_dw(ASM_DW);
             break;
         case(ASM_DW24):
-            handle_asm_dw(true);
+            handle_asm_dw(ASM_DW24);
+            break;
+        case(ASM_DW32):
+            handle_asm_dw(ASM_DW32);
             break;
         case(ASM_ASCIZ):
             handle_asm_db();

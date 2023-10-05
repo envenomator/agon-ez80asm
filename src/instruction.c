@@ -708,6 +708,7 @@ instruction instructions[] = {
     {"ds",       ASSEMBLER, ASM_DS, 0, NULL, ASM_ARG_LIST},
     {"dw",       ASSEMBLER, ASM_DW, 0, NULL, ASM_ARG_LIST},
     {"dw24",     ASSEMBLER, ASM_DW24, 0, NULL, ASM_ARG_LIST},
+    {"dw32",     ASSEMBLER, ASM_DW32, 0, NULL, ASM_ARG_LIST},
     {"ei",       EZ80, 0, sizeof(operands_ei)/sizeof(operandlist), operands_ei},
     {"else",    ASSEMBLER, ASM_ELSE, 0, NULL, ASM_ARG_NONE},
     {"endif",   ASSEMBLER, ASM_ENDIF, 0, NULL, ASM_ARG_NONE},

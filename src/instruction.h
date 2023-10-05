@@ -127,7 +127,7 @@ typedef struct {
     int16_t             displacement;           // larger, so we can check range
     bool                displacement_provided;
     bool                immediate_provided;
-    int24_t             immediate;
+    int32_t             immediate;
 } operand;
 
 typedef struct {
@@ -178,6 +178,7 @@ enum {
     ASM_DS,
     ASM_DW,
     ASM_DW24,
+    ASM_DW32,
     ASM_ASCIZ,
     ASM_EQU,
     ASM_INCLUDE,

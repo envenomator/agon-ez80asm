@@ -85,5 +85,6 @@ char *message[] = {
     "Missing conditional expression",
     "Nested conditionals not supported",
     "Missing IF directive",
-    "Missing ENDIF directive"
+    "Missing ENDIF directive",
+    "Internal error"
 };
