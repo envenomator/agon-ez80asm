@@ -35,6 +35,7 @@ char *message[] = {
     "Missing closing bracket in operand",
     "Invalid number format",
     "Invalid label reference",
+    "Invalid label name",
     "Missing operand",
     "Invalid mnemonic",
     "Invalid operand",

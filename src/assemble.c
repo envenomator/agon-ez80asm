@@ -578,6 +578,10 @@ void definelabel(int24_t num){
         }
         return;
     }
+    if(currentline.label[0] == '$') {
+        error(message[ERROR_INVALIDLABELNAME]);
+        return;
+    }
     if(insertGlobalLabel(currentline.label, num) == false){
         error(message[ERROR_CREATINGLABEL]);
         return;
