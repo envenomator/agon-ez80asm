@@ -2,7 +2,9 @@
 #define CONFIG_H
 
 #ifndef UNIX
+#ifndef _MSC_VER
 #define AGON
+#endif
 #endif // UNIX
 
 #ifdef _MSC_VER

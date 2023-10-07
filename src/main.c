@@ -11,7 +11,7 @@
 #include "mos_posix.h"
 #include "malloc.h"
 #include "io.h"
-#include <getopt.h>
+#include "getopt.h"
 #include "str2num.h"
 #include "label.h"
 //#include <time.h>
