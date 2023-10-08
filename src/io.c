@@ -87,15 +87,16 @@ void _deleteFiles(void) {
     char macrofilename[FILENAMEMAXLENGTH];
     int n;
 
-    mos_del(filename[FILE_LOCAL_LABELS]);
-    mos_del(filename[FILE_ANONYMOUS_LABELS]);
-
+    if(CLEANUPFILES) {
+        mos_del(filename[FILE_LOCAL_LABELS]);
+        mos_del(filename[FILE_ANONYMOUS_LABELS]);
+    }
     for(n = 0; n < macroTableCounter; n++) {
         io_getMacroFilename(macrofilename, macroTable[n].name);
-        mos_del(macrofilename);
+        if(CLEANUPFILES) mos_del(macrofilename);
     }
 
-    if(global_errors) mos_del(filename[FILE_OUTPUT]);
+    if(global_errors && CLEANUPFILES) mos_del(filename[FILE_OUTPUT]);
 }
 
 void _closeAllFiles() {
