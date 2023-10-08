@@ -1,4 +1,5 @@
 PROJECTNAME=ez80asm
+ARCHITECTURE=linux_elf_x86_64
 
 # Tools and arguments
 CC=gcc
@@ -13,6 +14,7 @@ RELEASE_CFLAGS=$(RELEASE_LFLAGS) -c
 SRCDIR=src
 OBJDIR=obj
 BINDIR=bin
+RELEASEDIR=releases
 # Automatically get all sourcefiles
 SRCS=$(wildcard $(SRCDIR)/*.c)
 # Automatically get all objects to make from sources
@@ -29,6 +31,8 @@ release: LFLAGS=$(RELEASE_LFLAGS)
 release: $(BINDIR)
 release: $(OBJDIR)
 release: $(BIN)
+release: $(RELEASEDIR)
+release: package
 
 # Linking all compiled objects into final binary
 $(BIN):$(OBJS)
@@ -52,12 +56,16 @@ $(BINDIR):
 $(OBJDIR):
 	mkdir $(OBJDIR)
 
+$(RELEASEDIR):
+	mkdir $(RELEASEDIR)
+
+package:
+	tar -zcvf $(RELEASEDIR)/$(PROJECTNAME)_$(ARCHITECTURE).gz $(BINDIR)/$(PROJECTNAME)
 clean:
 ifdef OS
 	del /s /q $(BINDIR) >nul 2>&1
 	del /s /q $(OBJDIR) >nul 2>&1
+	del /s /q $(RELEASEDIR) >nul 2>&1
 else
-	$(RM) -r $(BINDIR)/* $(OBJDIR)/*
+	$(RM) -rf $(BINDIR) $(OBJDIR) $(RELEASEDIR)
 endif
-	rmdir $(BINDIR)
-	rmdir $(OBJDIR)

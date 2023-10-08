@@ -44,6 +44,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# Debug directories
+# Debug and build directories
 Debug/
-
+x64/
