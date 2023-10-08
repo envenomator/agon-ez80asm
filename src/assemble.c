@@ -88,15 +88,12 @@ int24_t getValue(char *string) {
         if(notEmpty(token.start)) {
             if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
             lbl = findLabel(token.start);
-            //printf("<<%s>>\r\n",token.start);
             if(lbl) tmp = lbl->address;
             else {
                 if(token.start[0] == '\'') tmp = getAsciiValue(token.start);
                 else {
                     tmp = str2num(token.start, false);
                     if(err_str2num && (pass == 2)) {
-                        //printf("Case 1\r\n");
-                        //printf("<<%s>>\r\n",token.start);
                         error(message[ERROR_INVALIDLABEL]);
                     }
                 }
@@ -456,7 +453,6 @@ void parseLine(char *src) {
                 break;
             case PS_LABEL:
                 strcpy(currentline.label,token.start);
-                //printf("DEBUG Parsing label: <<%s>>\r\n", currentline.label);
                 advanceLocalLabel();
                 x = getLineToken(&token, token.next, ' ');
                 if(x) state = PS_COMMAND;
@@ -809,10 +805,6 @@ void transform_instruction(operand *op, permittype type) {
                 // label still potentially unknown in pass 1, so output the existing '0' in pass 1
                 rel = op->immediate - address - 2;
                 if((rel > 127) || (rel < -128)) {
-                    //printf("--------------\r\n");
-                    //printf("OP->immediate: %d\r\n", op->immediate);
-                    //printf("address: %d\r\n", address);
-                    //printf("REL: %d\r\n",rel);
                     error(message[ERROR_RELATIVEJUMPTOOLARGE]);
                 }
                 op->immediate = ((int8_t)(rel & 0xFF));
@@ -887,7 +879,6 @@ void emit_instruction(operandlist *list) {
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
         if(list_enabled || consolelist_enabled) listEmit8bit(value);
-        //printf("DEBUG: Emitting %02x\r\n",value);
         io_putc(FILE_OUTPUT, value);
     }
     address++;
@@ -1483,11 +1474,7 @@ void expandMacroStart(macro *exp) {
     currentExpandedMacro = currentline.current_macro;
     // parse arguments into given macro substitution space
     while(currentline.next) {
-        //printf("<<%s>>\r\n",currentline.next);
-        //printf("%s Args in macro: %d\r\n",exp->name, exp->argcount);
-        //printf("Actual counted args: %d\r\n",argcount);
         getLineToken(&token, currentline.next, ',');
-        //printf("Token start : <<%s>>\r\n",token.start);
         if(notEmpty(token.start)) {
             argcount++;
             if(argcount > exp->argcount) {
@@ -1522,18 +1509,7 @@ void expandMacroStart(macro *exp) {
     }
     lineNumberNeedsReset = true;
 }
-/*
-void debug_line(void) {
-    printf("-- Debug line %d pass %d --\n", linenumber, pass);
-    printf("Label:    <<%s>>\n",currentline.label);
-    printf("Mnemonic: <<%s>>\n",currentline.mnemonic);
-    printf("Op1:      <<%s>>\n",currentline.operand1);
-    printf("Op2:      <<%s>>\n",currentline.operand2);
-    printf("Macro def:    %x\n", recordingMacro);
-    printf("Macro expand: %x\n", currentExpandedMacro);
-    printf("Current file: <<%s>>\n", filename[FILE_CURRENT]);
-}
-*/
+
 void processInstructions(char *line){
     operandlist *list;
     uint8_t listitem;

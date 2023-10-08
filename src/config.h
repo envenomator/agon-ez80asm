@@ -4,7 +4,7 @@
 #ifndef UNIX
 #ifndef _MSC_VER
 #define AGON
-#endif
+#endif // _MSC_VER
 #endif // UNIX
 
 #ifdef _MSC_VER
