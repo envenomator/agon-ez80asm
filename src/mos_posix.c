@@ -47,8 +47,13 @@ UINT8 mos_fopen(char * filename, UINT8 mode) // returns filehandle, or 0 on erro
     if(_fileindex < (MAXPOSIXFILES - 1)) {
         if(_mosfileid == 255) return 0;
         newfile.file = NULL;
-        if(mode == fa_read) newfile.file = fopen(filename, "r");
+        
+        //if(mode == fa_read) newfile.file = fopen(filename, "r");
+        //if(mode & fa_write) newfile.file = fopen(filename, "wb+");
         if(mode & fa_write) newfile.file = fopen(filename, "wb+");
+        else newfile.file = fopen(filename, "r");        
+        
+        
         if(newfile.file == NULL) return 0;
         newfile.mosfile = _mosfileid++;
         _filearray[_fileindex++] = newfile;
@@ -127,6 +132,7 @@ UINT8 mos_feof(UINT8 fh)					 // returns 1 if EOF, 0 otherwise
 UINT24 mos_fwrite(UINT8 fh, char *buffer, UINT24 numbytes) {
     int index;
     bool found = false;
+    uint24_t written;
 
     for(index = 0; index < _fileindex; index++) {
         if(_filearray[index].mosfile == fh) {
@@ -134,7 +140,11 @@ UINT24 mos_fwrite(UINT8 fh, char *buffer, UINT24 numbytes) {
             break;
         }
     }
-    if(found) return fwrite(buffer, numbytes, 1, _filearray[index].file);
+    if(found) {
+        written = fwrite(buffer, 1, numbytes, _filearray[index].file);
+        fflush(_filearray[index].file);
+        return written;
+    }
     else return 0;
 }
 
@@ -148,7 +158,7 @@ UINT24 mos_fread(UINT8 fh, char *buffer, UINT24 numbytes) {
             break;
         }
     }
-    if(found) return fread(buffer, 1, numbytes, _filearray[index].file);
+    if(found) return (fread(buffer, 1, numbytes, _filearray[index].file));
     else return 0;
 }
 

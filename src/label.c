@@ -161,7 +161,9 @@ void writeAnonymousLabel(int24_t address) {
 
     scope = filestackCount();
     mos_fwrite(filehandle[FILE_ANONYMOUS_LABELS], (char*)&address, sizeof(address));
+    //printf("DEBUG: write label - handle: %d, address: %x, size: %ld\r\n", filehandle[FILE_ANONYMOUS_LABELS], address, sizeof(address));
     mos_fwrite(filehandle[FILE_ANONYMOUS_LABELS], (char*)&scope, sizeof(scope));
+    //printf("DEBUG: write label - scope: %d, size: %ld\r\n", scope, sizeof(scope));
 }
 
 void readAnonymousLabel(void) {
@@ -169,6 +171,7 @@ void readAnonymousLabel(void) {
     uint8_t scope;
 
     if(mos_fread(filehandle[FILE_ANONYMOUS_LABELS], (char*)&address, sizeof(address))) {
+        //printf("DEBUG: read label - handle: %d, address: %x, size: %ld\r\n", filehandle[FILE_ANONYMOUS_LABELS], address, sizeof(address));
         mos_fread(filehandle[FILE_ANONYMOUS_LABELS], (char*)&scope, sizeof(bool));
         if(an_next.defined) {
             an_prev.address = an_next.address;
@@ -286,10 +289,10 @@ label * findGlobalLabel(char *name){
 
 label *findLabel(char *name) {
     if(name[0] == '@') {
-        
         if(((tolower(name[1]) == 'f') || (tolower(name[1]) == 'n')) && name[2] == 0) {
             if(an_next.defined && an_next.scope == filestackCount()) {
                 an_return.address = an_next.address;
+                //printf("DEBUG AN: returning F/N\r\n");
                 return &an_return;
             }
             else return NULL;
@@ -297,11 +300,12 @@ label *findLabel(char *name) {
         if(((tolower(name[1]) == 'b') || (tolower(name[1]) == 'p')) && name[2] == 0) {
             if(an_prev.defined && an_prev.scope == filestackCount()) {
                 an_return.address = an_prev.address;
+                //printf("DEBUG AN address: %d\r\n",an_prev.address);
+                //printf("DEBUG AN: returning B/P\r\n");
                 return &an_return;
             }
             else return NULL;
         }
-        
         return findLocalLabel(name);
     }
     else return findGlobalLabel(name);

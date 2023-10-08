@@ -456,6 +456,7 @@ void parseLine(char *src) {
                 break;
             case PS_LABEL:
                 strcpy(currentline.label,token.start);
+                //printf("DEBUG Parsing label: <<%s>>\r\n", currentline.label);
                 advanceLocalLabel();
                 x = getLineToken(&token, token.next, ' ');
                 if(x) state = PS_COMMAND;
@@ -807,7 +808,13 @@ void transform_instruction(operand *op, permittype type) {
             if(pass == 2) {
                 // label still potentially unknown in pass 1, so output the existing '0' in pass 1
                 rel = op->immediate - address - 2;
-                if((rel > 127) || (rel < -128)) error(message[ERROR_RELATIVEJUMPTOOLARGE]);
+                if((rel > 127) || (rel < -128)) {
+                    //printf("--------------\r\n");
+                    //printf("OP->immediate: %d\r\n", op->immediate);
+                    //printf("address: %d\r\n", address);
+                    //printf("REL: %d\r\n",rel);
+                    error(message[ERROR_RELATIVEJUMPTOOLARGE]);
+                }
                 op->immediate = ((int8_t)(rel & 0xFF));
                 op->immediate_provided = true;
             }
