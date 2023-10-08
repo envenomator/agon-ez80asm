@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "ZDS Rebuild all",
+            "label": "ZDS build ez80asm",
             "type": "shell",
             "command": "make rebuildall -f ../ez80asm.mak",
             "options": {
@@ -17,17 +17,36 @@
             }
         },
         {
-            "label": "ZDS build changed files",
+            "label": "ZDS build loader command",
             "type": "shell",
-            "command": "make -f ../ez80asm.mak",
+            "command": "make -f ${workspaceFolder}/src/moscmd/Release/ez80asm_Release.mak",
             "options": {
-                "cwd": "${workspaceFolder}/src/Debug"
+                "cwd": "${workspaceFolder}/src/moscmd/Release"
             },
             "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": false
             }
-        }
+        },
+        {
+            "label": "Compile and release agon",
+            "type": "shell",
+            "dependsOrder": "sequence",
+            "dependsOn": ["ZDS build loader command", "ZDS build ez80asm", "Package agon binaries"]
+        },
+        {
+            "label": "Package agon binaries",
+            "type": "shell",
+            "command": "./.vscode/agon_package.bat",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
     ]
 }
