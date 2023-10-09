@@ -318,7 +318,7 @@ void parse_operand(char *string, operand *operand) {
                 operand->reg_index = R_INDEX_MB;
                 return;
             }
-            if((*ptr == 0)) {
+            if(*ptr == 0) {
                 operand->cc = true;
                 operand->cc_index = CC_INDEX_M;
                 return;
@@ -847,8 +847,8 @@ void emit_instruction(operandlist *list) {
     // prepare extra DD/FD suffix if needed
     prefix_ddfd_suffix(list);
     // Transform the opcode and potential immediate values, according to the current ruleset
-    transform_instruction(&operand1, list->transformA);
-    transform_instruction(&operand2, list->transformB);
+    transform_instruction(&operand1, (permittype)list->transformA);
+    transform_instruction(&operand2, (permittype)list->transformB);
     // determine position of dd
     ddbeforeopcode = (((output.prefix1 == 0xDD) || (output.prefix1 == 0xFD)) && (output.prefix2 == 0xCB) &&
                 ((operand1.displacement_provided) || (operand2.displacement_provided)));

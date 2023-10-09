@@ -235,7 +235,7 @@ uint8_t getOperatorToken(tokentype *token, char *src) {
         }
         else {
             if((*src == 0) || strchr("+-*<>&|^~/",*src)) {
-                if(((*src == '<') || (*src == '>'))) {
+                if((*src == '<') || (*src == '>')) {
                     if((*(src+1) == *src)) src += 1;
                     else {
                         token->terminator = '!'; // ERROR
