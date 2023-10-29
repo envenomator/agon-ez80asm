@@ -47,3 +47,6 @@ dkms.conf
 # Debug and build directories
 Debug/
 x64/
+
+# Linux build directories
+bin/

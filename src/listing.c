@@ -11,7 +11,7 @@ char     _listLine[LINEMAX + 1];
 uint24_t _listAddress;
 uint8_t  _listObjects[LISTING_OBJECTS_PER_LINE];
 uint8_t  _listLineObjectCount;
-uint8_t  _listLineNumber;
+uint16_t  _listLineNumber;
 bool     _listConsole;
 uint24_t _listSourceLineNumber;
 //bool _expandedmacro;
