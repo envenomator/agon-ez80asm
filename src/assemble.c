@@ -1202,7 +1202,7 @@ void handle_asm_incbin(void) {
 }
 
 void handle_asm_blk(uint8_t width) {
-    uint16_t num;
+    uint24_t num;
     int24_t val = 0;
     tokentype token;
 
