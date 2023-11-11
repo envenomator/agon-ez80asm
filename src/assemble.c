@@ -75,12 +75,14 @@ uint8_t getAsciiValue(char *string) {
 // The string should not contain any spaces, needs to be a single token
 int24_t getValue(char *string) {
     int24_t total, tmp;
-    char operator, *ptr;
+    char operator, *ptr, unary_operator;
     label *lbl;
     tokentype token;
 
     ptr = string;
     total = 0;
+    unary_operator = 0;
+
     operator = '+'; // previous operand in case of single value/label
     while(ptr) {
         tmp = 0;
@@ -99,24 +101,42 @@ int24_t getValue(char *string) {
                 }
             }
         }
-        switch(operator) {
-            case '+': total += tmp; break;
-            case '-': total -= tmp; break;
-            case '*': total *= tmp; break;
-            case '<': total = total << tmp; break;
-            case '>': total = total >> tmp; break;
-            case '&': total = total & tmp;  break;
-            case '|': total = total | tmp;  break;
-            case '^': total = total ^ tmp;  break;
-            case '~': total = total + ~tmp; break;
-            case '/': total = total / tmp;  break;
-            case '!':
-            default:
-                error(message[ERROR_OPERATOR]);
-                return total;
-        }
-        operator = token.terminator;
 
+        if(unary_operator) {
+            switch(unary_operator) {
+                case '-': tmp = -tmp; break;
+                case '~': tmp = ~tmp; break;
+                case '+': tmp = tmp; break;
+                default: break;
+            }
+        }
+
+        if(token.length) {  // when an actual value is present between operators
+            switch(operator) {
+                case '+': total += tmp; break;
+                case '-': total -= tmp; break;
+                case '*': total *= tmp; break;
+                case '<': total = total << tmp; break;
+                case '>': total = total >> tmp; break;
+                case '&': total = total & tmp;  break;
+                case '|': total = total | tmp;  break;
+                case '^': total = total ^ tmp;  break;
+                case '~': total = total + ~tmp; break;
+                case '/': total = total / tmp;  break;
+                case '!':
+                default:
+                    error(message[ERROR_OPERATOR]);
+                    return total;
+            }
+        }
+
+        if(token.terminator && (token.length == 0)) {
+            unary_operator = token.terminator;
+        }
+        else {
+            unary_operator = 0;
+            operator = token.terminator;
+        }
         if(operator) ptr = token.next;
         else ptr = NULL;
     }

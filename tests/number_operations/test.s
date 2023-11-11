@@ -48,6 +48,29 @@ labelb:
     ld de, ~ 0
     ld de, 8 / 2
 
+; unsary operations
+rows:   equ 30
+cols:   equ 10
+
+    ld de, -10
+    ld de, -cols
+    ld de, -30*-10
+    ld de, -rows*-cols
+    ld de, 30++10
+    ld de, rows++cols
+    ld de, 30+-10
+    ld de, rows+-cols
+    ld de, 30-+10
+    ld de, rows-+cols
+    ld de, 30--10
+    ld de, rows--cols
+    ld de, 30+~0
+    ld de, rows+~0
+    ld de, 30+~ffh
+    ld de, rows+~ffh
+    ld de, -30-~0
+    ld de, -rows-~0
+
 ; basic operations with spaces
     ld de, 2	+1
     ld de, 2	-1
