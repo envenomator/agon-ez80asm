@@ -164,17 +164,19 @@ void parse_operand(char *string, operand *operand) {
         if(string[len-1] == ')') error(message[ERROR_OPENINGBRACKET]);
     }
 
-    switch(tolower(*ptr++)) {
+    switch(*ptr++) {
         case 0: // empty operand
             break;
         case 'a':
-            switch(tolower(*ptr++)) {
+        case 'A':
+            switch(*ptr++) {
                 case 0:
                     operand->reg = R_A;
                     operand->reg_index = R_INDEX_A;
                     return;
                 case 'f':
-                    switch(tolower(*ptr++)) {
+                case 'F':
+                    switch(*ptr++) {
                         case 0:
                         case '\'':
                             operand->reg = R_AF;
@@ -190,13 +192,15 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'b':
-            switch(tolower(*ptr++)) {
+        case 'B':
+            switch(*ptr++) {
                 case 0:
                     operand->reg = R_B;
                     operand->reg_index = R_INDEX_B;
                     return;
                 case 'c':
-                    if((tolower(*ptr) == 0) || isspace(*ptr)) {
+                case 'C':
+                    if((*ptr == 0) || isspace(*ptr)) {
                         operand->reg = R_BC;
                         operand->reg_index = R_INDEX_BC;
                         return;
@@ -207,7 +211,8 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'c':
-            switch(tolower(*ptr++)) {
+        case 'C':
+            switch(*ptr++) {
                 case 0:
                     operand->reg = R_C;
                     operand->reg_index = R_INDEX_C;
@@ -219,13 +224,15 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'd':
-            switch(tolower(*ptr++)) {
+        case 'D':
+            switch(*ptr++) {
                 case 0:
                     operand->reg = R_D;
                     operand->reg_index = R_INDEX_D;
                     return;
                 case 'e':
-                    if((tolower(*ptr) == 0) || isspace(*ptr)) {
+                case 'E':
+                    if((*ptr == 0) || isspace(*ptr)) {
                         operand->reg = R_DE;
                         operand->reg_index = R_INDEX_DE;
                         return;
@@ -236,23 +243,23 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'e':
-            switch(tolower(*ptr++)) {
-                case 0:
-                    operand->reg = R_E;
-                    operand->reg_index = R_INDEX_E;
-                    return;
-                default:
-                    break;
+        case 'E':
+            if(*ptr++ == 0) {
+                operand->reg = R_E;
+                operand->reg_index = R_INDEX_E;
+                return;
             }
             break;
         case 'h':
-            switch(tolower(*ptr++)) {
+        case 'H':
+            switch(*ptr++) {
                 case 0:
                     operand->reg = R_H;
                     operand->reg_index = R_INDEX_H;
                     return;
                 case 'l':
-                    if(tolower(*ptr == 0) || isspace(*ptr)) {
+                case 'L':
+                    if((*ptr == 0) || isspace(*ptr)) {
                         operand->reg = R_HL;
                         operand->reg_index = R_INDEX_HL;
                         return;
@@ -263,24 +270,34 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'i':
-            switch(tolower(*ptr++)) {
+        case 'I':
+            switch(*ptr++) {
                 case 0:
                     operand->reg = R_I;
                     operand->reg_index = R_INDEX_I;
                     return;
                 case 'x':
+                case 'X':
                     while(isspace(*ptr)) ptr++; // eat spaces
-                    switch(tolower(*ptr++)) {
+                    switch(*ptr++) {
                         case 0:
                             operand->reg = R_IX;
                             operand->reg_index = R_INDEX_IX;
                             return;
                         case 'h':
-                            operand->reg = R_IXH;
-                            return;
+                        case 'H':
+                            if(*ptr == 0) {
+                                operand->reg = R_IXH;
+                                return;
+                            }
+                            break;
                         case 'l':
-                            operand->reg = R_IXL;
-                            return;
+                        case 'L':
+                            if(*ptr == 0) {
+                                operand->reg = R_IXL;
+                                return;
+                            }
+                            break;
                         case '+':
                         case '-':
                             operand->reg = R_IX;
@@ -294,18 +311,27 @@ void parse_operand(char *string, operand *operand) {
                     }
                     break;
                 case 'y':
+                case 'Y':
                     while(isspace(*ptr)) ptr++; // eat spaces
-                    switch(tolower(*ptr++)) {
+                    switch(*ptr++) {
                         case 0:
                             operand->reg = R_IY;
                             operand->reg_index = R_INDEX_IY;
                             return;
                         case 'h':
-                            operand->reg = R_IYH;
-                            return;
+                        case 'H':
+                            if(*ptr == 0) {
+                                operand->reg = R_IYH;
+                                return;
+                            }
+                            break;
                         case 'l':
-                            operand->reg = R_IYL;
-                            return;
+                        case 'L':
+                            if(*ptr == 0) {
+                                operand->reg = R_IYL;
+                                return;
+                            }
+                            break;
                         case '+':
                         case '-':
                             operand->reg = R_IY;
@@ -323,16 +349,15 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'l':
-            switch(tolower(*ptr++)) {
-                case 0:
-                    operand->reg = R_L;
-                    operand->reg_index = R_INDEX_L;
-                    return;
-                default:
-                    break;
+        case 'L':
+            if(*ptr == 0) {
+                operand->reg = R_L;
+                operand->reg_index = R_INDEX_L;
+                return;
             }
             break;
         case 'm':
+        case 'M':
             if((tolower(*ptr) == 'b') && ptr[1] == 0) {
                 operand->reg = R_MB;
                 operand->reg_index = R_INDEX_MB;
@@ -345,38 +370,57 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'n':
-            switch(tolower(*ptr++)) {
+        case 'N':
+            switch(*ptr++) {
                 case 'c':   // NC
-                    operand->cc = true;
-                    operand->cc_index = CC_INDEX_NC;
-                    return;
+                case 'C':
+                    if(*ptr == 0) {
+                        operand->cc = true;
+                        operand->cc_index = CC_INDEX_NC;
+                        return;
+                    }
+                    break;
                 case 'z':   // NZ
-                    operand->cc = true;
-                    operand->cc_index = CC_INDEX_NZ;
-                    return;
+                case 'Z':
+                    if(*ptr == 0) {
+                        operand->cc = true;
+                        operand->cc_index = CC_INDEX_NZ;
+                        return;
+                    }
+                    break;
                 default:
                     break;
             }
             break;
         case 'p':
-            switch(tolower(*ptr++)) {
+        case 'P':
+            switch(*ptr++) {
                 case 0:
                     operand->cc = true;
                     operand->cc_index = CC_INDEX_P;
                     return;
                 case 'e':
-                    operand->cc = true;
-                    operand->cc_index = CC_INDEX_PE;
-                    return;
+                case 'E':
+                    if(*ptr == 0) {
+                        operand->cc = true;
+                        operand->cc_index = CC_INDEX_PE;
+                        return;
+                    }
+                    break;
                 case 'o':
-                    operand->cc = true;
-                    operand->cc_index = CC_INDEX_PO;
-                    return;
+                case 'O':
+                    if(*ptr == 0) {
+                        operand->cc = true;
+                        operand->cc_index = CC_INDEX_PO;
+                        return;
+                    }
+                    break;
                 default:
                     break;
             }
             break;
         case 'r':
+        case 'R':
             if(*ptr == 0) {
                 operand->reg = R_R;
                 operand->reg_index = R_INDEX_R;
@@ -384,6 +428,7 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 's':
+        case 'S':
             if((tolower(*ptr) == 'p') && ptr[1] == 0) {
                 operand->reg = R_SP;
                 operand->reg_index = R_INDEX_SP;
@@ -391,6 +436,7 @@ void parse_operand(char *string, operand *operand) {
             }
             break;
         case 'z':
+        case 'Z':
             if(*ptr == 0) {
                 operand->cc = true;
                 operand->cc_index = CC_INDEX_Z;
