@@ -1580,7 +1580,7 @@ void processInstructions(char *line){
     operandlist *list;
     uint8_t listitem;
     bool match;
-
+    int i = 0;
     if(pass == 1) {
         if(recordingMacro) {
             if(strcasecmp(currentline.mnemonic, ENDMACROCMD)) io_puts(FILE_MACRO, line);
@@ -1605,10 +1605,13 @@ void processInstructions(char *line){
                     for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
                         if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
                         match = true;
+                        // mnemonic index distribution optimization
+                        //printf("%s,%d\r\n",currentline.current_instruction->name, i);
                         emit_instruction(list);
                         break;
                         }
                         list++;
+                        i++;
                     }
                     if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
                     return;
