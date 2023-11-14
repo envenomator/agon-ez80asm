@@ -123,23 +123,30 @@ label * findLocalLabel(char *key){
 }
 
 void writeLocalLabels(void) {
-    mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
-    // the actual bytes from the string buffer
-    if(localLabelBufferIndex) 
-        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelBuffer, localLabelBufferIndex);
-    
     // the number of labels
     mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelCounter, sizeof(localLabelCounter));
-    // the label table
-    mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label));
+    if(localLabelCounter) {
+        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
+        // the actual bytes from the string buffer
+        if(localLabelBufferIndex) 
+            mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelBuffer, localLabelBufferIndex);    
+        // the label table
+        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label));
+    }
 }
 
 void readLocalLabels(void) {
-    mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
-    if(localLabelBufferIndex) 
-        mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBuffer, localLabelBufferIndex);
+    // the number of labels
     mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelCounter, sizeof(localLabelCounter));
-    mos_fread(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label));
+    if(localLabelCounter) {
+        mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
+        if(localLabelBufferIndex) 
+            mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBuffer, localLabelBufferIndex);
+        mos_fread(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label));
+    }
+    else {
+        localLabelBufferIndex = 0;
+    }
 }
 
 void writeAnonymousLabel(int24_t address) {
