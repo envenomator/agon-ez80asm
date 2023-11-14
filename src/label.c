@@ -123,9 +123,6 @@ label * findLocalLabel(char *key){
 }
 
 void writeLocalLabels(void) {
-    int i;
-    uint16_t delta;
-    // number of bytes in the string buffer
     mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
     // the actual bytes from the string buffer
     if(localLabelBufferIndex) 
@@ -133,26 +130,16 @@ void writeLocalLabels(void) {
     
     // the number of labels
     mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelCounter, sizeof(localLabelCounter));
-    for(i = 0; i < localLabelCounter; i++) {
-        delta = localLabelTable[i].name - localLabelBuffer;
-        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&delta, sizeof(delta));
-        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelTable[i].address, 4);
-    }
+    // the label table
+    mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label));
 }
 
 void readLocalLabels(void) {
-    int i;
-    uint16_t delta;
-
     mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
     if(localLabelBufferIndex) 
         mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBuffer, localLabelBufferIndex);
     mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelCounter, sizeof(localLabelCounter));
-    for(i = 0; i < localLabelCounter; i++) {
-        mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&delta, sizeof(delta));
-        mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelTable[i].address, 4);        
-        localLabelTable[i].name = localLabelBuffer + delta;
-    }
+    mos_fread(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label));
 }
 
 void writeAnonymousLabel(int24_t address) {
