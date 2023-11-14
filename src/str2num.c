@@ -59,12 +59,13 @@ int24_t str2dec(char *string) {
 
 // Transforms a binary/hexadecimal/decimal string to an uint24_t number
 // Valid strings are
-// BINARY:  %..., , 0b..., ...b
-// HEX:     0x..., ...h, $...
+// BINARY:  %..., , 0b..., ...b, capital letters allowed
+// HEX:     0x..., ...h, $..., capital letters allowed
 // DECIMAL ...
 // Returns current program counter with just '$'
 int24_t str2num(char *string, bool errorhalt) {
     char buffer[TOKEN_MAX];
+    char lastchar;
     int length;
     int24_t result = 0;
     err_str2num = false;
@@ -95,7 +96,9 @@ int24_t str2num(char *string, bool errorhalt) {
         return result;
     }
 
-    if(string[length-1] == 'h') {
+    lastchar = tolower(string[length-1]);
+    
+    if(lastchar == 'h') {
         strcpy(buffer, string);
         buffer[length-1] = 0;
         result = str2hex(buffer);
@@ -103,7 +106,7 @@ int24_t str2num(char *string, bool errorhalt) {
         return result;
     }
 
-    if(string[length-1] == 'b') {
+    if(lastchar == 'b') {
         strcpy(buffer, string);
         buffer[length-1] = 0;
         result = str2bin(buffer);
@@ -112,12 +115,12 @@ int24_t str2num(char *string, bool errorhalt) {
     }
 
     if((*string == '0') && (length >= 2)) {
-        if(*(string+1) == 'x') {
+        if(tolower(*(string+1)) == 'x') {
             result = str2hex(string+2);
             if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
             return result;
         }
-        if(*(string+1) == 'b') {
+        if(tolower(*(string+1)) == 'b') {
             result = str2bin(string+2);
             if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
             return result;

@@ -4,9 +4,13 @@
 ; Basic 1-byte number tests
 .org $40000
 ; Hexadecimal
+    ld a, 0xa
     ld a, 0xA
+    ld a, 0XA
     ld a, 0x0A
+    ld a, 0X0A
     ld a, 0x00A ; test overflow test in operand parsing
+    ld a, 0X00A
     ld a, #A
     ld a, #0A
     ld a, #00A
@@ -14,19 +18,32 @@
     ld a, $0A
     ld a, $00A
     ld a, Ah
+    ld a, AH
     ld a, 0Ah
+    ld a, 0AH
     ld a, 00Ah
+    ld a, 00AH
     ld a, 0bh  ; weird case, needs priority before binary
+    ld a, 0bH
     ld a, 0b0h ; idem
+    ld a, 0b0H
     ld a, 0b1h ; idem
+    ld a, 0b1H
 ; Binary
     ld a, 0b0
+    ld a, 0B0
     ld a, 0b1
+    ld a, 0B1
     ld a, 0b01
+    ld a, 0B01
     ld a, 0b10
+    ld a, 0B10
     ld a, 0b11111111
+    ld a, 0B11111111
     ld a, 0b00000000
+    ld a, 0B00000000
     ld a, 0b000000001 ; test overflow test in operand parsing
+    ld a, 0B000000001
     ld a, %0
     ld a, %1
     ld a, %01
@@ -35,12 +52,19 @@
     ld a, %00000000
     ld a, %000000001 ; test overflow test in operand parsing
     ld a, 0b
+    ld a, 0B
     ld a, 1b
+    ld a, 1B
     ld a, 01b
+    ld a, 01B
     ld a, 10b
+    ld a, 10B
     ld a, 11111111b
+    ld a, 11111111B
     ld a, 00000000b
+    ld a, 00000000B
     ld a, 000000001b ; test overflow test in operand parsing
+    ld a, 000000001B
 ; Decimal
     ld a, 0
     ld a, 1
