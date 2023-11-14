@@ -628,7 +628,7 @@ void parseLine(char *src) {
 }
 
 void definelabel(int24_t num){
-    if(strlen(currentline.label) == 0) return;
+    if(isEmpty(currentline.label)) return;
 
     if(currentline.label[0] == '@') {
         if(currentline.label[1] == '@') {
@@ -1155,7 +1155,7 @@ void handle_asm_equ(void) {
         argcount++;
         if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
         if(pass == 1) {
-            if(strlen(currentline.label)) definelabel(getValue(token.start));
+            if(notEmpty(currentline.label)) definelabel(getValue(token.start));
             else error(message[ERROR_MISSINGLABEL]);
         }
     }
