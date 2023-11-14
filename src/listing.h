@@ -4,7 +4,7 @@
 #include "./stdint.h"
 #include "config.h"
 
-void listInit(bool output_console);
+void listInit(void);
 void listStartLine(char *line);
 void listEndLine(void);
 void listEmit8bit(uint8_t value);

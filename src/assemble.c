@@ -1688,18 +1688,24 @@ bool assemble(void){
     // Pass 2
     printf("Pass 2...\r\n");
     passInitialize(2);
-    listInit(consolelist_enabled);
+    if(consolelist_enabled || list_enabled) {
+        listInit();
+    }
     readLocalLabels();
     readAnonymousLabel();
     
     do {
         while(io_getline(FILE_CURRENT, line, sizeof(line))) {
             linenumber++;
-            listStartLine(line);
+            if(consolelist_enabled || list_enabled) {
+                listStartLine(line);
+            }
             parseLine(line);
             refreshlocalLabels();
             processInstructions(line);
-            listEndLine();
+            if(consolelist_enabled || list_enabled) {
+                listEndLine();
+            }
             processDelayedLineNumberReset();
             if(global_errors) {
                 text_YELLOW();
