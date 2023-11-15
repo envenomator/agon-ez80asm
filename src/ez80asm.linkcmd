@@ -37,9 +37,14 @@ DEFINE __len_bss = length of BSS
  ".\malloc.obj", \
  ".\io.obj", \
  ".\getopt.obj", \
+ ".\clock.obj", \
+ ".\agontimer.obj", \
+ ".\agontimer-timer0.obj", \
  "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\std\chelpD.lib", \
  "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\std\crtD.lib", \
  "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\std\crtSD.lib", \
  "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\std\nokernelD.lib", \
- "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\zilog\zsldevinitdummy.obj"
+ "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\zilog\zsldevinitdummy.obj", \
+ "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\std\fplib.lib", \
+ "C:\ZiLOG\ZDSII_eZ80Acclaim!_5.3.5\lib\std\fplibS.lib"
 

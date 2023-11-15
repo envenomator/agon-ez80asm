@@ -225,6 +225,28 @@ clean:
             $(RM) "$(WORKDIR)\getopt.lst"
 	@if exist "$(WORKDIR)\getopt.src"  \
             $(RM) "$(WORKDIR)\getopt.src"
+	@if exist "$(WORKDIR)\agontimer.obj"  \
+            $(RM) "$(WORKDIR)\agontimer.obj"
+	@if exist "$(WORKDIR)\agontimer.lis"  \
+            $(RM) "$(WORKDIR)\agontimer.lis"
+	@if exist "$(WORKDIR)\agontimer.lst"  \
+            $(RM) "$(WORKDIR)\agontimer.lst"
+	@if exist "$(WORKDIR)\agontimer.src"  \
+            $(RM) "$(WORKDIR)\agontimer.src"
+	@if exist "$(WORKDIR)\agontimer-timer0.obj"  \
+            $(RM) "$(WORKDIR)\agontimer-timer0.obj"
+	@if exist "$(WORKDIR)\agontimer-timer0.lis"  \
+            $(RM) "$(WORKDIR)\agontimer-timer0.lis"
+	@if exist "$(WORKDIR)\agontimer-timer0.lst"  \
+            $(RM) "$(WORKDIR)\agontimer-timer0.lst"
+	@if exist "$(WORKDIR)\clock.obj"  \
+            $(RM) "$(WORKDIR)\clock.obj"
+	@if exist "$(WORKDIR)\clock.lis"  \
+            $(RM) "$(WORKDIR)\clock.lis"
+	@if exist "$(WORKDIR)\clock.lst"  \
+            $(RM) "$(WORKDIR)\clock.lst"
+	@if exist "$(WORKDIR)\clock.src"  \
+            $(RM) "$(WORKDIR)\clock.src"
 
 relist: 
 	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
@@ -263,6 +285,12 @@ relist:
             C:\source\agon-ez80asm\src\Debug\io.src
 	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
             C:\source\agon-ez80asm\src\Debug\getopt.src
+	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
+            C:\source\agon-ez80asm\src\Debug\agontimer.src
+	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
+            C:\source\agon-ez80asm\src\agontimer-timer0.asm
+	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
+            C:\source\agon-ez80asm\src\Debug\clock.src
 
 # pre-4.11.0 compatibility
 rebuildall: buildall 
@@ -287,7 +315,10 @@ OBJS =  \
             $(WORKDIR_ESCSPACE)\mos_posix.obj  \
             $(WORKDIR_ESCSPACE)\malloc.obj  \
             $(WORKDIR_ESCSPACE)\io.obj  \
-            $(WORKDIR_ESCSPACE)\getopt.obj
+            $(WORKDIR_ESCSPACE)\getopt.obj  \
+            $(WORKDIR_ESCSPACE)\agontimer.obj  \
+            $(WORKDIR_ESCSPACE)\agontimer-timer0.obj  \
+            $(WORKDIR_ESCSPACE)\clock.obj
 
 ez80asm: $(OBJS)
 	 $(LD) $(LDFLAGS)
@@ -302,8 +333,9 @@ $(WORKDIR_ESCSPACE)\main.obj :  \
             $(INCLUDE_ESCSPACE)\std\Stdio.h  \
             $(INCLUDE_ESCSPACE)\std\Stdlib.h  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
-            $(INCLUDE_ESCSPACE)\zilog\defines.h  \
+            $(PRJDIR_ESCSPACE)\agontimer.h  \
             $(PRJDIR_ESCSPACE)\assemble.h  \
+            $(PRJDIR_ESCSPACE)\clock.h  \
             $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\getopt.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
@@ -328,6 +360,7 @@ $(WORKDIR_ESCSPACE)\vdp.obj :  \
             $(PRJDIR_ESCSPACE)\vdp.c  \
             $(INCLUDE_ESCSPACE)\zilog\defines.h  \
             $(PRJDIR_ESCSPACE)\mos-interface.h  \
+            $(PRJDIR_ESCSPACE)\stdint.h  \
             $(PRJDIR_ESCSPACE)\vdp.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\vdp.c"
 
@@ -339,7 +372,6 @@ $(WORKDIR_ESCSPACE)\assemble.obj :  \
             $(INCLUDE_ESCSPACE)\std\Stdio.h  \
             $(INCLUDE_ESCSPACE)\std\Stdlib.h  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
-            $(INCLUDE_ESCSPACE)\zilog\defines.h  \
             $(PRJDIR_ESCSPACE)\assemble.h  \
             $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\filestack.h  \
@@ -358,6 +390,8 @@ $(WORKDIR_ESCSPACE)\assemble.obj :  \
 
 $(WORKDIR_ESCSPACE)\filestack.obj :  \
             $(PRJDIR_ESCSPACE)\filestack.c  \
+            $(INCLUDE_ESCSPACE)\std\String.h  \
+            $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\filestack.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\macro.h  \
@@ -369,6 +403,7 @@ $(WORKDIR_ESCSPACE)\globals.obj :  \
             $(PRJDIR_ESCSPACE)\globals.c  \
             $(INCLUDE_ESCSPACE)\std\Format.h  \
             $(INCLUDE_ESCSPACE)\std\Stdio.h  \
+            $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\macro.h  \
             $(PRJDIR_ESCSPACE)\stdint.h  \
@@ -403,7 +438,7 @@ $(WORKDIR_ESCSPACE)\label.obj :  \
             $(INCLUDE_ESCSPACE)\std\Format.h  \
             $(INCLUDE_ESCSPACE)\std\Stdio.h  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
-            $(INCLUDE_ESCSPACE)\zilog\defines.h  \
+            $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\filestack.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\hash.h  \
@@ -422,6 +457,7 @@ $(WORKDIR_ESCSPACE)\listing.obj :  \
             $(INCLUDE_ESCSPACE)\std\Format.h  \
             $(INCLUDE_ESCSPACE)\std\Stdio.h  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
+            $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\io.h  \
             $(PRJDIR_ESCSPACE)\listing.h  \
@@ -433,6 +469,7 @@ $(WORKDIR_ESCSPACE)\listing.obj :  \
 $(WORKDIR_ESCSPACE)\str2num.obj :  \
             $(PRJDIR_ESCSPACE)\str2num.c  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
+            $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\macro.h  \
             $(PRJDIR_ESCSPACE)\stdint.h  \
@@ -447,6 +484,7 @@ $(WORKDIR_ESCSPACE)\utils.obj :  \
             $(INCLUDE_ESCSPACE)\std\Stdio.h  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
             $(INCLUDE_ESCSPACE)\zilog\defines.h  \
+            $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\instruction.h  \
             $(PRJDIR_ESCSPACE)\io.h  \
@@ -462,8 +500,10 @@ $(WORKDIR_ESCSPACE)\utils.obj :  \
 
 $(WORKDIR_ESCSPACE)\macro.obj :  \
             $(PRJDIR_ESCSPACE)\macro.c  \
+            $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\macro.h  \
+            $(PRJDIR_ESCSPACE)\stdint.h  \
             $(PRJDIR_ESCSPACE)\utils.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\macro.c"
 
@@ -473,7 +513,6 @@ $(WORKDIR_ESCSPACE)\mos_posix.obj :  \
             $(INCLUDE_ESCSPACE)\std\Format.h  \
             $(INCLUDE_ESCSPACE)\std\Stdio.h  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
-            $(INCLUDE_ESCSPACE)\zilog\defines.h  \
             $(PRJDIR_ESCSPACE)\mos-interface.h  \
             $(PRJDIR_ESCSPACE)\mos_posix.h  \
             $(PRJDIR_ESCSPACE)\stdint.h
@@ -481,7 +520,9 @@ $(WORKDIR_ESCSPACE)\mos_posix.obj :  \
 
 $(WORKDIR_ESCSPACE)\malloc.obj :  \
             $(PRJDIR_ESCSPACE)\malloc.c  \
-            $(PRJDIR_ESCSPACE)\malloc.h
+            $(PRJDIR_ESCSPACE)\config.h  \
+            $(PRJDIR_ESCSPACE)\malloc.h  \
+            $(PRJDIR_ESCSPACE)\stdint.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\malloc.c"
 
 $(WORKDIR_ESCSPACE)\io.obj :  \
@@ -490,7 +531,7 @@ $(WORKDIR_ESCSPACE)\io.obj :  \
             $(INCLUDE_ESCSPACE)\std\Format.h  \
             $(INCLUDE_ESCSPACE)\std\Stdio.h  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
-            $(INCLUDE_ESCSPACE)\zilog\defines.h  \
+            $(PRJDIR_ESCSPACE)\config.h  \
             $(PRJDIR_ESCSPACE)\filestack.h  \
             $(PRJDIR_ESCSPACE)\globals.h  \
             $(PRJDIR_ESCSPACE)\io.h  \
@@ -508,4 +549,35 @@ $(WORKDIR_ESCSPACE)\getopt.obj :  \
             $(INCLUDE_ESCSPACE)\std\String.h  \
             $(PRJDIR_ESCSPACE)\getopt.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\getopt.c"
+
+$(WORKDIR_ESCSPACE)\agontimer.obj :  \
+            $(PRJDIR_ESCSPACE)\agontimer.c  \
+            $(INCLUDE_ESCSPACE)\zilog\cio.h  \
+            $(INCLUDE_ESCSPACE)\zilog\defines.h  \
+            $(INCLUDE_ESCSPACE)\zilog\eZ80190.h  \
+            $(INCLUDE_ESCSPACE)\zilog\eZ80F91.h  \
+            $(INCLUDE_ESCSPACE)\zilog\eZ80F92.h  \
+            $(INCLUDE_ESCSPACE)\zilog\eZ80F93.h  \
+            $(INCLUDE_ESCSPACE)\zilog\eZ80L92.h  \
+            $(INCLUDE_ESCSPACE)\zilog\ez80.h  \
+            $(INCLUDE_ESCSPACE)\zilog\gpio.h  \
+            $(INCLUDE_ESCSPACE)\zilog\uart.h  \
+            $(INCLUDE_ESCSPACE)\zilog\uartdefs.h  \
+            $(PRJDIR_ESCSPACE)\agontimer.h  \
+            $(PRJDIR_ESCSPACE)\config.h  \
+            $(PRJDIR_ESCSPACE)\mos-interface.h  \
+            $(PRJDIR_ESCSPACE)\stdint.h
+	 $(CC) $(CFLAGS) "$(PRJDIR)\agontimer.c"
+
+$(WORKDIR_ESCSPACE)\agontimer-timer0.obj :  \
+            $(PRJDIR_ESCSPACE)\agontimer-timer0.asm  \
+            $(INCLUDE_ESCSPACE)\zilog\ez80F92.inc
+	 $(AS) $(ASFLAGS) "$(PRJDIR)\agontimer-timer0.asm"
+
+$(WORKDIR_ESCSPACE)\clock.obj :  \
+            $(PRJDIR_ESCSPACE)\clock.c  \
+            $(INCLUDE_ESCSPACE)\std\Format.h  \
+            $(INCLUDE_ESCSPACE)\std\Stdio.h  \
+            $(PRJDIR_ESCSPACE)\config.h
+	 $(CC) $(CFLAGS) "$(PRJDIR)\clock.c"
 

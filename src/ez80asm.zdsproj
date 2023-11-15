@@ -22,6 +22,9 @@
 <file filter-key="">.\malloc.c</file>
 <file filter-key="">.\io.c</file>
 <file filter-key="">.\getopt.c</file>
+<file filter-key="">.\agontimer.c</file>
+<file filter-key="">.\agontimer-timer0.asm</file>
+<file filter-key="">.\clock.c</file>
 </files>
 
 <!-- configuration information -->
