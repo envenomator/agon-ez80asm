@@ -1227,7 +1227,7 @@ void handle_asm_include(void) {
         filestackPop(&fsi);
     }
     lineNumberNeedsReset = true;
-    if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+    if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
 }
 
 void handle_asm_incbin(void) {
@@ -1264,7 +1264,7 @@ void handle_asm_incbin(void) {
         if(eof) break;
     }
     mos_fclose(fh);
-    if(token.terminator != 0) error(message[ERROR_TOOMANYARGUMENTS]);
+    if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
 }
 
 void handle_asm_blk(uint8_t width) {

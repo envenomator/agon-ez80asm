@@ -106,14 +106,6 @@ int24_t str2num(char *string, bool errorhalt) {
         return result;
     }
 
-    if(lastchar == 'b') {
-        strcpy(buffer, string);
-        buffer[length-1] = 0;
-        result = str2bin(buffer);
-        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
-        return result;
-    }
-
     if((*string == '0') && (length >= 2)) {
         if(tolower(*(string+1)) == 'x') {
             result = str2hex(string+2);
@@ -125,6 +117,14 @@ int24_t str2num(char *string, bool errorhalt) {
             if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
             return result;
         }
+    }
+
+    if(lastchar == 'b') {
+        strcpy(buffer, string);
+        buffer[length-1] = 0;
+        result = str2bin(buffer);
+        if(err_str2num && errorhalt) error(message[ERROR_INVALIDNUMBER]);
+        return result;
     }
 
     result = str2dec(string);
