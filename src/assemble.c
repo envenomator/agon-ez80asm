@@ -888,6 +888,8 @@ void transform_instruction(operand *op, permittype type) {
 
 void emit_instruction(operandlist *list) {
     bool ddbeforeopcode; // determine position of displacement byte in case of DDCBdd/DDFDdd
+    bool op1_displacement_required = false;
+    bool op2_displacement_required = false;
 
     // Transform necessary prefix/opcode in output, according to given list and operands
     output.suffix = getADLsuffix();
@@ -897,13 +899,31 @@ void emit_instruction(operandlist *list) {
 
     if(pass == 1) definelabel(address);
 
+    // Output displacement if displacement part of operand matchtype
+    if((list->operandA == OPTYPE_INDIRECT_IXYd) ||
+       (list->operandA == OPTYPE_INDIRECT_IXd) ||
+       (list->operandA == OPTYPE_INDIRECT_IYd) ||
+       (list->operandA == OPTYPE_IXYd) ||
+       (list->operandA == OPTYPE_IXd) ||
+       (list->operandA == OPTYPE_IYd)) {
+        op1_displacement_required = true;
+    }
+    if((list->operandB == OPTYPE_INDIRECT_IXYd) ||
+       (list->operandB == OPTYPE_INDIRECT_IXd) ||
+       (list->operandB == OPTYPE_INDIRECT_IYd) ||
+       (list->operandB == OPTYPE_IXYd) ||
+       (list->operandB == OPTYPE_IXd) ||
+       (list->operandB == OPTYPE_IYd)) {
+        op2_displacement_required = true;
+    }
+
     // issue any errors here
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
         if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[WARNING_N_8BITRANGE]);
         if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[WARNING_N_8BITRANGE]);
     }
     if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
-    if((operand2.displacement_provided) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
+    if((op2_displacement_required) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
 
     // Specific checks
     if((list->operandA == OPTYPE_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
@@ -917,7 +937,7 @@ void emit_instruction(operandlist *list) {
     transform_instruction(&operand2, (permittype)list->transformB);
     // determine position of dd
     ddbeforeopcode = (((output.prefix1 == 0xDD) || (output.prefix1 == 0xFD)) && (output.prefix2 == 0xCB) &&
-                ((operand1.displacement_provided) || (operand2.displacement_provided)));
+                ((op1_displacement_required) || (op2_displacement_required)));
     
     // output adl suffix and any prefixes
     if(output.suffix > 0) emit_adlsuffix_code(output.suffix);
@@ -928,8 +948,9 @@ void emit_instruction(operandlist *list) {
     if(!ddbeforeopcode) emit_8bit(output.opcode);
     
     // output displacement
-    if(operand1.displacement_provided) emit_8bit(operand1.displacement & 0xFF);
-    if(operand2.displacement_provided) emit_8bit(operand2.displacement & 0xFF);
+    if(op1_displacement_required) emit_8bit(operand1.displacement & 0xFF);
+    if(op2_displacement_required) emit_8bit(operand2.displacement & 0xFF);
+    
     // output n
     if((operand1.immediate_provided) && ((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N))) emit_8bit(operand1.immediate & 0xFF);
     if((operand2.immediate_provided) && ((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N))) emit_8bit(operand2.immediate & 0xFF);
