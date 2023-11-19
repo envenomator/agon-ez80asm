@@ -63,14 +63,14 @@
 	xor a, (iy)
 	xor (ix)
 	xor (iy)
-	lea hl, ix+0
-	lea hl, iy+0
-	lea ix, ix+0
-	lea ix, iy+0
-	lea iy, ix+0
-	lea iy, iy+0
-	pea ix+0
-	pea iy+0
+	lea hl, ix
+	lea hl, iy
+	lea ix, ix
+	lea ix, iy
+	lea iy, ix
+	lea iy, iy
+	pea ix
+	pea iy
 	ld ix, (ix)
 	ld iy, (iy)
 	ld iy, (ix)
