@@ -11,8 +11,6 @@ typedef enum { // permitted operand type
     OPTYPE_CC,
     OPTYPE_IR,
     OPTYPE_IXY,
-    OPTYPE_IXYd,
-    OPTYPE_INDIRECT_IXYd,
     OPTYPE_MMN,
     OPTYPE_INDIRECT_MMN,
     OPTYPE_N,
@@ -40,11 +38,13 @@ typedef enum { // permitted operand type
     OPTYPE_INDIRECT_DE,
     OPTYPE_IX,
     OPTYPE_IY,
-    OPTYPE_IXd,
-    OPTYPE_IYd,
-    OPTYPE_INDIRECT_IXd,
-    OPTYPE_INDIRECT_IYd,
-    OPTYPE_R_AEONLY
+    OPTYPE_R_AEONLY,
+    OPTYPE_IXYd,                // From here on, only DISPLACEMENT OPTYPES for fast access
+    OPTYPE_INDIRECT_IXYd,       // Displacement type
+    OPTYPE_IXd,                 // Displacement type
+    OPTYPE_IYd,                 // Displacement type
+    OPTYPE_INDIRECT_IXd,        // Displacement type
+    OPTYPE_INDIRECT_IYd         // Displacement type
 } permittype;
 
 typedef enum {

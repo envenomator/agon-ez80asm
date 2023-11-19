@@ -22,7 +22,7 @@ bool ixy_match(operand *op) {
     return (((op->reg == R_IX) || (op->reg == R_IY)) && !(op->indirect)  && !(op->displacement_provided));
 }
 bool ixyd_match(operand *op) {
-    return (((op->reg == R_IX) || (op->reg == R_IY)) && !(op->indirect) && (op->displacement_provided));
+    return (((op->reg == R_IX) || (op->reg == R_IY)) && !(op->indirect));
 }
 bool indirect_ixyd_match(operand *op) {
     return (((op->reg == R_IX) || (op->reg == R_IY)) && op->indirect);
@@ -134,8 +134,6 @@ permittype_match permittype_matchlist[] = {
     {OPTYPE_CC,             cc_match},
     {OPTYPE_IR,             ir_match},
     {OPTYPE_IXY,            ixy_match},
-    {OPTYPE_IXYd,           ixyd_match},
-    {OPTYPE_INDIRECT_IXYd,  indirect_ixyd_match},
     {OPTYPE_MMN,            mmn_match},
     {OPTYPE_INDIRECT_MMN,   indirect_mmn_match},
     {OPTYPE_N,              n_match},
@@ -163,11 +161,13 @@ permittype_match permittype_matchlist[] = {
     {OPTYPE_INDIRECT_DE,    indirect_de_match},
     {OPTYPE_IX,             ix_match},
     {OPTYPE_IY,             iy_match},
+    {OPTYPE_R_AEONLY,       raeonly_match},
+    {OPTYPE_IXYd,           ixyd_match},
+    {OPTYPE_INDIRECT_IXYd,  indirect_ixyd_match},
     {OPTYPE_IXd,            ixd_match},
     {OPTYPE_IYd,            iyd_match},
     {OPTYPE_INDIRECT_IXd,   indirect_ixd_match},
-    {OPTYPE_INDIRECT_IYd,   indirect_iyd_match},
-    {OPTYPE_R_AEONLY,       raeonly_match}
+    {OPTYPE_INDIRECT_IYd,   indirect_iyd_match}
 };
 
 operandlist operands_adc[] = {

@@ -899,23 +899,9 @@ void emit_instruction(operandlist *list) {
 
     if(pass == 1) definelabel(address);
 
-    // Output displacement if displacement part of operand matchtype
-    if((list->operandA == OPTYPE_INDIRECT_IXYd) ||
-       (list->operandA == OPTYPE_INDIRECT_IXd) ||
-       (list->operandA == OPTYPE_INDIRECT_IYd) ||
-       (list->operandA == OPTYPE_IXYd) ||
-       (list->operandA == OPTYPE_IXd) ||
-       (list->operandA == OPTYPE_IYd)) {
-        op1_displacement_required = true;
-    }
-    if((list->operandB == OPTYPE_INDIRECT_IXYd) ||
-       (list->operandB == OPTYPE_INDIRECT_IXd) ||
-       (list->operandB == OPTYPE_INDIRECT_IYd) ||
-       (list->operandB == OPTYPE_IXYd) ||
-       (list->operandB == OPTYPE_IXd) ||
-       (list->operandB == OPTYPE_IYd)) {
-        op2_displacement_required = true;
-    }
+    // Output displacement if needed, even when none is given (handles implicit cases)
+    if(list->operandA > OPTYPE_R_AEONLY) op1_displacement_required = true;
+    if(list->operandB > OPTYPE_R_AEONLY) op2_displacement_required = true;
 
     // issue any errors here
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
