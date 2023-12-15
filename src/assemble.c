@@ -744,7 +744,6 @@ uint8_t get_immediate_size(operand_t *op, uint8_t suffix) {
             error(message[ERROR_INVALIDMNEMONIC]);
             return 0;
     }
-    //if((num == 2) && (op->immediate > 0xFFFF)) error(message[ERROR_MMN_TOOLARGE]);
     if(num == 2) op->immediate &= 0xFFFF;
     return num;
 }
@@ -1533,7 +1532,6 @@ void handle_assembler_command(void) {
         return;
     }
     if(currentline.current_instruction->asmtype == ASM_MACRO_END) handle_asm_endmacro();
-    //if(currentline.current_instruction->asmtype == ASM_ENDIF) handle_asm_endif();
     return;
 }
 
@@ -1613,7 +1611,6 @@ void processInstructions(char *line){
                         if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
                         match = true;
                         // mnemonic index distribution optimization
-                        //printf("%s,%d\r\n",currentline.current_instruction->name, i);
                         emit_instruction(list);
                         break;
                         }

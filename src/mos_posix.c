@@ -48,8 +48,6 @@ UINT8 mos_fopen(char * filename, UINT8 mode) // returns filehandle, or 0 on erro
         if(_mosfileid == 255) return 0;
         newfile.file = NULL;
         
-        //if(mode == fa_read) newfile.file = fopen(filename, "r");
-        //if(mode & fa_write) newfile.file = fopen(filename, "wb+");
         if(mode & fa_write) newfile.file = fopen(filename, "wb+");
         else newfile.file = fopen(filename, "r");        
         
