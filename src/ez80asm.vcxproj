@@ -120,6 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="assemble.c" />
+    <ClCompile Include="clock.c" />
     <ClCompile Include="filestack.c" />
     <ClCompile Include="getopt.c" />
     <ClCompile Include="globals.c" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assemble.h" />
+    <ClInclude Include="clock.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="filestack.h" />
     <ClInclude Include="getopt.h" />

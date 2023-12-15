@@ -63,6 +63,9 @@
     <ClCompile Include="vdp.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="clock.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="init.asm">
@@ -143,6 +146,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vdp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
