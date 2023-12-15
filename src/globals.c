@@ -13,14 +13,11 @@ bool recordingMacro;
 int inConditionalSection;
 macro_t *currentExpandedMacro;
 uint24_t address;
-uint24_t totalsize;      // total size of assembled binary
 uint16_t global_errors;
 bool adlmode;
 bool list_enabled;
 bool consolelist_enabled;
 uint8_t fillbyte;
-uint8_t fillbyte_start;
-bool adlmode_start;
 uint24_t start_address;
 
 tokenline_t currentline;

@@ -954,7 +954,6 @@ void emit_8bit(uint8_t value) {
         io_putc(FILE_OUTPUT, value);
     }
     address++;
-    totalsize++;
 }
 
 void emit_16bit(uint16_t value) {
@@ -1632,11 +1631,8 @@ void processInstructions(char *line){
 
 void passInitialize(uint8_t passnumber) {
     pass = passnumber;
-    adlmode = adlmode_start;
     linenumber = 0;
     address = start_address;
-    fillbyte = fillbyte_start;
-    totalsize = 0;
     recordingMacro = false;
     currentExpandedMacro = NULL;
     inConditionalSection = 0;

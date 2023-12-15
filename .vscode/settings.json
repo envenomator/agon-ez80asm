@@ -4,6 +4,7 @@
         "macro.h": "c",
         "str2num.h": "c",
         "mos-interface.h": "c",
-        "instruction.h": "c"
+        "instruction.h": "c",
+        "label.h": "c"
     }
 }

@@ -29,15 +29,12 @@ extern bool recordingMacro;
 extern int inConditionalSection; // 0: outside conditional section, 1: negative section, 2: positive section
 extern macro_t *currentExpandedMacro;
 extern uint24_t address;
-extern uint24_t totalsize;
 extern uint16_t global_errors;
 extern bool adlmode;
 extern tokenline_t currentline;
 extern bool list_enabled;
 extern bool consolelist_enabled;
 extern uint8_t fillbyte;
-extern uint8_t fillbyte_start;
-extern bool adlmode_start;
 extern uint24_t start_address;
 
 // Global parsed results

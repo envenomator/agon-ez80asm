@@ -42,9 +42,9 @@ int main(int argc, char *argv[]) {
     outputfilename[0] = 0;
 
     // option defaults from compiled configuration
-    fillbyte_start = FILLBYTE;
+    fillbyte = FILLBYTE;
     list_enabled = false;
-    adlmode_start = ADLMODE_START;
+    adlmode = ADLMODE_START;
     start_address = START_ADDRESS;
     exportsymbols = false;
 
@@ -56,8 +56,8 @@ int main(int argc, char *argv[]) {
                     error("Incorrect ADL mode option -a");
                     return 2;
                 }
-                adlmode_start = (*optarg == '1')?true:false;
-                printf("Setting ADL mode to %d\r\n",adlmode_start);
+                adlmode = (*optarg == '1')?true:false;
+                printf("Setting ADL mode to %d\r\n",adlmode);
                 break;
             case 's':
                 printf("Exporting symbols\r\n");
@@ -80,12 +80,12 @@ int main(int argc, char *argv[]) {
                     error("option -b: Byte range error");
                     return 2;
                 }
-                fillbyte_start = str2hex(optarg);
+                fillbyte = str2hex(optarg);
                 if(err_str2num) {
                     error("option -b: Invalid hexadecimal format");
                     return 2;
                 }
-                printf("Setting fillbyte to hex %02X\r\n", fillbyte_start);
+                printf("Setting fillbyte to hex %02X\r\n", fillbyte);
                 break;
             case 'o':
                 if(strlen(optarg) > 6) {
