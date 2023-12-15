@@ -19,10 +19,10 @@ void mos_posix_init(void) {
 typedef struct {
     FILE *file;
     uint8_t mosfile;
-} posixfile;
+} posixfile_t;
 
 #define MAXPOSIXFILES 256
-posixfile _filearray[MAXPOSIXFILES];
+posixfile_t _filearray[MAXPOSIXFILES];
 
 // MOS API calls conversion to POSIX
 
@@ -42,7 +42,7 @@ UINT8 mos_flseek(UINT8 fh, UINT32 offset) {
 
 UINT8 mos_fopen(char * filename, UINT8 mode) // returns filehandle, or 0 on error
 {
-    posixfile newfile;
+    posixfile_t newfile;
 
     if(_fileindex < (MAXPOSIXFILES - 1)) {
         if(_mosfileid == 255) return 0;

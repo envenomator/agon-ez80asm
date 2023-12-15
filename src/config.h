@@ -15,8 +15,8 @@
 #pragma warning(disable:4244)			// conversion from '__int64' to 'uint16_t', possible loss of data
 #endif
 
-#define VERSION                       0
-#define REVISION                    107
+#define VERSION                       1
+#define REVISION                      0
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
 #define FILLBYTE                   0xFF // Same as ZDS

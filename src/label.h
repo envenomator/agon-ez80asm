@@ -14,15 +14,15 @@ enum {
 typedef struct {
     char *name;
     int24_t address;
-} label;
+} label_t;
 
 typedef struct {
     uint8_t scope;
     bool defined;
     int24_t address;
-} anonymouslabeltype;
+} anonymouslabel_t;
 
-label *findLabel(char *name);
+label_t *findLabel(char *name);
 void initGlobalLabelTable(void);
 void initAnonymousLabelTable(void);
 bool insertGlobalLabel(char *labelname, int24_t address);
@@ -32,12 +32,10 @@ void writeLocalLabels(void);
 void readLocalLabels(void);
 void writeAnonymousLabel(int24_t address);
 void readAnonymousLabel(void);
-label * findGlobalLabel(char *name);
+label_t * findGlobalLabel(char *name);
 void initLocalLabelTable(void);
 uint16_t getGlobalLabelCount(void);
 uint16_t getLocalLabelCount(void);
-//void printLocalLabelTable(void);
-//void printGlobalLabelTable(void);
 void saveGlobalLabelTable(void);
 
 #endif // LABEL_H

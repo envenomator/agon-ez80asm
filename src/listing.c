@@ -13,7 +13,6 @@ uint8_t  _listObjects[LISTING_OBJECTS_PER_LINE];
 uint8_t  _listLineObjectCount;
 uint16_t  _listLineNumber;
 uint24_t _listSourceLineNumber;
-//bool _expandedmacro;
 
 char _listHeader[] = "PC     Output            Line Source\n\r";
 
@@ -32,7 +31,6 @@ void listStartLine(char *line) {
     _listAddress = address;
     _listLineObjectCount = 0;
     _listSourceLineNumber = currentExpandedMacro?_listSourceLineNumber:linenumber; // remember upstream linenumber during macro expansion
-    //_expandedmacro = (currentExpandedMacro != NULL);
     _listLineObjectCount = 0;
     _listLineNumber = 0;
 }

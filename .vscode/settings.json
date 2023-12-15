@@ -1,7 +1,9 @@
 {
     "files.associations": {
+        "*.s": "ez80-asm",
         "macro.h": "c",
         "str2num.h": "c",
-        "mos-interface.h": "c"
+        "mos-interface.h": "c",
+        "instruction.h": "c"
     }
 }

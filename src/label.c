@@ -11,35 +11,18 @@
 #include "io.h"
 
 // memory for anonymous labels
-anonymouslabeltype an_prev;
-anonymouslabeltype an_next;
-label an_return;
+anonymouslabel_t an_prev;
+anonymouslabel_t an_next;
+label_t an_return;
 
 char localLabelBuffer[LOCAL_LABEL_BUFFERSIZE];
 uint16_t localLabelBufferIndex;
 
 // tables
-label* globalLabelTable[GLOBAL_LABEL_TABLE_SIZE]; // hash table
+label_t* globalLabelTable[GLOBAL_LABEL_TABLE_SIZE]; // hash table
 uint16_t globalLabelCounter;
-label localLabelTable[LOCAL_LABEL_TABLE_SIZE]; // indexed table
+label_t localLabelTable[LOCAL_LABEL_TABLE_SIZE]; // indexed table
 uint16_t localLabelCounter;
-
-/*
-void printLocalLabelTable(void) {
-    int i;
-    printf("\r\nLocal table (%d entries):\n\r",localLabelCounter);
-    for(i = 0; i < localLabelCounter; i++) printf("%08x - %s\n\r", localLabelTable[i].address, localLabelTable[i].name);
-}
-
-void printGlobalLabelTable(void) {
-    int i;
-    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++) {
-        if(globalLabelTable[i]) {
-            printf("%s - %x\n", globalLabelTable[i]->name, globalLabelTable[i]->address);
-        }
-    }
-}
-*/
 
 void saveGlobalLabelTable(void) {
     int i;
@@ -116,7 +99,7 @@ int findLocalLabelIndex(char *key) {
 	return (LOCAL_LABEL_TABLE_SIZE);
 }
 
-label * findLocalLabel(char *key){
+label_t * findLocalLabel(char *key){
     int p = findLocalLabelIndex(key);
     if(p < LOCAL_LABEL_TABLE_SIZE) return &localLabelTable[p];
     else return NULL;
@@ -131,7 +114,7 @@ void writeLocalLabels(void) {
         if(localLabelBufferIndex) 
             mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelBuffer, localLabelBufferIndex);    
         // the label table
-        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label));
+        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label_t));
     }
 }
 
@@ -142,7 +125,7 @@ void readLocalLabels(void) {
         mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
         if(localLabelBufferIndex) 
             mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBuffer, localLabelBufferIndex);
-        mos_fread(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label));
+        mos_fread(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label_t));
     }
     else {
         localLabelBufferIndex = 0;
@@ -230,12 +213,12 @@ bool insertLocalLabel(char *labelname, int24_t address) {
 
 bool insertGlobalLabel(char *labelname, int24_t address){
     int index,i,try,len;
-    label *tmp;
+    label_t *tmp;
 
     len = strlen(labelname);
 
-    // allocate space in buffer for label struct
-    tmp = (label *)agon_malloc(sizeof(label));
+    // allocate space in buffer for label_t struct
+    tmp = (label_t *)agon_malloc(sizeof(label_t));
     if(tmp == 0) return false;
 
     // allocate space in buffer for string and store it to buffer
@@ -260,7 +243,7 @@ bool insertGlobalLabel(char *labelname, int24_t address){
     return false;
 }
 
-label * findGlobalLabel(char *name){
+label_t * findGlobalLabel(char *name){
     int index,i,try;
 
     index = hash(name, GLOBAL_LABEL_TABLE_SIZE);
@@ -277,7 +260,7 @@ label * findGlobalLabel(char *name){
     return NULL;
 }
 
-label *findLabel(char *name) {
+label_t *findLabel(char *name) {
     if(name[0] == '@') {
         if(((tolower(name[1]) == 'f') || (tolower(name[1]) == 'n')) && name[2] == 0) {
             if(an_next.defined && an_next.scope == filestackCount()) {

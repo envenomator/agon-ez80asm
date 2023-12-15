@@ -8,7 +8,7 @@ typedef struct {
     uint8_t length;
     char    *next;
     char    terminator;
-} tokentype;
+} token_t;
 
 void text_RED(void);
 void text_YELLOW(void);
@@ -20,8 +20,8 @@ void error(char* msg);
 bool isEmpty(const char *str);
 bool notEmpty(const char *str);
 bool split_suffix(char *mnemonic, char *suffix, char *buffer);
-uint8_t getLineToken(tokentype *token, char *src, char terminator);
-uint8_t getOperatorToken(tokentype *token, char *src);
+uint8_t getLineToken(token_t *token, char *src, char terminator);
+uint8_t getOperatorToken(token_t *token, char *src);
 
 #ifdef AGON
 int strcasecmp(char *s1, char *s2);

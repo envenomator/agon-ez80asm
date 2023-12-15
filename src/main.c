@@ -33,8 +33,7 @@ void printHelp(void) {
     printf("\r\n");
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     int opt;
     bool exportsymbols;
     char inputfilename[FILENAMEMAXLENGTH + 1];

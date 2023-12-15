@@ -21,7 +21,7 @@ char _buffer[FILE_BUFFERSIZE];
 char _incbuffer[FILESTACK_MAXFILES][FILE_BUFFERSIZE];
 char _macrobuffer[FILE_BUFFERSIZE];
 
-void empty_operand(operand *op) {
+void empty_operand(operand_t *op) {
     op->reg = R_NONE;
     op->reg_index = 0;
     op->cc = false;
@@ -76,8 +76,8 @@ uint8_t getAsciiValue(char *string) {
 int24_t getValue(char *string) {
     int24_t total, tmp;
     char operator, *ptr, unary_operator;
-    label *lbl;
-    tokentype token;
+    label_t *lbl;
+    token_t token;
 
     ptr = string;
     total = 0;
@@ -145,7 +145,7 @@ int24_t getValue(char *string) {
 
 // parses the given string to the operand, or throws errors along the way
 // will destruct parts of the original string during the process
-void parse_operand(char *string, operand *operand) {
+void parse_operand(char *string, operand_t *operand) {
     char *ptr = string;
     uint8_t len = strlen(string);
 
@@ -458,7 +458,7 @@ void parseLine(char *src) {
     bool done;
     uint8_t state;
     uint8_t argcount = 0;
-    tokentype token;
+    token_t token;
 
     // default current line items
     currentline.current_instruction = NULL;
@@ -725,7 +725,7 @@ void adl_action() {
 }
 
 // get the number of bytes to emit from an immediate
-uint8_t get_immediate_size(operand *op, uint8_t suffix) {
+uint8_t get_immediate_size(operand_t *op, uint8_t suffix) {
     uint8_t num;
     switch(suffix) {
         case S_SIS:
@@ -750,7 +750,7 @@ uint8_t get_immediate_size(operand *op, uint8_t suffix) {
 }
 // Emit a 16 or 24 bit immediate number, according to
 // given suffix bit, or in lack of it, the current ADL mode
-void emit_immediate(operand *op, uint8_t suffix) {
+void emit_immediate(operand_t *op, uint8_t suffix) {
     uint8_t num;
 
     num = get_immediate_size(op, suffix);
@@ -797,7 +797,7 @@ uint8_t get_ddfd_prefix(cpuregister reg) {
     return 0;    
 }
 
-void prefix_ddfd_suffix(operandlist *op) {
+void prefix_ddfd_suffix(operandlist_t *op) {
     uint8_t prefix1, prefix2;
 
     if(!op->ddfdpermitted) return;
@@ -817,7 +817,7 @@ void prefix_ddfd_suffix(operandlist *op) {
     else if(prefix2) output.prefix1 = prefix2;
 }
 
-void transform_instruction(operand *op, permittype type) {
+void transform_instruction(operand_t *op, permittype_t type) {
     uint8_t y;
     int24_t rel;
 
@@ -886,7 +886,7 @@ void transform_instruction(operand *op, permittype type) {
     return;
 }
 
-void emit_instruction(operandlist *list) {
+void emit_instruction(operandlist_t *list) {
     bool ddbeforeopcode; // determine position of displacement byte in case of DDCBdd/DDFDdd
     bool op1_displacement_required = false;
     bool op2_displacement_required = false;
@@ -919,8 +919,8 @@ void emit_instruction(operandlist *list) {
     // prepare extra DD/FD suffix if needed
     prefix_ddfd_suffix(list);
     // Transform the opcode and potential immediate values, according to the current ruleset
-    transform_instruction(&operand1, (permittype)list->transformA);
-    transform_instruction(&operand2, (permittype)list->transformB);
+    transform_instruction(&operand1, (permittype_t)list->transformA);
+    transform_instruction(&operand2, (permittype_t)list->transformB);
     // determine position of dd
     ddbeforeopcode = (((output.prefix1 == 0xDD) || (output.prefix1 == 0xFD)) && (output.prefix2 == 0xCB) &&
                 ((op1_displacement_required) || (op2_displacement_required)));
@@ -1047,7 +1047,7 @@ void emit_quotedstring(char *str) {
 }
 
 void parse_asm_single_immediate(void) {
-    tokentype token;
+    token_t token;
 
     if(currentline.next) {
         getLineToken(&token, currentline.next,0);
@@ -1062,7 +1062,7 @@ void parse_asm_single_immediate(void) {
 }
 
 void parse_asm_keyval_pair(void) {
-    tokentype token;
+    token_t token;
 
     if(currentline.next) {
         getLineToken(&token, currentline.next, '=');
@@ -1082,7 +1082,7 @@ void parse_asm_keyval_pair(void) {
 }
 
 void handle_asm_db(void) {
-    tokentype token;
+    token_t token;
     uint24_t argcount = 0;
 
     if(pass == 1) definelabel(address);
@@ -1113,8 +1113,8 @@ void handle_asm_db(void) {
 }
 
 void handle_asm_dw(uint8_t wordtype) {
-    label *lbl;
-    tokentype token;
+    label_t *lbl;
+    token_t token;
     uint24_t argcount = 0;
 
     if(pass == 1) definelabel(address);
@@ -1154,7 +1154,7 @@ void handle_asm_dw(uint8_t wordtype) {
 }
 
 void handle_asm_equ(void) {
-    tokentype token;
+    token_t token;
     uint24_t argcount = 0;
 
     getLineToken(&token, currentline.next, 0);
@@ -1197,7 +1197,7 @@ void handle_asm_org(void) {
 }
 
 void handle_asm_include(void) {
-    tokentype token;
+    token_t token;
     filestackitem fsi;
     uint8_t inclevel;
     
@@ -1238,7 +1238,7 @@ void handle_asm_include(void) {
 }
 
 void handle_asm_incbin(void) {
-    tokentype token;
+    token_t token;
     uint8_t fh;
     bool eof;
     uint24_t size,n;
@@ -1277,7 +1277,7 @@ void handle_asm_incbin(void) {
 void handle_asm_blk(uint8_t width) {
     uint24_t num;
     int24_t val = 0;
-    tokentype token;
+    token_t token;
 
     if(pass == 1) definelabel(address);
 
@@ -1360,7 +1360,7 @@ void handle_asm_endmacro(void) {
 
 void handle_asm_definemacro(void) {
     
-    tokentype token;
+    token_t token;
     uint8_t argcount = 0;
     char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
     
@@ -1412,7 +1412,7 @@ void handle_asm_definemacro(void) {
 
 
 void handle_asm_if(void) {
-    tokentype token;
+    token_t token;
     int24_t value;
     
     // No nested conditionals.
@@ -1449,7 +1449,7 @@ void handle_asm_endif(void) {
 }
 
 void handle_asm_fillbyte(void) {
-    tokentype token;
+    token_t token;
     int32_t val;
 
     getLineToken(&token, currentline.next, 0);
@@ -1537,8 +1537,8 @@ void handle_assembler_command(void) {
     return;
 }
 
-void expandMacroStart(macro *exp) {    
-    tokentype token;
+void expandMacroStart(macro_t *exp) {    
+    token_t token;
     uint8_t argcount = 0;
     filestackitem fsi;
 
@@ -1584,7 +1584,7 @@ void expandMacroStart(macro *exp) {
 }
 
 void processInstructions(char *line){
-    operandlist *list;
+    operandlist_t *list;
     uint8_t listitem;
     bool match;
     int i = 0;

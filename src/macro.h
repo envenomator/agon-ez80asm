@@ -13,14 +13,14 @@ typedef struct {
     uint8_t argcount;
     char**  arguments;
     char**  substitutions;
-} macro;
+} macro_t;
 
-extern macro macroTable[MAXIMUM_MACROS]; // indexed table
+extern macro_t macroTable[MAXIMUM_MACROS]; // indexed table
 extern uint8_t macroTableCounter;
 
-void    initMacros(void);
-bool    defineMacro(char *name, uint8_t argcount, char *arguments);
-macro * findMacro(char *name);
-void    macroArgFindSubst(char *op, macro *m);
+void      initMacros(void);
+bool      defineMacro(char *name, uint8_t argcount, char *arguments);
+macro_t * findMacro(char *name);
+void      macroArgFindSubst(char *op, macro_t *m);
 
 #endif // MACRO_H

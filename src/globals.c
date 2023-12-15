@@ -11,7 +11,7 @@ unsigned int linenumber;
 unsigned int pass;
 bool recordingMacro;
 int inConditionalSection;
-macro *currentExpandedMacro;
+macro_t *currentExpandedMacro;
 uint24_t address;
 uint24_t totalsize;      // total size of assembled binary
 uint16_t global_errors;
@@ -23,11 +23,11 @@ uint8_t fillbyte_start;
 bool adlmode_start;
 uint24_t start_address;
 
-tokenline currentline;
+tokenline_t currentline;
 
-operand operand1;
-operand operand2;
-opcodesequence output;
+operand_t operand1;
+operand_t operand2;
+opcodesequence_t output;
 
 char *message[] = {
     "Invalid register in operand",

@@ -1,7 +1,7 @@
 #include "./macro.h"
 #include "globals.h"
 // tables
-macro macroTable[MAXIMUM_MACROS]; // indexed table
+macro_t macroTable[MAXIMUM_MACROS]; // indexed table
 uint8_t macroTableCounter;
 
 void initMacros(void) {
@@ -34,7 +34,7 @@ int findMacroIndex(char *key) {
 	return (MAXIMUM_MACROS);
 }
 
-macro * findMacro(char *name){
+macro_t* findMacro(char *name){
     uint8_t index = findMacroIndex(name);
     if(index < MAXIMUM_MACROS) return &macroTable[index];
     else return NULL;
@@ -44,7 +44,7 @@ bool defineMacro(char *name, uint8_t argcount, char *arguments) {
     int len,i,j;
     int index;
     char *ptr,*subs;
-    macro newmacro,tempmacro;
+    macro_t newmacro,tempmacro;
 
     index = findMacroIndex(name);
 
@@ -101,9 +101,9 @@ bool defineMacro(char *name, uint8_t argcount, char *arguments) {
     return false;
 }
 
-// Find an 'argument' from a macro file, and replace by the correct substitution string
+// Find an 'argument' from a macro_tfile, and replace by the correct substitution string
 // If nothing is found, nothing is replaced - the argument may be something else entirely
-void macroArgFindSubst(char *op, macro *m) {
+void macroArgFindSubst(char *op, macro_t*m) {
     uint8_t i;
 
     for(i = 0; i < m->argcount; i++) {

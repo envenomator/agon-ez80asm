@@ -115,7 +115,7 @@ bool split_suffix(char *mnemonic, char *suffix, char *buffer) {
     return suffixpresent;
 }
 
-uint8_t getLineToken(tokentype *token, char *src, char terminator) {
+uint8_t getLineToken(token_t *token, char *src, char terminator) {
     char *target;
     uint8_t index = 0;
     bool escaped = false;
@@ -203,7 +203,7 @@ uint8_t getLineToken(tokentype *token, char *src, char terminator) {
     return index;
 }
 
-uint8_t getOperatorToken(tokentype *token, char *src) {
+uint8_t getOperatorToken(token_t *token, char *src) {
     char *target;
     uint8_t index = 0;
     bool literal;

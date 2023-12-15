@@ -8,8 +8,8 @@
 #include "macro.h"
 
 typedef struct {
-    instruction *current_instruction;
-    macro *current_macro;
+    instruction_t *current_instruction;
+    macro_t *current_macro;
     char *next;
     char label[MAXNAMELENGTH + 1];
     char mnemonic[MAXNAMELENGTH + 1];
@@ -19,7 +19,7 @@ typedef struct {
     char comment[TOKEN_MAX + 1];
     bool suffixpresent;
     uint16_t size;      // byte size of the assembler-command output in db/defb/dw/defw
-} tokenline;
+} tokenline_t;
 
 // Global variables
 extern bool lineNumberNeedsReset;
@@ -27,12 +27,12 @@ extern unsigned int linenumber;
 extern unsigned int pass;
 extern bool recordingMacro;
 extern int inConditionalSection; // 0: outside conditional section, 1: negative section, 2: positive section
-extern macro *currentExpandedMacro;
+extern macro_t *currentExpandedMacro;
 extern uint24_t address;
 extern uint24_t totalsize;
 extern uint16_t global_errors;
 extern bool adlmode;
-extern tokenline currentline;
+extern tokenline_t currentline;
 extern bool list_enabled;
 extern bool consolelist_enabled;
 extern uint8_t fillbyte;
@@ -42,9 +42,9 @@ extern uint24_t start_address;
 
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code
-extern operand operand1;
-extern operand operand2;
-extern opcodesequence output;
+extern operand_t operand1;
+extern operand_t operand2;
+extern opcodesequence_t output;
 
 // Errors
 enum {

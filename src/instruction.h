@@ -45,7 +45,7 @@ typedef enum { // permitted operand type
     OPTYPE_IYd,                 // Displacement type
     OPTYPE_INDIRECT_IXd,        // Displacement type
     OPTYPE_INDIRECT_IYd         // Displacement type
-} permittype;
+} permittype_t;
 
 typedef enum {
     R_NONE,
@@ -128,14 +128,14 @@ typedef struct {
     bool                displacement_provided;
     bool                immediate_provided;
     int32_t             immediate;
-} operand;
+} operand_t;
 
 typedef struct {
     uint8_t suffix;
     uint8_t prefix1;
     uint8_t prefix2;
     uint8_t opcode;
-} opcodesequence;
+} opcodesequence_t;
 
 typedef enum {
     TRANSFORM_NONE,
@@ -152,18 +152,18 @@ typedef enum {
     TRANSFORM_N,            // only used by RST
     TRANSFORM_BIT,          // only used by RES/SET
     TRANSFORM_REL,          // only used by JR/DJNZ
-}opcodetransformtype;
+}opcodetransformtype_t;
 
 typedef struct {
-    permittype          operandA;           // Filter for operandA - which register applies?
-    permittype          operandB;           // Filter for operandB
-    bool                ddfdpermitted;         
-    opcodetransformtype transformA;         // Do we transform acc to operandA
-    opcodetransformtype transformB;         //  "        "       " "  operandB
-    uint8_t             prefix;            // base prefix1, or 0 if none to output
-    uint8_t             opcode;             // base opcode, may be transformed by A/B, according to opcodetransformtype
-    uint8_t             adl;                // the adl mode allowed in set of operands
-} operandlist;
+    permittype_t          operandA;           // Filter for operandA - which register applies?
+    permittype_t          operandB;           // Filter for operandB
+    bool                  ddfdpermitted;         
+    opcodetransformtype_t transformA;         // Do we transform acc to operandA
+    opcodetransformtype_t transformB;         //  "        "       " "  operandB
+    uint8_t               prefix;            // base prefix1, or 0 if none to output
+    uint8_t               opcode;             // base opcode, may be transformed by A/B, according to opcodetransformtype
+    uint8_t               adl;                // the adl mode allowed in set of operands
+} operandlist_t;
 
 enum {
     EZ80,
@@ -207,17 +207,17 @@ typedef struct {
     uint8_t     type;                       // EZ80 / Assembler
     uint8_t     asmtype;                    // assembler subcommand
     uint8_t     listnumber;                 // number of items to iterate over in the list
-    operandlist *list;
+    operandlist_t *list;
     asm_argtype asmargument;
-} instruction;
+} instruction_t;
 
-instruction * instruction_table_lookup(char *name);
+instruction_t * instruction_table_lookup(char *name);
 
 // An array-based index of this structure will act as a fast lookup table
 typedef struct {
-    permittype type;
-    bool (*match)(operand *);
-} permittype_match;
+    permittype_t type;
+    bool (*match)(operand_t *);
+} permittype_match_t;
 
-extern permittype_match permittype_matchlist[];
+extern permittype_match_t permittype_matchlist[];
 #endif // INSTRUCTION_H
