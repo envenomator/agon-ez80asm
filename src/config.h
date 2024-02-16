@@ -28,7 +28,7 @@
 #define LOCAL_LABEL_BUFFERSIZE   0x4000 // 16KB local label space
 #define GLOBAL_LABEL_TABLE_SIZE   16384 // 16K global labels
 #define LOCAL_LABEL_TABLE_SIZE       64 //  64 local labels
-#define FILE_BUFFERSIZE            2048 // For each specified input/output file (io.c)
+#define FILE_BUFFERSIZE            8192 // For each specified input/output file (io.c)
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX                   128 // Token maximum length
 #define MAXNAMELENGTH                32 // Maximum name length of labels/macros/mnemonics

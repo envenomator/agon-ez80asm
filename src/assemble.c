@@ -1262,9 +1262,14 @@ void handle_asm_incbin(void) {
         error(message[ERROR_INCLUDEFILE]);            
         return;
     }
+
     while(1) {
         size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
-        for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
+        //for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
+        if(pass == 2) {
+            io_write(FILE_OUTPUT, _buffer, size);
+        }
+        address += size;
         eof = mos_feof(fh);
         if(eof) break;
     }
