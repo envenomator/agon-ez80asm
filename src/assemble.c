@@ -21,17 +21,6 @@ char _buffer[FILE_BUFFERSIZE];
 char _incbuffer[FILESTACK_MAXFILES][FILE_BUFFERSIZE];
 char _macrobuffer[FILE_BUFFERSIZE];
 
-void empty_operand(operand_t *op) {
-    op->reg = R_NONE;
-    op->reg_index = 0;
-    op->cc = false;
-    op->cc_index = 0;
-    op->displacement = 0;
-    op->displacement_provided = false;
-    op->immediate = 0;
-    op->immediate_provided = false;
-}
-
 void advanceLocalLabel(void) {
     if(currentline.label[0] == '@') {
         if(currentline.label[1] == '@') {
@@ -473,8 +462,8 @@ void parseLine(char *src) {
     currentline.size = 0;
     currentline.suffixpresent = false;
     
-    empty_operand(&operand1);
-    empty_operand(&operand2);
+    memset((void *)&operand1, 0, sizeof(operand_t));
+    memset((void *)&operand2, 0, sizeof(operand_t));
 
     state = PS_START;
     done = false;
@@ -1239,7 +1228,7 @@ void handle_asm_incbin(void) {
     token_t token;
     uint8_t fh;
     bool eof;
-    uint24_t size,n;
+    uint24_t size;
 
     if(recordingMacro) return;
 
