@@ -135,7 +135,20 @@ uint8_t getLineToken(token_t *token, char *src, char terminator) {
         return 0;
     }
     // copy over the token itself, taking care of the character state within the token
-    state = TOKEN_REGULAR;
+    //state = TOKEN_REGULAR;
+    switch(*src) {
+        case '\"':
+            state = TOKEN_STRING;
+            break;
+        case '\'':
+            state = TOKEN_LITERAL;
+            break;
+        case '(':
+            state = TOKEN_BRACKET;
+            break;
+        default:
+            state = TOKEN_REGULAR;
+    }
     target = token->start;
     while(true) {
         terminated = false;
@@ -172,9 +185,9 @@ uint8_t getLineToken(token_t *token, char *src, char terminator) {
                 if(*src == ')') state = TOKEN_REGULAR;
                 break;
             case TOKEN_REGULAR:
-                if(*src == '\"') state = TOKEN_STRING;
-                if(*src == '\'') state = TOKEN_LITERAL;
-                if(*src == '(') state = TOKEN_BRACKET;
+                //if(*src == '\"') state = TOKEN_STRING;
+                //if(*src == '\'') state = TOKEN_LITERAL;
+                //if(*src == '(') state = TOKEN_BRACKET;
                 terminated = ((*src == ';') || (*src == terminator));
                 if(terminator == ' ') terminated = terminated || (*src == '\t');                
                 break;            

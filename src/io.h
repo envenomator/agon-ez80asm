@@ -21,6 +21,7 @@ enum {
     FILE_SYMBOLS
 };
 
+void io_outputc(unsigned char c);
 void  io_write(uint8_t fh, char *s, uint16_t size);
 bool  io_init(char *input_filename, char *output_filename); // init - called once at start
 bool  io_setpass(uint8_t pass);                      // assembly pass, set needed state of files

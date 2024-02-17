@@ -154,6 +154,12 @@ void io_putc(uint8_t fh, unsigned char c) {
     else mos_fputc(filehandle[fh], c); // regular non-buffered IO
 }
 
+void io_outputc(unsigned char c) {
+    *(_filebuffer[FILE_OUTPUT]++) = c;
+    _filebuffersize[FILE_OUTPUT]++;
+    if(_filebuffersize[FILE_OUTPUT] == FILE_BUFFERSIZE) _io_flush(FILE_OUTPUT);
+}
+
 void  io_write(uint8_t fh, char *s, uint16_t size) {
     if(_bufferstart[fh]) {
         // Buffered IO
