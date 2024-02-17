@@ -11,7 +11,8 @@ typedef struct {
     instruction_t *current_instruction;
     macro_t *current_macro;
     char *next;
-    char label[MAXNAMELENGTH + 1];
+    //char label[MAXNAMELENGTH + 1];
+    char *label;
     char mnemonic[MAXNAMELENGTH + 1];
     char suffix[MAXNAMELENGTH + 1];
     char operand1[MAXNAMELENGTH + 1];

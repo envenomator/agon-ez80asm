@@ -22,9 +22,11 @@ char _incbuffer[FILESTACK_MAXFILES][FILE_BUFFERSIZE];
 char _macrobuffer[FILE_BUFFERSIZE];
 
 void advanceLocalLabel(void) {
-    if(currentline.label[0] == '@') {
-        if(currentline.label[1] == '@') {
-            if(!recordingMacro) readAnonymousLabel();
+    if(currentline.label) {
+        if(currentline.label[0] == '@') {
+            if(currentline.label[1] == '@') {
+                if(!recordingMacro) readAnonymousLabel();
+            }
         }
     }
 }
@@ -448,12 +450,14 @@ void parseLine(char *src) {
     uint8_t state;
     uint8_t argcount = 0;
     token_t token;
+    streamtoken_t streamtoken;
 
     // default current line items
     currentline.current_instruction = NULL;
     currentline.current_macro = NULL;
     currentline.next = NULL;
-    currentline.label[0] = 0;
+    //currentline.label[0] = 0;
+    currentline.label = NULL;
     currentline.mnemonic[0] = 0;
     currentline.suffix[0] = 0;
     currentline.operand1[0] = 0;
@@ -471,13 +475,16 @@ void parseLine(char *src) {
         switch(state) {
             case PS_START:
                 if((isspace(*src) == 0) && (*src) != '.') {
-                    getLineToken(&token, src, ':');
-                    switch(token.terminator) {
+                    //getLineToken(&token, src, ':');
+                    getLabelToken(&streamtoken, src);
+                    //switch(token.terminator) {
+                    switch(streamtoken.terminator) {
                         case ':':
                             state = PS_LABEL;
                             break;
                         case ';':
-                            if(*src == ';') { // only if first char is ';'
+                            //if(*src == ';') { // only if first char is ';'
+                            if((strlen(streamtoken.start) == 0) && streamtoken.terminator == ';') {
                                 state = PS_COMMENT;
                                 break;
                             }
@@ -507,9 +514,10 @@ void parseLine(char *src) {
                 }
                 break;
             case PS_LABEL:
-                strcpy(currentline.label,token.start);
+                //strcpy(currentline.label,token.start);
+                currentline.label = streamtoken.start;
                 advanceLocalLabel();
-                x = getLineToken(&token, token.next, ' ');
+                x = getLineToken(&token, streamtoken.next, ' ');
                 if(x) state = PS_COMMAND;
                 else {
                     if(token.terminator == 0) {
@@ -617,7 +625,7 @@ void parseLine(char *src) {
 }
 
 void definelabel(int24_t num){
-    if(currentline.label[0] == '\0') return;
+    if(currentline.label == NULL) return;
 
     if(currentline.label[0] == '@') {
         if(currentline.label[1] == '@') {
@@ -638,12 +646,13 @@ void definelabel(int24_t num){
         error(message[ERROR_CREATINGLABEL]);
         return;
     }
+
     writeLocalLabels();
     clearLocalLabels();
 }
 
 void refreshlocalLabels(void) {
-    if((pass == 2) && (notEmpty(currentline.label)) && (currentline.label[0] != '@')) {
+    if((pass == 2) && (currentline.label) && (currentline.label[0] != '@')) {
         clearLocalLabels();
         readLocalLabels();
     }
@@ -1150,7 +1159,7 @@ void handle_asm_equ(void) {
         argcount++;
         if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
         if(pass == 1) {
-            if(notEmpty(currentline.label)) definelabel(getValue(token.start));
+            if(currentline.label) definelabel(getValue(token.start));
             else error(message[ERROR_MISSINGLABEL]);
         }
     }
@@ -1589,15 +1598,34 @@ void expandMacroStart(macro_t *exp) {
     lineNumberNeedsReset = true;
 }
 
-void processInstructions(char *line){
+void processInstructions(char *macroline){
     operandlist_t *list;
     uint8_t listitem;
     bool match;
     int i = 0;
     if(pass == 1) {
         if(recordingMacro) {
-            if(strcasecmp(currentline.mnemonic, ENDMACROCMD)) io_puts(FILE_MACRO, line);
-            if(notEmpty(currentline.label) && (currentline.label[0] != '@')) error("No global labels allowed in macro definition");
+            if(strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
+                /*
+                if(currentline.label) {
+                    io_puts(FILE_MACRO, currentline.label);
+                    io_puts(FILE_MACRO, ": ");
+                }
+                if(notEmpty(currentline.mnemonic)) {
+                    io_puts(FILE_MACRO, currentline.mnemonic);
+                }
+                if(notEmpty(currentline.suffix)) {
+                    io_putc(FILE_MACRO, '.');
+                    io_puts(FILE_MACRO, currentline.suffix);
+                }
+                if(notEmpty(currentline.operand1)) {
+                    io_putc(FILE_MACRO, ' ');
+                    io_puts(FILE_MACRO, currentline.operand1);
+                }
+                */
+                io_puts(FILE_MACRO, macroline);
+            }
+            if((currentline.label) && (currentline.label[0] != '@')) error("No global labels allowed in macro definition");
         }
         else {
             if(isEmpty(currentline.mnemonic)) {
@@ -1661,6 +1689,7 @@ void processDelayedLineNumberReset(void) {
 
 bool assemble(void){
     char line[LINEMAX + 1];
+    char macroline[LINEMAX + 1];
     filestackitem fsitem;
     bool incfileState;
 
@@ -1673,8 +1702,9 @@ bool assemble(void){
     do {
         while(io_getline(FILE_CURRENT, line, sizeof(line))) {
             linenumber++;
+            if(recordingMacro) strcpy(macroline, line);
             parseLine(line);
-            processInstructions(line);
+            processInstructions(macroline);
             processDelayedLineNumberReset();
             if(global_errors) {
                 text_YELLOW();
@@ -1714,7 +1744,7 @@ bool assemble(void){
             }
             parseLine(line);
             refreshlocalLabels();
-            processInstructions(line);
+            processInstructions(macroline);
             if(consolelist_enabled || list_enabled) {
                 listEndLine();
             }

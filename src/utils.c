@@ -115,6 +115,16 @@ bool split_suffix(char *mnemonic, char *suffix, char *buffer) {
     return suffixpresent;
 }
 
+void getLabelToken(streamtoken_t *token, char *src) {
+    token->start = src; // no need to remove leading spaces
+    while(*src && (*src != ':') && (*src != ';')) src++;
+    token->terminator = *src;
+    token->next = src+1;
+    *src = 0;
+
+    return;
+}
+
 uint8_t getLineToken(token_t *token, char *src, char terminator) {
     char *target;
     uint8_t index = 0;
