@@ -21,6 +21,10 @@ enum {
     FILE_SYMBOLS
 };
 
+#ifdef AGON
+extern unsigned int io_filesize(uint8_t fh);
+#endif
+
 void io_outputc(unsigned char c);
 void  io_write(uint8_t fh, char *s, uint16_t size);
 bool  io_init(char *input_filename, char *output_filename); // init - called once at start

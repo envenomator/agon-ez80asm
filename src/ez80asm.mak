@@ -247,6 +247,12 @@ clean:
             $(RM) "$(WORKDIR)\clock.lst"
 	@if exist "$(WORKDIR)\clock.src"  \
             $(RM) "$(WORKDIR)\clock.src"
+	@if exist "$(WORKDIR)\filesize.obj"  \
+            $(RM) "$(WORKDIR)\filesize.obj"
+	@if exist "$(WORKDIR)\filesize.lis"  \
+            $(RM) "$(WORKDIR)\filesize.lis"
+	@if exist "$(WORKDIR)\filesize.lst"  \
+            $(RM) "$(WORKDIR)\filesize.lst"
 
 relist: 
 	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
@@ -291,6 +297,8 @@ relist:
             C:\source\agon-ez80asm\src\agontimer-timer0.asm
 	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
             C:\source\agon-ez80asm\src\Debug\clock.src
+	$(AS) $(ASFLAGS) -relist:"C:\source\agon-ez80asm\src\Debug\ez80asm.map" \
+            C:\source\agon-ez80asm\src\filesize.asm
 
 # pre-4.11.0 compatibility
 rebuildall: buildall 
@@ -318,7 +326,8 @@ OBJS =  \
             $(WORKDIR_ESCSPACE)\getopt.obj  \
             $(WORKDIR_ESCSPACE)\agontimer.obj  \
             $(WORKDIR_ESCSPACE)\agontimer-timer0.obj  \
-            $(WORKDIR_ESCSPACE)\clock.obj
+            $(WORKDIR_ESCSPACE)\clock.obj  \
+            $(WORKDIR_ESCSPACE)\filesize.obj
 
 ez80asm: $(OBJS)
 	 $(LD) $(LDFLAGS)
@@ -577,7 +586,10 @@ $(WORKDIR_ESCSPACE)\agontimer-timer0.obj :  \
 $(WORKDIR_ESCSPACE)\clock.obj :  \
             $(PRJDIR_ESCSPACE)\clock.c  \
             $(INCLUDE_ESCSPACE)\std\Format.h  \
-            $(INCLUDE_ESCSPACE)\std\Stdio.h  \
-            $(PRJDIR_ESCSPACE)\config.h
+            $(INCLUDE_ESCSPACE)\std\Stdio.h
 	 $(CC) $(CFLAGS) "$(PRJDIR)\clock.c"
+
+$(WORKDIR_ESCSPACE)\filesize.obj :  \
+            $(PRJDIR_ESCSPACE)\filesize.asm
+	 $(AS) $(ASFLAGS) "$(PRJDIR)\filesize.asm"
 

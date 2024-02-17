@@ -25,6 +25,7 @@
 <file filter-key="">.\agontimer.c</file>
 <file filter-key="">.\agontimer-timer0.asm</file>
 <file filter-key="">.\clock.c</file>
+<file filter-key="">.\filesize.asm</file>
 </files>
 
 <!-- configuration information -->

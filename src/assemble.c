@@ -1229,7 +1229,7 @@ void handle_asm_incbin(void) {
     token_t token;
     uint8_t fh;
     bool eof;
-    uint24_t size;
+    uint24_t size = 0;
 
     if(recordingMacro) return;
 
@@ -1253,15 +1253,29 @@ void handle_asm_incbin(void) {
         return;
     }
 
-    while(1) {
-        size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
-        //for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
-        if(pass == 2) {
+    if(pass == 1) {
+        #ifdef AGON // efficient just get the filesize from the fh object
+            size = io_filesize(fh);
+            address += size;
+        #else
+            while(1) {
+                size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
+                address += size;
+                eof = mos_feof(fh);
+                if(eof) break;
+            }
+        #endif
+    }
+
+    if(pass == 2) {
+        while(1) {
+            size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
             io_write(FILE_OUTPUT, _buffer, size);
+
+            address += size;
+            eof = mos_feof(fh);
+            if(eof) break;
         }
-        address += size;
-        eof = mos_feof(fh);
-        if(eof) break;
     }
     mos_fclose(fh);
     if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
