@@ -444,6 +444,15 @@ void parse_operand(char *string, operand_t *operand) {
     }
 }
 
+void debug_print(char *address) {
+    int n;
+
+    for(n = 0; n < 16; n++) {
+        printf("0x%02X ", *address++);
+    }
+    printf("\n");
+}
+
 void parseLine(char *src) {
     uint8_t x;
     bool done;
@@ -458,11 +467,14 @@ void parseLine(char *src) {
     currentline.next = NULL;
     //currentline.label[0] = 0;
     currentline.label = NULL;
-    currentline.mnemonic[0] = 0;
-    currentline.suffix[0] = 0;
+    //currentline.mnemonic[0] = 0;
+    currentline.mnemonic = NULL;
+    //currentline.suffix[0] = 0;
+    currentline.suffix = NULL;
     currentline.operand1[0] = 0;
     currentline.operand2[0] = 0;
-    currentline.comment[0] = 0;
+    //currentline.comment[0] = 0;
+    currentline.comment = NULL;
     currentline.size = 0;
     currentline.suffixpresent = false;
     
@@ -475,16 +487,15 @@ void parseLine(char *src) {
         switch(state) {
             case PS_START:
                 if((isspace(*src) == 0) && (*src) != '.') {
-                    //getLineToken(&token, src, ':');
+                    // LABEL or COMMENT
                     getLabelToken(&streamtoken, src);
-                    //switch(token.terminator) {
                     switch(streamtoken.terminator) {
                         case ':':
                             state = PS_LABEL;
                             break;
                         case ';':
-                            //if(*src == ';') { // only if first char is ';'
-                            if((strlen(streamtoken.start) == 0) && streamtoken.terminator == ';') {
+                            if(strlen(streamtoken.start) == 0) {
+                                currentline.next = streamtoken.next;
                                 state = PS_COMMENT;
                                 break;
                             }
@@ -500,14 +511,21 @@ void parseLine(char *src) {
                     }
                     break;
                 }
-                x = getLineToken(&token, src,' ');
-                if(x) state = PS_COMMAND;
+                // COMMAND or COMMENT
+                //x = getLineToken(&token, src,' ');
+                x = getMnemonicToken(&streamtoken, src);
+                if(x) {
+                    state = PS_COMMAND;
+                    break;
+                }
                 else {
-                    if(token.terminator == 0) {
+                    //if(token.terminator == 0) {
+                    if(streamtoken.terminator == 0) {
                         state = PS_DONE;
                         break;
                     }
-                    if(token.terminator == ';') {
+                    //if(token.terminator == ';') {
+                    if(streamtoken.terminator == ';') {
                         state = PS_COMMENT;
                         break;
                     }
@@ -517,29 +535,35 @@ void parseLine(char *src) {
                 //strcpy(currentline.label,token.start);
                 currentline.label = streamtoken.start;
                 advanceLocalLabel();
-                x = getLineToken(&token, streamtoken.next, ' ');
+                //x = getLineToken(&token, streamtoken.next, ' ');
+                x = getMnemonicToken(&streamtoken, streamtoken.next);
                 if(x) state = PS_COMMAND;
                 else {
-                    if(token.terminator == 0) {
+                    //if(token.terminator == 0) {
+                    if(streamtoken.terminator == 0) {
                         state = PS_DONE;
                         break;
                     }
-                    if(token.terminator == ';') {
+                    //if(token.terminator == ';') {
+                    if(streamtoken.terminator == ';') {
                         state = PS_COMMENT;
+                        currentline.next = streamtoken.next;
                         break;
                     }
                 }
                 break;
             case PS_COMMAND:
-                if(token.start[0] == '.') strcpy(currentline.mnemonic, token.start+1);
-                else currentline.suffixpresent = split_suffix(currentline.mnemonic, currentline.suffix, token.start);
-
+                if(streamtoken.start[0] == '.') {
+                    // pseudo command
+                    currentline.mnemonic = streamtoken.start + 1;
+                }
+                else parse_command(streamtoken.start);
                 currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
                     // check if a defined macro exists, before erroring out
                     currentline.current_macro = findMacro(currentline.mnemonic);
                     if(currentline.current_macro) {
-                        currentline.next = token.next;
+                        currentline.next = streamtoken.next;
                         state = PS_DONE;
                         break;
                     }
@@ -550,30 +574,42 @@ void parseLine(char *src) {
                     }
                 }
                 if(currentline.current_instruction->type == ASSEMBLER) {
-                    currentline.next = token.next;
+                    currentline.next = streamtoken.next;
                     state = PS_DONE;
                     break;
                 }
-                if(token.start[0] == '.') {
-                    error(message[ERROR_INVALIDMNEMONIC]);
-                    currentline.mnemonic[0] = 0;
-                    state = PS_ERROR;                    
-                    break;
-                }
+                //if(token.start[0] == '.') {
+                //    error(message[ERROR_INVALIDMNEMONIC]);
+                //    currentline.mnemonic[0] = 0;
+                //    state = PS_ERROR;                    
+                //    break;
+                //}
                 // Valid EZ80 instruction
                 if(!recordingMacro) {
-                    switch(token.terminator) {
+                    switch(streamtoken.terminator) {
                         case ';':
-                            getLineToken(&token, token.next, 0);
+                            //getLineToken(&token, streamtoken.next, 0);
                             state = PS_COMMENT;
+                            currentline.next = streamtoken.next;
                             break;
                         case 0:
                             currentline.next = NULL;
                             state = PS_DONE;
                             break;
                         default:
-                            getLineToken(&token, token.next, ',');
-                            state = PS_OP1;
+                            if(streamtoken.next) {
+                                int test;
+                                test = getLineToken(&token, streamtoken.next, ',');
+                                if(test) {
+                                    state = PS_OP1;
+                                }
+                                else {
+                                    state = PS_DONE;
+                                }
+                            }
+                            else {
+                                state = PS_DONE;
+                            }
                             break;
                     }
                 } 
@@ -610,7 +646,7 @@ void parseLine(char *src) {
                 }
                 break;
             case PS_COMMENT:
-                strcpy(currentline.comment,token.start);
+                currentline.comment = currentline.next;
                 state = PS_DONE;
                 break;
             case PS_ERROR:
@@ -642,6 +678,7 @@ void definelabel(int24_t num){
         error(message[ERROR_INVALIDLABELNAME]);
         return;
     }
+    //printf("Inserting label <%s>\n", currentline.label);
     if(insertGlobalLabel(currentline.label, num) == false){
         error(message[ERROR_CREATINGLABEL]);
         return;
@@ -661,7 +698,10 @@ void refreshlocalLabels(void) {
 // return ADL prefix bitfield, or 0 if none present
 uint8_t getADLsuffix(void) {
 
-    if((currentline.suffix[0] == '\0') && !currentline.suffixpresent) return 0; 
+    //if((currentline.suffix[0] == '\0') && !currentline.suffixpresent) return 0; 
+    if(currentline.suffixpresent == false) return 0;
+
+    //printf("Continuing getADLsuffux\n");
 
     switch(strlen(currentline.suffix)) {
         case 1: // .s or .l
@@ -1605,30 +1645,14 @@ void processInstructions(char *macroline){
     int i = 0;
     if(pass == 1) {
         if(recordingMacro) {
-            if(strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
-                /*
-                if(currentline.label) {
-                    io_puts(FILE_MACRO, currentline.label);
-                    io_puts(FILE_MACRO, ": ");
-                }
-                if(notEmpty(currentline.mnemonic)) {
-                    io_puts(FILE_MACRO, currentline.mnemonic);
-                }
-                if(notEmpty(currentline.suffix)) {
-                    io_putc(FILE_MACRO, '.');
-                    io_puts(FILE_MACRO, currentline.suffix);
-                }
-                if(notEmpty(currentline.operand1)) {
-                    io_putc(FILE_MACRO, ' ');
-                    io_puts(FILE_MACRO, currentline.operand1);
-                }
-                */
+            if((currentline.mnemonic == NULL) || strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
+            //if((currentline.mnemonic != NULL) && strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
                 io_puts(FILE_MACRO, macroline);
             }
             if((currentline.label) && (currentline.label[0] != '@')) error("No global labels allowed in macro definition");
         }
         else {
-            if(isEmpty(currentline.mnemonic)) {
+            if(currentline.mnemonic == NULL) {
                 // check if there is a single label on a line in during pass 1
                 if(pass == 1) definelabel(address);
                 return;
@@ -1703,19 +1727,27 @@ bool assemble(void){
         while(io_getline(FILE_CURRENT, line, sizeof(line))) {
             linenumber++;
             if(recordingMacro) strcpy(macroline, line);
+            //printf("Pre parse line\n");
             parseLine(line);
+            //printf("Post parse line\n");
             processInstructions(macroline);
+            //printf("Processed\n");
             processDelayedLineNumberReset();
+            //printf("Delayedreset\n");
             if(global_errors) {
                 text_YELLOW();
                 printf("%s",line);
                 text_NORMAL();
                 return false;
-            }    
+            }
+            //printf("After error checks\n");
         }
+        //printf("After while loop\n");
         if(inConditionalSection != 0) error(message[ERROR_MISSINGENDIF]);
 
+        //printf("After inConditionalSection\n");
         if(filestackCount()) {
+            //printf("After filestackcount()\n");
             currentExpandedMacro = NULL;
             mos_fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);

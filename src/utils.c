@@ -92,27 +92,22 @@ typedef enum {
     TOKEN_BRACKET
 } tokenclass;
 
-// split a 'command.suffix' token in two parts
-// returns if a suffix should be present
-bool split_suffix(char *mnemonic, char *suffix, char *buffer) {
-    bool cmd = true;
-    bool suffixpresent = false;
+// further parse a command-token string to currentline.mnemonic & currentline.suffix
+void parse_command(char *src) {
+    currentline.mnemonic = src;
 
-    while(*buffer) {
-        if(cmd) {
-            *mnemonic = *buffer;
-            if(*buffer == '.') {
-                cmd = false;
-                suffixpresent = true;
-            }
-            else mnemonic++;
-        }
-        else *suffix++ = *buffer;
-        buffer++;
+    while(*src && (*src != '.')) src++;
+    if(*src) {
+        // suffix start found
+        *src = 0; // terminate mnemonic
+        currentline.suffixpresent = true;
+        currentline.suffix = src + 1;
+        return;
     }
-    *suffix = 0;
-    *mnemonic = 0;
-    return suffixpresent;
+    // no suffix found
+    currentline.suffixpresent = false;
+    currentline.suffix = NULL;
+    return;
 }
 
 void getLabelToken(streamtoken_t *token, char *src) {
@@ -123,6 +118,31 @@ void getLabelToken(streamtoken_t *token, char *src) {
     *src = 0;
 
     return;
+}
+// fill the streamtoken_t object, according to the stream
+// returns the number of Mnemonic characters found, or 0 if none
+uint8_t getMnemonicToken(streamtoken_t *token, char *src) {
+    uint8_t length = 0;
+
+    // skip leading space
+    while(*src && (isspace(*src))) src++;
+    if(*src == 0) {
+        token->start = NULL;
+        token->next = NULL;
+        token->terminator = 0;
+        return 0;
+    }
+    token->start = src;
+    while(!isspace(*src) && (*src != ';') && *src) {
+        length++;
+        src++;
+    }
+    token->terminator = *src;
+    if(*src) token->next = src+1;
+    else token->next = NULL;
+
+    *src = 0; // terminate stream
+    return length;
 }
 
 uint8_t getLineToken(token_t *token, char *src, char terminator) {
