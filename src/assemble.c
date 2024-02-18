@@ -141,7 +141,6 @@ int24_t getValue(char *string, bool req_firstpass) {
 void parse_operand(char *string, operand_t *operand) {
     char *ptr = string;
     uint8_t len = strlen(string);
-    //regcc_t *regcc;
 
     // direct or indirect
     if(*ptr == '(') {
@@ -157,20 +156,6 @@ void parse_operand(char *string, operand_t *operand) {
         // should not find a closing bracket
         if(string[len-1] == ')') error(message[ERROR_OPENINGBRACKET]);
     }
-    /*
-    regcc = regcc_table_lookup(ptr);
-    if(regcc) {
-        operand->reg = regcc->reg;
-        operand->reg_index = regcc->reg_index;
-        operand->cc = regcc->cc;
-        operand->cc_index = regcc->cc_index;
-        if((operand->reg == R_IX) || (operand->reg == R_IY)) {
-            operand->displacement_provided = false;
-            operand->displacement = 16;
-        }
-        return;
-    }
-    */
     
     switch(*ptr++) {
         case 0: // empty operand
@@ -462,15 +447,6 @@ void parse_operand(char *string, operand_t *operand) {
     }
 }
 
-void debug_print(char *address) {
-    int n;
-
-    for(n = 0; n < 16; n++) {
-        printf("0x%02X ", *address++);
-    }
-    printf("\n");
-}
-
 void parseLine(char *src) {
     uint8_t x;
     bool done;
@@ -483,15 +459,11 @@ void parseLine(char *src) {
     currentline.current_instruction = NULL;
     currentline.current_macro = NULL;
     currentline.next = NULL;
-    //currentline.label[0] = 0;
     currentline.label = NULL;
-    //currentline.mnemonic[0] = 0;
     currentline.mnemonic = NULL;
-    //currentline.suffix[0] = 0;
     currentline.suffix = NULL;
     currentline.operand1[0] = 0;
     currentline.operand2[0] = 0;
-    //currentline.comment[0] = 0;
     currentline.comment = NULL;
     currentline.size = 0;
     currentline.suffixpresent = false;
@@ -530,19 +502,16 @@ void parseLine(char *src) {
                     break;
                 }
                 // COMMAND or COMMENT
-                //x = getLineToken(&token, src,' ');
                 x = getMnemonicToken(&streamtoken, src);
                 if(x) {
                     state = PS_COMMAND;
                     break;
                 }
                 else {
-                    //if(token.terminator == 0) {
                     if(streamtoken.terminator == 0) {
                         state = PS_DONE;
                         break;
                     }
-                    //if(token.terminator == ';') {
                     if(streamtoken.terminator == ';') {
                         state = PS_COMMENT;
                         break;
@@ -550,19 +519,15 @@ void parseLine(char *src) {
                 }
                 break;
             case PS_LABEL:
-                //strcpy(currentline.label,token.start);
                 currentline.label = streamtoken.start;
                 advanceLocalLabel();
-                //x = getLineToken(&token, streamtoken.next, ' ');
                 x = getMnemonicToken(&streamtoken, streamtoken.next);
                 if(x) state = PS_COMMAND;
                 else {
-                    //if(token.terminator == 0) {
                     if(streamtoken.terminator == 0) {
                         state = PS_DONE;
                         break;
                     }
-                    //if(token.terminator == ';') {
                     if(streamtoken.terminator == ';') {
                         state = PS_COMMENT;
                         currentline.next = streamtoken.next;
@@ -576,7 +541,7 @@ void parseLine(char *src) {
                     currentline.mnemonic = streamtoken.start + 1;
                 }
                 else parse_command(streamtoken.start);
-                currentline.current_instruction = instruction_table_lookup(currentline.mnemonic);
+                currentline.current_instruction = instruction_hashtable_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
                     // check if a defined macro exists, before erroring out
                     currentline.current_macro = findMacro(currentline.mnemonic);
@@ -596,17 +561,10 @@ void parseLine(char *src) {
                     state = PS_DONE;
                     break;
                 }
-                //if(token.start[0] == '.') {
-                //    error(message[ERROR_INVALIDMNEMONIC]);
-                //    currentline.mnemonic[0] = 0;
-                //    state = PS_ERROR;                    
-                //    break;
-                //}
                 // Valid EZ80 instruction
                 if(!recordingMacro) {
                     switch(streamtoken.terminator) {
                         case ';':
-                            //getLineToken(&token, streamtoken.next, 0);
                             state = PS_COMMENT;
                             currentline.next = streamtoken.next;
                             break;

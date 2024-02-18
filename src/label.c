@@ -227,7 +227,7 @@ bool insertGlobalLabel(char *labelname, int24_t address){
 
     strcpy(tmp->name, labelname);
     tmp->address = address;
-    index = hash(labelname);
+    index = hash(labelname) % GLOBAL_LABEL_TABLE_SIZE;
     for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++) {
         try = (i + index) % GLOBAL_LABEL_TABLE_SIZE;
         if(globalLabelTable[try] == NULL){
@@ -246,7 +246,7 @@ bool insertGlobalLabel(char *labelname, int24_t address){
 label_t * findGlobalLabel(char *name){
     int index,i,try;
 
-    index = hash(name);
+    index = hash(name) % GLOBAL_LABEL_TABLE_SIZE;
     for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
         try = (index + i) % GLOBAL_LABEL_TABLE_SIZE;
         if(globalLabelTable[try] == NULL){

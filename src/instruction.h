@@ -220,11 +220,11 @@ typedef struct {
 } instruction_t;
 
 instruction_t * instruction_table_lookup(char *name);
-regcc_t * regcc_table_lookup(char *key);
+//regcc_t * regcc_table_lookup(char *key);
+instruction_t * instruction_hashtable_lookup(char *name);
 
-
-void setup_regcc_hashtable(void);
-
+//void setup_regcc_hashtable(void);
+void init_instruction_hashtable(void);
 
 
 // An array-based index of this structure will act as a fast lookup table

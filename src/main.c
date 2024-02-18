@@ -156,6 +156,7 @@ int main(int argc, char *argv[]) {
     if(list_enabled) printf("Listing to %s\r\n", filename[FILE_LISTING]);
 
     // Initialization
+    init_instruction_hashtable();
     initGlobalLabelTable();
     initLocalLabelTable();
     initAnonymousLabelTable();

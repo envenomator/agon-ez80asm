@@ -20,13 +20,14 @@
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
 #define FILLBYTE                   0xFF // Same as ZDS
+#define INSTRUCTION_HASHTABLESIZE  2048 // Number of entries in the hashtable
 #define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'
 #define LINEMAX                     256 // Input line length maximum UINT8_T
 #define FILENAMEMAXLENGTH            64
 #define FILES                         8
-#define MALLOC_BUFFERSIZE       0x40000 // global 256KB memory buffer
+#define MALLOC_BUFFERSIZE       0x30000 // global memory buffer
 #define LOCAL_LABEL_BUFFERSIZE   0x4000 // 16KB local label space
-#define GLOBAL_LABEL_TABLE_SIZE   16384 // 16K global labels
+#define GLOBAL_LABEL_TABLE_SIZE    8192 // 8K global labels
 #define LOCAL_LABEL_TABLE_SIZE       64 //  64 local labels
 #define FILE_BUFFERSIZE            8192 // For each specified input/output file (io.c)
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number

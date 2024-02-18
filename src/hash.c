@@ -1,4 +1,5 @@
 #include <string.h>
+#include <ctype.h>
 #include "hash.h"
 #include "./stdint.h"
 
@@ -21,34 +22,19 @@ static uint8_t pearson[256] = {
      51,  65,  28, 144, 254, 221,  93, 189, 194, 139, 112,  43,  71, 109, 184, 209
 };
 
-unsigned int hash(char *str) {
+unsigned int hash(char *key) {
     unsigned int h;
     unsigned char h1, h2;
-
-    if (*str == 0) return 0;
-    h1 = *str; h2 = *str + 1;
-    str++;
-    while (*str) {
-        h1 = pearson[h1 ^ *str];
-        h2 = pearson[h2 ^ *str];
-        str++;
+    
+    if (*key == 0) return 0;
+    h1 = *key; h2 = *key + 1;
+    key++;
+    while (*key) {
+        h1 = pearson[h1 ^ *key];
+        h2 = pearson[h2 ^ *key];
+        key++;
     }
 
     h = ((unsigned int)h1 << 8)|(unsigned int)h2;
-    return h & ((GLOBAL_LABEL_TABLE_SIZE * 2) - 1); // Mask number
+    return h;
 }
-/*
-uint8_t hash8(char *str) {
-    uint8_t h1;
-
-    if (*str == 0) return 0;
-    h1 = *str;
-    str++;
-    while (*str) {
-        h1 = pearson[h1 ^ *str];
-        str++;
-    }
-
-    return h1;
-}
-*/
