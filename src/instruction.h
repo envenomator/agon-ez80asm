@@ -131,6 +131,14 @@ typedef struct {
 } operand_t;
 
 typedef struct {
+    char                name[MAX_MNEMONIC_SIZE];
+    cpuregister         reg;
+    uint8_t             reg_index;
+    bool                cc;
+    uint8_t             cc_index;
+} regcc_t;
+
+typedef struct {
     uint8_t suffix;
     uint8_t prefix1;
     uint8_t prefix2;
@@ -212,6 +220,12 @@ typedef struct {
 } instruction_t;
 
 instruction_t * instruction_table_lookup(char *name);
+regcc_t * regcc_table_lookup(char *key);
+
+
+void setup_regcc_hashtable(void);
+
+
 
 // An array-based index of this structure will act as a fast lookup table
 typedef struct {

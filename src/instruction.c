@@ -692,6 +692,68 @@ operandlist_t operands_xor[] = {
     {OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_ANY},
 };
 
+/*
+// this table needs to be sorted on name
+regcc_t regccs[] = {
+    {"a",   R_A,    R_INDEX_A,  false,  0},
+    {"af",  R_AF,   R_INDEX_AF, false,  0},
+    {"af'", R_AF,   R_INDEX_AF, false,  0},
+    {"b",   R_B,    R_INDEX_B,  false,  0},
+    {"bc",  R_BC,   R_INDEX_BC, false,  0},
+    {"c",   R_C,    R_INDEX_C,  true,   CC_INDEX_C},
+    {"d",   R_D,    R_INDEX_D,  false,  0},
+    {"de",  R_DE,   R_INDEX_DE, false,  0},
+    {"e",   R_E,    R_INDEX_E,  false,  0},
+    {"h",   R_H,    R_INDEX_H,  false,  0},
+    {"hl",  R_HL,   R_INDEX_HL, false,  0},
+    {"i",   R_I,    R_INDEX_I,  false,  0},
+    {"ix",  R_IX,   R_INDEX_IX, false,  0},
+    {"ixh", R_IXH,  R_INDEX_IX, false,  0},
+    {"ixl", R_IXL,  R_INDEX_IX, false,  0},
+    {"iy",  R_IY,   R_INDEX_IY, false,  0},
+    {"iyh", R_IYH,  R_INDEX_IY, false,  0},
+    {"iyl", R_IYL,  R_INDEX_IY, false,  0},
+    {"l",   R_L,    R_INDEX_L,  false,  0},
+    {"m",   R_NONE, 0,          true,   CC_INDEX_M},
+    {"mb",  R_MB,   R_INDEX_MB, false,  0},
+    {"nc",  R_NONE, 0,          true,   CC_INDEX_NC},
+    {"nz",  R_NONE, 0,          true,   CC_INDEX_NZ},
+    {"p",   R_NONE, 0,          true,   CC_INDEX_P},
+    {"pe",  R_NONE, 0,          true,   CC_INDEX_PE},
+    {"po",  R_NONE, 0,          true,   CC_INDEX_PO},
+    {"r",   R_R,    R_INDEX_R,  false,  0},
+    {"sp",  R_SP,   R_INDEX_SP, false,  0},
+    {"z",   R_NONE, 0,          true,   CC_INDEX_Z}
+};
+*/
+/*
+regcc_t *regcc_hashtable[256];
+
+#include "hash.h"
+void setup_regcc_hashtable(void) {
+    uint16_t n, hash,collisions = 0;
+    for(n = 0; n <= 255; n++) {
+        regcc_hashtable[n] = NULL;
+    }
+
+    for(n = 0; n < (sizeof(regccs) / sizeof(regcc_t)); n++) {
+        hash = hash8(regccs[n].name);
+        while(regcc_hashtable[hash]) {
+            //printf("Collision for %s with existing %s\n", regccs[n].name, regcc_hashtable[hash]->name);
+            hash = hash + 1;
+            collisions++;
+        }
+        regcc_hashtable[hash] = &regccs[n];
+    }
+    // print hashtable
+    //printf("%d collisions\n", collisions);
+    //for(n = 0; n <= 255; n++) {
+    //    if(regcc_hashtable[n]) {
+    //        printf("%03d - %s\n", n, regcc_hashtable[n]->name);
+    //    }
+    //}
+}
+*/
 
 // this table needs to be sorted on name
 instruction_t instructions[] = {
@@ -821,6 +883,45 @@ instruction_t instructions[] = {
     {"tstio",    EZ80, 0, sizeof(operands_tstio)/sizeof(operandlist_t), operands_tstio},
     {"xor",      EZ80, 0, sizeof(operands_xor)/sizeof(operandlist_t), operands_xor}
 };
+
+/*
+regcc_t * regcc_table_lookup(char *key) {
+	regcc_t *base = regccs;
+	int lim, cmp;
+	regcc_t *p;
+
+	for (lim = sizeof(regccs)/sizeof(regcc_t); lim != 0; lim >>= 1) {
+		p = base + (lim >> 1);
+		cmp = strcasecmp(key,p->name);
+		if (cmp == 0)
+			return p;
+		if (cmp > 0) {
+			base = p + 1;
+			lim--;
+		}
+	}
+	return (NULL);
+}
+*/
+
+/*
+regcc_t * regcc_table_lookup(char *name) {
+    uint8_t index,i;
+    uint8_t try;
+    index = hash8(name);
+    for(i = 0; i < 255; i++){
+        try = (index + i) & 0xFF;
+        if(regcc_hashtable[try] == NULL){
+            return NULL;
+        }
+        if(regcc_hashtable[try] != NULL &&
+            strcasecmp(regcc_hashtable[try]->name,name) == 0){
+            return regcc_hashtable[try];
+        }
+    }
+    return NULL;
+}
+*/
 
 // Binary search of instruction_t table
 // Requires a pre-sorted table

@@ -64,7 +64,7 @@ uint8_t getAsciiValue(char *string) {
 // labelb-1
 // labela+labelb+offset1-1
 // The string should not contain any spaces, needs to be a single token
-int24_t getValue(char *string) {
+int24_t getValue(char *string, bool req_firstpass) {
     int24_t total, tmp;
     char operator, *ptr, unary_operator;
     label_t *lbl;
@@ -73,6 +73,8 @@ int24_t getValue(char *string) {
     ptr = string;
     total = 0;
     unary_operator = 0;
+
+    if((pass == 1) && !req_firstpass) return 0;
 
     operator = '+'; // previous operand in case of single value/label
     while(ptr) {
@@ -139,6 +141,7 @@ int24_t getValue(char *string) {
 void parse_operand(char *string, operand_t *operand) {
     char *ptr = string;
     uint8_t len = strlen(string);
+    //regcc_t *regcc;
 
     // direct or indirect
     if(*ptr == '(') {
@@ -154,7 +157,21 @@ void parse_operand(char *string, operand_t *operand) {
         // should not find a closing bracket
         if(string[len-1] == ')') error(message[ERROR_OPENINGBRACKET]);
     }
-
+    /*
+    regcc = regcc_table_lookup(ptr);
+    if(regcc) {
+        operand->reg = regcc->reg;
+        operand->reg_index = regcc->reg_index;
+        operand->cc = regcc->cc;
+        operand->cc_index = regcc->cc_index;
+        if((operand->reg == R_IX) || (operand->reg == R_IY)) {
+            operand->displacement_provided = false;
+            operand->displacement = 16;
+        }
+        return;
+    }
+    */
+    
     switch(*ptr++) {
         case 0: // empty operand
             break;
@@ -293,8 +310,8 @@ void parse_operand(char *string, operand_t *operand) {
                         case '-':
                             operand->reg = R_IX;
                             operand->displacement_provided = true;
-                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr);
-                            else operand->displacement = (int16_t) getValue(ptr);
+                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
+                            else operand->displacement = (int16_t) getValue(ptr, false);
                             return;
                             break;
                         default:
@@ -327,8 +344,8 @@ void parse_operand(char *string, operand_t *operand) {
                         case '-':
                             operand->reg = R_IY;
                             operand->displacement_provided = true;
-                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr);
-                            else operand->displacement = (int16_t) getValue(ptr);
+                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
+                            else operand->displacement = (int16_t) getValue(ptr, false);
                             return;
                             break;
                         default:
@@ -437,9 +454,10 @@ void parse_operand(char *string, operand_t *operand) {
         default:
             break;
     }
+    
     if(*string) {
         if(operand->indirect) string++;
-        operand->immediate = getValue(string);
+        operand->immediate = getValue(string, false);
         operand->immediate_provided = true;
     }
 }
@@ -1089,7 +1107,7 @@ void parse_asm_single_immediate(void) {
     if(currentline.next) {
         getLineToken(&token, currentline.next,0);
         if(token.length) {
-            operand1.immediate = getValue(token.start);
+            operand1.immediate = getValue(token.start, true);
             operand1.immediate_provided = true;
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
         }
@@ -1108,7 +1126,7 @@ void parse_asm_keyval_pair(void) {
         if(token.terminator == '=') {
             getLineToken(&token, token.next, 0);
             if(token.length) {
-                operand2.immediate = getValue(token.start);
+                operand2.immediate = getValue(token.start, true);
                 operand2.immediate_provided = true;
             }
             else error(message[ERROR_MISSINGOPERAND]);
@@ -1134,7 +1152,7 @@ void handle_asm_db(void) {
                     emit_quotedstring(token.start);
                     break;
                 default:
-                    operand1.immediate = getValue(token.start);
+                    operand1.immediate = getValue(token.start, true);
                     if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
                     emit_8bit(operand1.immediate);
                     break;
@@ -1163,7 +1181,7 @@ void handle_asm_dw(uint8_t wordtype) {
             if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
             lbl = findLabel(token.start);
             if(lbl) operand1.immediate = lbl->address;
-            else operand1.immediate = getValue(token.start);
+            else operand1.immediate = getValue(token.start, false);
             switch(wordtype) {
                 case ASM_DW:
                     if(operand1.immediate > 0xffffff) error(message[ERROR_ADLWORDSIZE]);
@@ -1199,7 +1217,7 @@ void handle_asm_equ(void) {
         argcount++;
         if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
         if(pass == 1) {
-            if(currentline.label) definelabel(getValue(token.start));
+            if(currentline.label) definelabel(getValue(token.start, true));
             else error(message[ERROR_MISSINGLABEL]);
         }
     }
@@ -1349,7 +1367,7 @@ void handle_asm_blk(uint8_t width) {
     }
 
     if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-    num = getValue(token.start);
+    num = getValue(token.start, false);
 
     if(token.terminator == ',') {
         getLineToken(&token, token.next, 0);
@@ -1358,7 +1376,7 @@ void handle_asm_blk(uint8_t width) {
             return;
         }
         if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-        val = getValue(token.start);
+        val = getValue(token.start, false);
     }
     else if((token.terminator != 0)  && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
 
@@ -1481,7 +1499,7 @@ void handle_asm_if(void) {
         error(message[ERROR_CONDITIONALEXPRESSION]);
         return;
     }
-    value = getValue(token.start);
+    value = getValue(token.start, false);
 
     inConditionalSection = value ? 2 : 1;
 }
@@ -1511,7 +1529,7 @@ void handle_asm_fillbyte(void) {
     getLineToken(&token, currentline.next, 0);
     if(token.length) {
         if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
-        val = getValue(token.start);
+        val = getValue(token.start, false);
         if((val < 0) || (val > 255)) error(message[ERROR_8BITRANGE]);
         fillbyte = val;
     }
@@ -1646,7 +1664,6 @@ void processInstructions(char *macroline){
     if(pass == 1) {
         if(recordingMacro) {
             if((currentline.mnemonic == NULL) || strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
-            //if((currentline.mnemonic != NULL) && strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
                 io_puts(FILE_MACRO, macroline);
             }
             if((currentline.label) && (currentline.label[0] != '@')) error("No global labels allowed in macro definition");

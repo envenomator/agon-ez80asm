@@ -37,3 +37,18 @@ unsigned int hash(char *str) {
     h = ((unsigned int)h1 << 8)|(unsigned int)h2;
     return h & ((GLOBAL_LABEL_TABLE_SIZE * 2) - 1); // Mask number
 }
+/*
+uint8_t hash8(char *str) {
+    uint8_t h1;
+
+    if (*str == 0) return 0;
+    h1 = *str;
+    str++;
+    while (*str) {
+        h1 = pearson[h1 ^ *str];
+        str++;
+    }
+
+    return h1;
+}
+*/
