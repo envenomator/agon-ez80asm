@@ -1729,8 +1729,8 @@ void processDelayedLineNumberReset(void) {
 }
 
 bool assemble(void){
-    char line[LINEMAX + 1];
-    char macroline[LINEMAX + 1];
+    char line[LINEMAX];
+    char macroline[LINEMAX];
     filestackitem fsitem;
     bool incfileState;
 
@@ -1741,30 +1741,22 @@ bool assemble(void){
     printf("Pass 1...\r\n");
     passInitialize(1);
     do {
-        while(io_getline(FILE_CURRENT, line, sizeof(line))) {
+        while(io_getline(FILE_CURRENT, line)) {
             linenumber++;
             if(recordingMacro) strcpy(macroline, line);
-            //printf("Pre parse line\n");
             parseLine(line);
-            //printf("Post parse line\n");
             processInstructions(macroline);
-            //printf("Processed\n");
             processDelayedLineNumberReset();
-            //printf("Delayedreset\n");
             if(global_errors) {
                 text_YELLOW();
                 printf("%s",line);
                 text_NORMAL();
                 return false;
             }
-            //printf("After error checks\n");
         }
-        //printf("After while loop\n");
         if(inConditionalSection != 0) error(message[ERROR_MISSINGENDIF]);
 
-        //printf("After inConditionalSection\n");
         if(filestackCount()) {
-            //printf("After filestackcount()\n");
             currentExpandedMacro = NULL;
             mos_fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
@@ -1786,7 +1778,7 @@ bool assemble(void){
     readAnonymousLabel();
     
     do {
-        while(io_getline(FILE_CURRENT, line, sizeof(line))) {
+        while(io_getline(FILE_CURRENT, line)) {
             linenumber++;
             if(consolelist_enabled || list_enabled) {
                 listStartLine(line);

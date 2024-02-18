@@ -182,71 +182,40 @@ int io_puts(uint8_t fh, char *s) {
     return number;
 }
 
-// Read a line of characters from a file, ends at CR, EOF, or error at size
-char* io_getline(uint8_t fh, char *s, int size) {
-	int c;
-	char *cs;
-    bool eof;
+// Allocate a LINEMAX buffer for io_getline, max LINEMAX-1 chars will be read
+// Configured to use LINEMAX = UINT8_T Maximum for performance
+char* io_getline(uint8_t fh, char *s) {
+	uint8_t maxchars, charsread;
+    char *cs,*ptr;
     bool finalread = false;
-    c = 0;
-	cs = s;
-    
-    if(_bufferstart[fh]) {
-        do {
-            if(_filebuffersize[fh] == 0) {
+    bool done = false;
+
+    cs = s;
+    while(!done && !_fileEOF[fh]) {
+        if(_filebuffersize[fh] == 0) {
+            if(finalread) _fileEOF[fh] = true;
+            else {
                 _io_fillbuffer(fh);
                 if(_filebuffersize[fh] < FILE_BUFFERSIZE) finalread = true;
             }
-            else {
-                _filebuffersize[fh]--;
-                c = *(_filebuffer[fh]);
-                _filebuffer[fh]++;
-                size--;
-                if((*cs++ = c) == '\n') break;
-            }
-            _fileEOF[fh] = (_filebuffersize[fh] == 0) && finalread;
-            if((size == 0) && !_fileEOF[fh]) {
-                error(message[ERROR_LINETOOLONG]);
-                break;
-            }
         }
-        while(!_fileEOF[fh]);
-        *cs = '\0';
-        return (*s == 0)? NULL:s;
+        else {
+            ptr = _filebuffer[fh]; // pointer to read buffer;
+            maxchars = (_filebuffersize[fh] > LINEMAX-1)?LINEMAX-1:(uint8_t)_filebuffersize[fh];
+            charsread = 0;
+            while(maxchars--) {
+                charsread++;
+                if(((*cs++ = *ptr++)) == '\n') {
+                    done = true;
+                    break;
+                }
+            }
+            _filebuffersize[fh] -= charsread;
+            _filebuffer[fh] += charsread;
+        }
     }
-    else {
-        // regular non-buffered read
-        #ifdef AGON // Agon FatFS handles feof differently than C/C++ std library feof
-        eof = 0;
-        do {
-            --size;
-            c = mos_fgetc(filehandle[fh]);
-            if((*cs++ = c) == '\n') break;		
-            eof = mos_feof(filehandle[fh]);
-            if((size == 0) && !eof) {
-                error(message[ERROR_LINETOOLONG]);
-                break;
-            }
-        }
-        while(!eof);
-        #endif
-
-        #ifndef AGON
-        do {
-            --size;
-            c = mos_fgetc(filehandle[fh]);
-            eof = mos_feof(filehandle[fh]);
-            if((size == 0) && !eof) {
-                error(message[ERROR_LINETOOLONG]);
-                break;
-            }
-            if((*cs++ = c) == '\n') break;		
-        }
-        while(!eof);
-        #endif
-        *cs = '\0';
-        return (eof) ? NULL : s;
-    }
+    *cs = '\0';
+    return (*s == 0)? NULL:s;
 }
 
 bool io_init(char *input_filename, char *output_filename) {

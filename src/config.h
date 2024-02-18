@@ -21,7 +21,7 @@
 #define START_ADDRESS           0x40000 // Agon default load address
 #define FILLBYTE                   0xFF // Same as ZDS
 #define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'
-#define LINEMAX                     256 // Input line length maximum
+#define LINEMAX                     256 // Input line length maximum UINT8_T
 #define FILENAMEMAXLENGTH            64
 #define FILES                         8
 #define MALLOC_BUFFERSIZE       0x40000 // global 256KB memory buffer
