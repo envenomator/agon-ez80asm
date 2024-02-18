@@ -1325,7 +1325,7 @@ void handle_asm_blk(uint8_t width) {
     }
 
     if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-    num = getValue(token.start, false);
+    num = getValue(token.start, true); // <= needs a value during pass 1, otherwise addresses will be off later on
 
     if(token.terminator == ',') {
         getLineToken(&token, token.next, 0);
