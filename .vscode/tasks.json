@@ -6,7 +6,7 @@
         {
             "label": "ZDS build ez80asm",
             "type": "shell",
-            "command": "make rebuildall -f ../ez80asm.mak",
+            "command": "C:\\ZiLOG\\ZDSII_eZ80Acclaim!_5.3.5\\bin\\make.exe rebuildall -f ../ez80asm.mak",
             "options": {
                 "cwd": "${workspaceFolder}/src/Debug"
             },

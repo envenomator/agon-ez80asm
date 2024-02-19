@@ -447,7 +447,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
 }
 
 void parseLine(char *src) {
-    uint8_t oplength;
+    uint8_t oplength = 0;
     uint8_t x;
     bool done;
     uint8_t state;
