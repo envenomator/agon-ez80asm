@@ -12,6 +12,9 @@
 // Global variables
 char     filename[FILES][FILENAMEMAXLENGTH + 1];
 uint8_t  filehandle[FILES];
+uint16_t sourcefilecount;
+uint16_t binfilecount;
+
 // Local variables
 char *   _bufferstart[FILES];          // statically set start of buffer to each file
 char *   _filebuffer[FILES];            // actual moving pointers in buffer
@@ -219,6 +222,8 @@ char* io_getline(uint8_t fh, char *s) {
 }
 
 bool io_init(char *input_filename, char *output_filename) {
+    sourcefilecount = 0;
+    binfilecount = 0;
     _prepare_filenames(input_filename, output_filename);
     _initFileBufferLayout();
     _initFileBuffers();

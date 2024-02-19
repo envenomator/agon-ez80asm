@@ -16,3 +16,8 @@ char *agon_malloc(uint16_t length) {
     }
     return 0;
 }
+
+uint24_t agon_mem_used(void) {
+    return _bufferIndex;
+}
+

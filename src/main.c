@@ -15,6 +15,7 @@
 #include "str2num.h"
 #include "label.h"
 #include "clock.h"
+#include "malloc.h"
 
 void printVersion(void) {
     printf("ez80asm version %d.%d, (C)2023 - Jeroen Venema\r\n",VERSION,REVISION);
@@ -30,12 +31,17 @@ void printHelp(void) {
     printf("  -l\tListing to file with .lst extension\r\n");
     printf("  -s\tExport symbols\r\n");
     printf("  -d\tDirect listing to console\r\n");
+    printf("  -x\tDisplay assembly statistics\r\n");
     printf("\r\n");
+}
+
+void displayStatistics(void) {
+    printf("\r\nAssembly statistics\r\n===========================\r\nMemory        : %d/%d\r\nLabels        : %d/%d\r\nMacros        : %d/%d\r\nSources parsed: %d\r\nBinfiles read : %d\r\nOutput size   : %d\r\n", agon_mem_used(), MALLOC_BUFFERSIZE, getGlobalLabelCount(), GLOBAL_LABEL_TABLE_SIZE, macroTableCounter, MAXIMUM_MACROS, sourcefilecount, binfilecount, (address - start_address));
 }
 
 int main(int argc, char *argv[]) {
     int opt;
-    bool exportsymbols;
+    bool exportsymbols, displaystatistics;
     char inputfilename[FILENAMEMAXLENGTH + 1];
     char outputfilename[FILENAMEMAXLENGTH + 1];
     int filenamecount = 0;
@@ -47,8 +53,9 @@ int main(int argc, char *argv[]) {
     adlmode = ADLMODE_START;
     start_address = START_ADDRESS;
     exportsymbols = false;
+    displaystatistics = false;
 
-    while ((opt = getopt(argc, argv, "-:ldvhsb:a:o:")) != -1) {
+    while ((opt = getopt(argc, argv, "-:ldvhsxb:a:o:")) != -1) {
         switch(opt) {
             case 'a':
                 if((strlen(optarg) != 1) || 
@@ -62,6 +69,9 @@ int main(int argc, char *argv[]) {
             case 's':
                 printf("Exporting symbols\r\n");
                 exportsymbols = true;
+                break;
+            case 'x':
+                displaystatistics = true;
                 break;
             case 'd':
                 consolelist_enabled = true;
@@ -176,5 +186,6 @@ int main(int argc, char *argv[]) {
 
     if(global_errors) return 1;
     if(exportsymbols) saveGlobalLabelTable();
+    if(displaystatistics) displayStatistics();
     return 0;
 }

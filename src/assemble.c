@@ -1301,6 +1301,7 @@ void handle_asm_incbin(void) {
             eof = mos_feof(fh);
             if(eof) break;
         }
+        binfilecount++;
     }
     mos_fclose(fh);
     if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
@@ -1755,6 +1756,7 @@ bool assemble(void){
                 return false;
             }    
         }
+        sourcefilecount++;
         if(filestackCount()) {
             currentExpandedMacro = NULL;
             mos_fclose(filehandle[FILE_CURRENT]);
