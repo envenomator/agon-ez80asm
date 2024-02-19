@@ -1254,7 +1254,7 @@ void handle_asm_incbin(void) {
     token_t token;
     uint8_t fh;
     bool eof;
-    uint24_t size = 0;
+    uint24_t n, size = 0;
 
     if(recordingMacro) return;
 
@@ -1293,13 +1293,25 @@ void handle_asm_incbin(void) {
     }
 
     if(pass == 2) {
-        while(1) {
-            size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
-            io_write(FILE_OUTPUT, _buffer, size);
+        if(list_enabled || consolelist_enabled) {
+            // Output needs to pass to the listing through emit_8bit, performance-hit
+            while(1) {
+                size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
+                for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
+                eof = mos_feof(fh);
+                if(eof) break;
+            }
+        }
+        else {
+            while(1) {
+                // efficient output without listing the contents
+                size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
+                io_write(FILE_OUTPUT, _buffer, size);
 
-            address += size;
-            eof = mos_feof(fh);
-            if(eof) break;
+                address += size;
+                eof = mos_feof(fh);
+                if(eof) break;
+            }
         }
         binfilecount++;
     }
