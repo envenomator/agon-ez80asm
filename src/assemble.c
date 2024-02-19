@@ -88,7 +88,7 @@ int24_t getValue(char *string, bool req_firstpass) {
             else {
                 if(token.start[0] == '\'') tmp = getAsciiValue(token.start);
                 else {
-                    tmp = str2num(token.start, false);
+                    tmp = str2num(token.start, length);
                     if(err_str2num && (pass == 2)) {
                         error(message[ERROR_INVALIDLABEL]);
                     }
