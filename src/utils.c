@@ -187,10 +187,12 @@ char * _findBracketTokenEnd(char *src) {
     else return src+1;
 }
 
-// fill the streamtoken_t object, according to the stream
+// fill the streamtoken_t object, parse it as an operand
 // returns the number of Operator characters found, or 0 if none
 uint8_t getOperandToken(streamtoken_t *token, char *src) {
     uint8_t length = 0;
+    bool normalmode = true;
+
     // skip leading space
     while(*src && (isspace(*src))) src++;
     if(*src == 0) {
@@ -201,27 +203,23 @@ uint8_t getOperandToken(streamtoken_t *token, char *src) {
     }
     token->start = src;
 
-    switch(*src) {
-        case '\"':
-            src = _findStringTokenEnd(src);
-            break;
-        case '\'':
-            src = _findLiteralTokenEnd(src);
-            break;
-        case '(':
-            src = _findBracketTokenEnd(src);
-            break;
-        default:
-            src = _findRegularTokenEnd(src);
+    // hunt for end-character (0 , or ; in normal non-literal mode)
+    while(*src) {
+        if(*src == '\'') normalmode = !normalmode;
+        if((normalmode) && ((*src == ',') || (*src == ';'))) break;
+        src++;
+        length++;
     }
 
     token->terminator = *src;
     if(*src) token->next = src+1;
     else token->next = NULL;
 
-    for(src--; !(isspace(*src)); src--); // remove trailing space(s)
-    *src = 0; // terminate stream
-
+    *src-- = 0; // terminate early and revert one character
+    while(isspace(*src)) { // remove trailing space(s)
+        *src-- = 0; // terminate on trailing spaces
+        if(length-- == 0) break;
+    }
     return length;
 }
 

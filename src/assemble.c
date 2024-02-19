@@ -138,9 +138,8 @@ int24_t getValue(char *string, bool req_firstpass) {
 
 // parses the given string to the operand, or throws errors along the way
 // will destruct parts of the original string during the process
-void parse_operand(char *string, operand_t *operand) {
+void parse_operand(char *string, uint8_t len, operand_t *operand) {
     char *ptr = string;
-    uint8_t len = strlen(string);
 
     // direct or indirect
     if(*ptr == '(') {
@@ -448,11 +447,11 @@ void parse_operand(char *string, operand_t *operand) {
 }
 
 void parseLine(char *src) {
+    uint8_t oplength;
     uint8_t x;
     bool done;
     uint8_t state;
     uint8_t argcount = 0;
-    token_t token;
     streamtoken_t streamtoken;
 
     // default current line items
@@ -462,8 +461,8 @@ void parseLine(char *src) {
     currentline.label = NULL;
     currentline.mnemonic = NULL;
     currentline.suffix = NULL;
-    currentline.operand1[0] = 0;
-    currentline.operand2[0] = 0;
+    currentline.operand1 = NULL;
+    currentline.operand2 = NULL;
     currentline.comment = NULL;
     currentline.size = 0;
     currentline.suffixpresent = false;
@@ -574,18 +573,13 @@ void parseLine(char *src) {
                             break;
                         default:
                             if(streamtoken.next) {
-                                int test;
-                                test = getLineToken(&token, streamtoken.next, ',');
-                                if(test) {
+                                oplength = getOperandToken(&streamtoken, streamtoken.next);
+                                if(oplength) {
                                     state = PS_OP1;
-                                }
-                                else {
-                                    state = PS_DONE;
+                                    break;
                                 }
                             }
-                            else {
-                                state = PS_DONE;
-                            }
+                            state = PS_DONE; // ignore any comments
                             break;
                     }
                 } 
@@ -593,18 +587,16 @@ void parseLine(char *src) {
                 break;
             case PS_OP1:
                 argcount++;
-                if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
+                if(currentExpandedMacro) macroArgFindSubst(streamtoken.start, currentExpandedMacro);
                 if(argcount == 1) {
-                    strcpy(currentline.operand1, token.start);
-                    parse_operand(currentline.operand1, &operand1);
+                    parse_operand(streamtoken.start, oplength, &operand1);
                 }
                 else {
-                    strcpy(currentline.operand2, token.start);
-                    parse_operand(currentline.operand2, &operand2);
+                    parse_operand(streamtoken.start, oplength, &operand2);
                 }
-                switch(token.terminator) {
+                switch(streamtoken.terminator) {
                     case ';':
-                        getLineToken(&token, token.next, 0);
+                        currentline.next = streamtoken.next;
                         state = PS_COMMENT;
                         break;
                     case 0:
@@ -617,7 +609,7 @@ void parseLine(char *src) {
                             state = PS_ERROR;
                             break;
                         }
-                        getLineToken(&token, token.next, ',');
+                        oplength = getOperandToken(&streamtoken, streamtoken.next);
                         break;
                 }
                 break;
@@ -654,7 +646,6 @@ void definelabel(int24_t num){
         error(message[ERROR_INVALIDLABELNAME]);
         return;
     }
-    //printf("Inserting label <%s>\n", currentline.label);
     if(insertGlobalLabel(currentline.label, num) == false){
         error(message[ERROR_CREATINGLABEL]);
         return;
@@ -674,10 +665,7 @@ void refreshlocalLabels(void) {
 // return ADL prefix bitfield, or 0 if none present
 uint8_t getADLsuffix(void) {
 
-    //if((currentline.suffix[0] == '\0') && !currentline.suffixpresent) return 0; 
     if(currentline.suffixpresent == false) return 0;
-
-    //printf("Continuing getADLsuffux\n");
 
     switch(strlen(currentline.suffix)) {
         case 1: // .s or .l
@@ -731,11 +719,6 @@ uint8_t getADLsuffix(void) {
     }
     error(message[ERROR_INVALIDSUFFIX]);
     return 0;
-}
-
-void adl_action() {
-    if(strcmp(currentline.operand1, "0") == 0) adlmode = false;
-    if(strcmp(currentline.operand1, "1") == 0) adlmode = true;
 }
 
 // get the number of bytes to emit from an immediate
@@ -1074,26 +1057,6 @@ void parse_asm_single_immediate(void) {
     else error(message[ERROR_MISSINGOPERAND]);
 }
 
-void parse_asm_keyval_pair(void) {
-    token_t token;
-
-    if(currentline.next) {
-        getLineToken(&token, currentline.next, '=');
-        if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-        strcpy(currentline.operand1, token.start);
-        if(token.terminator == '=') {
-            getLineToken(&token, token.next, 0);
-            if(token.length) {
-                operand2.immediate = getValue(token.start, true);
-                operand2.immediate_provided = true;
-            }
-            else error(message[ERROR_MISSINGOPERAND]);
-        }        
-        else error(message[ERROR_MISSINGOPERAND]);
-    }
-    else error(message[ERROR_MISSINGOPERAND]);
-}
-
 void handle_asm_db(void) {
     token_t token;
     uint24_t argcount = 0;
@@ -1185,9 +1148,26 @@ void handle_asm_equ(void) {
 }
 
 void handle_asm_adl(void) {
-    parse_asm_keyval_pair();
+    token_t token;
+    char tmp[64];
 
-    if(strcasecmp(currentline.operand1, "adl")) {
+    if(currentline.next) {
+        getLineToken(&token, currentline.next, '=');
+        if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
+        strcpy(tmp, token.start);
+        if(token.terminator == '=') {
+            getLineToken(&token, token.next, 0);
+            if(token.length) {
+                operand2.immediate = getValue(token.start, true);
+                operand2.immediate_provided = true;
+            }
+            else error(message[ERROR_MISSINGOPERAND]);
+        }        
+        else error(message[ERROR_MISSINGOPERAND]);
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
+
+    if(strcasecmp(tmp, "adl")) {
         error(message[ERROR_INVALIDOPERAND]);
         return;
     }

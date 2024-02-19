@@ -14,8 +14,10 @@ typedef struct {
     char *label;
     char *mnemonic;
     char *suffix;
-    char operand1[MAXNAMELENGTH + 1];
-    char operand2[MAXNAMELENGTH + 1];
+    //char operand1[MAXNAMELENGTH + 1];
+    char *operand1;
+    //char operand2[MAXNAMELENGTH + 1];
+    char *operand2;
     char *comment;
     bool suffixpresent;
     uint16_t size;      // byte size of the assembler-command output in db/defb/dw/defw
