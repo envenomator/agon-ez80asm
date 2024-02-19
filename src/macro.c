@@ -103,13 +103,28 @@ bool defineMacro(char *name, uint8_t argcount, char *arguments) {
 
 // Find an 'argument' from a macro_tfile, and replace by the correct substitution string
 // If nothing is found, nothing is replaced - the argument may be something else entirely
+/*
 void macroArgFindSubst(char *op, macro_t*m) {
     uint8_t i;
 
     for(i = 0; i < m->argcount; i++) {
         if(strcmp(op, m->arguments[i]) == 0) {
             strcpy(op, m->substitutions[i]);
+            //printf("DEBUG expand - length <%d>\n", strlen(op));
             return;
         }
     }
+}
+*/
+uint8_t macroExpandArg(char *dst, char *src, macro_t *m) {
+    uint8_t i;
+
+    for(i = 0; i < m->argcount; i++) {
+        if(strcmp(src, m->arguments[i]) == 0) {
+            strcpy(dst, m->substitutions[i]);
+            //printf("DEBUG expand - length <%d>\n", strlen(dst));
+            return strlen(dst);
+        }
+    }
+    return 0;
 }

@@ -21,6 +21,6 @@ extern uint8_t macroTableCounter;
 void      initMacros(void);
 bool      defineMacro(char *name, uint8_t argcount, char *arguments);
 macro_t * findMacro(char *name);
-void      macroArgFindSubst(char *op, macro_t *m);
-
+//void      macroArgFindSubst(char *op, macro_t *m);
+uint8_t   macroExpandArg(char *dst, char *src, macro_t *m);
 #endif // MACRO_H
