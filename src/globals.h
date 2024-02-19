@@ -11,12 +11,12 @@ typedef struct {
     instruction_t *current_instruction;
     macro_t *current_macro;
     char *next;
-    char label[MAXNAMELENGTH + 1];
-    char mnemonic[MAXNAMELENGTH + 1];
-    char suffix[MAXNAMELENGTH + 1];
+    char *label;
+    char *mnemonic;
+    char *suffix;
     char operand1[MAXNAMELENGTH + 1];
     char operand2[MAXNAMELENGTH + 1];
-    char comment[TOKEN_MAX + 1];
+    char *comment;
     bool suffixpresent;
     uint16_t size;      // byte size of the assembler-command output in db/defb/dw/defw
 } tokenline_t;

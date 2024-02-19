@@ -92,27 +92,137 @@ typedef enum {
     TOKEN_BRACKET
 } tokenclass;
 
-// split a 'command.suffix' token in two parts
-// returns if a suffix should be present
-bool split_suffix(char *mnemonic, char *suffix, char *buffer) {
-    bool cmd = true;
-    bool suffixpresent = false;
+// further parse a command-token string to currentline.mnemonic & currentline.suffix
+void parse_command(char *src) {
+    currentline.mnemonic = src;
 
-    while(*buffer) {
-        if(cmd) {
-            *mnemonic = *buffer;
-            if(*buffer == '.') {
-                cmd = false;
-                suffixpresent = true;
-            }
-            else mnemonic++;
-        }
-        else *suffix++ = *buffer;
-        buffer++;
+    while(*src && (*src != '.')) src++;
+    if(*src) {
+        // suffix start found
+        *src = 0; // terminate mnemonic
+        currentline.suffixpresent = true;
+        currentline.suffix = src + 1;
+        return;
     }
-    *suffix = 0;
-    *mnemonic = 0;
-    return suffixpresent;
+    // no suffix found
+    currentline.suffixpresent = false;
+    currentline.suffix = NULL;
+    return;
+}
+
+void getLabelToken(streamtoken_t *token, char *src) {
+    token->start = src; // no need to remove leading spaces
+    while(*src && (*src != ':') && (*src != ';')) src++;
+    token->terminator = *src;
+    token->next = src+1;
+    *src = 0;
+
+    return;
+}
+// fill the streamtoken_t object, according to the stream
+// returns the number of Mnemonic characters found, or 0 if none
+uint8_t getMnemonicToken(streamtoken_t *token, char *src) {
+    uint8_t length = 0;
+
+    // skip leading space
+    while(*src && (isspace(*src))) src++;
+    if(*src == 0) {
+        token->start = NULL;
+        token->next = NULL;
+        token->terminator = 0;
+        return 0;
+    }
+    token->start = src;
+    while(!isspace(*src) && (*src != ';') && *src) {
+        length++;
+        src++;
+    }
+    token->terminator = *src;
+    if(*src) token->next = src+1;
+    else token->next = NULL;
+
+    *src = 0; // terminate stream
+    return length;
+}
+
+// point to one position after regular token, or to '0' in string
+char * _findRegularTokenEnd(char *src) {
+    while(*src) {
+        if((*src == ';') || (*src == ',')) break;
+        src++;
+    }
+    return src;
+}
+
+// point to one position after string token, or to '0' in the string
+char * _findStringTokenEnd(char *src) {
+    bool escaped = false;
+    while(*src) {
+        if(*src == '\\') escaped = !escaped;
+        if((*src == '\"') && !escaped) break;
+        src++;
+    }
+    if(*src) return src;
+    else return src+1;
+}
+// point to one position after literal token, or to '0' in the string
+char * _findLiteralTokenEnd(char *src) {
+    bool escaped = false;
+    while(*src) {
+        if(*src == '\'') escaped = !escaped;
+        if((*src == '\'') && !escaped) break;        
+        src++;
+    }
+    if(*src) return src;
+    else return src+1;
+}
+
+// point to one position after bracket token, or to '0' in the string
+char * _findBracketTokenEnd(char *src) {
+    while(*src) {
+        if(*src == ')') break;        
+        src++;
+    }
+    if(*src) return src;
+    else return src+1;
+}
+
+// fill the streamtoken_t object, according to the stream
+// returns the number of Operator characters found, or 0 if none
+uint8_t getOperandToken(streamtoken_t *token, char *src) {
+    uint8_t length = 0;
+    // skip leading space
+    while(*src && (isspace(*src))) src++;
+    if(*src == 0) {
+        token->start = NULL;
+        token->next = NULL;
+        token->terminator = 0;
+        return 0;
+    }
+    token->start = src;
+
+    switch(*src) {
+        case '\"':
+            src = _findStringTokenEnd(src);
+            break;
+        case '\'':
+            src = _findLiteralTokenEnd(src);
+            break;
+        case '(':
+            src = _findBracketTokenEnd(src);
+            break;
+        default:
+            src = _findRegularTokenEnd(src);
+    }
+
+    token->terminator = *src;
+    if(*src) token->next = src+1;
+    else token->next = NULL;
+
+    for(src--; !(isspace(*src)); src--); // remove trailing space(s)
+    *src = 0; // terminate stream
+
+    return length;
 }
 
 uint8_t getLineToken(token_t *token, char *src, char terminator) {
@@ -135,7 +245,20 @@ uint8_t getLineToken(token_t *token, char *src, char terminator) {
         return 0;
     }
     // copy over the token itself, taking care of the character state within the token
-    state = TOKEN_REGULAR;
+    //state = TOKEN_REGULAR;
+    switch(*src) {
+        case '\"':
+            state = TOKEN_STRING;
+            break;
+        case '\'':
+            state = TOKEN_LITERAL;
+            break;
+        case '(':
+            state = TOKEN_BRACKET;
+            break;
+        default:
+            state = TOKEN_REGULAR;
+    }
     target = token->start;
     while(true) {
         terminated = false;
@@ -172,9 +295,9 @@ uint8_t getLineToken(token_t *token, char *src, char terminator) {
                 if(*src == ')') state = TOKEN_REGULAR;
                 break;
             case TOKEN_REGULAR:
-                if(*src == '\"') state = TOKEN_STRING;
-                if(*src == '\'') state = TOKEN_LITERAL;
-                if(*src == '(') state = TOKEN_BRACKET;
+                //if(*src == '\"') state = TOKEN_STRING;
+                //if(*src == '\'') state = TOKEN_LITERAL;
+                //if(*src == '(') state = TOKEN_BRACKET;
                 terminated = ((*src == ';') || (*src == terminator));
                 if(terminator == ' ') terminated = terminated || (*src == '\t');                
                 break;            

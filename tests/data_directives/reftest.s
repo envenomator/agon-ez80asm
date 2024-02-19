@@ -13,6 +13,7 @@
         DB 1,2,3
         DB 10;comment
 label:
+        jp label2
 ; 16-bit word tests
         dw 5
         dw 1,2,3
@@ -48,3 +49,5 @@ label:
         blkl 16, AABBCCFFh
         blkl 10h, AABBCCFFh
         blkl 16,0;uninitialized. Will be different between assemblers
+label2:
+        jp label

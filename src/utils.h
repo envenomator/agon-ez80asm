@@ -10,6 +10,13 @@ typedef struct {
     char    terminator;
 } token_t;
 
+// Token type that points to the (changed) underlying data string
+typedef struct {
+    char    *start;
+    char    *next;
+    char    terminator;
+} streamtoken_t;
+
 void text_RED(void);
 void text_YELLOW(void);
 void text_NORMAL(void);
@@ -19,9 +26,11 @@ void trimRight(char *str);
 void error(char* msg);
 bool isEmpty(const char *str);
 bool notEmpty(const char *str);
-bool split_suffix(char *mnemonic, char *suffix, char *buffer);
 uint8_t getLineToken(token_t *token, char *src, char terminator);
 uint8_t getOperatorToken(token_t *token, char *src);
+void getLabelToken(streamtoken_t *token, char *src);
+uint8_t getMnemonicToken(streamtoken_t *token, char *src);
+void parse_command(char *src);
 
 #ifdef AGON
 int strcasecmp(char *s1, char *s2);
