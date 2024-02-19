@@ -964,7 +964,6 @@ void emit_instruction(operandlist_t *list) {
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
         if(list_enabled || consolelist_enabled) listEmit8bit(value);
-        //io_putc(FILE_OUTPUT, value);
         io_outputc(value);
     }
     address++;
@@ -1073,24 +1072,21 @@ void parse_asm_single_immediate(void) {
 }
 
 void handle_asm_db(void) {
-    token_t token;
+    streamtoken_t token;
     uint24_t argcount = 0;
 
     if(pass == 1) definelabel(address);
 
     while(currentline.next) {
-        getLineToken(&token, currentline.next, ',');
-        if(token.length) {
+        if(getDefineValueToken(&token, currentline.next)) {
             argcount++;
 
             if(currentExpandedMacro) {
                 if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-                    //token.start = _macro_ASM_buffer;
-                    strcpy(token.start, _macro_ASM_buffer);
+                    token.start = _macro_ASM_buffer;
                 }
             }
 
-            //if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
             switch(token.start[0]) {
                 case '\"':
                     emit_quotedstring(token.start);
@@ -1113,20 +1109,18 @@ void handle_asm_db(void) {
 
 void handle_asm_dw(uint8_t wordtype) {
     label_t *lbl;
-    token_t token;
+    streamtoken_t token;
     uint24_t argcount = 0;
 
     if(pass == 1) definelabel(address);
 
     while(currentline.next) {
-        getLineToken(&token, currentline.next, ',');
-        if(token.length) {
+        if(getDefineValueToken(&token, currentline.next)) {
             argcount++;
 
             if(currentExpandedMacro) {
                 if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-                    //token.start = _macro_ASM_buffer;
-                    strcpy(token.start, _macro_ASM_buffer);
+                    token.start = _macro_ASM_buffer;
                 }
             }
             lbl = findLabel(token.start);
@@ -1159,11 +1153,10 @@ void handle_asm_dw(uint8_t wordtype) {
 }
 
 void handle_asm_equ(void) {
-    token_t token;
+    streamtoken_t token;
     uint24_t argcount = 0;
 
-    getLineToken(&token, currentline.next, 0);
-    if(token.length) {
+    if(getDefineValueToken(&token, currentline.next)) {
         argcount++;
         if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
         if(pass == 1) {
@@ -1177,24 +1170,23 @@ void handle_asm_equ(void) {
 }
 
 void handle_asm_adl(void) {
-    token_t token;
-    char tmp[64];
+    streamtoken_t token;
 
     if(currentline.next) {
-        getLineToken(&token, currentline.next, '=');
+        getDefineValueToken(&token, currentline.next);
 
         if(currentExpandedMacro) {
             if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-                //token.start = _macro_ASM_buffer;
-                strcpy(token.start, _macro_ASM_buffer);
+                token.start = _macro_ASM_buffer;
             }
         }
 
-        //if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
-        strcpy(tmp, token.start);
+        if(strcasecmp(token.start, "adl")) {
+            error(message[ERROR_INVALIDOPERAND]);
+            return;
+        }
         if(token.terminator == '=') {
-            getLineToken(&token, token.next, 0);
-            if(token.length) {
+            if(getDefineValueToken(&token, token.next)) {
                 operand2.immediate = getValue(token.start, true);
                 operand2.immediate_provided = true;
             }
@@ -1204,10 +1196,6 @@ void handle_asm_adl(void) {
     }
     else error(message[ERROR_MISSINGOPERAND]);
 
-    if(strcasecmp(tmp, "adl")) {
-        error(message[ERROR_INVALIDOPERAND]);
-        return;
-    }
 
     if((operand2.immediate != 0) && (operand2.immediate != 1)) {
         error(message[ERROR_INVALID_ADLMODE]);
@@ -1227,7 +1215,7 @@ void handle_asm_org(void) {
 }
 
 void handle_asm_include(void) {
-    token_t token;
+    streamtoken_t token;
     filestackitem fsi;
     uint8_t inclevel;
     
@@ -1240,7 +1228,7 @@ void handle_asm_include(void) {
         error(message[ERROR_MAXINCLUDEFILES]);
         return;
     }
-    getLineToken(&token, currentline.next, 0);
+    getDefineValueToken(&token, currentline.next);
     if(token.start[0] != '\"') {
         error(message[ERROR_STRINGFORMAT]);
         return;
@@ -1268,7 +1256,7 @@ void handle_asm_include(void) {
 }
 
 void handle_asm_incbin(void) {
-    token_t token;
+    streamtoken_t token;
     uint8_t fh;
     bool eof;
     uint24_t n, size = 0;
@@ -1280,17 +1268,14 @@ void handle_asm_incbin(void) {
         return;
     }
 
-    getLineToken(&token, currentline.next, 0);
+    getDefineValueToken(&token, currentline.next);
 
     if(currentExpandedMacro) {
         if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-            //token.start = _macro_ASM_buffer;
-            strcpy(token.start, _macro_ASM_buffer);
+            token.start = _macro_ASM_buffer;
         }
     }
 
-
-    //if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
     if(token.start[0] != '\"') {
         error(message[ERROR_STRINGFORMAT]);
         return;
@@ -1348,7 +1333,7 @@ void handle_asm_incbin(void) {
 void handle_asm_blk(uint8_t width) {
     uint24_t num;
     int24_t val = 0;
-    token_t token;
+    streamtoken_t token;
 
     if(pass == 1) definelabel(address);
 
@@ -1357,37 +1342,31 @@ void handle_asm_blk(uint8_t width) {
         return;
     }
 
-    getLineToken(&token, currentline.next, ',');
-    if(token.length == 0) {
+    if(getDefineValueToken(&token, currentline.next) == 0) {
         error(message[ERROR_MISSINGOPERAND]); // we need at least one value
         return;
     }
 
     if(currentExpandedMacro) {
         if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-            //token.start = _macro_ASM_buffer;
-            strcpy(token.start, _macro_ASM_buffer);
+            token.start = _macro_ASM_buffer;
         }
     }
 
-    //if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
     num = getValue(token.start, true); // <= needs a value during pass 1, otherwise addresses will be off later on
 
     if(token.terminator == ',') {
-        getLineToken(&token, token.next, 0);
-        if(token.length == 0) {
+        if(getDefineValueToken(&token, token.next) == 0) {
             error(message[ERROR_MISSINGOPERAND]);
             return;
         }
 
         if(currentExpandedMacro) {
             if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-                //token.start = _macro_ASM_buffer;
-                strcpy(token.start, _macro_ASM_buffer);
+                token.start = _macro_ASM_buffer;
             }
         }
 
-        //if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
         val = getValue(token.start, false);
     }
     else if((token.terminator != 0)  && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
@@ -1444,17 +1423,8 @@ void handle_asm_endmacro(void) {
     recordingMacro = false;
 }
 
-// Make sure each macro argument is exactly 32byte long, so it can be safely swapped out to something different
-//void _rightFillMarcoArg(char *dst, char *src, uint8_t length) {
-//    uint8_t n;
-//    for(n = 0; n < 32; n++) *dst++ = '_';
-//    *dst-- = 0;
-//    while(length) *dst-- = src[length--];
-//}
-
 void handle_asm_definemacro(void) {
-    
-    token_t token;
+    streamtoken_t token;
     uint8_t argcount = 0;
     char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
     
@@ -1470,8 +1440,7 @@ void handle_asm_definemacro(void) {
         error(message[ERROR_MACRONAME]);
         return;
     }
-    getLineToken(&token, currentline.next, ' ');
-    if(token.length == 0) {
+    if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
         error(message[ERROR_MACRONAME]);
         return;
     }
@@ -1479,14 +1448,13 @@ void handle_asm_definemacro(void) {
         error(message[ERROR_MACRODEFINED]);
         return;
     }
-    strcpy(currentline.mnemonic, token.start);
+    currentline.mnemonic = token.start;
+
     currentline.next = token.next;
     if((token.terminator == ' ') || (token.terminator == '\t')) {
         while(currentline.next) {
             if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT]);
-            getLineToken(&token, currentline.next, ',');
-            if(token.length) {
-                //_rightFillMarcoArg(arglist[argcount], token.start, token.length);
+            if(getDefineValueToken(&token, currentline.next)) {
                 strcpy(arglist[argcount], token.start);
                 argcount++;
             }
@@ -1505,9 +1473,8 @@ void handle_asm_definemacro(void) {
     if(!filehandle[FILE_MACRO]) error("Error writing macro file");
 }
 
-
 void handle_asm_if(void) {
-    token_t token;
+    streamtoken_t token;
     int24_t value;
     
     // No nested conditionals.
@@ -1515,8 +1482,8 @@ void handle_asm_if(void) {
         error(message[ERROR_NESTEDCONDITIONALS]);
         return;
     }
-    getLineToken(&token, currentline.next, ' ');
-    if(token.length == 0) {
+
+    if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
         error(message[ERROR_CONDITIONALEXPRESSION]);
         return;
     }
@@ -1524,7 +1491,6 @@ void handle_asm_if(void) {
 
     inConditionalSection = value ? 2 : 1;
 }
-
 
 void handle_asm_else(void) {
     // No nested conditionals.
@@ -1544,11 +1510,10 @@ void handle_asm_endif(void) {
 }
 
 void handle_asm_fillbyte(void) {
-    token_t token;
+    streamtoken_t token;
     int32_t val;
 
-    getLineToken(&token, currentline.next, 0);
-    if(token.length) {
+    if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
         if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
         val = getValue(token.start, false);
         if((val < 0) || (val > 255)) error(message[ERROR_8BITRANGE]);
@@ -1632,7 +1597,7 @@ void handle_assembler_command(void) {
 }
 
 void expandMacroStart(macro_t *exp) {    
-    token_t token;
+    streamtoken_t token;
     uint8_t argcount = 0;
     filestackitem fsi;
 
@@ -1641,8 +1606,7 @@ void expandMacroStart(macro_t *exp) {
     currentExpandedMacro = currentline.current_macro;
     // parse arguments into given macro substitution space
     while(currentline.next) {
-        getLineToken(&token, currentline.next, ',');
-        if(token.length) {
+        if(getDefineValueToken(&token, currentline.next)) {
             argcount++;
             if(argcount > exp->argcount) {
                 error(message[ERROR_MACROARGCOUNT]);

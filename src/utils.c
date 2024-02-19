@@ -178,6 +178,7 @@ char * _findLiteralTokenEnd(char *src) {
 }
 
 // point to one position after bracket token, or to '0' in the string
+/*
 char * _findBracketTokenEnd(char *src) {
     while(*src) {
         if(*src == ')') break;        
@@ -186,6 +187,7 @@ char * _findBracketTokenEnd(char *src) {
     if(*src) return src;
     else return src+1;
 }
+*/
 
 // fill the streamtoken_t object, parse it as an operand
 // returns the number of Operator characters found, or 0 if none
@@ -223,27 +225,22 @@ uint8_t getOperandToken(streamtoken_t *token, char *src) {
     return length;
 }
 
-uint8_t getLineToken(token_t *token, char *src, char terminator) {
-    char *target;
-    uint8_t index = 0;
+uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
+    uint8_t length = 0;
+    tokenclass state;
     bool escaped = false;
     bool terminated;
-    tokenclass state;
 
-    // remove leading space
-    while(*src) {
-        if(isspace(*src) != 0) src++;
-        else break;
-    }
-    if(*src == 0) { // empty string
-        token->terminator = 0;
-        token->start[0] = 0;
-        token->length = 0;
+    // skip leading space
+    while(*src && (isspace(*src))) src++;
+    if(*src == 0) {
+        token->start = NULL;
         token->next = NULL;
+        token->terminator = 0;
         return 0;
     }
-    // copy over the token itself, taking care of the character state within the token
-    //state = TOKEN_REGULAR;
+    token->start = src;
+
     switch(*src) {
         case '\"':
             state = TOKEN_STRING;
@@ -257,8 +254,8 @@ uint8_t getLineToken(token_t *token, char *src, char terminator) {
         default:
             state = TOKEN_REGULAR;
     }
-    target = token->start;
-    while(true) {
+
+    while(*src) {
         terminated = false;
         switch(state) {
             case TOKEN_STRING:
@@ -293,35 +290,24 @@ uint8_t getLineToken(token_t *token, char *src, char terminator) {
                 if(*src == ')') state = TOKEN_REGULAR;
                 break;
             case TOKEN_REGULAR:
-                //if(*src == '\"') state = TOKEN_STRING;
-                //if(*src == '\'') state = TOKEN_LITERAL;
-                //if(*src == '(') state = TOKEN_BRACKET;
-                terminated = ((*src == ';') || (*src == terminator));
-                if(terminator == ' ') terminated = terminated || (*src == '\t');                
+                terminated = ((*src == ';') || (*src == ',') || (*src == '='));
                 break;            
         }
-        terminated = terminated || (*src == 0);
-        if(terminated) {
-            token->terminator = *src;
-            break;
-        }
-        *target++ = *src++;
-        index++;
+        if(terminated) break;
+        src++;
+        length++;
     }
-    // remove trailing space
-    while(index) {
-        target--;
-        if(isspace(*target) == 0) {
-            target++;
-            break;
-        }
-        index--;
+
+    token->terminator = *src;
+    if(*src) token->next = src+1;
+    else token->next = NULL;
+
+    *src-- = 0; // terminate early and revert one character
+    while(isspace(*src)) { // remove trailing space(s)
+        *src-- = 0; // terminate on trailing spaces
+        if(length-- == 0) break;
     }
-    *target = 0;
-    if(*src == 0) token->next = NULL;
-    else token->next = src+1;
-    token->length = index;
-    return index;
+    return length;
 }
 
 // operator tokens assume the following input
