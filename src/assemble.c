@@ -65,10 +65,11 @@ uint8_t getAsciiValue(char *string) {
 // labela+labelb+offset1-1
 // The string should not contain any spaces, needs to be a single token
 int24_t getValue(char *string, bool req_firstpass) {
+    uint8_t length;
     int24_t total, tmp;
     char operator, *ptr, unary_operator;
     label_t *lbl;
-    token_t token;
+    streamtoken_t token;
 
     ptr = string;
     total = 0;
@@ -79,8 +80,8 @@ int24_t getValue(char *string, bool req_firstpass) {
     operator = '+'; // previous operand in case of single value/label
     while(ptr) {
         tmp = 0;
-        getOperatorToken(&token, ptr);
-        if(token.length) {
+        length = getOperatorToken(&token, ptr);
+        if(length) {
             if(currentExpandedMacro) macroArgFindSubst(token.start, currentExpandedMacro);
             lbl = findLabel(token.start);
             if(lbl) tmp = lbl->address;
@@ -104,7 +105,7 @@ int24_t getValue(char *string, bool req_firstpass) {
             }
         }
 
-        if(token.length) {  // when an actual value is present between operators
+        if(length) {  // when an actual value is present between operators
             switch(operator) {
                 case '+': total += tmp; break;
                 case '-': total -= tmp; break;
@@ -123,7 +124,7 @@ int24_t getValue(char *string, bool req_firstpass) {
             }
         }
 
-        if(token.terminator && (token.length == 0)) {
+        if(token.terminator && (length == 0)) {
             unary_operator = token.terminator;
         }
         else {

@@ -27,7 +27,7 @@ void error(char* msg);
 bool isEmpty(const char *str);
 bool notEmpty(const char *str);
 uint8_t getLineToken(token_t *token, char *src, char terminator);
-uint8_t getOperatorToken(token_t *token, char *src);
+uint8_t getOperatorToken(streamtoken_t *token, char *src);
 void getLabelToken(streamtoken_t *token, char *src);
 uint8_t getMnemonicToken(streamtoken_t *token, char *src);
 uint8_t getOperandToken(streamtoken_t *token, char *src);

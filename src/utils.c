@@ -324,67 +324,58 @@ uint8_t getLineToken(token_t *token, char *src, char terminator) {
     return index;
 }
 
-uint8_t getOperatorToken(token_t *token, char *src) {
-    char *target;
-    uint8_t index = 0;
-    bool literal;
+// operator tokens assume the following input
+// - no ',' ';' terminators
+// - only 'operator' terminators or a 0
+uint8_t getOperatorToken(streamtoken_t *token, char *src) {
+    uint8_t length = 0;
+    bool normalmode = true;
+    bool shift = false;
 
-    // remove leading space
-    while(*src) {
-        if(isspace(*src) != 0) src++;
-        else break;
-    }
+    // skip leading space
+    while(*src && (isspace(*src))) src++;
+
     if(*src == 0) { // empty string
         token->terminator = 0;
-        token->start[0] = 0;
-        token->length = 0;
+        token->start = NULL;
         token->next = NULL;
         return 0;
     }
+    token->start = src;
 
-    literal = (*src == '\''); // are we a '' literal value?
-
-    // copy content
-    target = token->start;
-    while(true) {
-
-        if(literal) {
-            if(*src == 0) {
-                token->terminator = *src;
-                break;
-            }
-        }
-        else {
-            if((*src == 0) || strchr("+-*<>&|^~/",*src)) {
-                if((*src == '<') || (*src == '>')) {
-                    if((*(src+1) == *src)) src += 1;
-                    else {
-                        token->terminator = '!'; // ERROR
-                        break;
-                    }
-                }
-                token->terminator = *src;
-                break;
-            }
-        }
-        *target++ = *src++;
-        index++;
-        if(literal && *src == '\'') literal = false;
+    // check for literal mode at start, tokens like '\n'
+    if(*src == '\'') {
+        src++;
+        length++;
+        normalmode = false;
     }
-    // remove trailing space
-    while(index) {
-        target--;
-        if(isspace(*target) == 0) {
-            target++;
+
+    while(*src) {
+        if(*src == '\'') normalmode = !normalmode;
+        if(normalmode && strchr("+-*<>&|^~/",*src)) { // terminator found
+            if((*src == '<') || (*src == '>')) {
+                if((*(src+1) == *src)) shift = true;
+                else {
+                    token->terminator = '!'; // ERROR
+                    break;
+                }
+            }
             break;
         }
-        index--;
+        src++;
+        length++;
     }
-    *target = 0;
-    if(*src == 0) token->next = NULL;
-    else token->next = src+1;
-    token->length = index;
-    return index;
+
+    token->terminator = *src;
+    if(*src) token->next = shift?src+2:src+1;
+    else token->next = NULL;
+
+    *src-- = 0; // terminate early and revert one character
+    while(isspace(*src)) { // remove trailing space(s)
+        *src-- = 0; // terminate on trailing spaces
+        if(length-- == 0) break;
+    }
+    return length;
 }
 
 #ifdef AGON
