@@ -14,9 +14,7 @@ typedef struct {
     char *label;
     char *mnemonic;
     char *suffix;
-    //char operand1[MAXNAMELENGTH + 1];
     char *operand1;
-    //char operand2[MAXNAMELENGTH + 1];
     char *operand2;
     char *comment;
     bool suffixpresent;

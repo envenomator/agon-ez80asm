@@ -966,30 +966,16 @@ instruction_t * instruction_hashtable_lookup(char *name) {
     return NULL;
 }
 
-//unsigned int collisions;
-
 void init_instruction_hashtable(void) {
     uint16_t n, h;
 
-    //collisions = 0;
     memset(instruction_hashtable, 0, sizeof(instruction_hashtable));
 
     for(n = 0; n < (sizeof(instructions) / sizeof(instruction_t)); n++) {
-        //printf("Inserting %s at ", instructions[n].name);
         h = hash(instructions[n].name) % INSTRUCTION_HASHTABLESIZE;
         while(instruction_hashtable[h]) {
-            //printf("Collision for %s with existing %s\n", instructions[n].name, instruction_hashtable[h]->name);
             h = h + 1;
-            //collisions++;
         }
-        //printf("hash location %d\n", h);
         instruction_hashtable[h] = &instructions[n];
     }
-    //print hashtable
-    //printf("%d collisions\n", collisions);
-    //for(n = 0; n < INSTRUCTION_HASHTABLESIZE; n++) {
-    //    if(instruction_hashtable[n]) {
-    //        printf("%03d - %s\n", n, instruction_hashtable[n]->name);
-    //    }
-    //}
 }
