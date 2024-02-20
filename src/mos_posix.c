@@ -26,7 +26,7 @@ posixfile_t _filearray[MAXPOSIXFILES];
 
 // MOS API calls conversion to POSIX
 
-UINT8 mos_flseek(UINT8 fh, UINT32 offset) {
+uint8_t mos_flseek(uint8_t fh, uint32_t offset) {
     int index;
     bool found = false;
 
@@ -40,7 +40,7 @@ UINT8 mos_flseek(UINT8 fh, UINT32 offset) {
     return 1; // non-zero on failure
 }
 
-UINT8 mos_fopen(char * filename, UINT8 mode) // returns filehandle, or 0 on error
+uint8_t mos_fopen(char * filename, uint8_t mode) // returns filehandle, or 0 on error
 {
     posixfile_t newfile;
 
@@ -60,7 +60,7 @@ UINT8 mos_fopen(char * filename, UINT8 mode) // returns filehandle, or 0 on erro
     else return 0;
 }
 
-UINT8 mos_fclose(UINT8 fh)					 // returns number of still open files
+uint8_t mos_fclose(uint8_t fh)					 // returns number of still open files
 {
     int index;
     bool found = false;
@@ -83,7 +83,7 @@ UINT8 mos_fclose(UINT8 fh)					 // returns number of still open files
     return 0;
 }
 
-char mos_fgetc(UINT8 fh)					 // returns character from file
+char mos_fgetc(uint8_t fh)					 // returns character from file
 {
     int index;
     bool found = false;
@@ -98,7 +98,7 @@ char mos_fgetc(UINT8 fh)					 // returns character from file
     else return 0;
 }
 
-void mos_fputc(UINT8 fh, char c)			 // writes character to file
+void mos_fputc(uint8_t fh, char c)			 // writes character to file
 {
     int index;
     bool found = false;
@@ -112,7 +112,7 @@ void mos_fputc(UINT8 fh, char c)			 // writes character to file
     if(found) fputc(c, _filearray[index].file);
 }
 
-UINT8 mos_feof(UINT8 fh)					 // returns 1 if EOF, 0 otherwise
+uint8_t mos_feof(uint8_t fh)					 // returns 1 if EOF, 0 otherwise
 {
     int index;
     bool found = false;
@@ -127,7 +127,7 @@ UINT8 mos_feof(UINT8 fh)					 // returns 1 if EOF, 0 otherwise
     else return 1;
 }
 
-UINT24 mos_fwrite(UINT8 fh, char *buffer, UINT24 numbytes) {
+uint24_t mos_fwrite(uint8_t fh, char *buffer, uint24_t numbytes) {
     int index;
     bool found = false;
     uint24_t written;
@@ -146,7 +146,7 @@ UINT24 mos_fwrite(UINT8 fh, char *buffer, UINT24 numbytes) {
     else return 0;
 }
 
-UINT24 mos_fread(UINT8 fh, char *buffer, UINT24 numbytes) {
+uint24_t mos_fread(uint8_t fh, char *buffer, uint24_t numbytes) {
     int index;
     bool found = false;
 
@@ -160,7 +160,7 @@ UINT24 mos_fread(UINT8 fh, char *buffer, UINT24 numbytes) {
     else return 0;
 }
 
-UINT8 mos_del(char *filename) {
+uint8_t mos_del(char *filename) {
     remove(filename);
     return 0;
 }

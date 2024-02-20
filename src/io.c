@@ -186,7 +186,7 @@ int io_puts(uint8_t fh, char *s) {
 }
 
 // Allocate a LINEMAX buffer for io_getline, max LINEMAX-1 chars will be read
-// Configured to use LINEMAX = UINT8_T Maximum for performance
+// Configured to use LINEMAX = uint8_t Maximum for performance
 char* io_getline(uint8_t fh, char *s) {
 	uint8_t maxchars, charsread;
     char *cs,*ptr;

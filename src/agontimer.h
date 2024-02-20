@@ -9,6 +9,7 @@
  * 22/01/2023:      Freerunning timer0 code added, needs interrupt handler code
  */
 
+#include "stdint.h"
 #include "config.h"
 #include <defines.h>
 
@@ -17,7 +18,7 @@
 
 #ifdef AGON
 
-extern volatile UINT24 timer1;
+extern volatile uint24_t timer1;
 extern void	timer1_handler(void);
 void timer1_begin(int interval);
 void timer1_end(void);

@@ -22,7 +22,7 @@
 #define FILLBYTE                   0xFF // Same as ZDS
 #define INSTRUCTION_HASHTABLESIZE  2048 // Number of entries in the hashtable
 #define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'
-#define LINEMAX                     256 // Input line length maximum UINT8_T
+#define LINEMAX                     256 // Input line length maximum uint8_t
 #define FILENAMEMAXLENGTH            64
 #define FILES                         8
 #define MALLOC_BUFFERSIZE       0x30000 // global memory buffer
@@ -36,5 +36,5 @@
 #define MAXIMUM_MACROS               64 // Maximum number of macros
 #define MACROMAXARGS                  8 // Maximum arguments to a macro
 #define MACROARGLENGTH               32 // Maximum length of macro argument
-#define CLEANUPFILES               false
+#define CLEANUPFILES               true
 #endif // CONFIG_H
