@@ -3,10 +3,10 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "./stdint.h"
+#include <stdint.h>
+#include <stdbool.h>
 #include "config.h"
 #include "utils.h"
-#include "malloc.h"
 
 typedef struct {
     char*   name;
@@ -17,6 +17,7 @@ typedef struct {
 
 extern macro_t macroTable[MAXIMUM_MACROS]; // indexed table
 extern uint8_t macroTableCounter;
+extern uint24_t macromemsize;
 
 void      initMacros(void);
 bool      defineMacro(char *name, uint8_t argcount, char *arguments);

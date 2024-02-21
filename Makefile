@@ -5,8 +5,8 @@ ARCHITECTURE=linux_elf_x86_64
 CC=gcc
 LFLAGS=-g -Wall -DUNIX
 CFLAGS=$(LFLAGS) -c
-OUTFLAG=-o
-RELEASE_LFLAGS=-s -static -Wall -O2 -DNDEBUG -DUNIX
+OUTFLAG=-o 
+RELEASE_LFLAGS=-s -static -Wall -O2 -DNDEBUG -DUNIX -Wno-unused-result
 RELEASE_CFLAGS=$(RELEASE_LFLAGS) -c
 .DEFAULT_GOAL := all
 
@@ -14,6 +14,7 @@ RELEASE_CFLAGS=$(RELEASE_LFLAGS) -c
 SRCDIR=src
 OBJDIR=obj
 BINDIR=bin
+LOADERDIR=mosloader
 RELEASEDIR=releases
 # Automatically get all sourcefiles
 SRCS=$(wildcard $(SRCDIR)/*.c)
@@ -23,19 +24,30 @@ OBJS=$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 BIN=$(BINDIR)/$(PROJECTNAME)
 
 # Default rule
-all: $(BINDIR) $(OBJDIR) $(BIN)
+all: $(BINDIR) $(OBJDIR) $(BIN) agon
+
+agon:
+	@echo === Compiling Agon target
+	@make --file=Makefile-agon
+
+mosloader: $(BINDIR) $(OBJDIR) $(BIN)
+	@echo === Assembling mosloader
+	$(BIN) $(LOADERDIR)/$(PROJECTNAME).s $(LOADERDIR)/$(PROJECTNAME).bin
 
 # Release with optimal settings for release target
 release: CFLAGS=$(RELEASE_CFLAGS)
 release: LFLAGS=$(RELEASE_LFLAGS)
-release: $(BINDIR)
-release: $(OBJDIR)
-release: $(BIN)
+#release: $(BINDIR)
+#release: $(OBJDIR)
+#release: $(BIN)
+release: all
+release: mosloader
 release: $(RELEASEDIR)
 release: package
 
 # Linking all compiled objects into final binary
 $(BIN):$(OBJS)
+	@echo === Linking Linux target
 ifeq ($(CC),gcc)
 	$(CC) $(LFLAGS) $(OBJS) $(OUTFLAG) $@
 else
@@ -60,12 +72,18 @@ $(RELEASEDIR):
 	mkdir $(RELEASEDIR)
 
 package:
-	tar -zcvf $(RELEASEDIR)/$(PROJECTNAME)_$(ARCHITECTURE).gz $(BINDIR)/$(PROJECTNAME)
+	@echo === Packaging binaries
+	@tar -zcvf $(RELEASEDIR)/$(PROJECTNAME)_$(ARCHITECTURE).gz $(BINDIR)/$(PROJECTNAME)
+	@cp $(BINDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/$(PROJECTNAME).ldr
+	@cp $(LOADERDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/
+
 clean:
 ifdef OS
 	del /s /q $(BINDIR) >nul 2>&1
 	del /s /q $(OBJDIR) >nul 2>&1
 	del /s /q $(RELEASEDIR) >nul 2>&1
+	del /s /q $(LOADERDIR)/$(PROJECTNAME).bin
 else
-	$(RM) -rf $(BINDIR) $(OBJDIR) $(RELEASEDIR)
+	$(RM) -r $(BINDIR) $(OBJDIR) $(RELEASEDIR)
+	$(RM) $(LOADERDIR)/$(PROJECTNAME).bin
 endif

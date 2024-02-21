@@ -1,6 +1,10 @@
 #ifndef IO_H
 #define IO_H
 
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+
 #include "config.h"
 #include "filestack.h"
 
@@ -8,7 +12,7 @@
 extern bool list_enabled;
 extern bool consolelist_enabled;
 extern char filename[FILES][FILENAMEMAXLENGTH + 1];    // 0 - current, 1 - input, 2 - binary output, 3 - local labels, 4 - anonymous labels, 5 - listing
-extern uint8_t filehandle[FILES];
+extern FILE* filehandle[FILES];
 extern uint16_t sourcefilecount;
 extern uint16_t binfilecount;
 
@@ -23,9 +27,9 @@ enum {
     FILE_SYMBOLS
 };
 
-#ifdef AGON
-extern unsigned int io_filesize(uint8_t fh);
-#endif
+//#ifdef AGON
+//extern unsigned int io_filesize(uint8_t fh);
+//#endif
 
 void io_outputc(unsigned char c);
 void  io_write(uint8_t fh, char *s, uint16_t size);

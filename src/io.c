@@ -2,16 +2,17 @@
 #include <string.h>
 #include <ctype.h>
 #include "globals.h"
-#include "./stdint.h"
-#include "mos-interface.h"
+#include <stdint.h>
 #include "io.h"
 #include "listing.h"
 #include "filestack.h"
 #include "macro.h"
+#include "utils.h"
+#include "moscalls.h"
 
 // Global variables
 char     filename[FILES][FILENAMEMAXLENGTH + 1];
-uint8_t  filehandle[FILES];
+FILE*    filehandle[FILES];
 uint16_t sourcefilecount;
 uint16_t binfilecount;
 
@@ -23,6 +24,13 @@ bool     _fileEOF[FILES];
 char     _inputbuffer[FILE_BUFFERSIZE];
 char     _outputbuffer[FILE_BUFFERSIZE];
 char     _fileBasename[FILENAMEMAXLENGTH + 1]; // base filename for all output files
+
+#ifdef CEDEV
+    // platform-specific for Agon CEDEV
+    int remove(const char *filename) {
+        return removefile(filename);
+    }
+#endif // else use standard remove()
 
 void _initFileBufferLayout(void) {
     int n;
@@ -44,17 +52,11 @@ void _initFileBuffers(void) {
 }
 
 // opens a file a places the result at the file pointer
-bool _openFile(uint8_t *file, char *name, uint8_t mode) {
-    *file = mos_fopen(name, mode);
-    if(*file) return true;
-    return false;
-}
-
-bool reOpenFile(uint8_t number, uint8_t mode) {
-    bool result;
-    if(filehandle[number]) mos_fclose(filehandle[number]);
-    result = _openFile(&filehandle[number], filename[number], mode);
-    return result;
+bool _openFile(uint8_t filenumber, char* mode) {
+    FILE* file = fopen(filename[filenumber], mode);
+    filehandle[filenumber] = file;
+    if(file) return true;
+    else return false;
 }
 
 // Prepare filenames according to input filename
@@ -91,35 +93,35 @@ void _deleteFiles(void) {
     int n;
 
     if(CLEANUPFILES) {
-        mos_del(filename[FILE_LOCAL_LABELS]);
-        mos_del(filename[FILE_ANONYMOUS_LABELS]);
+        remove(filename[FILE_LOCAL_LABELS]);
+        remove(filename[FILE_ANONYMOUS_LABELS]);
     }
     for(n = 0; n < macroTableCounter; n++) {
         io_getMacroFilename(macrofilename, macroTable[n].name);
-        if(CLEANUPFILES) mos_del(macrofilename);
+        if(CLEANUPFILES) remove(macrofilename);
+
     }
 
-    if(global_errors && CLEANUPFILES) mos_del(filename[FILE_OUTPUT]);
+    if(global_errors && CLEANUPFILES) remove(filename[FILE_OUTPUT]);
 }
 
 void _closeAllFiles() {
-    if(filehandle[FILE_CURRENT]) mos_fclose(filehandle[FILE_CURRENT]);
-    if(filehandle[FILE_INPUT]) mos_fclose(filehandle[FILE_INPUT]);
-    if(filehandle[FILE_OUTPUT]) mos_fclose(filehandle[FILE_OUTPUT]);
-    if(filehandle[FILE_LOCAL_LABELS]) mos_fclose(filehandle[FILE_LOCAL_LABELS]);
-    if(filehandle[FILE_ANONYMOUS_LABELS]) mos_fclose(filehandle[FILE_ANONYMOUS_LABELS]);
-    if(list_enabled && filehandle[FILE_LISTING]) mos_fclose(filehandle[FILE_LISTING]);
-    if(filehandle[FILE_MACRO]) mos_fclose(filehandle[FILE_MACRO]);
+    if(filehandle[FILE_INPUT]) fclose(filehandle[FILE_INPUT]);
+    if(filehandle[FILE_OUTPUT]) fclose(filehandle[FILE_OUTPUT]);
+    if(filehandle[FILE_LOCAL_LABELS]) fclose(filehandle[FILE_LOCAL_LABELS]);
+    if(filehandle[FILE_ANONYMOUS_LABELS]) fclose(filehandle[FILE_ANONYMOUS_LABELS]);
+    if(list_enabled && filehandle[FILE_LISTING]) fclose(filehandle[FILE_LISTING]);
+    if(filehandle[FILE_MACRO]) fclose(filehandle[FILE_MACRO]);
 }
 
 bool _openfiles(void) {
     bool status = true;
 
-    status = status && _openFile(&filehandle[FILE_INPUT], filename[FILE_INPUT], fa_read);
-    status = status && _openFile(&filehandle[FILE_OUTPUT], filename[FILE_OUTPUT], fa_write | fa_create_always);
-    status = status && _openFile(&filehandle[FILE_LOCAL_LABELS], filename[FILE_LOCAL_LABELS], fa_read | fa_write | fa_create_always);
-    status = status && _openFile(&filehandle[FILE_ANONYMOUS_LABELS], filename[FILE_ANONYMOUS_LABELS], fa_read | fa_write | fa_create_always);
-    if(list_enabled) status = status && _openFile(&filehandle[FILE_LISTING], filename[FILE_LISTING], fa_write | fa_create_always);
+    status = status && _openFile(FILE_INPUT, "rb");
+    status = status && _openFile(FILE_OUTPUT, "wb+");
+    status = status && _openFile(FILE_LOCAL_LABELS, "wb+");
+    status = status && _openFile(FILE_ANONYMOUS_LABELS, "wb+");
+    if(list_enabled) status = status && _openFile(FILE_LISTING, "w");
     if(!status) _closeAllFiles();
     return status;
 }
@@ -127,7 +129,7 @@ bool _openfiles(void) {
 // Will be called for output files only
 // These files will have a buffer set up previously
 void _io_flush(uint8_t fh) {
-    mos_fwrite(filehandle[fh], (char*)_bufferstart[fh], _filebuffersize[fh]);
+    fwrite(_bufferstart[fh], 1, _filebuffersize[fh], filehandle[fh]);
     _filebuffer[fh] = _bufferstart[fh];
     _filebuffersize[fh] = 0;
 }
@@ -135,7 +137,7 @@ void _io_flush(uint8_t fh) {
 // Will be called for reading INPUT buffer
 void _io_fillbuffer(uint8_t fh) {
     if(_bufferstart[fh]) {
-        _filebuffersize[fh] = mos_fread(filehandle[fh], _bufferstart[fh], FILE_BUFFERSIZE);
+        _filebuffersize[fh] = fread(_bufferstart[fh], 1, FILE_BUFFERSIZE, filehandle[fh]);
         _filebuffer[fh] = _bufferstart[fh];
     }
 }
@@ -154,7 +156,7 @@ void io_putc(uint8_t fh, unsigned char c) {
         _filebuffersize[fh]++;
         if(_filebuffersize[fh] == FILE_BUFFERSIZE) _io_flush(fh);
     }
-    else mos_fputc(filehandle[fh], c); // regular non-buffered IO
+    else fputc(c, filehandle[fh]); // regular non-buffered IO
 }
 
 void io_outputc(unsigned char c) {
@@ -172,7 +174,7 @@ void  io_write(uint8_t fh, char *s, uint16_t size) {
             if(_filebuffersize[fh] == FILE_BUFFERSIZE) _io_flush(fh);
         }
     }
-    else mos_fwrite(filehandle[fh], s, size);
+    else fwrite(s, 1, size, filehandle[fh]);
 }
 
 int io_puts(uint8_t fh, char *s) {
@@ -238,9 +240,9 @@ bool io_setpass(uint8_t pass) {
             break;
         case 2:
             _initFileBuffers();
-            result = result && (mos_flseek(filehandle[FILE_INPUT], 0) == 0);
-            result = result && (mos_flseek(filehandle[FILE_LOCAL_LABELS], 0) == 0);
-            result = result && (mos_flseek(filehandle[FILE_ANONYMOUS_LABELS], 0) == 0);
+            result = result && (fseek(filehandle[FILE_INPUT], 0, 0) == 0);
+            result = result && (fseek(filehandle[FILE_LOCAL_LABELS], 0, 0) == 0);
+            result = result && (fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0) == 0);
             if(!result) error("Error resetting input file(s)\r\n");
             return result;
             break;

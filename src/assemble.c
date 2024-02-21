@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <stdint.h>
 #include <stdarg.h>
+#include "console.h"
 #include "assemble.h"
 #include "globals.h"
 #include "utils.h"
@@ -11,10 +12,9 @@
 #include "str2num.h"
 #include "listing.h"
 #include "filestack.h"
-#include "./stdint.h"
-#include "mos-interface.h"
 #include "macro.h"
 #include "io.h"
+#include "moscalls.h"
 
 // Local file buffer
 char _buffer[FILE_BUFFERSIZE];
@@ -110,7 +110,7 @@ int24_t getValue(char *string, bool req_firstpass) {
             switch(unary_operator) {
                 case '-': tmp = -tmp; break;
                 case '~': tmp = ~tmp; break;
-                case '+': tmp = tmp; break;
+                case '+': break;
                 default: break;
             }
         }
@@ -1181,7 +1181,7 @@ void handle_asm_adl(void) {
             }
         }
 
-        if(strcasecmp(token.start, "adl")) {
+        if(i_strcasecmp(token.start, "adl")) {
             error(message[ERROR_INVALIDOPERAND]);
             return;
         }
@@ -1240,7 +1240,7 @@ void handle_asm_include(void) {
     strcpy(fsi.filename, token.start+1);
     // set new file
     io_getFileDefaults(&fsi);
-    fsi.fp = mos_fopen(token.start+1, fa_read);
+    fsi.fp = fopen(token.start+1, "rb");
     strncpy(fsi.filename, token.start+1, sizeof(fsi.filename));
     fsi.filename[sizeof(fsi.filename)-1] = '\0';
     fsi.bufferstart = &_incbuffer[inclevel][0];
@@ -1257,8 +1257,7 @@ void handle_asm_include(void) {
 
 void handle_asm_incbin(void) {
     streamtoken_t token;
-    uint8_t fh;
-    bool eof;
+    FILE* fh;
     uint24_t n, size = 0;
 
     if(recordingMacro) return;
@@ -1282,7 +1281,7 @@ void handle_asm_incbin(void) {
     }
 
     token.start[strlen(token.start)-1] = 0;
-    fh = mos_fopen(token.start+1, fa_read);
+    fh = fopen(token.start+1, "rb");
 
     if(!fh) {
         error(message[ERROR_INCLUDEFILE]);            
@@ -1290,43 +1289,57 @@ void handle_asm_incbin(void) {
     }
 
     if(pass == 1) {
-        #ifdef AGON // efficient just get the filesize from the fh object
-            size = io_filesize(fh);
+        #ifdef CEDEV
+            // Use optimal assembly routine in moscalls.asm
+            size = getfilesize(fh->fhandle);
             address += size;
         #else
             while(1) {
-                size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
+                // Other non-agon compilers
+                size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
                 address += size;
-                eof = mos_feof(fh);
-                if(eof) break;
+                if(size < FILE_BUFFERSIZE) break;
             }
         #endif
     }
 
     if(pass == 2) {
+        while(1) {
+            size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
+            if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
+                for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
+            }
+            else {
+                io_write(FILE_OUTPUT, _buffer, size);
+                address += size;
+            }
+            if(size < FILE_BUFFERSIZE) break;
+        }
+        binfilecount++;
+    }
+    /*
+    if(pass == 2) {
         if(list_enabled || consolelist_enabled) {
             // Output needs to pass to the listing through emit_8bit, performance-hit
             while(1) {
-                size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
+                size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
                 for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
-                eof = mos_feof(fh);
-                if(eof) break;
+                if(size < FILE_BUFFERSIZE) break;
             }
         }
         else {
             while(1) {
                 // efficient output without listing the contents
-                size = mos_fread(fh, _buffer, FILE_BUFFERSIZE);
+                size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
                 io_write(FILE_OUTPUT, _buffer, size);
-
                 address += size;
-                eof = mos_feof(fh);
-                if(eof) break;
+                if(size < FILE_BUFFERSIZE) break;
             }
         }
         binfilecount++;
     }
-    mos_fclose(fh);
+    */
+    fclose(fh);
     if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
 }
 
@@ -1419,7 +1432,10 @@ uint24_t delta;
 }
 
 void handle_asm_endmacro(void) {
-    if(pass == 1) mos_fclose(filehandle[FILE_MACRO]);
+    if(pass == 1) {
+        fclose(filehandle[FILE_MACRO]);
+        filehandle[FILE_MACRO] = NULL;
+    }
     recordingMacro = false;
 }
 
@@ -1469,7 +1485,7 @@ void handle_asm_definemacro(void) {
     defineMacro(currentline.mnemonic, argcount, (char *)arglist);
     // define macro filename
     io_getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
-    filehandle[FILE_MACRO] = mos_fopen(filename[FILE_MACRO], fa_write | fa_create_always);
+    filehandle[FILE_MACRO] = fopen(filename[FILE_MACRO], "wb+");
     if(!filehandle[FILE_MACRO]) error("Error writing macro file");
 }
 
@@ -1628,7 +1644,7 @@ void expandMacroStart(macro_t *exp) {
     // set new file
     io_getFileDefaults(&fsi);
     io_getMacroFilename(fsi.filename, exp->name);    
-    fsi.fp = mos_fopen(fsi.filename, fa_read);
+    fsi.fp = fopen(fsi.filename, "rb");
     // set up temporary buffer for file reads from macro
     fsi.bufferstart = &_macrobuffer[0];
     fsi.filebuffer = fsi.bufferstart;
@@ -1645,10 +1661,10 @@ void processInstructions(char *macroline){
     operandlist_t *list;
     uint8_t listitem;
     bool match;
-    int i = 0;
+
     if(pass == 1) {
         if(recordingMacro) {
-            if((currentline.mnemonic == NULL) || strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
+            if((currentline.mnemonic == NULL) || i_strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
                 io_puts(FILE_MACRO, macroline);
             }
             if((currentline.label) && (currentline.label[0] != '@')) error("No global labels allowed in macro definition");
@@ -1677,7 +1693,6 @@ void processInstructions(char *macroline){
                         break;
                         }
                         list++;
-                        i++;
                     }
                     if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
                     return;
@@ -1733,9 +1748,9 @@ bool assemble(void){
             processInstructions(macroline);
             processDelayedLineNumberReset();
             if(global_errors) {
-                text_YELLOW();
-                printf("%s",line);
-                text_NORMAL();
+                vdp_set_text_colour(DARK_YELLOW);
+                printf("%s\r\n",line);
+                vdp_set_text_colour(BRIGHT_WHITE);
                 return false;
             }
         }
@@ -1743,7 +1758,7 @@ bool assemble(void){
 
         if(filestackCount()) {
             currentExpandedMacro = NULL;
-            mos_fclose(filehandle[FILE_CURRENT]);
+            fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
             io_setCurrent(&fsitem);
         }
@@ -1776,16 +1791,16 @@ bool assemble(void){
             }
             processDelayedLineNumberReset();
             if(global_errors) {
-                text_YELLOW();
-                printf("%s",line);
-                text_NORMAL();
+                vdp_set_text_colour(DARK_YELLOW);
+                printf("%s\r\n",line);
+                vdp_set_text_colour(BRIGHT_WHITE);
                 return false;
             }    
         }
         sourcefilecount++;
         if(filestackCount()) {
             currentExpandedMacro = NULL;
-            mos_fclose(filehandle[FILE_CURRENT]);
+            fclose(filehandle[FILE_CURRENT]);
             incfileState = filestackPop(&fsitem);
             io_setCurrent(&fsitem);
         }

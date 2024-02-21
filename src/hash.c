@@ -1,7 +1,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "hash.h"
-#include "./stdint.h"
+#include <stdint.h>
 
 static uint8_t pearson[256] = {
       1,  87,  49,  12, 176, 178, 102, 166, 121, 193,   6,  84, 249, 230,  44, 163,

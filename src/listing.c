@@ -3,7 +3,7 @@
 #include "listing.h"
 #include "globals.h"
 #include "utils.h"
-#include "./stdint.h"
+#include <stdint.h>
 #include "io.h"
 
 // Local variables

@@ -244,12 +244,10 @@ exchange (char **argv)
 /* Initialize the internal data when the first call is made.  */
 
 #if defined __STDC__ && __STDC__
-static const char *_getopt_initialize (int, char *const *, const char *);
+static const char *_getopt_initialize (const char *);
 #endif
 static const char *
-_getopt_initialize (int argc,
-		    char *const *argv,
-		    const char *optstring)
+_getopt_initialize (const char *optstring)
 {
   /* Start processing options with ARGV-element 1 (since ARGV-element 0
      is the program name); the sequence of previously skipped
@@ -343,7 +341,7 @@ _getopt_internal (int argc, char *const *argv, const char *optstring,
     {
       if (optind == 0)
 	optind = 1;	/* Don't scan ARGV[0], the program name.  */
-      optstring = _getopt_initialize (argc, argv, optstring);
+      optstring = _getopt_initialize (optstring);
       __getopt_initialized = 1;
     }
 

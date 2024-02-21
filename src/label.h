@@ -2,9 +2,9 @@
 #define LABEL_H
 
 #include <stdio.h>
-#include "./stdint.h"
+#include <stdint.h>
+#include <stdbool.h>
 #include "config.h"
-#include "malloc.h"
 
 enum {
     LABEL_REGULAR,
@@ -37,5 +37,7 @@ void initLocalLabelTable(void);
 uint16_t getGlobalLabelCount(void);
 uint16_t getLocalLabelCount(void);
 void saveGlobalLabelTable(void);
+
+extern uint24_t labelmemsize;
 
 #endif // LABEL_H

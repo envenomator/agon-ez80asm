@@ -1,5 +1,10 @@
-#include "./macro.h"
+#include <stdlib.h>
+#include "macro.h"
 #include "globals.h"
+
+// Total allocated memory for macros
+uint24_t macromemsize;
+
 // tables
 macro_t macroTable[MAXIMUM_MACROS]; // indexed table
 uint8_t macroTableCounter;
@@ -7,6 +12,7 @@ uint8_t macroTableCounter;
 void initMacros(void) {
     int i;
 
+    macromemsize = 0;
     macroTableCounter = 0;
     for(i = 0; i < MAXIMUM_MACROS; i++){
         macroTable[i].name = NULL;
@@ -56,15 +62,18 @@ bool defineMacro(char *name, uint8_t argcount, char *arguments) {
                 error(message[ERROR_MACRONAMELENGTH]);
                 return false;
             }
-            newmacro.name = agon_malloc(len+1);
+            newmacro.name = (char*)malloc(len+1);
+            macromemsize += len+1;
             if(newmacro.name == NULL) return false;
             strcpy(newmacro.name, name);
             newmacro.argcount = argcount;
             newmacro.substitutions = NULL;
             if(argcount == 0) newmacro.arguments = NULL;
             else {
-                newmacro.arguments = (char **)agon_malloc(argcount * sizeof(char *)); // allocate array of char*
-                newmacro.substitutions = (char **)agon_malloc(argcount * sizeof(char *));
+                newmacro.arguments = (char **)malloc(argcount * sizeof(char *)); // allocate array of char*
+                macromemsize += argcount * sizeof(char *);
+                newmacro.substitutions = (char **)malloc(argcount * sizeof(char *));
+                macromemsize += argcount * sizeof(char *);
                 if((newmacro.arguments == NULL) || (newmacro.substitutions == NULL)) return false;
                 for(j = 0; j < argcount; j++) {
                     len = strlen(arguments + j*(MACROARGLENGTH+1));
@@ -72,8 +81,10 @@ bool defineMacro(char *name, uint8_t argcount, char *arguments) {
                         error(message[ERROR_MACROARGLENGTH]);
                         return false;
                     }
-                    ptr = agon_malloc(len+1);
-                    subs = agon_malloc(MACROARGLENGTH+1);
+                    ptr = (char*)malloc(len+1);
+                    macromemsize += len+1;
+                    subs = (char*)malloc(MACROARGLENGTH+1);
+                    macromemsize += MACROARGLENGTH+1;
                     if((ptr == NULL) || (subs == NULL)) return false;
                     strcpy(ptr, arguments + j*(MACROARGLENGTH+1));
                     newmacro.arguments[j] = ptr;

@@ -1,6 +1,13 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#ifndef CEDEV
+#include <stdint.h>
+typedef int32_t int24_t;
+typedef uint32_t uint24_t;
+#endif
+
+/*
 #ifndef UNIX
 #ifndef _MSC_VER
 #define AGON
@@ -14,9 +21,10 @@
 #pragma warning(disable:4267)			// conversion from 'size_t' to 'int', possible loss of data
 #pragma warning(disable:4244)			// conversion from '__int64' to 'uint16_t', possible loss of data
 #endif
+*/
 
 #define VERSION                       1
-#define REVISION                      0
+#define REVISION                      1
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
 #define FILLBYTE                   0xFF // Same as ZDS

@@ -1,13 +1,13 @@
 #ifndef FILESTACK_H
 #define FILESTACK_H
-
-#include "./stdint.h"
+#include <stdio.h>
+#include <stdint.h>
 #include "globals.h"
 #include "config.h"
 
 typedef struct {
     uint16_t linenumber;
-    uint8_t  fp;
+    FILE*    fp;
     char     filename[FILENAMEMAXLENGTH + 1];
     char *   filebuffer;
     char *   bufferstart;

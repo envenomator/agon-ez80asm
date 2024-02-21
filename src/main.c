@@ -1,24 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include "console.h"
+#include "getopt.h"
+#include "config.h"
+
 #include "globals.h"
 #include "utils.h"
 #include "assemble.h"
 #include "label.h"
-#include "./stdint.h"
 #include "macro.h"
-#include "mos-interface.h"
-#include "mos_posix.h"
-#include "malloc.h"
 #include "io.h"
-#include "getopt.h"
 #include "str2num.h"
 #include "label.h"
 #include "clock.h"
-#include "malloc.h"
 
 void printVersion(void) {
-    printf("ez80asm version %d.%d, (C)2023 - Jeroen Venema\r\n",VERSION,REVISION);
+    printf("ez80asm version %d.%d, (C)2024 - Jeroen Venema\r\n",VERSION,REVISION);
 }
 
 void printHelp(void) {
@@ -36,7 +36,7 @@ void printHelp(void) {
 }
 
 void displayStatistics(void) {
-    printf("\r\nAssembly statistics\r\n===========================\r\nMemory        : %d/%d\r\nLabels        : %d/%d\r\nMacros        : %d/%d\r\nSources parsed: %d\r\nBinfiles read : %d\r\nOutput size   : %d\r\n", agon_mem_used(), MALLOC_BUFFERSIZE, getGlobalLabelCount(), GLOBAL_LABEL_TABLE_SIZE, macroTableCounter, MAXIMUM_MACROS, sourcefilecount, binfilecount, (address - start_address));
+    printf("\r\nAssembly statistics\r\n===========================\r\nLabel memory  : %d\r\nLabels        : %d/%d\r\n\r\nMacro memory  : %d\r\nMacros        : %d/%d\r\n\r\nSources parsed: %d\r\nBinfiles read : %d\r\nOutput size   : %d\r\n", labelmemsize, getGlobalLabelCount(), GLOBAL_LABEL_TABLE_SIZE, macromemsize, macroTableCounter, MAXIMUM_MACROS, sourcefilecount, binfilecount, (address - start_address));
 }
 
 int main(int argc, char *argv[]) {
@@ -55,6 +55,7 @@ int main(int argc, char *argv[]) {
     exportsymbols = false;
     displaystatistics = false;
 
+    
     while ((opt = getopt(argc, argv, "-:ldvhsxb:a:o:")) != -1) {
         switch(opt) {
             case 'a':
@@ -110,7 +111,7 @@ int main(int argc, char *argv[]) {
                 printf("Setting org address to hex %06X\r\n", start_address);
                 break;
             case '?':
-                text_RED();
+                vdp_set_text_colour(BRIGHT_RED);
                 switch(optopt) {
                     case 'b':
                         printf("option -b: Missing fillbyte value\r\n");
@@ -125,7 +126,7 @@ int main(int argc, char *argv[]) {
                         printf("Unknown option \'%c\'\r\n",optopt);
                         break;
                 }
-                text_NORMAL();
+                vdp_set_text_colour(BRIGHT_WHITE);
                 return 2;
             case 1:
                 if(strlen(optarg) > FILENAMEMAXLENGTH) {
@@ -148,18 +149,17 @@ int main(int argc, char *argv[]) {
                 break;
         }
     }
+    
     if((argc == 1) || (filenamecount == 0)) {
         error("No input filename");
         printHelp();
         return 2;
     }
 
-    mos_posix_init();       // Init posix compatibility for non-MOS builds, before io_init
-
     if(!io_init(inputfilename, outputfilename)) {
-        text_RED();
+        vdp_set_text_colour(BRIGHT_RED);
         printf("Error opening \"%s\"\r\n", inputfilename);
-        text_NORMAL();
+        vdp_set_text_colour(BRIGHT_WHITE);
         return 2;
     }
     printf("Assembling %s\r\n", inputfilename);
@@ -171,10 +171,10 @@ int main(int argc, char *argv[]) {
     initLocalLabelTable();
     initAnonymousLabelTable();
     initMacros();
-    init_agon_malloc();
     
     // Assemble input to output
     clock_start();
+
     assemble();
     clock_stop();
 
@@ -187,5 +187,6 @@ int main(int argc, char *argv[]) {
     if(global_errors) return 1;
     if(exportsymbols) saveGlobalLabelTable();
     if(displaystatistics) displayStatistics();
+    
     return 0;
 }

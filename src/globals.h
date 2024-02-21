@@ -2,10 +2,12 @@
 #define GLOBALS_H
 
 #include <stdio.h>
-#include "./stdint.h"
+#include <stdint.h>
+#include <stdbool.h>
 #include "instruction.h"
 #include "config.h"
 #include "macro.h"
+
 
 typedef struct {
     instruction_t *current_instruction;
@@ -20,6 +22,7 @@ typedef struct {
     bool suffixpresent;
     uint16_t size;      // byte size of the assembler-command output in db/defb/dw/defw
 } tokenline_t;
+
 
 // Global variables
 extern bool lineNumberNeedsReset;
@@ -37,11 +40,13 @@ extern bool consolelist_enabled;
 extern uint8_t fillbyte;
 extern uint24_t start_address;
 
+
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code
 extern operand_t operand1;
 extern operand_t operand2;
 extern opcodesequence_t output;
+
 
 // Errors
 enum {

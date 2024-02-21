@@ -1,7 +1,7 @@
 #ifndef ASSEMBLE_H
 #define ASSEMBLE_H
 
-#include "./stdint.h"
+#include <stdint.h>
 #include <stdio.h>
 #include "instruction.h"
 #include "label.h"

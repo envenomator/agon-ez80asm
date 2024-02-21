@@ -1,7 +1,8 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-#include "./stdint.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 #define ENDMACROCMD "endmacro"
 #define MAX_MNEMONIC_SIZE         10

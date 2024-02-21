@@ -1,14 +1,18 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
 #include "label.h"
 #include "hash.h"
 #include "str2num.h"
 #include "utils.h"
 #include "globals.h"
-#include "./stdint.h"
 #include "filestack.h"
-#include "mos-interface.h"
 #include "io.h"
+
+// Total allocated memory for labels
+uint24_t labelmemsize;
 
 // memory for anonymous labels
 anonymouslabel_t an_prev;
@@ -29,7 +33,7 @@ void saveGlobalLabelTable(void) {
     char *ptr;
     char buffer[LINEMAX+1];
 
-    filehandle[FILE_SYMBOLS] = mos_fopen(filename[FILE_SYMBOLS], fa_write | fa_create_always);
+    filehandle[FILE_SYMBOLS] = fopen(filename[FILE_SYMBOLS], "wb+");
     if(filehandle[FILE_SYMBOLS] == 0) {
         error("Couldn't open file for writing global label table");
         return;
@@ -39,10 +43,10 @@ void saveGlobalLabelTable(void) {
         if(globalLabelTable[i]) {
             sprintf(buffer, "%s $%x\r\n", globalLabelTable[i]->name, globalLabelTable[i]->address);
             ptr = buffer;
-            while(*ptr) mos_fputc(filehandle[FILE_SYMBOLS], *ptr++);
+            while(*ptr) fputc(*ptr++, filehandle[FILE_SYMBOLS]);
         }
     }
-    mos_fclose(filehandle[FILE_SYMBOLS]);
+    fclose(filehandle[FILE_SYMBOLS]);
 }
 
 uint16_t getGlobalLabelCount(void) {
@@ -54,6 +58,7 @@ uint16_t getLocalLabelCount(void) {
 void initGlobalLabelTable(void) {
     int i;
 
+    labelmemsize = 0;
     globalLabelCounter = 0;
     for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
         globalLabelTable[i] = NULL;
@@ -107,25 +112,25 @@ label_t * findLocalLabel(char *key){
 
 void writeLocalLabels(void) {
     // the number of labels
-    mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelCounter, sizeof(localLabelCounter));
+    fwrite((char *)&localLabelCounter, sizeof(localLabelCounter), 1, filehandle[FILE_LOCAL_LABELS]);
     if(localLabelCounter) {
-        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
+        fwrite((char *)&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, filehandle[FILE_LOCAL_LABELS]);
         // the actual bytes from the string buffer
         if(localLabelBufferIndex) 
-            mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelBuffer, localLabelBufferIndex);    
+            fwrite((char *)localLabelBuffer, localLabelBufferIndex, 1, filehandle[FILE_LOCAL_LABELS]);
         // the label table
-        mos_fwrite(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label_t));
+        fwrite((char *)localLabelTable, localLabelCounter * sizeof(label_t), 1, filehandle[FILE_LOCAL_LABELS]);
     }
 }
 
 void readLocalLabels(void) {
     // the number of labels
-    mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelCounter, sizeof(localLabelCounter));
+    fread(&localLabelCounter, sizeof(localLabelCounter), 1, filehandle[FILE_LOCAL_LABELS]);
     if(localLabelCounter) {
-        mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBufferIndex, sizeof(localLabelBufferIndex));
+        fread((char*)&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, filehandle[FILE_LOCAL_LABELS]);
         if(localLabelBufferIndex) 
-            mos_fread(filehandle[FILE_LOCAL_LABELS], (char*)&localLabelBuffer, localLabelBufferIndex);
-        mos_fread(filehandle[FILE_LOCAL_LABELS], (char *)localLabelTable, localLabelCounter * sizeof(label_t));
+            fread((char*)&localLabelBuffer, localLabelBufferIndex, 1, filehandle[FILE_LOCAL_LABELS]);
+        fread((char *)localLabelTable, localLabelCounter * sizeof(label_t), 1, filehandle[FILE_LOCAL_LABELS]);
     }
     else {
         localLabelBufferIndex = 0;
@@ -136,16 +141,16 @@ void writeAnonymousLabel(int24_t address) {
     uint8_t scope;
 
     scope = filestackCount();
-    mos_fwrite(filehandle[FILE_ANONYMOUS_LABELS], (char*)&address, sizeof(address));
-    mos_fwrite(filehandle[FILE_ANONYMOUS_LABELS], (char*)&scope, sizeof(scope));
+    fwrite((char*)&address, sizeof(address), 1, filehandle[FILE_ANONYMOUS_LABELS]);
+    fwrite((char*)&scope, sizeof(scope), 1, filehandle[FILE_ANONYMOUS_LABELS]);
 }
 
 void readAnonymousLabel(void) {
     int24_t address;
     uint8_t scope;
 
-    if(mos_fread(filehandle[FILE_ANONYMOUS_LABELS], (char*)&address, sizeof(address))) {
-        mos_fread(filehandle[FILE_ANONYMOUS_LABELS], (char*)&scope, sizeof(bool));
+    if(fread((char*)&address, sizeof(address), 1, filehandle[FILE_ANONYMOUS_LABELS])) {
+        fread((char*)&scope, sizeof(bool), 1, filehandle[FILE_ANONYMOUS_LABELS]);
         if(an_next.defined) {
             an_prev.address = an_next.address;
             an_prev.scope = an_next.scope;
@@ -218,11 +223,13 @@ bool insertGlobalLabel(char *labelname, int24_t address){
     len = strlen(labelname);
 
     // allocate space in buffer for label_t struct
-    tmp = (label_t *)agon_malloc(sizeof(label_t));
+    tmp = (label_t *)malloc(sizeof(label_t));
+    labelmemsize += sizeof(label_t);
     if(tmp == 0) return false;
 
     // allocate space in buffer for string and store it to buffer
-    tmp->name = agon_malloc(len+1);
+    tmp->name = (char*)malloc(len+1);
+    labelmemsize += len+1;
     if(tmp->name == 0) return false;
 
     strcpy(tmp->name, labelname);
@@ -235,7 +242,7 @@ bool insertGlobalLabel(char *labelname, int24_t address){
             globalLabelCounter++;
             return true;
         }
-        if(strcasecmp(globalLabelTable[try]->name, tmp->name) == 0) {
+        if(i_strcasecmp(globalLabelTable[try]->name, tmp->name) == 0) {
             error(message[ERROR_LABELDEFINED]);
             return false;
         } 
