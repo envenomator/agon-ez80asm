@@ -18,9 +18,6 @@
     <ClCompile Include="..\assemble.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\clock.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\console.c">
       <Filter>Source Files</Filter>
     </ClCompile>

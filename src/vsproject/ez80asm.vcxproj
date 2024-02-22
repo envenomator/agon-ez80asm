@@ -120,7 +120,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\assemble.c" />
-    <ClCompile Include="..\clock.c" />
     <ClCompile Include="..\console.c" />
     <ClCompile Include="..\filestack.c" />
     <ClCompile Include="..\getopt.c" />
