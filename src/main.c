@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <time.h>
 #include "console.h"
 #include "getopt.h"
 #include "config.h"
@@ -15,7 +16,6 @@
 #include "io.h"
 #include "str2num.h"
 #include "label.h"
-#include "clock.h"
 
 void printVersion(void) {
     printf("ez80asm version %d.%d, (C)2024 - Jeroen Venema\r\n",VERSION,REVISION);
@@ -46,7 +46,8 @@ int main(int argc, char *argv[]) {
     char outputfilename[FILENAMEMAXLENGTH + 1];
     int filenamecount = 0;
     outputfilename[0] = 0;
-
+    clock_t begin, end;
+    
     // option defaults from compiled configuration
     fillbyte = FILLBYTE;
     list_enabled = false;
@@ -173,14 +174,12 @@ int main(int argc, char *argv[]) {
     initMacros();
     
     // Assemble input to output
-    clock_start();
-
+    begin = clock();
     assemble();
-    clock_stop();
+    end = clock();
 
-    if(!global_errors) {
-        printf("Done in ");
-        clock_print();
+    if(!global_errors) { 
+        printf("Done in %.1f seconds\r\n",((double)(end - begin) / CLOCKS_PER_SEC));
     }
     io_close();
 
