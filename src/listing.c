@@ -7,7 +7,7 @@
 #include "io.h"
 
 // Local variables
-char     _listLine[LINEMAX + 1];
+char     _listLine[LINEMAX];
 uint24_t _listAddress;
 uint8_t  _listObjects[LISTING_OBJECTS_PER_LINE];
 uint8_t  _listLineObjectCount;

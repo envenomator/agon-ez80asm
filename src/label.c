@@ -31,7 +31,7 @@ uint16_t localLabelCounter;
 void saveGlobalLabelTable(void) {
     int i;
     char *ptr;
-    char buffer[LINEMAX+1];
+    char buffer[LINEMAX];
 
     filehandle[FILE_SYMBOLS] = fopen(filename[FILE_SYMBOLS], "wb+");
     if(filehandle[FILE_SYMBOLS] == 0) {
