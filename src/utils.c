@@ -310,5 +310,3 @@ uint8_t getOperatorToken(streamtoken_t *token, char *src) {
     }
     return length;
 }
-
-extern inline int i_strcasecmp(const char *s1, const char *s2);
