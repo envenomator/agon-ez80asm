@@ -1,3 +1,67 @@
+; Test directive variants
+        db 1
+        db 1
+        DB 1
+        DB 1
+        defb 1
+        defb 1
+
+        ascii 1
+        ascii 1
+        byte 1
+        byte 1
+
+        dw 1
+        dw 1
+        DW 1
+        DW 1
+        dw 1
+        dw 1
+        DW 1
+        DW 1
+
+        dw24 1
+        dw24 1
+        dw24 1
+        dw24 1
+
+        dw24 1
+        dw24 1
+        DW24 1
+        DW24 1
+
+        dl 1
+        dl 1
+        dl 1
+        dl 1
+
+        asciz "test"
+        ASCIZ "test"
+
+        db 0
+        db 0
+        db 0
+        db 0
+
+        db 0
+        db 0
+        db 0
+        db 0
+        db 0
+        db 0
+        db 0
+        db 0
+
+        dw24 0
+        dw24 0
+        dw24 0
+        dw24 0
+
+        dl 0
+        dl 0
+        dl 0
+        dl 0
+
 ; we'll use the directive without ., or the reference ZDS assembler barks at us
 ; byte tests
         db 5

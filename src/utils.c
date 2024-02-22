@@ -193,12 +193,15 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
     switch(*src) {
         case '\"':
             state = TOKEN_STRING;
+            src++;
             break;
         case '\'':
             state = TOKEN_LITERAL;
+            src++;
             break;
         case '(':
             state = TOKEN_BRACKET;
+            src++;
             break;
         default:
             state = TOKEN_REGULAR;
