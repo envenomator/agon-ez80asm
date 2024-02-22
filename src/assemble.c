@@ -94,7 +94,9 @@ int24_t getValue(char *string, bool req_firstpass) {
             }
 
             lbl = findLabel(token.start);
-            if(lbl) tmp = lbl->address;
+            if(lbl) {
+                tmp = lbl->address;
+            }
             else {
                 if(token.start[0] == '\'') tmp = getAsciiValue(token.start);
                 else {

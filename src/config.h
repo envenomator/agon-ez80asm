@@ -7,12 +7,11 @@ typedef int32_t int24_t;
 typedef uint32_t uint24_t;
 #endif
 
-/*
-#ifndef UNIX
-#ifndef _MSC_VER
-#define AGON
-#endif // _MSC_VER
-#endif // UNIX
+//#ifndef UNIX
+//#ifndef _MSC_VER
+//#define AGON
+//#endif // _MSC_VER
+//#endif // UNIX
 
 #ifdef _MSC_VER
 #define strncasecmp _strnicmp
@@ -21,7 +20,6 @@ typedef uint32_t uint24_t;
 #pragma warning(disable:4267)			// conversion from 'size_t' to 'int', possible loss of data
 #pragma warning(disable:4244)			// conversion from '__int64' to 'uint16_t', possible loss of data
 #endif
-*/
 
 #define VERSION                       1
 #define REVISION                      1
@@ -33,7 +31,6 @@ typedef uint32_t uint24_t;
 #define LINEMAX                     256 // Input line length maximum uint8_t
 #define FILENAMEMAXLENGTH            64
 #define FILES                         8
-#define MALLOC_BUFFERSIZE       0x30000 // global memory buffer
 #define LOCAL_LABEL_BUFFERSIZE   0x4000 // 16KB local label space
 #define GLOBAL_LABEL_TABLE_SIZE    8192 // 8K global labels
 #define LOCAL_LABEL_TABLE_SIZE       64 //  64 local labels

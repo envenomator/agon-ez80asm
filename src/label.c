@@ -125,7 +125,7 @@ void writeLocalLabels(void) {
 
 void readLocalLabels(void) {
     // the number of labels
-    fread(&localLabelCounter, sizeof(localLabelCounter), 1, filehandle[FILE_LOCAL_LABELS]);
+    fread((char*)&localLabelCounter, sizeof(localLabelCounter), 1, filehandle[FILE_LOCAL_LABELS]);
     if(localLabelCounter) {
         fread((char*)&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, filehandle[FILE_LOCAL_LABELS]);
         if(localLabelBufferIndex) 
@@ -137,26 +137,27 @@ void readLocalLabels(void) {
     }
 }
 
-void writeAnonymousLabel(int24_t address) {
+void writeAnonymousLabel(int24_t labelAddress) {
     uint8_t scope;
 
     scope = filestackCount();
-    fwrite((char*)&address, sizeof(address), 1, filehandle[FILE_ANONYMOUS_LABELS]);
+    fwrite((char*)&labelAddress, sizeof(labelAddress), 1, filehandle[FILE_ANONYMOUS_LABELS]);
     fwrite((char*)&scope, sizeof(scope), 1, filehandle[FILE_ANONYMOUS_LABELS]);
+    fflush(filehandle[FILE_ANONYMOUS_LABELS]);
 }
 
 void readAnonymousLabel(void) {
-    int24_t address;
+    int24_t labelAddress;
     uint8_t scope;
 
-    if(fread((char*)&address, sizeof(address), 1, filehandle[FILE_ANONYMOUS_LABELS])) {
-        fread((char*)&scope, sizeof(bool), 1, filehandle[FILE_ANONYMOUS_LABELS]);
+    if(fread((char*)&labelAddress, sizeof(labelAddress), 1, filehandle[FILE_ANONYMOUS_LABELS])) {
+        fread((char*)&scope, sizeof(scope), 1, filehandle[FILE_ANONYMOUS_LABELS]);
         if(an_next.defined) {
             an_prev.address = an_next.address;
             an_prev.scope = an_next.scope;
             an_prev.defined = true;
         }
-        an_next.address = address;
+        an_next.address = labelAddress;
         an_next.scope = scope;            
         an_next.defined = true;
     }
@@ -168,7 +169,7 @@ void readAnonymousLabel(void) {
     }
 }
 
-bool insertLocalLabel(char *labelname, int24_t address) {
+bool insertLocalLabel(char *labelname, int24_t labelAddress) {
     int len,i;
     int p;
     char *ptr;
@@ -200,13 +201,13 @@ bool insertLocalLabel(char *labelname, int24_t address) {
                     old_name = localLabelTable[i].name;
                     old_address = localLabelTable[i].address;
                     localLabelTable[i].name = ptr;
-                    localLabelTable[i].address = address;
+                    localLabelTable[i].address = labelAddress;
                     ptr = old_name;
-                    address = old_address;
+                    labelAddress = old_address;
                 }
             }
             localLabelTable[localLabelCounter].name = ptr;
-            localLabelTable[localLabelCounter].address = address;
+            localLabelTable[localLabelCounter].address = labelAddress;
             localLabelCounter++;
             return true;
         }
@@ -216,7 +217,7 @@ bool insertLocalLabel(char *labelname, int24_t address) {
     return false;
 }
 
-bool insertGlobalLabel(char *labelname, int24_t address){
+bool insertGlobalLabel(char *labelname, int24_t labelAddress){
     int index,i,try,len;
     label_t *tmp;
 
@@ -233,7 +234,7 @@ bool insertGlobalLabel(char *labelname, int24_t address){
     if(tmp->name == 0) return false;
 
     strcpy(tmp->name, labelname);
-    tmp->address = address;
+    tmp->address = labelAddress;
     index = hash(labelname) % GLOBAL_LABEL_TABLE_SIZE;
     for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++) {
         try = (i + index) % GLOBAL_LABEL_TABLE_SIZE;
