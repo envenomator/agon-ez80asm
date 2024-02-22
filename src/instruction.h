@@ -10,7 +10,6 @@
 #include "hash.h"
 #include "utils.h"
 
-#define ENDMACROCMD "endmacro"
 #define MAX_MNEMONIC_SIZE         10
 
 typedef enum { // permitted operand type

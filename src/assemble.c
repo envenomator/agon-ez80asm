@@ -1639,7 +1639,7 @@ void processInstructions(char *macroline){
 
     if(pass == 1) {
         if(recordingMacro) {
-            if((currentline.mnemonic == NULL) || fast_strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
+            if((currentline.mnemonic == NULL) || fast_strcasecmp(currentline.mnemonic, "endmacro")) {
 
                 io_puts(FILE_MACRO, macroline);
             }
