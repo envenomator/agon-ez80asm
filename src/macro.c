@@ -10,16 +10,9 @@ macro_t macroTable[MAXIMUM_MACROS]; // indexed table
 uint8_t macroTableCounter;
 
 void initMacros(void) {
-    int i;
-
     macromemsize = 0;
     macroTableCounter = 0;
-    for(i = 0; i < MAXIMUM_MACROS; i++){
-        macroTable[i].name = NULL;
-        macroTable[i].argcount = 0;
-        macroTable[i].arguments = NULL;
-        macroTable[i].substitutions = NULL;
-    }
+    memset(macroTable, 0, sizeof(macroTable));
 }
 
 int findMacroIndex(char *key) {

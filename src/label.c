@@ -56,13 +56,9 @@ uint16_t getLocalLabelCount(void) {
     return localLabelCounter;
 }
 void initGlobalLabelTable(void) {
-    int i;
-
     labelmemsize = 0;
     globalLabelCounter = 0;
-    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
-        globalLabelTable[i] = NULL;
-    }
+    memset(globalLabelTable, 0, sizeof(globalLabelTable));
 }
 
 void initAnonymousLabelTable(void) {
@@ -72,13 +68,9 @@ void initAnonymousLabelTable(void) {
 }
 
 void initLocalLabelTable(void) {
-    int i;
-
     localLabelBufferIndex = 0;
     localLabelCounter = 0;
-    for(i = 0; i < LOCAL_LABEL_TABLE_SIZE; i++) {
-        localLabelTable[i].name = NULL;
-    }
+    memset(localLabelTable, 0, sizeof(localLabelTable));
 }
 
 void clearLocalLabels(void) {

@@ -102,9 +102,7 @@ uint8_t getMnemonicToken(streamtoken_t *token, char *src) {
     // skip leading space
     while(*src && (isspace(*src))) src++;
     if(*src == 0) {
-        token->start = NULL;
-        token->next = NULL;
-        token->terminator = 0;
+        memset(token, 0, sizeof(streamtoken_t));
         return 0;
     }
     token->start = src;
@@ -162,9 +160,7 @@ uint8_t getOperandToken(streamtoken_t *token, char *src) {
     // skip leading space
     while(*src && (isspace(*src))) src++;
     if(*src == 0) {
-        token->start = NULL;
-        token->next = NULL;
-        token->terminator = 0;
+        memset(token, 0, sizeof(streamtoken_t));
         return 0;
     }
     token->start = src;
@@ -198,9 +194,7 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
     // skip leading space
     while(*src && (isspace(*src))) src++;
     if(*src == 0) {
-        token->start = NULL;
-        token->next = NULL;
-        token->terminator = 0;
+        memset(token, 0, sizeof(streamtoken_t));
         return 0;
     }
     token->start = src;
@@ -286,9 +280,7 @@ uint8_t getOperatorToken(streamtoken_t *token, char *src) {
     while(*src && (isspace(*src))) src++;
 
     if(*src == 0) { // empty string
-        token->terminator = 0;
-        token->start = NULL;
-        token->next = NULL;
+        memset(token, 0, sizeof(streamtoken_t));
         return 0;
     }
     token->start = src;

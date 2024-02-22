@@ -468,20 +468,9 @@ void parseLine(char *src) {
     streamtoken_t streamtoken;
 
     // default current line items
-    currentline.current_instruction = NULL;
-    currentline.current_macro = NULL;
-    currentline.next = NULL;
-    currentline.label = NULL;
-    currentline.mnemonic = NULL;
-    currentline.suffix = NULL;
-    currentline.operand1 = NULL;
-    currentline.operand2 = NULL;
-    currentline.comment = NULL;
-    currentline.size = 0;
-    currentline.suffixpresent = false;
-    
-    memset((void *)&operand1, 0, sizeof(operand_t));
-    memset((void *)&operand2, 0, sizeof(operand_t));
+    memset(&currentline, 0, sizeof(currentline));
+    memset(&operand1, 0, sizeof(operand_t));
+    memset(&operand2, 0, sizeof(operand_t));
 
     state = PS_START;
     done = false;
