@@ -2,11 +2,17 @@
 #define IO_H
 
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 #include <stdint.h>
 #include <stdbool.h>
-
 #include "config.h"
+#include "globals.h"
+#include "listing.h"
 #include "filestack.h"
+#include "macro.h"
+#include "utils.h"
+#include "moscalls.h"
 
 // Global variables
 extern bool list_enabled;

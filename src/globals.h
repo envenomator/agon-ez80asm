@@ -8,7 +8,6 @@
 #include "config.h"
 #include "macro.h"
 
-
 typedef struct {
     instruction_t *current_instruction;
     macro_t *current_macro;

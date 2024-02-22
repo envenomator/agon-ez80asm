@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <string.h>
 #include "listing.h"
-#include "globals.h"
-#include "utils.h"
-#include <stdint.h>
-#include "io.h"
 
 // Local variables
 char     _listLine[LINEMAX];

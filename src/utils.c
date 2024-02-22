@@ -33,15 +33,6 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
     }
 }
 
-
-bool isEmpty(const char *str){
-    return (str[0] == '\0');
-}
-
-bool notEmpty(const char *str) {
-    return (str[0] != '\0');
-}
-
 void error(char* msg) {
     vdp_set_text_colour(DARK_RED);
     if(currentExpandedMacro) printf("MACRO [%s]",currentExpandedMacro->name);

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "console.h"
 
 #ifndef CEDEV

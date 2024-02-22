@@ -1,14 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include "globals.h"
-#include <stdint.h>
 #include "io.h"
-#include "listing.h"
-#include "filestack.h"
-#include "macro.h"
-#include "utils.h"
-#include "moscalls.h"
 
 // Global variables
 char     filename[FILES][FILENAMEMAXLENGTH + 1];

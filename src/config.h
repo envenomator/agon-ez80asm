@@ -7,12 +7,6 @@ typedef int32_t int24_t;
 typedef uint32_t uint24_t;
 #endif
 
-//#ifndef UNIX
-//#ifndef _MSC_VER
-//#define AGON
-//#endif // _MSC_VER
-//#endif // UNIX
-
 #ifdef _MSC_VER
 #define strncasecmp _strnicmp
 #define strcasecmp _stricmp

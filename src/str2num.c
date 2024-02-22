@@ -1,9 +1,5 @@
-#include <string.h>
 #include "str2num.h"
 #include "globals.h"
-#include "utils.h"
-#include <stdint.h>
-#include <stdbool.h>
 
 bool err_str2num;
 

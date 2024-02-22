@@ -1,11 +1,22 @@
 #ifndef ASSEMBLE_H
 #define ASSEMBLE_H
 
-#include <stdint.h>
 #include <stdio.h>
-#include "instruction.h"
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <stdint.h>
+#include <stdarg.h>
+#include "console.h"
+#include "globals.h"
+#include "utils.h"
 #include "label.h"
-#include "config.h"
+#include "str2num.h"
+#include "listing.h"
+#include "filestack.h"
+#include "macro.h"
+#include "io.h"
+#include "moscalls.h"
 
 bool assemble(void);
 void emit_8bit(uint8_t value);

@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "macro.h"
 #include "globals.h"
 

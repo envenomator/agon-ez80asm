@@ -2,8 +2,10 @@
 #define FILESTACK_H
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 #include "globals.h"
-#include "config.h"
+#include "filestack.h"
+#include "utils.h"
 
 typedef struct {
     uint16_t linenumber;

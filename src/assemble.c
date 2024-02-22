@@ -1,20 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <stdint.h>
-#include <stdarg.h>
-#include "console.h"
 #include "assemble.h"
-#include "globals.h"
-#include "utils.h"
-#include "label.h"
-#include "str2num.h"
-#include "listing.h"
-#include "filestack.h"
-#include "macro.h"
-#include "io.h"
-#include "moscalls.h"
 
 // Local file buffer
 char _buffer[FILE_BUFFERSIZE];

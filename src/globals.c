@@ -1,6 +1,4 @@
 #include "globals.h"
-#include <stdio.h>
-#include <stdint.h>
 
 /*
  * Global variables

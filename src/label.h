@@ -2,9 +2,17 @@
 #define LABEL_H
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "config.h"
+#include "label.h"
+#include "hash.h"
+#include "str2num.h"
+#include "utils.h"
+#include "globals.h"
+#include "filestack.h"
+#include "io.h"
 
 enum {
     LABEL_REGULAR,

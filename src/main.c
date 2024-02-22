@@ -7,7 +7,6 @@
 #include "console.h"
 #include "getopt.h"
 #include "config.h"
-
 #include "globals.h"
 #include "utils.h"
 #include "assemble.h"
@@ -15,7 +14,6 @@
 #include "macro.h"
 #include "io.h"
 #include "str2num.h"
-#include "label.h"
 
 void printVersion(void) {
     printf("ez80asm version %d.%d, (C)2024 - Jeroen Venema\r\n",VERSION,REVISION);

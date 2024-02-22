@@ -1,14 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
-
 #include "instruction.h"
-//#include "assemble.h"
-#include "utils.h"
-#include "globals.h"
-#include <stdint.h>
-#include "hash.h"
 
 // instruction hash table
 instruction_t *instruction_hashtable[INSTRUCTION_HASHTABLESIZE];
