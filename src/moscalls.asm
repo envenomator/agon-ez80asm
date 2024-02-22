@@ -1,6 +1,7 @@
 section .text
 public _removefile
 public _getfilesize
+public _fast_strcasecmp
 
 ; Removes filename from SD card
 ; Input: filename string
@@ -39,3 +40,52 @@ _getfilesize:
 	LD	SP, IX
 	POP	IX
 	RET
+
+; Fast lowercase compare between two strings
+; Stops at first difference of the two strings, or at either string terminator (0)
+; returns first character difference in A
+_fast_strcasecmp:
+        push    ix
+        ld      ix,0
+        add     ix,sp
+        dec     sp
+
+		ld		hl, (ix+6)	; s1
+		ld		de, (ix+9)	; s2
+.loop:
+        ld      c,(hl)		; *s1
+        inc     hl			; s1++
+
+		; *s1 tolower
+        ld      a, c
+        sub     a, 'A'
+        cp      a, 1+'Z'-'A'
+        jr      nc, .conts2
+        add     a, 'a'
+        ld      c, a
+.conts2: ; c now contains tolower(*s1)
+
+        ex		de, hl
+		ld      b,(hl)		; *s2
+        inc     hl			; s2++
+		ex		de, hl
+
+		; *s2 tolower
+		ld		a, b
+        sub     a, 'A'
+        cp      a, 1+'Z'-'A'
+        jr      nc, .conts1
+        add     a, 'a'
+		ld		b, a
+.conts1: ; d now contains tolower(*s2)
+		ld		a, b
+		cp		a, 0		; stop at 0 of string s2
+		jr		z, .done
+		cp		a, c		; loop back, or stop at difference (might be 0 of string s1)
+		jr		z, .loop
+
+.done:
+		sub		a, c		; *s1 == *s2? -> result in A (0 == equal)
+        ld      sp,ix
+        pop     ix
+        ret

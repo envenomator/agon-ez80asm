@@ -1156,7 +1156,7 @@ void handle_asm_adl(void) {
             }
         }
 
-        if(i_strcasecmp(token.start, "adl")) {
+        if(fast_strcasecmp(token.start, "adl")) {
             error(message[ERROR_INVALIDOPERAND]);
             return;
         }
@@ -1639,7 +1639,8 @@ void processInstructions(char *macroline){
 
     if(pass == 1) {
         if(recordingMacro) {
-            if((currentline.mnemonic == NULL) || i_strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
+            if((currentline.mnemonic == NULL) || fast_strcasecmp(currentline.mnemonic, ENDMACROCMD)) {
+
                 io_puts(FILE_MACRO, macroline);
             }
             if((currentline.label) && (currentline.label[0] != '@')) error("No global labels allowed in macro definition");

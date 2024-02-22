@@ -57,6 +57,9 @@
     <ClCompile Include="..\utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\moscalls.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\assemble.h">

@@ -224,7 +224,7 @@ bool insertGlobalLabel(char *labelname, int24_t labelAddress){
             globalLabelCounter++;
             return true;
         }
-        if(i_strcasecmp(globalLabelTable[try]->name, tmp->name) == 0) {
+        if(strcmp(globalLabelTable[try]->name, tmp->name) == 0) {
             error(message[ERROR_LABELDEFINED]);
             return false;
         } 

@@ -2,7 +2,7 @@
 #define UTILS_H
 
 #include "config.h"
-
+#include <ctype.h>
 // DEFAULT COLOR INDEXES
 enum {
     BLACK = 0,
@@ -42,6 +42,16 @@ uint8_t getOperandToken(streamtoken_t *token, char *src);           // terminate
 uint8_t getDefineValueToken(streamtoken_t *token, char *src);       // terminates on all operator symbols, ',' and ';' transparent literals and strings
 void    parse_command(char *src);
 
-int i_strcasecmp(const char *s1, const char *s2);
+//int i_strcasecmp(const char *s1, const char *s2);
+inline int i_strcasecmp(const char *s1, const char *s2) {
+  int result;
+  if (s1 == s2)
+    return 0;
+  while ((result = tolower(*s1) - tolower(*s2++)) == 0)
+    if (*s1++ == '\0')
+      break;
+  return result;
+}
 
 #endif // UTILS_H
+
