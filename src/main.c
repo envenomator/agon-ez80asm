@@ -177,7 +177,7 @@ int main(int argc, char *argv[]) {
     end = clock();
 
     if(!global_errors) { 
-        printf("Done in %.1f seconds\r\n",((double)(end - begin) / CLOCKS_PER_SEC));
+        printf("Done in %.2f seconds\r\n",((double)(end - begin) / CLOCKS_PER_SEC));
     }
     io_close();
 
