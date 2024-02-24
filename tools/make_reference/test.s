@@ -1,81 +1,117 @@
-	.assume adl=1
-	add a, (ix)
-	add a, (iy)
-	add (ix)
-	add (iy)
-	and a, (ix)
-	and a, (iy)
-	and (ix)
-	and (iy)
-	bit 0, (ix)
-	bit 0, (iy)
-	cp a, (ix)
-	cp a, (iy)
-	cp (ix)
-	cp (iy)
-	dec (ix)
-	dec (iy)
-	inc (ix)
-	inc (iy)
-	ld (ix), hl
-	ld (iy), hl
-	ld a, (ix)
-	ld a, (iy)
-	ld (ix), 1
-	ld (iy), 1
-	ld (ix), b
-	ld (iy), b
-	ld b, (ix)
-	ld b, (iy)
-	ld hl, (ix)
-	ld hl, (iy)
-	or a, (ix)
-	or a, (iy)
-	or (ix)
-	or (iy)
-	res 0, (ix)
-	res 0, (iy)
-	rl (ix)
-	rl (iy)
-	rlc (ix)
-	rlc (iy)
-	rr (ix)
-	rr (iy)
-	rrc (ix)
-	rrc (iy)
-	sbc a, (ix)
-	sbc a, (iy)
-	sbc (ix)
-	sbc (iy)
-	set 0, (ix)
-	set 0, (iy)
-	sla (ix)
-	sla (iy)
-	sra (ix)
-	sra (iy)
-	srl (ix)
-	srl (iy)
-	sub a, (ix)
-	sub a, (iy)
-	sub (ix)
-	sub (iy)
-	xor a, (ix)
-	xor a, (iy)
-	xor (ix)
-	xor (iy)
-	lea hl, ix+0
-	lea hl, iy+0
-	lea ix, ix+0
-	lea ix, iy+0
-	lea iy, ix+0
-	lea iy, iy+0
-	pea ix+0
-	pea iy+0
-	ld ix, (ix)
-	ld iy, (iy)
-	ld iy, (ix)
-	ld ix, (iy)
-	ld (ix), ix
-	ld (iy), iy
-	ld (ix), iy
-	ld (iy), ix
+; Test directive variants
+        db 1
+        db 1
+        DB 1
+        DB 1
+        defb 1
+        defb 1
+
+        ascii 1
+        ascii 1
+        byte 1
+        byte 1
+
+        dw 1
+        dw 1
+        DW 1
+        DW 1
+        dw 1
+        dw 1
+        DW 1
+        DW 1
+
+        dw24 1
+        dw24 1
+        dw24 1
+        dw24 1
+
+        dw24 1
+        dw24 1
+        DW24 1
+        DW24 1
+
+        dl 1
+        dl 1
+        dl 1
+        dl 1
+
+        asciz "test"
+        ASCIZ "test"
+
+        db 0
+        db 0
+        db 0
+        db 0
+
+        db 0
+        db 0
+        db 0
+        db 0
+        db 0
+        db 0
+        db 0
+        db 0
+
+        dw24 0
+        dw24 0
+        dw24 0
+        dw24 0
+
+        dl 0
+        dl 0
+        dl 0
+        dl 0
+
+; we'll use the directive without ., or the reference ZDS assembler barks at us
+; byte tests
+        db 5
+        db 1,2,3
+        db 10;comment
+        byte 5
+        byte 1,2,3
+        byte 10;comment
+        ascii 5
+        ascii 1,2,3
+        ascii 10;comment
+        DB 5
+        DB 1,2,3
+        DB 10;comment
+label:
+        jp label2
+; 16-bit word tests
+        dw 5
+        dw 1,2,3
+        dw 10;comment
+        dw ffffh
+        dw label
+; 24-bit word tests
+        DW24 5
+        DW24 1,2,3
+        DW24 10;comment
+        DW24 ffffh
+        DW24 label
+        dw24 5
+        dw24 1,2,3
+        dw24 10;comment
+        dw24 ffffh
+        dw24 label
+; define space
+        blkb 10,0
+        blkb 10,0;uninitialized. Will be different between assemblers
+        blkb 10,FFh
+; define blocks
+        blkb 16, FFh
+        blkb 10h, FFh
+        blkb 16,0;uninitialized. Will be different between assemblers
+        blkw 16, AAFFh
+        blkw 10h, AAFFh
+        blkw 16,0;uninitialized. Will be different between assemblers
+        blkp 16, AABBFFh
+        blkp 10h, AABBFFh
+        blkp 10h, label
+        blkp 16,0;uninitialized. Will be different between assemblers
+        blkl 16, AABBCCFFh
+        blkl 10h, AABBCCFFh
+        blkl 16,0;uninitialized. Will be different between assemblers
+label2:
+        jp label

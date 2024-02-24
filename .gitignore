@@ -53,3 +53,6 @@ bin/
 
 # Visual studio
 src/.vs/
+*.vsidx
+*Browse.VC.db
+*.suo

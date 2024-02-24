@@ -1,1 +1,1 @@
-    ld a,;temp
+    ld a,

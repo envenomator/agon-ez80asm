@@ -601,6 +601,11 @@ void parseLine(char *src) {
                             break;
                         }
                         oplength = getOperandToken(&streamtoken, streamtoken.next);
+                        if(oplength == 0) {
+                            error(message[ERROR_MISSINGOPERAND]);
+                            state = PS_ERROR;
+                            break;
+                        }
                         break;
                 }
                 break;
