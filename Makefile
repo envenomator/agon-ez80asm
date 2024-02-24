@@ -8,7 +8,7 @@ CFLAGS=$(LFLAGS) -c
 OUTFLAG=-o 
 RELEASE_LFLAGS=-s -static -Wall -O2 -DNDEBUG -DUNIX -Wno-unused-result
 RELEASE_CFLAGS=$(RELEASE_LFLAGS) -c
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := linux
 
 # project directories
 SRCDIR=src
@@ -24,7 +24,9 @@ OBJS=$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 BIN=$(BINDIR)/$(PROJECTNAME)
 
 # Default rule
-all: $(BINDIR) $(OBJDIR) $(BIN) agon
+all: linux agon
+
+linux: $(BINDIR) $(OBJDIR) $(BIN)
 
 agon:
 	@echo === Compiling Agon target
@@ -37,9 +39,6 @@ mosloader: $(BINDIR) $(OBJDIR) $(BIN)
 # Release with optimal settings for release target
 release: CFLAGS=$(RELEASE_CFLAGS)
 release: LFLAGS=$(RELEASE_LFLAGS)
-#release: $(BINDIR)
-#release: $(OBJDIR)
-#release: $(BIN)
 release: all
 release: mosloader
 release: $(RELEASEDIR)
@@ -74,9 +73,11 @@ $(RELEASEDIR):
 package:
 	@echo === Packaging binaries
 	@tar -zcvf $(RELEASEDIR)/$(PROJECTNAME)_$(ARCHITECTURE).gz $(BINDIR)/$(PROJECTNAME)
+	@cp $(LOADERDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/$(PROJECTNAME).bin
 	@cp $(BINDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/$(PROJECTNAME).ldr
-	@cp $(LOADERDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/
-
+	zip $(RELEASEDIR)/$(PROJECTNAME)_agon.zip $(RELEASEDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/$(PROJECTNAME).ldr
+	@cd ..
+	
 clean:
 ifdef OS
 	del /s /q $(BINDIR) >nul 2>&1
