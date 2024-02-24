@@ -1,6 +1,0 @@
-Setting fillbyte to hex FF
-Assembling test.s
-Pass 1...
-[31m"test.s" - line 2 - Operand(s) not matching mnemonic
-[39m[33m    ld u,b
-[39m
