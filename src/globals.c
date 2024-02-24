@@ -77,11 +77,12 @@ char *message[] = {
     "Maximum number of macro arguments reached",
     "Error writing to macro file",
     "Incorrect number of macro arguments",
-    "Unsupported character constant",
+    "Illegal escape sequence in literal",
     "Input line too long",
     "Missing conditional expression",
     "Nested conditionals not supported",
     "Missing IF directive",
     "Missing ENDIF directive",
-    "Internal error"
+    "Internal error",
+    "Illegal escape sequence in string"
 };

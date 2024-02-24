@@ -11,6 +11,7 @@ charliterals:
         db '\t'
         db '\b'
         db '\\'
+        db '\'
         db "\'" ; ZDS assembler can't handle '\'', we'll test this later in string
         db '\"'
 label2:

@@ -18,6 +18,38 @@ void advanceLocalLabel(void) {
     }
 }
 
+// Returns the value of an escaped character \c, or 255 if illegal
+uint8_t get_escaped_char(char c) {
+    switch(c) {
+        case 'a':
+            return(0x07); // Alert, beep
+        case 'b':
+            return(0x08); // Backspace
+        case 'e':
+            return(0x1b); // Escape
+        case 'f':
+            return(0x0c); // Formfeed
+        case 'n':
+            return(0x0a); // Newline
+        case 'r':
+            return(0x0d); // Carriage return
+        case 't':
+            return(0x09); // Horizontab tab
+        case 'v':
+            return(0x0b); // Vertical tab
+        case '\\':
+            return('\\'); // Backslash
+        case '\'':
+            return('\''); // Single quotation mark
+        case '\"':
+            return('\"'); // Double quotation mark
+        case '?':
+            return('?');  // Question mark
+        default:
+            return(0xff);
+    }
+}
+
 // Get the ascii value from a single 'x' token.
 uint8_t getAsciiValue(char *string) {
     uint8_t len = strlen(string);
@@ -27,18 +59,12 @@ uint8_t getAsciiValue(char *string) {
     }
 
     if((len == 4) && (string[3] == '\'')) {
-        switch(string[2]) {
-            case 'n': return '\n';
-            case 'r': return '\r';
-            case 't': return '\t';
-            case 'b': return '\b';
-            case '\\': return '\\';
-            case '\"': return '\"';
-            case '\'': return '\'';
-            default:
-                error(message[ERROR_CHARCONSTANT]);
-                return 0;
+        uint8_t c = get_escaped_char(string[2]);
+        if(c == 0xff) {
+            error(message[ERROR_ILLEGAL_ESCAPELITERAL]);
+            return 0;
         }
+        return c;
     }
 
     error(message[ERROR_ASCIIFORMAT]);
@@ -967,69 +993,31 @@ void emit_32bit(uint32_t value) {
     emit_8bit((value>>24)&0xFF);
 }
 
-// return the value of a previously escaped character with backslash
-uint8_t get_escaped_char(char n) {
-    switch(n) {
-        case 'n':
-            return(0x0a);
-        case 'r':
-            return(0x0d);
-        case 't':
-            return(0x09);
-        case 'b':
-            return(0x08);
-        case 'e':
-            return(0x1b);
-        case '\"':
-            return('\"');
-        case '\'':
-            return('\'');
-        default:
-            return(n);
-    }
-}
-
 // emits a string surrounded by literal string quotes, as the token gets in from a file
+// Only called when the first character is a double quote
 void emit_quotedstring(char *str) {
     bool escaped = false;
+    uint8_t escaped_char;
 
-    if(*str != '\"') {
-        error(message[ERROR_STRINGFORMAT]);
-        return;
-    }
-
-    str++;
+    str++; // skip past first "
     while(*str) {
-        switch(*str) {
-            case '\\':
-                if(escaped) {
-                    emit_8bit('\\');
-                    escaped = false;
-                }
-                else escaped = true;
-                break;
-            case 'n':
-            case 'r':
-            case 't':
-            case 'b':
-            case 'e':
-            case '\'':
-                if(escaped) emit_8bit(get_escaped_char(*str));
-                else emit_8bit(*str); // the normal character
-                escaped = false;
-                break;
-            case '\"':
-                if(escaped) {
-                    emit_8bit('\"');
-                    escaped = false;
-                }
-                else {
-                    if(*(str+1) != 0) error(message[ERROR_STRINGFORMAT]);
-                    return; // end of quoted string
-                }
-                break;
-            default:
-                emit_8bit(*str);
+        if(!escaped) {
+            if(*str == '\\') { // escape character
+                escaped = true;
+            }
+            else {
+                if(*str == '\"') return;
+                else emit_8bit(*str);
+            }
+        }
+        else { // previously escaped
+            escaped_char = get_escaped_char(*str);
+            if(escaped_char == 0xff) {
+                error(message[ERROR_ILLEGAL_ESCAPESEQUENCE]);
+                return;
+            }
+            emit_8bit(escaped_char);
+            escaped = false;
         }
         str++;
     }
@@ -1059,6 +1047,7 @@ void handle_asm_db(void) {
 
     while(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
+        //if(getOperandToken(&token, currentline.next)) {
             argcount++;
 
             if(currentExpandedMacro) {
