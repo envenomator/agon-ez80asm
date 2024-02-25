@@ -311,10 +311,12 @@ uint8_t getOperatorToken(streamtoken_t *token, char *src) {
     if(*src) token->next = shift?src+2:src+1;
     else token->next = NULL;
 
-    *src-- = 0; // terminate early and revert one character
-    while(isspace(*src)) { // remove trailing space(s)
-        *src-- = 0; // terminate on trailing spaces
-        if(length-- == 0) break;
+    if(length) {
+        *src-- = 0; // terminate early and revert one character
+        while(isspace(*src)) { // remove trailing space(s)
+            *src-- = 0; // terminate on trailing spaces
+            if(length-- == 0) break;
+        }
     }
     return length;
 }

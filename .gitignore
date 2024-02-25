@@ -56,3 +56,7 @@ src/.vs/
 *.vsidx
 *Browse.VC.db
 *.suo
+
+# Test output
+test.output
+tests/*.bin

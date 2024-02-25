@@ -77,32 +77,31 @@ uint8_t getAsciiValue(char *string) {
 // labelb-1
 // labela+labelb+offset1-1
 // The string should not contain any spaces, needs to be a single token
-int24_t getValue(char *string, bool req_firstpass) {
-    uint8_t length,substlength;
-    int24_t total, tmp;
-    char operator, *ptr, unary_operator;
-    label_t *lbl;
+int24_t getValue(char *str, bool req_firstpass) {
     streamtoken_t token;
-
-    ptr = string;
-    total = 0;
-    unary_operator = 0;
+    label_t *lbl;
+    uint24_t total, tmp;
+    uint8_t length, substlength;
+    char prev_op = '+', unary = 0;
+    bool expect = true;
 
     if((pass == 1) && !req_firstpass) return 0;
 
-    operator = '+'; // previous operand in case of single value/label
-    while(ptr) {
-        tmp = 0;
-        length = getOperatorToken(&token, ptr);
-        if(length) {
-            if(currentExpandedMacro) {
-                substlength = macroExpandArg(_macro_VAL_buffer, token.start, currentExpandedMacro);
-                if(substlength) {
-                    token.start = _macro_VAL_buffer;
-                    length = substlength;
-                }
+    total = 0;
+    while(str) {
+        length = getOperatorToken(&token, str);
+        if(currentExpandedMacro) {
+            substlength = macroExpandArg(_macro_VAL_buffer, token.start, currentExpandedMacro);
+            if(substlength) {
+                token.start = _macro_VAL_buffer;
+                length = substlength;
             }
-
+        }
+        if(length == 0) { // at begin, or middle, OK. Expect catch at end
+            expect = true;
+            unary = token.terminator;
+        }
+        else { // normal processing
             lbl = findLabel(token.start);
             if(lbl) {
                 tmp = lbl->address;
@@ -116,19 +115,19 @@ int24_t getValue(char *string, bool req_firstpass) {
                     }
                 }
             }
-        }
-
-        if(unary_operator) {
-            switch(unary_operator) {
-                case '-': tmp = -tmp; break;
-                case '~': tmp = ~tmp; break;
-                case '+': break;
-                default: break;
+            if(unary) {
+                switch(unary) {
+                    case '-': tmp = -tmp; break;
+                    case '~': tmp = ~tmp; break;
+                    case '+': break;
+                    default:
+                        error(message[ERROR_UNARYOPERATOR]);
+                        return 0;
+                }
+                unary = 0; // reset
+                expect = false;
             }
-        }
-
-        if(length) {  // when an actual value is present between operators
-            switch(operator) {
+            switch(prev_op) {
                 case '+': total += tmp; break;
                 case '-': total -= tmp; break;
                 case '*': total *= tmp; break;
@@ -144,17 +143,14 @@ int24_t getValue(char *string, bool req_firstpass) {
                     error(message[ERROR_OPERATOR]);
                     return total;
             }
+            prev_op = token.terminator;
+            expect = false;
         }
-
-        if(token.terminator && (length == 0)) {
-            unary_operator = token.terminator;
-        }
-        else {
-            unary_operator = 0;
-            operator = token.terminator;
-        }
-        if(operator) ptr = token.next;
-        else ptr = NULL;
+        str = token.next;
+    }
+    if(expect) {
+        error(message[ERROR_MISSINGOPERAND]);
+        return 0;
     }
     return total;
 }

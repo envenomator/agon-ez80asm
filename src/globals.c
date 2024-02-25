@@ -67,6 +67,7 @@ char *message[] = {
     "Invalid literal format",
     "Parse error",
     "Invalid operator",
+    "Illegal unary opeator",
     "Argument is not a power of 2",
     "Maximum nested level of include files reached",
     "Maximum number of macros reached",
