@@ -5,14 +5,14 @@
 # return 2 on error in test SETUP 
 #
 
-negtest_number=0
+test_number=0
 negtest_failed_successfull=0
 
 cd tests
 rm -f *.bin
 for FILE in *; do
     if [ -f "$FILE" ]; then
-        negtest_number=$((negtest_number+1))
+        test_number=$((test_number+1))
         ../$ASMBIN $FILE -b FF > ../asm.output
         if [ $? -eq 0 ]; then 
             echo "Failed to detect error in" \'$FILE\'
@@ -25,8 +25,8 @@ rm -f *.bin
 cd ..
 
 rm -f asm.output
-if [ $negtest_number -eq $negtest_failed_successfull ]; then
-    echo "Detected all errors succesfully"
+if [ $test_number -eq $negtest_failed_successfull ]; then
+    echo "Detected all ($test_number) errors succesfully"
     exit 0
 else
     exit 1

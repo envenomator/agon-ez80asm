@@ -14,10 +14,11 @@ for FILE in *; do
         cd "$FILE"
         printf $FORMAT $FILE
         if [ -f "test.sh" ]; then
+            test_number=0
             ./test.sh > ./test.output
             testresult=$?
             if [ $testresult -eq 1 ]; then
-                echo -e "${RED}FAIL${NOCOLOR}"
+                echo -e " ${RED}FAIL${NOCOLOR}"
                 failed=$((failed+1))
             else
                 if [ $testresult -eq 2 ]; then

@@ -1,0 +1,1 @@
+label:ld a,b
