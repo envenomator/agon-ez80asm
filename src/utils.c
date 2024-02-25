@@ -269,7 +269,7 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
 uint8_t getOperatorToken(streamtoken_t *token, char *src) {
     uint8_t length = 0;
     bool normalmode = true;
-    bool shift = false;
+    bool shift = false, error = false;
 
     // skip leading space
     while(*src && (isspace(*src))) src++;
@@ -290,11 +290,12 @@ uint8_t getOperatorToken(streamtoken_t *token, char *src) {
     while(*src) {
         if(*src == '\'') normalmode = !normalmode;
         if(normalmode && strchr("+-*<>&|^~/",*src)) { // terminator found
-            if((*src == '<') || (*src == '>')) {
-                if(*(src+1) == *src) shift = true;
+            if((*src == '<') || (*src == '>')) {                
+                if(*(src+1) == *src) {
+                    shift = true;
+                }
                 else {
-                    token->terminator = '!'; // ERROR
-                    break;
+                    error = true;
                 }
             }
             break;
@@ -303,7 +304,10 @@ uint8_t getOperatorToken(streamtoken_t *token, char *src) {
         length++;
     }
 
-    token->terminator = *src;
+    if(!error) token->terminator = *src;
+    else {
+        token->terminator = '!';
+    }
     if(*src) token->next = shift?src+2:src+1;
     else token->next = NULL;
 
