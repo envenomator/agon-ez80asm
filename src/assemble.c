@@ -1695,8 +1695,9 @@ void processDelayedLineNumberReset(void) {
 }
 
 bool assemble(void){
-    char line[LINEMAX];
-    char macroline[LINEMAX];
+    char line[LINEMAX]; // Temp line buffer, will be deconstructed during streamtoken_t parsing
+    char errorline[LINEMAX]; // Full integrity copy of each line
+    char macroline[LINEMAX]; // Temp line buffer for macro expansion
     filestackitem fsitem;
     bool incfileState;
 
@@ -1708,6 +1709,7 @@ bool assemble(void){
     passInitialize(1);
     do {
         while(io_getline(FILE_CURRENT, line)) {
+            strcpy(errorline, line);
             linenumber++;
             if(recordingMacro) strcpy(macroline, line);
             parseLine(line);
@@ -1715,7 +1717,7 @@ bool assemble(void){
             processDelayedLineNumberReset();
             if(global_errors) {
                 vdp_set_text_colour(DARK_YELLOW);
-                printf("%s\r\n",line);
+                printf("%s\r\n",errorline);
                 vdp_set_text_colour(BRIGHT_WHITE);
                 return false;
             }
@@ -1745,6 +1747,7 @@ bool assemble(void){
     
     do {
         while(io_getline(FILE_CURRENT, line)) {
+            strcpy(errorline, line);
             linenumber++;
             if(consolelist_enabled || list_enabled) {
                 listStartLine(line);
@@ -1758,7 +1761,7 @@ bool assemble(void){
             processDelayedLineNumberReset();
             if(global_errors) {
                 vdp_set_text_colour(DARK_YELLOW);
-                printf("%s\r\n",line);
+                printf("%s\r\n",errorline);
                 vdp_set_text_colour(BRIGHT_WHITE);
                 return false;
             }    
