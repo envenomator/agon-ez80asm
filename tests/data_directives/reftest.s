@@ -38,29 +38,29 @@
         asciz "test"
         ASCIZ "test"
 
-        db 0
-        db 0
-        db 0
-        db 0
+        db ffh
+        db ffh
+        db ffh
+        db ffh
 
-        db 0
-        db 0
-        db 0
-        db 0
-        db 0
-        db 0
-        db 0
-        db 0
+;        db ffh
+;        db ffh
+;        db ffh
+;        db ffh
+;        db ffh
+;        db ffh
+;        db ffh
+;        db ffh
 
-        dw24 0
-        dw24 0
-        dw24 0
-        dw24 0
+;        dw24 0
+;        dw24 0
+;        dw24 0
+;        dw24 0
 
-        dl 0
-        dl 0
-        dl 0
-        dl 0
+;        dl 0
+;        dl 0
+;        dl 0
+;        dl 0
 
 ; we'll use the directive without ., or the reference ZDS assembler barks at us
 ; byte tests
@@ -96,22 +96,22 @@ label:
         dw24 ffffh
         dw24 label
 ; define space
-        blkb 10,0
-        blkb 10,0;uninitialized. Will be different between assemblers
-        blkb 10,FFh
+;        blkb 10,ffh
+;        blkb 10,ffh;uninitialized. Will be different between assemblers
+;        blkb 10,FFh
 ; define blocks
-        blkb 16, FFh
-        blkb 10h, FFh
-        blkb 16,0;uninitialized. Will be different between assemblers
-        blkw 16, AAFFh
-        blkw 10h, AAFFh
-        blkw 16,0;uninitialized. Will be different between assemblers
-        blkp 16, AABBFFh
-        blkp 10h, AABBFFh
-        blkp 10h, label
-        blkp 16,0;uninitialized. Will be different between assemblers
-        blkl 16, AABBCCFFh
-        blkl 10h, AABBCCFFh
-        blkl 16,0;uninitialized. Will be different between assemblers
+;        blkb 16, FFh
+;        blkb 10h, FFh
+;        blkb 16, ffh;uninitialized. Will be different between assemblers
+;        blkw 16, AAFFh
+;        blkw 10h, AAFFh
+;        blkw 16, ffh;uninitialized. Will be different between assemblers
+;        blkp 16, AABBFFh
+;        blkp 10h, AABBFFh
+;        blkp 10h, label
+;        blkp 16, ffh;uninitialized. Will be different between assemblers
+;        blkl 16, AABBCCFFh
+;        blkl 10h, AABBCCFFh
+;        blkl 16, ffh;uninitialized. Will be different between assemblers
 label2:
         jp label

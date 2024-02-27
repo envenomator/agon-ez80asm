@@ -1043,7 +1043,6 @@ void handle_asm_db(void) {
 
     while(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
-        //if(getOperandToken(&token, currentline.next)) {
             argcount++;
 
             if(currentExpandedMacro) {
@@ -1057,7 +1056,7 @@ void handle_asm_db(void) {
                     emit_quotedstring(token.start);
                     break;
                 default:
-                    operand1.immediate = getValue(token.start, true);
+                    operand1.immediate = getValue(token.start, false); // not needed in pass 1
                     if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
                     emit_8bit(operand1.immediate);
                     break;
@@ -1125,7 +1124,7 @@ void handle_asm_equ(void) {
         argcount++;
         if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
         if(pass == 1) {
-            if(currentline.label) definelabel(getValue(token.start, true));
+            if(currentline.label) definelabel(getValue(token.start, true)); // needs to be defined in pass 1
             else error(message[ERROR_MISSINGLABEL]);
         }
     }
@@ -1152,7 +1151,7 @@ void handle_asm_adl(void) {
         }
         if(token.terminator == '=') {
             if(getDefineValueToken(&token, token.next)) {
-                operand2.immediate = getValue(token.start, true);
+                operand2.immediate = getValue(token.start, true); // needs to be defined in pass 1
                 operand2.immediate_provided = true;
             }
             else error(message[ERROR_MISSINGOPERAND]);
@@ -1173,6 +1172,7 @@ void handle_asm_org(void) {
     uint24_t newaddress;
     
     parse_asm_single_immediate(); // get address from next token
+    // address needs to be given in pass 1
     newaddress = operand1.immediate;
     if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE]); 
     if(pass == 1) definelabel(address);
@@ -1282,28 +1282,6 @@ void handle_asm_incbin(void) {
         }
         binfilecount++;
     }
-    /*
-    if(pass == 2) {
-        if(list_enabled || consolelist_enabled) {
-            // Output needs to pass to the listing through emit_8bit, performance-hit
-            while(1) {
-                size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
-                for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
-                if(size < FILE_BUFFERSIZE) break;
-            }
-        }
-        else {
-            while(1) {
-                // efficient output without listing the contents
-                size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
-                io_write(FILE_OUTPUT, _buffer, size);
-                address += size;
-                if(size < FILE_BUFFERSIZE) break;
-            }
-        }
-        binfilecount++;
-    }
-    */
     fclose(fh);
     if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
 }
@@ -1331,7 +1309,7 @@ void handle_asm_blk(uint8_t width) {
         }
     }
 
-    num = getValue(token.start, true); // <= needs a value during pass 1, otherwise addresses will be off later on
+    num = getValue(token.start, true); // <= needs a number of items during pass 1, otherwise addresses will be off later on
 
     if(token.terminator == ',') {
         if(getDefineValueToken(&token, token.next) == 0) {
@@ -1344,11 +1322,13 @@ void handle_asm_blk(uint8_t width) {
                 token.start = _macro_ASM_buffer;
             }
         }
-
-        val = getValue(token.start, false);
+        val = getValue(token.start, false); // value not required in pass 1
     }
-    else if((token.terminator != 0)  && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-
+    else { // no value given
+        if((token.terminator != 0)  && (token.terminator != ';'))
+            error(message[ERROR_LISTFORMAT]);
+        val = fillbyte;
+    }
     while(num--) {
         switch(width) {
             case 1:
@@ -1468,7 +1448,7 @@ void handle_asm_if(void) {
         error(message[ERROR_CONDITIONALEXPRESSION]);
         return;
     }
-    value = getValue(token.start, false);
+    value = getValue(token.start, true);
 
     inConditionalSection = value ? 2 : 1;
 }
@@ -1491,16 +1471,10 @@ void handle_asm_endif(void) {
 }
 
 void handle_asm_fillbyte(void) {
-    streamtoken_t token;
-    int32_t val;
 
-    if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
-        if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
-        val = getValue(token.start, false);
-        if((val < 0) || (val > 255)) error(message[ERROR_8BITRANGE]);
-        fillbyte = val;
-    }
-    else error(message[ERROR_MISSINGOPERAND]);
+    parse_asm_single_immediate(); // get fillbyte from next token
+    if((operand1.immediate < 0) || (operand1.immediate > 255)) error(message[ERROR_8BITRANGE]);
+    fillbyte = operand1.immediate;
 }
 
 void handle_assembler_command(void) {

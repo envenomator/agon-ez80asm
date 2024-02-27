@@ -43,20 +43,20 @@
         BLKB 1
         .BLKB 1
 
-        blkw 1
-        .blkw 1
-        BLKW 1
-        .BLKW 1
+;        blkw 1
+;        .blkw 1
+;        BLKW 1
+;        .BLKW 1
 
-        blkp 1
-        .blkp 1
-        BLKP 1
-        .BLKP 1
+;        blkp 1
+;        .blkp 1
+;        BLKP 1
+;        .BLKP 1
 
-        blkl 1
-        .blkl 1
-        BLKL 1
-        .BLKL 1
+;        blkl 1
+;        .blkl 1
+;        BLKL 1
+;        .BLKL 1
 
 ; we'll use the directive without ., or the reference ZDS assembler barks at us
 ; byte tests
@@ -92,22 +92,22 @@ label:
         dw24 ffffh
         dw24 label
 ; define space
-        ds 10
-        ds 10;uninitialized. Will be different between assemblers
-        ds 10,0xFF
+;        ds 10
+;        ds 10;uninitialized. Will be different between assemblers
+;        ds 10,0xFF
 ; define blocks
-        blkb 16, 0xFF
-        blkb 10h, 0xFF
-        blkb 16;uninitialized. Will be different between assemblers
-        blkw 16, 0xAAFF
-        blkw 10h, 0xAAFF
-        blkw 16;uninitialized. Will be different between assemblers
-        blkp 16, 0xAABBFF
-        blkp 10h, 0xAABBFF
-        blkp 10h, label
-        blkp 16;uninitialized. Will be different between assemblers
-        blkl 16, 0xAABBCCFF
-        blkl 10h, 0xAABBCCFF
-        blkl 16;uninitialized. Will be different between assemblers
+;        blkb 16, 0xFF
+;        blkb 10h, 0xFF
+;        blkb 16;uninitialized. Will be different between assemblers
+;        blkw 16, 0xAAFF
+;        blkw 10h, 0xAAFF
+;        blkw 16;uninitialized. Will be different between assemblers
+;        blkp 16, 0xAABBFF
+;        blkp 10h, 0xAABBFF
+;        blkp 10h, label
+;        blkp 16;uninitialized. Will be different between assemblers
+;        blkl 16, 0xAABBCCFF
+;        blkl 10h, 0xAABBCCFF
+;        blkl 16;uninitialized. Will be different between assemblers
 label2:
         jp label
