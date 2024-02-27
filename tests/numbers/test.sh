@@ -1,36 +1,49 @@
 #!/bin/bash
-# Positive test
-# return 0 on succesfull test
-# return 1 on issue during test
-# return 2 on error in test SETUP
+# Positive test - assembler needs to pass all tests in all subfolders
+# return 0 on succesfull tests (all passed)
+# return 1 on issue during test (one or more tests didn't pass correctly)
+# return 2 on error in test SETUP 
 #
-CHECKBIN=0
-#
-if [ -f "test.s" ]; then
-    $ASMBIN test.s -b FF > asm.output
-    if [ $? -eq 1 ]; then 
-        echo "Assembler error(s)"
-        exit 1
-    else
-        echo "Assembler done"
-    fi
-    if [ $CHECKBIN -eq 1 ]; then
-        echo "Performing binary check"
-        if [ -f "reference.bin" ]; then
-            diff test.bin reference.bin >/dev/null
+
+test_number=0
+tests_successfull=0
+
+cd tests
+rm -f *.bin
+for FILE in *; do
+    if [ -f "$FILE" ]; then
+        if [ "$FILE" == "${FILE%.*}.s" ]; then
+            test_number=$((test_number+1))
+            ../$ASMBIN $FILE -b FF > ../asm.output
             if [ $? -eq 1 ]; then 
-                echo "Binary output incorrect"
-                exit 1
+                echo "$FILE ASM ERROR"
             else
-                echo "Binary output correct"
-            fi
-        else
-            echo "Missing reference.bin"
-            exit 2
+                echo -n "$FILE ASM OK"
+                if [ -f ${FILE%.*}.expect ]; then
+                    echo -n " - binary"
+                    diff ${FILE%.*}.bin ${FILE%.*}.expect >/dev/null
+                    if [ $? -eq 1 ]; then 
+                        echo " error"
+                    else
+                        echo " match"
+                        tests_successfull=$((tests_successfull+1))
+                    fi
+                else
+                    echo ""
+                    tests_successfull=$((tests_successfull+1))
+                fi
+            fi 
         fi
     fi
+done
+rm -f *.bin
+cd ..
+
+rm -f asm.output
+if [ $test_number -eq $tests_successfull ]; then
+    echo "All ($test_number) files assembled succesfully"
+    exit 0
 else
-    echo "test.s not present"
-    exit 2
+    exit 1
 fi
 exit 0
