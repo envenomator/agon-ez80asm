@@ -12,13 +12,28 @@ cd tests
 rm -f *.bin
 for FILE in *; do
     if [ -f "$FILE" ]; then
-        test_number=$((test_number+1))
-        ../$ASMBIN $FILE -b FF > ../asm.output
-        if [ $? -eq 1 ]; then 
-            echo "Error in" \'$FILE\'
-        else
-            tests_successfull=$((tests_successfull+1))
-        fi 
+        if [ "$FILE" == "${FILE%.*}.s" ]; then
+            test_number=$((test_number+1))
+            ../$ASMBIN $FILE -b FF > ../asm.output
+            if [ $? -eq 1 ]; then 
+                echo "$FILE ASM ERROR"
+            else
+                echo -n "$FILE ASM OK"
+                if [ -f ${FILE%.*}.expect ]; then
+                    echo -n " - binary"
+                    diff ${FILE%.*}.bin ${FILE%.*}.expect >/dev/null
+                    if [ $? -eq 1 ]; then 
+                        echo " error"
+                    else
+                        echo " match"
+                        tests_successfull=$((tests_successfull+1))
+                    fi
+                else
+                    echo ""
+                    tests_successfull=$((tests_successfull+1))
+                fi
+            fi 
+        fi
     fi
 done
 rm -f *.bin
