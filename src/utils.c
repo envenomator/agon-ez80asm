@@ -187,6 +187,11 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
     bool escaped = false;
     bool terminated;
 
+    if(src == NULL) {
+        memset(token, 0, sizeof(streamtoken_t));
+        return 0;
+    }
+
     // skip leading space
     while(*src && (isspace(*src))) src++;
     if(*src == 0) {
