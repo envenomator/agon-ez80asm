@@ -29,6 +29,7 @@ void printHelp(void) {
     printf("  -l\tListing to file with .lst extension\r\n");
     printf("  -s\tExport symbols\r\n");
     printf("  -d\tDirect listing to console\r\n");
+    printf("  -c\tNo color codes in output\r\n");
     printf("  -x\tDisplay assembly statistics\r\n");
     printf("\r\n");
 }
@@ -53,9 +54,9 @@ int main(int argc, char *argv[]) {
     start_address = START_ADDRESS;
     exportsymbols = false;
     displaystatistics = false;
-
+    coloroutput = true;
     
-    while ((opt = getopt(argc, argv, "-:ldvhsxb:a:o:")) != -1) {
+    while ((opt = getopt(argc, argv, "-:ldvhsxcb:a:o:")) != -1) {
         switch(opt) {
             case 'a':
                 if((strlen(optarg) != 1) || 
@@ -72,6 +73,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'x':
                 displaystatistics = true;
+                break;
+            case 'c':
+                coloroutput = false;
                 break;
             case 'd':
                 consolelist_enabled = true;

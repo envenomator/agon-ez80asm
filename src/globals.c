@@ -17,7 +17,7 @@ bool list_enabled;
 bool consolelist_enabled;
 uint8_t fillbyte;
 uint24_t start_address;
-
+bool coloroutput;
 
 tokenline_t currentline;
 
@@ -26,12 +26,12 @@ operand_t operand2;
 opcodesequence_t output;
 
 char *message[] = {
-    "Invalid register in operand",
     "Missing opening bracket in operand",
     "Missing closing bracket in operand",
     "Invalid number format",
-    "Invalid label reference",
-    "Invalid label name",
+    "Unknown label",
+    "Unknown label, invalid number",
+    "Invalid label",
     "Missing operand",
     "Invalid mnemonic",
     "Invalid operand",

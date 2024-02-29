@@ -10,10 +10,11 @@ negtest_failed_successfull=0
 
 cd tests
 rm -f *.bin
+rm -f *.output
 for FILE in *; do
     if [ -f "$FILE" ]; then
         test_number=$((test_number+1))
-        ../$ASMBIN $FILE -b FF > ../asm.output
+        ../$ASMBIN $FILE -c -b FF >> ${FILE%.*}.asm.output
         if [ $? -eq 0 ]; then 
             echo "Failed to detect error in" \'$FILE\'
         else
@@ -24,7 +25,6 @@ done
 rm -f *.bin
 cd ..
 
-rm -f asm.output
 if [ $test_number -eq $negtest_failed_successfull ]; then
     echo "Detected all ($test_number) errors succesfully"
     exit 0

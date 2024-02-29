@@ -110,8 +110,18 @@ int24_t getValue(char *str, bool req_firstpass) {
                 if(token.start[0] == '\'') tmp = getAsciiValue(token.start);
                 else {
                     tmp = str2num(token.start, length);
-                    if(err_str2num && (pass == 2)) {
-                        error(message[ERROR_INVALIDLABEL]);
+                    if(err_str2num) {
+                        if(pass == 1) {
+                            // Yet unknown label, number incorrect
+                            // We only get here if req_firstpass is true, so error
+                            error(message[ERROR_INVALIDNUMBER]);
+                            return 0;
+                        }
+                        else {
+                            // Unknown label and number incorrect
+                            error(message[ERROR_INVALIDLABELORNUMBER]);
+                            return 0;
+                        }
                     }
                 }
             }
@@ -192,7 +202,6 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '\'':
                             operand->reg = R_AF;
                             operand->reg_index = R_INDEX_AF;
-                            if(operand->indirect) error(message[ERROR_INVALIDREGISTER]);
                             return;
                         default:
                             break;
@@ -661,7 +670,12 @@ void definelabel(int24_t num){
         return;
     }
     if(currentline.label[0] == '$') {
-        error(message[ERROR_INVALIDLABELNAME]);
+        error(message[ERROR_INVALIDLABEL]);
+        return;
+    }
+    str2num(currentline.label, strlen(currentline.label)); 
+    if(!err_str2num) { // labels can't have a valid number format
+        error(message[ERROR_INVALIDLABEL]);
         return;
     }
     if(insertGlobalLabel(currentline.label, num) == false){
@@ -1068,7 +1082,9 @@ void handle_asm_db(void) {
             currentline.next = NULL; 
         }
     }
-    if(argcount == 0) error(message[ERROR_MISSINGOPERAND]);
+    if(argcount == 0) {
+        error(message[ERROR_MISSINGOPERAND]);
+    }
 }
 
 void handle_asm_dw(uint8_t wordtype) {

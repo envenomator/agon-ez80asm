@@ -70,23 +70,19 @@ int24_t str2num(char *string, uint8_t length) {
         if(*(string+1) == 0) return address;
 
         result = str2hex(string+1);
-        if(err_str2num) error(message[ERROR_INVALIDNUMBER]);
         return result;
     }
     if(*string == '#') {
         result = str2hex(string+1);
-        if(err_str2num) error(message[ERROR_INVALIDNUMBER]);
         return result;
     }
     if(*string == '%') {
         result = str2bin(string+1);
-        if(err_str2num) error(message[ERROR_INVALIDNUMBER]);
         return result;
     }
 
     if(length == 1) {
         result = str2dec(string);
-        if(err_str2num) error(message[ERROR_INVALIDNUMBER]);
         return result;
     }
 
@@ -96,19 +92,16 @@ int24_t str2num(char *string, uint8_t length) {
         strcpy(buffer, string);
         buffer[length-1] = 0;
         result = str2hex(buffer);
-        if(err_str2num) error(message[ERROR_INVALIDNUMBER]);
         return result;
     }
 
     if((*string == '0') && (length >= 2)) {
         if(tolower(*(string+1)) == 'x') {
             result = str2hex(string+2);
-            if(err_str2num) error(message[ERROR_INVALIDNUMBER]);
             return result;
         }
         if(tolower(*(string+1)) == 'b') {
             result = str2bin(string+2);
-            if(err_str2num) error(message[ERROR_INVALIDNUMBER]);
             return result;
         }
     }
@@ -117,11 +110,9 @@ int24_t str2num(char *string, uint8_t length) {
         strcpy(buffer, string);
         buffer[length-1] = 0;
         result = str2bin(buffer);
-        if(err_str2num) error(message[ERROR_INVALIDNUMBER]);
         return result;
     }
 
     result = str2dec(string);
-    if(err_str2num) error(message[ERROR_INVALIDNUMBER]);
     return result;
 }

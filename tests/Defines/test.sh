@@ -10,11 +10,12 @@ tests_successfull=0
 
 cd tests
 rm -f *.bin
+rm -f *.output
 for FILE in *; do
     if [ -f "$FILE" ]; then
         if [ "$FILE" == "${FILE%.*}.s" ]; then
             test_number=$((test_number+1))
-            ../$ASMBIN $FILE -b FF > ../asm.output
+            ../$ASMBIN $FILE -c -b FF >> ${FILE%.*}.asm.output
             if [ $? -eq 1 ]; then 
                 echo "$FILE ASM ERROR"
             else
@@ -39,7 +40,6 @@ done
 rm -f *.bin
 cd ..
 
-rm -f asm.output
 if [ $test_number -eq $tests_successfull ]; then
     echo "All ($test_number) files assembled succesfully"
     exit 0

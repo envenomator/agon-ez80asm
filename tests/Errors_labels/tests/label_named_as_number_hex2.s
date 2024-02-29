@@ -1,0 +1,1 @@
+0xff: equ 5 ; create havoc

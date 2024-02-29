@@ -87,6 +87,7 @@ package:
 	@rm -f $(RELEASEDIR)/$(PROJECTNAME).ldr
 clean:
 	@echo Cleaning directories
+	@find tests -name "*.output" -type f -delete
 	@$(MSBUILD) $(VSPROJECTDIR)/$(PROJECTNAME).sln $(MSBUILDFLAGS) -t:Clean >/dev/null
 ifdef OS
 	del /s /q $(BINDIR) >nul 2>&1

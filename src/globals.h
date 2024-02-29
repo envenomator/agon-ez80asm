@@ -38,7 +38,7 @@ extern bool list_enabled;
 extern bool consolelist_enabled;
 extern uint8_t fillbyte;
 extern uint24_t start_address;
-
+extern bool coloroutput;
 
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code
@@ -49,12 +49,12 @@ extern opcodesequence_t output;
 
 // Errors
 enum {
-    ERROR_INVALIDREGISTER,
     ERROR_OPENINGBRACKET,
     ERROR_CLOSINGBRACKET,
     ERROR_INVALIDNUMBER,
+    ERROR_UNKNOWNLABEL,
+    ERROR_INVALIDLABELORNUMBER,
     ERROR_INVALIDLABEL,
-    ERROR_INVALIDLABELNAME,
     ERROR_MISSINGOPERAND,
     ERROR_INVALIDMNEMONIC,
     ERROR_INVALIDOPERAND,
