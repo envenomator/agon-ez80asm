@@ -8,6 +8,9 @@ FORMAT='%-25.25s'
 testresult=2
 failed=0
 
+# set all shell scripts executable
+find tests -type f -iname "*.sh" -exec chmod +x {} \;
+
 cd tests
 for FILE in *; do
     if [ -d "$FILE" ]; then
