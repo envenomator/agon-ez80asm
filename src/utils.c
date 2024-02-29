@@ -34,13 +34,15 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
 }
 
 void error(char* msg) {
-    vdp_set_text_colour(DARK_RED);
-    if(currentExpandedMacro) printf("MACRO [%s]",currentExpandedMacro->name);
-    else if(strlen(filename[FILE_CURRENT])) printf("\"%s\"", filename[FILE_CURRENT]);
-    if(linenumber) printf(" - line %d - ", linenumber);
-    printf("%s\r\n",  msg);
-    vdp_set_text_colour(BRIGHT_WHITE);
-    global_errors++;
+    if(!global_errors) {
+        vdp_set_text_colour(DARK_RED);
+        if(currentExpandedMacro) printf("MACRO [%s]",currentExpandedMacro->name);
+        else if(strlen(filename[FILE_CURRENT])) printf("\"%s\"", filename[FILE_CURRENT]);
+        if(linenumber) printf(" - line %d - ", linenumber);
+        printf("%s\r\n",  msg);
+        vdp_set_text_colour(BRIGHT_WHITE);
+        global_errors++;
+    }
 }
 
 void trimRight(char *str) {
@@ -264,6 +266,7 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
             if(length-- == 0) break;
         }
     }
+    if(state == TOKEN_STRING) error(message[ERROR_STRING_NOTTERMINATED]);
     return length;
 }
 

@@ -1032,7 +1032,7 @@ void emit_quotedstring(char *str) {
         str++;
     }
     // we missed an end-quote to this string, we shouldn't reach this
-    error(message[ERROR_STRINGFORMAT]);
+    error(message[ERROR_STRING_NOTTERMINATED]);
 }
 
 void parse_asm_single_immediate(void) {
@@ -1051,14 +1051,12 @@ void parse_asm_single_immediate(void) {
 
 void handle_asm_db(void) {
     streamtoken_t token;
-    uint24_t argcount = 0;
+    bool expectarg = true;
 
     if(pass == 1) definelabel(address);
 
     while(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
-            argcount++;
-
             if(currentExpandedMacro) {
                 if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
                     token.start = _macro_ASM_buffer;
@@ -1075,28 +1073,29 @@ void handle_asm_db(void) {
                     emit_8bit(operand1.immediate);
                     break;
             }
+            expectarg = false;
         }
-        if(token.terminator == ',') currentline.next = token.next;
+        if(token.terminator == ',') {
+            currentline.next = token.next;
+            expectarg = true;
+        }
         else {
             if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
             currentline.next = NULL; 
         }
     }
-    if(argcount == 0) {
-        error(message[ERROR_MISSINGOPERAND]);
-    }
+    if(expectarg) error(message[ERROR_MISSINGOPERAND]);
 }
 
 void handle_asm_dw(uint8_t wordtype) {
     label_t *lbl;
     streamtoken_t token;
-    uint24_t argcount = 0;
+    bool expectarg = true;
 
     if(pass == 1) definelabel(address);
 
     while(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
-            argcount++;
 
             if(currentExpandedMacro) {
                 if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
@@ -1122,22 +1121,24 @@ void handle_asm_dw(uint8_t wordtype) {
                     error(message[ERROR_INTERNAL]);
                     break;
             }
+            expectarg = false;
         }
-        if(token.terminator == ',') currentline.next = token.next;
+        if(token.terminator == ',') {
+            currentline.next = token.next;
+            expectarg = true;
+        }
         else {
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-            currentline.next = NULL; 
+            currentline.next = NULL;
         }
     }
-    if(argcount == 0) error(message[ERROR_MISSINGOPERAND]);
+    if(expectarg) error(message[ERROR_MISSINGOPERAND]);
 }
 
 void handle_asm_equ(void) {
     streamtoken_t token;
-    uint24_t argcount = 0;
 
     if(getDefineValueToken(&token, currentline.next)) {
-        argcount++;
         if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
         if(pass == 1) {
             if(currentline.label) definelabel(getValue(token.start, true)); // needs to be defined in pass 1
@@ -1145,8 +1146,6 @@ void handle_asm_equ(void) {
         }
     }
     else error(message[ERROR_MISSINGOPERAND]);
-
-    if(argcount == 0) error(message[ERROR_MISSINGOPERAND]);
 }
 
 void handle_asm_adl(void) {
