@@ -1152,8 +1152,10 @@ void handle_asm_adl(void) {
     streamtoken_t token;
 
     if(currentline.next) {
-        getDefineValueToken(&token, currentline.next);
-
+        if(getDefineValueToken(&token, currentline.next) == 0) {
+            error(message[ERROR_MISSINGOPERAND]);
+            return;
+        }
         if(currentExpandedMacro) {
             if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
                 token.start = _macro_ASM_buffer;
