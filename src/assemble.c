@@ -1138,12 +1138,15 @@ void handle_asm_dw(uint8_t wordtype) {
 void handle_asm_equ(void) {
     streamtoken_t token;
 
-    if(getDefineValueToken(&token, currentline.next)) {
-        if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
-        if(pass == 1) {
-            if(currentline.label) definelabel(getValue(token.start, true)); // needs to be defined in pass 1
-            else error(message[ERROR_MISSINGLABEL]);
+    if(currentline.next) {
+        if(getDefineValueToken(&token, currentline.next)) {
+            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
+            if(pass == 1) {
+                if(currentline.label) definelabel(getValue(token.start, true)); // needs to be defined in pass 1
+                else error(message[ERROR_MISSINGLABEL]);
+            }
         }
+        else error(message[ERROR_MISSINGOPERAND]);
     }
     else error(message[ERROR_MISSINGOPERAND]);
 }

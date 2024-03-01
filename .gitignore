@@ -60,4 +60,5 @@ src/.vs/
 # Test output
 test.output
 asm.output
+*.asm.output
 tests/*.bin
