@@ -1464,13 +1464,16 @@ void handle_asm_if(void) {
         return;
     }
 
-    if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
-        error(message[ERROR_CONDITIONALEXPRESSION]);
-        return;
-    }
-    value = getValue(token.start, true);
+    if(currentline.next) {
+        if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
+            error(message[ERROR_CONDITIONALEXPRESSION]);
+            return;
+        }
+        value = getValue(token.start, true);
 
-    inConditionalSection = value ? 2 : 1;
+        inConditionalSection = value ? 2 : 1;
+    }
+    else error(message[ERROR_MISSINGOPERAND]);
 }
 
 void handle_asm_else(void) {
