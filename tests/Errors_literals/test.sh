@@ -13,13 +13,15 @@ rm -f *.bin
 rm -f *.output
 for FILE in *; do
     if [ -f "$FILE" ]; then
-        test_number=$((test_number+1))
-        ../$ASMBIN $FILE -c -b FF >> ${FILE%.*}.asm.output
-        if [ $? -eq 0 ]; then 
-            echo "Failed to detect error in" \'$FILE\'
-        else
-            negtest_failed_successfull=$((negtest_failed_successfull+1))
-        fi 
+        if [ "$FILE" == "${FILE%.*}.s" ]; then
+            test_number=$((test_number+1))
+            ../$ASMBIN $FILE -c -b FF >> ${FILE%.*}.asm.output
+            if [ $? -eq 0 ]; then 
+                echo "Failed to detect error in" \'$FILE\'
+            else
+                negtest_failed_successfull=$((negtest_failed_successfull+1))
+            fi
+        fi
     fi
 done
 rm -f *.bin
