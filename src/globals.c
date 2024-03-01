@@ -85,5 +85,6 @@ char *message[] = {
     "Missing IF directive",
     "Missing ENDIF directive",
     "Internal error",
-    "Illegal escape sequence in string"
+    "Illegal escape sequence in string",
+    "String type not allowed"
 };

@@ -1049,46 +1049,8 @@ void parse_asm_single_immediate(void) {
     else error(message[ERROR_MISSINGOPERAND]);
 }
 
-void handle_asm_db(void) {
-    streamtoken_t token;
-    bool expectarg = true;
-
-    if(pass == 1) definelabel(address);
-
-    while(currentline.next) {
-        if(getDefineValueToken(&token, currentline.next)) {
-            if(currentExpandedMacro) {
-                if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-                    token.start = _macro_ASM_buffer;
-                }
-            }
-
-            switch(token.start[0]) {
-                case '\"':
-                    emit_quotedstring(token.start);
-                    break;
-                default:
-                    operand1.immediate = getValue(token.start, false); // not needed in pass 1
-                    if(operand1.immediate > 0xff) error(message[WARNING_N_TOOLARGE]);
-                    emit_8bit(operand1.immediate);
-                    break;
-            }
-            expectarg = false;
-        }
-        if(token.terminator == ',') {
-            currentline.next = token.next;
-            expectarg = true;
-        }
-        else {
-            if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-            currentline.next = NULL; 
-        }
-    }
-    if(expectarg) error(message[ERROR_MISSINGOPERAND]);
-}
-
-void handle_asm_dw(uint8_t wordtype) {
-    label_t *lbl;
+void handle_asm_data(uint8_t wordtype) {
+    int32_t value;
     streamtoken_t token;
     bool expectarg = true;
 
@@ -1102,20 +1064,41 @@ void handle_asm_dw(uint8_t wordtype) {
                     token.start = _macro_ASM_buffer;
                 }
             }
-            lbl = findLabel(token.start);
-            if(lbl) operand1.immediate = lbl->address;
-            else operand1.immediate = getValue(token.start, false);
+
+            if((token.start[0] == '\"') && (wordtype != ASM_DB)) {
+                error(message[ERROR_STRING_NOTALLOWED]);
+                return;
+            }
+
             switch(wordtype) {
+                case ASM_DB:
+                    switch(token.start[0]) {
+                        case '\"':
+                            emit_quotedstring(token.start);
+                            break;
+                        default:
+                            value = getValue(token.start, false); // not needed in pass 1
+                            if(value > 0xff) {
+                                error(message[WARNING_N_TOOLARGE]);
+                                return;
+                            }
+                            emit_8bit(value);
+                            break;
+                    }
+                    break;
                 case ASM_DW:
-                    if(operand1.immediate > 0xffffff) error(message[ERROR_ADLWORDSIZE]);
-                    emit_16bit(operand1.immediate);
+                    value = getValue(token.start, false);
+                    if(value > 0xffffff) error(message[ERROR_ADLWORDSIZE]);
+                    emit_16bit(value);
                     break;
                 case ASM_DW24:
-                    emit_24bit(operand1.immediate);
+                    value = getValue(token.start, false);
+                    emit_24bit(value);
                     break;
                 case ASM_DW32:
-                    emit_8bit(operand1.immediate & 0xFF);
-                    emit_24bit(operand1.immediate >> 8);
+                    value = getValue(token.start, false);
+                    emit_8bit(value & 0xFF);
+                    emit_24bit(value >> 8);
                     break;
                 default:
                     error(message[ERROR_INTERNAL]);
@@ -1510,22 +1493,22 @@ void handle_assembler_command(void) {
             handle_asm_org();
             break;
         case(ASM_DB):
-            handle_asm_db();
+            handle_asm_data(ASM_DB);
             break;
         case(ASM_DS):
             handle_asm_blk(1);
             break;
         case(ASM_DW):
-            handle_asm_dw(ASM_DW);
+            handle_asm_data(ASM_DW);
             break;
         case(ASM_DW24):
-            handle_asm_dw(ASM_DW24);
+            handle_asm_data(ASM_DW24);
             break;
         case(ASM_DW32):
-            handle_asm_dw(ASM_DW32);
+            handle_asm_data(ASM_DW32);
             break;
         case(ASM_ASCIZ):
-            handle_asm_db();
+            handle_asm_data(ASM_DB);
             emit_8bit(0);
             break;
         case(ASM_EQU):

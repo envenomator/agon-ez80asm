@@ -1,0 +1,1 @@
+	dw32 "string"
