@@ -79,7 +79,7 @@ label:
         dw 1,2,3
         dw 10;comment
         dw ffffh
-        dw label
+        ;dw label
 ; 24-bit word tests
         dl 5
         dl 1,2,3

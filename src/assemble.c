@@ -933,8 +933,8 @@ void emit_instruction(operandlist_t *list) {
 
     // issue any errors here
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
-        if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[WARNING_N_8BITRANGE]);
-        if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[WARNING_N_8BITRANGE]);
+        if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
+        if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
     }
     if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
     if((op2_displacement_required) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
@@ -1078,21 +1078,19 @@ void handle_asm_data(uint8_t wordtype) {
                             break;
                         default:
                             value = getValue(token.start, false); // not needed in pass 1
-                            if(value > 0xff) {
-                                error(message[WARNING_N_TOOLARGE]);
-                                return;
-                            }
+                            validateRange8bit(value);
                             emit_8bit(value);
                             break;
                     }
                     break;
                 case ASM_DW:
                     value = getValue(token.start, false);
-                    if(value > 0xffffff) error(message[ERROR_ADLWORDSIZE]);
+                    validateRange16bit(value);
                     emit_16bit(value);
                     break;
                 case ASM_DW24:
                     value = getValue(token.start, false);
+                    validateRange24bit(value);
                     emit_24bit(value);
                     break;
                 case ASM_DW32:
@@ -1291,7 +1289,7 @@ void handle_asm_incbin(void) {
 
 void handle_asm_blk(uint8_t width) {
     uint24_t num;
-    int24_t val = 0;
+    int32_t val = 0;
     streamtoken_t token;
 
     if(pass == 1) definelabel(address);
@@ -1335,12 +1333,15 @@ void handle_asm_blk(uint8_t width) {
     while(num--) {
         switch(width) {
             case 1:
+                validateRange8bit(val);
                 emit_8bit(val);
                 break;
             case 2:
+                validateRange16bit(val);
                 emit_16bit(val);
                 break;
             case 3:
+                validateRange24bit(val);
                 emit_24bit(val);
                 break;
             case 4:

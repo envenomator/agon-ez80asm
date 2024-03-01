@@ -327,3 +327,29 @@ uint8_t getOperatorToken(streamtoken_t *token, char *src) {
     }
     return length;
 }
+
+void validateRange8bit(int32_t value) {
+    if((value > 0xff) || (value < -128)) {
+        error(message[ERROR_8BITRANGE]);
+    }
+}
+
+void validateRange16bit(int32_t value) {
+    if(value > 0xffff) {
+        if(adlmode) {
+            error(message[ERROR_16BITRANGE]);
+        }
+        else {
+            error(message[ERROR_ADLWORDSIZE]);
+        }
+    }
+    if(value < -32768) {
+        error(message[ERROR_16BITRANGE]);
+    }
+}
+
+void validateRange24bit(int32_t value) {
+    if((value > 0xffffff) || (value < -8388608)) {
+        error(message[ERROR_24BITRANGE]);
+    }
+}
