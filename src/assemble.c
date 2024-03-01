@@ -77,10 +77,10 @@ uint8_t getLiteralValue(char *string) {
 // labelb-1
 // labela+labelb+offset1-1
 // The string should not contain any spaces, needs to be a single token
-int24_t getValue(char *str, bool req_firstpass) {
+int32_t getValue(char *str, bool req_firstpass) {
     streamtoken_t token;
     label_t *lbl;
-    int24_t total, tmp;
+    int32_t total, tmp;
     uint8_t length, substlength;
     char prev_op = '+', unary = 0;
     bool expect = true;
@@ -1090,8 +1090,7 @@ void handle_asm_data(uint8_t wordtype) {
                     break;
                 case ASM_DW32:
                     value = getValue(token.start, false);
-                    emit_8bit(value & 0xFF);
-                    emit_24bit(value >> 8);
+                    emit_32bit(value);
                     break;
                 default:
                     error(message[ERROR_INTERNAL]);

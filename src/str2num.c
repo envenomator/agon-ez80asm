@@ -3,10 +3,10 @@
 
 bool err_str2num;
 
-// transform a binary string to a uint24_t number
+// transform a binary string to a uint32_t number
 // string must end with 0 and contain only valid characters (0..1)
-int24_t str2bin(char *string) {
-    int24_t result = 0;
+int32_t str2bin(char *string) {
+    int32_t result = 0;
     uint8_t x = 0;
 
     while(*string) {
@@ -18,10 +18,10 @@ int24_t str2bin(char *string) {
     return result;
 }
 
-// transform a hex string to a int24_t number
+// transform a hex string to a int32_t number
 // string must end with 0 and contain only valid characters (0..9,a..f,A..F)
-int24_t str2hex(char *string) {
-    int24_t result = 0;
+int32_t str2hex(char *string) {
+    int32_t result = 0;
     char c;
     uint8_t x = 0;
 
@@ -39,10 +39,10 @@ int24_t str2hex(char *string) {
     return result;
 }
 
-// transform a hex string to a int24_t number
+// transform a hex string to a int32_t number
 // string must end with 0 and contain only valid characters (0..9)
-int24_t str2dec(char *string) {
-    int24_t result = 0;
+int32_t str2dec(char *string) {
+    int32_t result = 0;
     uint8_t x = 0;
 
     while(*string) {
@@ -54,16 +54,16 @@ int24_t str2dec(char *string) {
     return result;
 }
 
-// Transforms a binary/hexadecimal/decimal string to an uint24_t number
+// Transforms a binary/hexadecimal/decimal string to an uint32_t number
 // Valid strings are
 // BINARY:  %..., , 0b..., ...b, capital letters allowed
 // HEX:     0x..., ...h, $..., capital letters allowed
 // DECIMAL ...
 // Returns current program counter with just '$'
-int24_t str2num(char *string, uint8_t length) {
+int32_t str2num(char *string, uint8_t length) {
     char buffer[TOKEN_MAX];
     char lastchar;
-    int24_t result = 0;
+    int32_t result = 0;
     err_str2num = false;
 
     if(*string == '$') {
