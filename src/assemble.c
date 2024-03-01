@@ -51,7 +51,7 @@ uint8_t get_escaped_char(char c) {
 }
 
 // Get the ascii value from a single 'x' token.
-uint8_t getAsciiValue(char *string) {
+uint8_t getLiteralValue(char *string) {
     uint8_t len = strlen(string);
 
     if((len == 3) && (string[2] == '\'')) {
@@ -80,7 +80,7 @@ uint8_t getAsciiValue(char *string) {
 int24_t getValue(char *str, bool req_firstpass) {
     streamtoken_t token;
     label_t *lbl;
-    uint24_t total, tmp;
+    int24_t total, tmp;
     uint8_t length, substlength;
     char prev_op = '+', unary = 0;
     bool expect = true;
@@ -107,7 +107,7 @@ int24_t getValue(char *str, bool req_firstpass) {
                 tmp = lbl->address;
             }
             else {
-                if(token.start[0] == '\'') tmp = getAsciiValue(token.start);
+                if(token.start[0] == '\'') tmp = getLiteralValue(token.start);
                 else {
                     tmp = str2num(token.start, length);
                     if(err_str2num) {
@@ -505,12 +505,7 @@ void parseLine(char *src) {
                                 state = PS_COMMENT;
                                 break;
                             }
-                            else {
-                                error(message[ERROR_INVALIDLABEL]);
-                                state = PS_ERROR;
-                            }
-                            break;
-                        default:
+                        default: // intentional fall-through
                             error(message[ERROR_INVALIDLABEL]);
                             state = PS_ERROR;                        
                             break;

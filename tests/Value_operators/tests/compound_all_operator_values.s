@@ -1,0 +1,17 @@
+    db 128+127-255+4/2*2<<1>>1&0x04|0x04;should be 4
+    db -128;should be 0x80
+    db 0x55^0;should be 0x55
+    db ~0;should be 0xff
+    db 0xff-0xff+1;should be 1
+    dw 0xffff/2-0x7000+1*2<<1>>1;should be 0x2000
+    dw 0x5555^0;should be 0x5555
+    dw -32768;should be 0x8000
+    dw ~0;should be 0xffff
+    dw24 0xffffff-0xffff00+1/2*2<<1>>1;should be 0x100
+    dw24 0x555555^0;should be 0x555555
+    dw24 -8388608;should be 0x800000
+    dw24 0xffffff-0xffffff+1;should be 1
+    dw32 0xffffffff-0xffffffff+0x100<<1>>1/2*2;should be 0x100
+    dw32 0x55555555^0;should be 0x55555555
+    dw32 ~0;should be 0xffffffff
+    dw32 -2147483648;should be 0x80000000
