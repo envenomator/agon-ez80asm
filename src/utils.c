@@ -62,24 +62,6 @@ typedef enum {
     TOKEN_BRACKET
 } tokenclass;
 
-// further parse a command-token string to currentline.mnemonic & currentline.suffix
-void parse_command(char *src) {
-    currentline.mnemonic = src;
-
-    while(*src && (*src != '.')) src++;
-    if(*src) {
-        // suffix start found
-        *src = 0; // terminate mnemonic
-        currentline.suffixpresent = true;
-        currentline.suffix = src + 1;
-        return;
-    }
-    // no suffix found
-    currentline.suffixpresent = false;
-    currentline.suffix = NULL;
-    return;
-}
-
 void getLabelToken(streamtoken_t *token, char *src) {
     token->start = src; // no need to remove leading spaces
     while(*src && (*src != ':') && (*src != ';')) src++;
@@ -357,7 +339,7 @@ void validateRange24bit(int32_t value) {
 }
 
 // Returns the value of an escaped character \c, or 255 if illegal
-uint8_t get_escaped_char(char c) {
+uint8_t getEscapedChar(char c) {
     switch(c) {
         case 'a':
             return(0x07); // Alert, beep
@@ -397,7 +379,7 @@ uint8_t getLiteralValue(char *string) {
     }
 
     if((len == 4) && (string[3] == '\'')) {
-        uint8_t c = get_escaped_char(string[2]);
+        uint8_t c = getEscapedChar(string[2]);
         if(c == 0xff) {
             error(message[ERROR_ILLEGAL_ESCAPELITERAL]);
             return 0;

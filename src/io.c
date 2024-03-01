@@ -352,7 +352,7 @@ void emit_quotedstring(char *str) {
             }
         }
         else { // previously escaped
-            escaped_char = get_escaped_char(*str);
+            escaped_char = getEscapedChar(*str);
             if(escaped_char == 0xff) {
                 error(message[ERROR_ILLEGAL_ESCAPESEQUENCE]);
                 return;

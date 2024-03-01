@@ -35,14 +35,14 @@ void trimRight(char *str);
 
 void error(char* msg);
 int32_t getValue(char *str, bool req_firstpass);
-uint8_t get_escaped_char(char c);
+uint8_t getEscapedChar(char c);
 uint8_t getLiteralValue(char *string);
 uint8_t getOperatorToken(streamtoken_t *token, char *src);          // terminates on operator symbols like +-/%<<>>
 void    getLabelToken(streamtoken_t *token, char *src);                // terminates on ':' character
 uint8_t getMnemonicToken(streamtoken_t *token, char *src);          // terminated on spaces
 uint8_t getOperandToken(streamtoken_t *token, char *src);           // terminates on , or ;  transparent literals
 uint8_t getDefineValueToken(streamtoken_t *token, char *src);       // terminates on all operator symbols, ',' and ';' transparent literals and strings
-void    parse_command(char *src);
+
 void validateRange8bit(int32_t value);
 void validateRange16bit(int32_t value);
 void validateRange24bit(int32_t value);

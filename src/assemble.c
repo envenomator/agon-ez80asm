@@ -7,6 +7,24 @@ char _macrobuffer[FILE_BUFFERSIZE];
 char _macro_OP_buffer[MACROARGLENGTH + 1]; // replacement buffer for operands during macro expansion
 char _macro_ASM_buffer[MACROARGLENGTH + 1];// replacement buffer for values during ASSEMBLER macro expansion
 
+// Parse a command-token string to currentline.mnemonic & currentline.suffix
+void parse_command(char *src) {
+    currentline.mnemonic = src;
+
+    while(*src && (*src != '.')) src++;
+    if(*src) {
+        // suffix start found
+        *src = 0; // terminate mnemonic
+        currentline.suffixpresent = true;
+        currentline.suffix = src + 1;
+        return;
+    }
+    // no suffix found
+    currentline.suffixpresent = false;
+    currentline.suffix = NULL;
+    return;
+}
+
 // parses the given string to the operand, or throws errors along the way
 // will destruct parts of the original string during the process
 void parse_operand(char *string, uint8_t len, operand_t *operand) {
@@ -316,6 +334,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
     }
 }
 
+// FSM to parse each line into separate components, store in gbl currentline variable
 void parseLine(char *src) {
     uint8_t oplength = 0;
     uint8_t x;
@@ -492,6 +511,8 @@ void parseLine(char *src) {
     }
 }
 
+// Parse an immediate value from currentline.next
+// services several assembler directives
 void parse_asm_single_immediate(void) {
     streamtoken_t token;
 
@@ -506,6 +527,7 @@ void parse_asm_single_immediate(void) {
     else error(message[ERROR_MISSINGOPERAND]);
 }
 
+// Emits list data for the DB/DW/DW24/DW32 etc directives
 void handle_asm_data(uint8_t wordtype) {
     int32_t value;
     streamtoken_t token;
@@ -934,7 +956,6 @@ void handle_asm_endif(void) {
 }
 
 void handle_asm_fillbyte(void) {
-
     parse_asm_single_immediate(); // get fillbyte from next token
     if((operand1.immediate < 0) || (operand1.immediate > 255)) error(message[ERROR_8BITRANGE]);
     fillbyte = operand1.immediate;
@@ -1059,6 +1080,7 @@ void expandMacroStart(macro_t *exp) {
     lineNumberNeedsReset = true;
 }
 
+// Process the instructions found at each line, after parsing them
 void processInstructions(char *macroline){
     operandlist_t *list;
     uint8_t listitem;
@@ -1110,6 +1132,7 @@ void processInstructions(char *macroline){
     return;
 }
 
+// Initialize pass 1 / pass2 states for the assembler
 void passInitialize(uint8_t passnumber) {
     pass = passnumber;
     linenumber = 0;
