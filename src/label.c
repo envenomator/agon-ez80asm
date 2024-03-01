@@ -269,3 +269,52 @@ label_t *findLabel(char *name) {
     }
     else return findGlobalLabel(name);
 }
+
+void advanceLocalLabel(void) {
+    if(currentline.label) {
+        if(currentline.label[0] == '@') {
+            if(currentline.label[1] == '@') {
+                if(!recordingMacro) readAnonymousLabel();
+            }
+        }
+    }
+}
+
+void definelabel(int24_t num){
+    if(currentline.label == NULL) return;
+
+    if(currentline.label[0] == '@') {
+        if(currentline.label[1] == '@') {
+            writeAnonymousLabel(num);
+            return;
+        }
+        if(insertLocalLabel(currentline.label, num) == false) {
+            error(message[ERROR_CREATINGLABEL]);
+            return;
+        }
+        return;
+    }
+    if(currentline.label[0] == '$') {
+        error(message[ERROR_INVALIDLABEL]);
+        return;
+    }
+    str2num(currentline.label, strlen(currentline.label)); 
+    if(!err_str2num) { // labels can't have a valid number format
+        error(message[ERROR_INVALIDLABEL]);
+        return;
+    }
+    if(insertGlobalLabel(currentline.label, num) == false){
+        error(message[ERROR_CREATINGLABEL]);
+        return;
+    }
+
+    writeLocalLabels();
+    clearLocalLabels();
+}
+
+void refreshlocalLabels(void) {
+    if((pass == 2) && (currentline.label) && (currentline.label[0] != '@')) {
+        clearLocalLabels();
+        readLocalLabels();
+    }
+}

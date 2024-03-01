@@ -232,7 +232,9 @@ instruction_t * instruction_hashtable_lookup(char *name);
 //void setup_regcc_hashtable(void);
 void init_instruction_hashtable(void);
 
+void emit_instruction(operandlist_t *list);
 
+uint8_t get_immediate_size(operand_t *op, uint8_t suffix);
 // An array-based index of this structure will act as a fast lookup table
 typedef struct {
     permittype_t type;

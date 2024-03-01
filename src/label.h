@@ -45,6 +45,9 @@ void initLocalLabelTable(void);
 uint16_t getGlobalLabelCount(void);
 uint16_t getLocalLabelCount(void);
 void saveGlobalLabelTable(void);
+void advanceLocalLabel(void);
+void refreshlocalLabels(void);
+void definelabel(int24_t num);
 
 extern uint24_t labelmemsize;
 

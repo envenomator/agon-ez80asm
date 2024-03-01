@@ -1,5 +1,8 @@
 #include "instruction.h"
 #include "moscalls.h"
+#include "globals.h"
+#include "label.h"
+#include "io.h"
 
 // instruction hash table
 instruction_t *instruction_hashtable[INSTRUCTION_HASHTABLESIZE];
@@ -121,6 +124,257 @@ bool indirect_iyd_match(operand_t *op) {
 }
 bool raeonly_match(operand_t *op) {
     return((op->reg >= R_A) && (op->reg <= R_E));
+}
+
+// get the number of bytes to emit from an immediate
+uint8_t get_immediate_size(operand_t *op, uint8_t suffix) {
+    uint8_t num;
+    switch(suffix) {
+        case S_SIS:
+        case S_LIS:
+            num = 2;
+            break;
+        case S_SIL:
+        case S_LIL:
+            num = 3;
+            break;
+        case 0: // Use current ADL mode to determine 16/24 bit
+            if(adlmode) num = 3;
+            else num = 2;
+            break;
+        default:
+            error(message[ERROR_INVALIDMNEMONIC]);
+            return 0;
+    }
+    if(num == 2) op->immediate &= 0xFFFF;
+    return num;
+}
+
+uint8_t get_ddfd_prefix(cpuregister reg) {
+    switch(reg) {
+        case R_IX:
+        case R_IXH:
+        case R_IXL:
+            return 0xDD;
+        case R_IY:
+        case R_IYH:
+        case R_IYL:
+            return 0xFD;
+        default:
+            break;
+    }
+    return 0;    
+}
+
+void prefix_ddfd_suffix(operandlist_t *op) {
+    uint8_t prefix1, prefix2;
+
+    if(!op->ddfdpermitted) return;
+
+    prefix1 = get_ddfd_prefix(operand1.reg);
+    prefix2 = get_ddfd_prefix(operand2.reg);
+
+    // prefix in either of these two cases
+    if(prefix1) {
+        if(prefix2) {
+            // both prefixes set
+            if(operand1.indirect) output.prefix1 = prefix1;
+            else output.prefix1 = prefix2;
+        }
+        else output.prefix1 = prefix1;
+    }
+    else if(prefix2) output.prefix1 = prefix2;
+}
+
+void transform_instruction(operand_t *op, permittype_t type) {
+    uint8_t y;
+    int24_t rel;
+
+    switch(type) {
+        case TRANSFORM_IR0:
+            if((op->reg == R_IXL) || (op->reg == R_IYL)) output.opcode |= 0x01;
+            break;
+        case TRANSFORM_IR3:
+            if((op->reg == R_IXL) || (op->reg == R_IYL)) output.opcode |= 0x08;
+            break;
+        case TRANSFORM_Z:
+            output.opcode |= op->reg_index;
+            break;
+        case TRANSFORM_Y:
+            if(op->immediate_provided) output.opcode |= (op->immediate << 3);
+            else output.opcode |= (op->reg_index << 3);
+            break;
+        case TRANSFORM_P:
+            output.opcode |= (op->reg_index << 4);
+            break;
+        case TRANSFORM_CC:
+            output.opcode |= (op->cc_index << 3);
+            break;
+        case TRANSFORM_N:
+            output.opcode |= op->immediate;
+            op->immediate_provided = false; // no separate output for this transform
+            break;
+        case TRANSFORM_BIT:
+            output.opcode |= (op->immediate << 3);
+            op->immediate_provided = false;
+            break;
+        case TRANSFORM_SELECT:
+            switch(op->immediate) {
+                case 0:
+                    y = 0;
+                    break;
+                case 1:
+                    y = 2;
+                    break;
+                case 2:
+                    y = 3;
+                    break;
+                default:
+                    y = 0;
+            }
+            output.opcode |= (y << 3); // shift 3 lower bits 3 to the left
+            op->immediate_provided = false; // no separate output for this transform
+            break;
+        case TRANSFORM_REL:
+            if(pass == 2) {
+                // label still potentially unknown in pass 1, so output the existing '0' in pass 1
+                rel = op->immediate - address - 2;
+                if((rel > 127) || (rel < -128)) {
+                    error(message[ERROR_RELATIVEJUMPTOOLARGE]);
+                }
+                op->immediate = ((int8_t)(rel & 0xFF));
+                op->immediate_provided = true;
+            }
+            break;
+        case TRANSFORM_NONE:
+            break;
+        default:
+            error(message[ERROR_TRANSFORMATION]);
+            break;
+    }
+    return;
+}
+
+// return ADL prefix bitfield, or 0 if none present
+uint8_t getADLsuffix(void) {
+
+    if(currentline.suffixpresent == false) return 0;
+
+    switch(strlen(currentline.suffix)) {
+        case 1: // .s or .l
+            switch(tolower(currentline.suffix[0])) {
+                case 's':
+                    if(adlmode) return S_SIL;  // SIL
+                    else return S_SIS;         // SIS
+                    break;
+                case 'l':
+                    if(adlmode) return S_LIL;  // LIL
+                    else return S_LIS;         // LIS
+                    break;
+                default: // illegal suffix
+                    break;
+            }
+            break;
+        case 2: // .is or .il
+            if(tolower(currentline.suffix[0]) != 'i') break; // illegal suffix
+            switch(tolower(currentline.suffix[1])) {
+                case 's':
+                    if(adlmode) return S_LIS;  // LIS
+                    else return S_SIS;         // SIS
+                    break;
+                case 'l':
+                    if(adlmode) return S_LIL;  // LIL
+                    else return S_SIL;         // SIL
+                    break;
+                default: // illegal suffix
+                    break;
+            }
+            break;
+        case 3:
+            if(tolower(currentline.suffix[1]) != 'i') break; // illegal suffix
+            switch(tolower(currentline.suffix[0])) {
+                case 's':
+                    if(tolower(currentline.suffix[2]) == 's') return S_SIS; // SIS
+                    if(tolower(currentline.suffix[2]) == 'l') return S_SIL; // SIL
+                    // illegal suffix
+                    break;
+                case 'l':
+                    if(tolower(currentline.suffix[2]) == 's') return S_LIS; // LIS
+                    if(tolower(currentline.suffix[2]) == 'l') return S_LIL; // LIL
+                    // illegal suffix
+                    break;
+                default: // illegal suffix
+                    break;
+            }
+            break;
+        default: // illegal suffix
+            break;
+    }
+    error(message[ERROR_INVALIDSUFFIX]);
+    return 0;
+}
+
+void emit_instruction(operandlist_t *list) {
+    bool ddbeforeopcode; // determine position of displacement byte in case of DDCBdd/DDFDdd
+    bool op1_displacement_required = false;
+    bool op2_displacement_required = false;
+
+    // Transform necessary prefix/opcode in output, according to given list and operands
+    output.suffix = getADLsuffix();
+    output.prefix1 = 0;
+    output.prefix2 = list->prefix;
+    output.opcode = list->opcode;
+
+    if(pass == 1) definelabel(address);
+
+    // Output displacement if needed, even when none is given (handles implicit cases)
+    if(list->operandA > OPTYPE_R_AEONLY) op1_displacement_required = true;
+    if(list->operandB > OPTYPE_R_AEONLY) op2_displacement_required = true;
+
+    // issue any errors here
+    if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
+        if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
+        if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
+    }
+    if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
+    if((op2_displacement_required) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
+
+    // Specific checks
+    if((list->operandA == OPTYPE_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
+    if((list->operandA == OPTYPE_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE]);
+    if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0x47)) error(message[ERROR_ILLEGALRESTARTADDRESS]);
+
+    // prepare extra DD/FD suffix if needed
+    prefix_ddfd_suffix(list);
+    // Transform the opcode and potential immediate values, according to the current ruleset
+    transform_instruction(&operand1, (permittype_t)list->transformA);
+    transform_instruction(&operand2, (permittype_t)list->transformB);
+    // determine position of dd
+    ddbeforeopcode = (((output.prefix1 == 0xDD) || (output.prefix1 == 0xFD)) && (output.prefix2 == 0xCB) &&
+                ((op1_displacement_required) || (op2_displacement_required)));
+    
+    // output adl suffix and any prefixes
+    if(output.suffix > 0) emit_adlsuffix_code(output.suffix);
+    if(output.prefix1) emit_8bit(output.prefix1);
+    if(output.prefix2) emit_8bit(output.prefix2);
+
+    // opcode in normal position
+    if(!ddbeforeopcode) emit_8bit(output.opcode);
+    
+    // output displacement
+    if(op1_displacement_required) emit_8bit(operand1.displacement & 0xFF);
+    if(op2_displacement_required) emit_8bit(operand2.displacement & 0xFF);
+    
+    // output n
+    if((operand1.immediate_provided) && ((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N))) emit_8bit(operand1.immediate & 0xFF);
+    if((operand2.immediate_provided) && ((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N))) emit_8bit(operand2.immediate & 0xFF);
+
+    // opcode in DDCBdd/DFCBdd position
+    if(ddbeforeopcode) emit_8bit(output.opcode);
+
+    //output remaining immediate bytes
+    if((list->operandA == OPTYPE_MMN) || (list->operandA == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand1, output.suffix);
+    if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand2, output.suffix);
 }
 
 // table with fast access to functions that perform matching to an specific permittype

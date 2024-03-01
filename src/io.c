@@ -1,5 +1,5 @@
 #include "io.h"
-
+#include "instruction.h"
 // Global variables
 char     filename[FILES][FILENAMEMAXLENGTH + 1];
 FILE*    filehandle[FILES];
@@ -284,4 +284,95 @@ void io_getFileDefaults(filestackitem *fsi) {
     fsi->bufferstart = 0;
     fsi->fileEOF = 0;
     fsi->linenumber = 1;
+}
+
+void emit_8bit(uint8_t value) {
+    if(pass == 2) {
+        if(list_enabled || consolelist_enabled) listEmit8bit(value);
+        io_outputc(value);
+    }
+    address++;
+}
+
+void emit_16bit(uint16_t value) {
+    emit_8bit(value&0xFF);
+    emit_8bit((value>>8)&0xFF);
+}
+
+void emit_24bit(uint24_t value) {
+    emit_8bit(value&0xFF);
+    emit_8bit((value>>8)&0xFF);
+    emit_8bit((value>>16)&0xFF);
+}
+
+void emit_32bit(uint32_t value) {
+    emit_8bit(value&0xFF);
+    emit_8bit((value>>8)&0xFF);
+    emit_8bit((value>>16)&0xFF);
+    emit_8bit((value>>24)&0xFF);
+}
+
+void emit_adlsuffix_code(uint8_t suffix) {
+    uint8_t code;
+    switch(suffix) {
+        case S_SIS:
+            code = CODE_SIS;
+            break;
+        case S_LIS:
+            code = CODE_LIS;
+            break;
+        case S_SIL:
+            code = CODE_SIL;
+            break;
+        case S_LIL:
+            code = CODE_LIL;
+            break;
+        default:
+            error(message[ERROR_INVALIDSUFFIX]);
+            return;
+    }
+    emit_8bit(code);
+}
+
+// emits a string surrounded by literal string quotes, as the token gets in from a file
+// Only called when the first character is a double quote
+void emit_quotedstring(char *str) {
+    bool escaped = false;
+    uint8_t escaped_char;
+
+    str++; // skip past first "
+    while(*str) {
+        if(!escaped) {
+            if(*str == '\\') { // escape character
+                escaped = true;
+            }
+            else {
+                if(*str == '\"') return;
+                else emit_8bit(*str);
+            }
+        }
+        else { // previously escaped
+            escaped_char = get_escaped_char(*str);
+            if(escaped_char == 0xff) {
+                error(message[ERROR_ILLEGAL_ESCAPESEQUENCE]);
+                return;
+            }
+            emit_8bit(escaped_char);
+            escaped = false;
+        }
+        str++;
+    }
+    // we missed an end-quote to this string, we shouldn't reach this
+    error(message[ERROR_STRING_NOTTERMINATED]);
+}
+
+// Emit a 16 or 24 bit immediate number, according to
+// given suffix bit, or in lack of it, the current ADL mode
+void emit_immediate(operand_t *op, uint8_t suffix) {
+    uint8_t num;
+
+    num = get_immediate_size(op, suffix);
+    emit_8bit(op->immediate & 0xFF);
+    emit_8bit((op->immediate >> 8) & 0xFF);
+    if(num == 3) emit_8bit((op->immediate >> 16) & 0xFF);
 }
