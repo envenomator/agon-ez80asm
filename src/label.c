@@ -24,7 +24,7 @@ void saveGlobalLabelTable(void) {
 
     filehandle[FILE_SYMBOLS] = fopen(filename[FILE_SYMBOLS], "wb+");
     if(filehandle[FILE_SYMBOLS] == 0) {
-        error("Couldn't open file for writing global label table");
+        error(message[ERROR_FILEGLOBALLABELS]);
         return;
     }
 

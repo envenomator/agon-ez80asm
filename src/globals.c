@@ -79,6 +79,8 @@ char *message[] = {
     "Maximum number of macro arguments reached",
     "Error writing to macro file",
     "Incorrect number of macro arguments",
+    "No global labels allowed in macro definition",
+    "Error writing macro file",
     "Illegal escape sequence in literal",
     "Input line too long",
     "Missing conditional expression",
@@ -87,5 +89,7 @@ char *message[] = {
     "Missing ENDIF directive",
     "Internal error",
     "Illegal escape sequence in string",
-    "String type not allowed"
+    "String type not allowed",
+    "Couldn't open file for writing global label table",
+    "Error resetting input file(s)\r\n"
 };

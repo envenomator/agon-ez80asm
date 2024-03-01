@@ -1429,7 +1429,7 @@ void handle_asm_definemacro(void) {
     // define macro filename
     io_getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
     filehandle[FILE_MACRO] = fopen(filename[FILE_MACRO], "wb+");
-    if(!filehandle[FILE_MACRO]) error("Error writing macro file");
+    if(!filehandle[FILE_MACRO]) error(message[ERROR_WRITINGMACROFILE]);
 }
 
 void handle_asm_if(void) {
@@ -1608,7 +1608,7 @@ void processInstructions(char *macroline){
 
                 io_puts(FILE_MACRO, macroline);
             }
-            if((currentline.label) && (currentline.label[0] != '@')) error("No global labels allowed in macro definition");
+            if((currentline.label) && (currentline.label[0] != '@')) error(message[ERROR_MACRO_NOGLOBALLABELS]);
         }
         else {
             if(currentline.mnemonic == NULL) {

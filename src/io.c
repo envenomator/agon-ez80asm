@@ -233,7 +233,7 @@ bool io_setpass(uint8_t pass) {
             result = result && (fseek(filehandle[FILE_INPUT], 0, 0) == 0);
             result = result && (fseek(filehandle[FILE_LOCAL_LABELS], 0, 0) == 0);
             result = result && (fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0) == 0);
-            if(!result) error("Error resetting input file(s)\r\n");
+            if(!result) error(message[ERROR_RESETINPUTFILE]);
             return result;
             break;
     }
