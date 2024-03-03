@@ -24,7 +24,7 @@ typedef uint32_t uint24_t;
 #define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'
 #define LINEMAX                     256 // Input line length maximum uint8_t
 #define FILENAMEMAXLENGTH            64
-#define FILES                         8
+#define FILES                         7
 #define LOCAL_LABEL_BUFFERSIZE   0x4000 // 16KB local label space
 #define GLOBAL_LABEL_TABLE_SIZE    8192 // 8K global labels
 #define LOCAL_LABEL_TABLE_SIZE       64 //  64 local labels

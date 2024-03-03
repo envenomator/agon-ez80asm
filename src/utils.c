@@ -484,3 +484,14 @@ int32_t getValue(char *str, bool req_firstpass) {
     }
     return total;
 }
+
+// efficient strcpy/strcat compound function
+void strcompound(char *dest, const char *src1, const char *src2) {
+    while(*src1) {
+        *dest++ = *src1++;
+    }
+    while(*src2) {
+        *dest++ = *src2++;
+    }
+    *dest = 0;
+}

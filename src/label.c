@@ -55,15 +55,12 @@ label_t * findLocalLabel(char *key) {
 
     if(filelabelscope[0] == 0) {
         // local to file label
-        strcpy(compoundname, filename[FILE_CURRENT]);
+        strcompound(compoundname, filename[FILE_CURRENT], key);
     }
     else {
         // local to global label
-        strcpy(compoundname, filelabelscope[FILE_CURRENT]);
-    } // append local label
-    strcat(compoundname, key);
-
-    //printf("DEBUG: finding local label <%s>\r\n",compoundname);
+        strcompound(compoundname, filelabelscope[FILE_CURRENT], key);
+    }
     return findGlobalLabel(compoundname);
 }
 
@@ -104,14 +101,12 @@ bool insertLocalLabel(char *labelname, int24_t labelAddress) {
 
     if(filelabelscope[0] == 0) {
         // local to file label
-        strcpy(compoundname, filename[FILE_CURRENT]);
+        strcompound(compoundname, filename[FILE_CURRENT], labelname);
     }
     else {
         // local to global label
-        strcpy(compoundname, filelabelscope[FILE_CURRENT]);
-    } // append local label
-    strcat(compoundname, labelname);
-
+        strcompound(compoundname, filelabelscope[FILE_CURRENT], labelname);
+    }
     return insertGlobalLabel(compoundname, labelAddress);
 }
 
@@ -200,7 +195,7 @@ label_t *findLabel(char *name) {
     else return findGlobalLabel(name);
 }
 
-void advanceLocalLabel(void) {
+void advanceAnonymousLabel(void) {
     if(currentline.label) {
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {

@@ -40,7 +40,7 @@ void readAnonymousLabel(void);
 label_t * findGlobalLabel(char *name);
 uint16_t getGlobalLabelCount(void);
 void saveGlobalLabelTable(void);
-void advanceLocalLabel(void);
+void advanceAnonymousLabel(void);
 void definelabel(int24_t num);
 
 extern uint24_t labelmemsize;

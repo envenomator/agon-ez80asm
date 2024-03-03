@@ -392,7 +392,7 @@ void parseLine(char *src) {
                 break;
             case PS_LABEL:
                 currentline.label = streamtoken.start;
-                advanceLocalLabel();
+                advanceAnonymousLabel();
                 x = getMnemonicToken(&streamtoken, streamtoken.next);
                 if(x) state = PS_COMMAND;
                 else {
@@ -533,7 +533,6 @@ void handle_asm_data(uint8_t wordtype) {
     streamtoken_t token;
     bool expectarg = true;
 
-    //if(pass == 1) definelabel(address);
     definelabel(address);
 
     while(currentline.next) {
@@ -601,10 +600,8 @@ void handle_asm_equ(void) {
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
-            //if(pass == 1) {
-                if(currentline.label) definelabel(getValue(token.start, true)); // needs to be defined in pass 1
-                else error(message[ERROR_MISSINGLABEL]);
-            //}
+            if(currentline.label) definelabel(getValue(token.start, true)); // needs to be defined in pass 1
+            else error(message[ERROR_MISSINGLABEL]);
         }
         else error(message[ERROR_MISSINGOPERAND]);
     }
@@ -655,7 +652,6 @@ void handle_asm_org(void) {
     // address needs to be given in pass 1
     newaddress = operand1.immediate;
     if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE]); 
-    //if(pass == 1) definelabel(address);
     definelabel(address);
 
     address = newaddress;
@@ -775,7 +771,6 @@ void handle_asm_blk(uint8_t width) {
     int32_t val = 0;
     streamtoken_t token;
 
-    //if(pass == 1) definelabel(address);
     definelabel(address);
 
     if(!currentline.next) {
@@ -859,9 +854,7 @@ uint24_t delta;
     while(delta--) emit_8bit(fillbyte);
 
     address = base;
-    //if(pass == 1) {
-        definelabel(address); // set address to current line
-    //}
+    definelabel(address); // set address to current line
 }
 
 void handle_asm_endmacro(void) {
@@ -884,8 +877,6 @@ void handle_asm_definemacro(void) {
     if(pass == 2) return;
 
     // Only define macros in pass 1
-    //definelabel(address);
-
     // parse arguments into array
     if(!currentline.next) {
         error(message[ERROR_MACRONAME]);
@@ -1048,7 +1039,6 @@ void expandMacroStart(macro_t *exp) {
     uint8_t argcount = 0;
     filestackitem fsi;
 
-    //if(pass == 1) definelabel(address);
     definelabel(address);
 
     currentExpandedMacro = currentline.current_macro;
@@ -1098,28 +1088,18 @@ void processInstructions(char *macroline){
     uint8_t listitem;
     bool match;
 
-    if(pass == 1) {
-        if(recordingMacro) {
+    if(recordingMacro) {
+        if(pass == 1) {
             if((currentline.mnemonic == NULL) || fast_strcasecmp(currentline.mnemonic, "endmacro")) {
-
                 io_puts(FILE_MACRO, macroline);
             }
             if((currentline.label) && (currentline.label[0] != '@')) error(message[ERROR_MACRO_NOGLOBALLABELS]);
         }
-/*
-        else {
-            if(currentline.mnemonic == NULL) {
-                // check if there is a single label on a line in during pass 1
-                //if(pass == 1) definelabel(address);
-                definelabel(address);
-
-                return;
-            }
-        }
-        */
     }
-    if(!recordingMacro && (currentline.mnemonic == NULL)) definelabel(address);
-
+    else {
+        if(currentline.mnemonic == NULL) definelabel(address);
+    }
+    
     if(currentline.current_instruction) {
         if(currentline.current_instruction->type == EZ80) {
             if(!recordingMacro) {

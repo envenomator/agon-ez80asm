@@ -17,7 +17,7 @@
 // Global variables
 extern bool list_enabled;
 extern bool consolelist_enabled;
-extern char filename[FILES][FILENAMEMAXLENGTH + 1];    // 0 - current, 1 - input, 2 - binary output, 3 - local labels, 4 - anonymous labels, 5 - listing
+extern char filename[FILES][FILENAMEMAXLENGTH + 1];    // 0 - current, 1 - input, 2 - binary output, 3 - anonymous labels, 5 - listing, 6 - Macro, 7 - symbols
 extern FILE* filehandle[FILES];
 extern uint16_t basefilehash[FILES];
 extern char filelabelscope[FILES][FILENAMEMAXLENGTH + 1];
@@ -28,7 +28,6 @@ enum {
     FILE_CURRENT,
     FILE_INPUT,
     FILE_OUTPUT,
-    FILE_LOCAL_LABELS,
     FILE_ANONYMOUS_LABELS,
     FILE_LISTING,
     FILE_MACRO,

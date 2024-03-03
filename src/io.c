@@ -64,11 +64,9 @@ void _prepare_filenames(char *input_filename, char *output_filename) {
         strcpy(filename[FILE_OUTPUT], _fileBasename);
         strcat(filename[FILE_OUTPUT], ".bin");
     }
-    strcpy(filename[FILE_LOCAL_LABELS], _fileBasename);
     strcpy(filename[FILE_ANONYMOUS_LABELS],_fileBasename);
     strcpy(filename[FILE_SYMBOLS],_fileBasename);
     if(list_enabled) strcpy(filename[FILE_LISTING],_fileBasename);
-    strcat(filename[FILE_LOCAL_LABELS], ".lcllbls");
     strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
     if(list_enabled) strcat(filename[FILE_LISTING], ".lst");
     strcat(filename[FILE_SYMBOLS], ".symbols");
@@ -85,7 +83,6 @@ void _deleteFiles(void) {
     int n;
 
     if(CLEANUPFILES) {
-        remove(filename[FILE_LOCAL_LABELS]);
         remove(filename[FILE_ANONYMOUS_LABELS]);
     }
     for(n = 0; n < macroTableCounter; n++) {
@@ -100,7 +97,6 @@ void _deleteFiles(void) {
 void _closeAllFiles() {
     if(filehandle[FILE_INPUT]) fclose(filehandle[FILE_INPUT]);
     if(filehandle[FILE_OUTPUT]) fclose(filehandle[FILE_OUTPUT]);
-    if(filehandle[FILE_LOCAL_LABELS]) fclose(filehandle[FILE_LOCAL_LABELS]);
     if(filehandle[FILE_ANONYMOUS_LABELS]) fclose(filehandle[FILE_ANONYMOUS_LABELS]);
     if(list_enabled && filehandle[FILE_LISTING]) fclose(filehandle[FILE_LISTING]);
     if(filehandle[FILE_MACRO]) fclose(filehandle[FILE_MACRO]);
@@ -111,7 +107,6 @@ bool _openfiles(void) {
 
     status = status && _openFile(FILE_INPUT, "rb");
     status = status && _openFile(FILE_OUTPUT, "wb+");
-    status = status && _openFile(FILE_LOCAL_LABELS, "wb+");
     status = status && _openFile(FILE_ANONYMOUS_LABELS, "wb+");
     if(list_enabled) status = status && _openFile(FILE_LISTING, "w");
     if(!status) _closeAllFiles();
@@ -249,7 +244,6 @@ bool io_setpass(uint8_t pass) {
             _initFileBuffers();
             _init_labelscope();
             result = result && (fseek(filehandle[FILE_INPUT], 0, 0) == 0);
-            result = result && (fseek(filehandle[FILE_LOCAL_LABELS], 0, 0) == 0);
             result = result && (fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0) == 0);
             if(!result) error(message[ERROR_RESETINPUTFILE]);
             return result;
