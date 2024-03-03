@@ -5,7 +5,6 @@ char     filename[FILES][FILENAMEMAXLENGTH + 1];
 FILE*    filehandle[FILES];
 uint16_t sourcefilecount;
 uint16_t binfilecount;
-uint16_t basefilehash[FILES];
 char     filelabelscope[FILES][FILENAMEMAXLENGTH + 1];
 
 // Local variables
@@ -210,13 +209,6 @@ char* io_getline(uint8_t fh, char *s) {
     return (*s == 0)? NULL:s;
 }
 
-void _prepare_filehashes(void) {
-    int n;
-    for(n = 0; n < FILES; n++) {
-        basefilehash[n] = hash(filename[n]);
-    }
-}
-
 void _init_labelscope(void) {
     for(int n = 0; n < FILES; n++) {
         strcpy(filelabelscope[n], ""); // empty scope
@@ -227,7 +219,6 @@ bool io_init(char *input_filename, char *output_filename) {
     sourcefilecount = 0;
     binfilecount = 0;
     _prepare_filenames(input_filename, output_filename);
-    _prepare_filehashes();
     _initFileBufferLayout();
     _initFileBuffers();
     _init_labelscope();
@@ -264,7 +255,6 @@ void io_getCurrent(filestackitem *fsi) {
     fsi->bufferstart = _bufferstart[FILE_CURRENT];
     fsi->filebuffersize = _filebuffersize[FILE_CURRENT];
     strcpy(fsi->filename, filename[FILE_CURRENT]);
-    fsi->basefilehash = basefilehash[FILE_CURRENT];
     fsi->linenumber = linenumber;
     fsi->fileEOF = _fileEOF[FILE_CURRENT];
     strcpy(fsi->labelscope, filelabelscope[FILE_CURRENT]);
@@ -276,7 +266,6 @@ void io_setCurrent(filestackitem *fsi) {
     _bufferstart[FILE_CURRENT] = fsi->bufferstart;
     _filebuffersize[FILE_CURRENT] = fsi->filebuffersize;
     strcpy(filename[FILE_CURRENT], fsi->filename);
-    basefilehash[FILE_CURRENT] = fsi->basefilehash;
     linenumber = fsi->linenumber;
     _fileEOF[FILE_CURRENT] = fsi->fileEOF;
     strcpy(filelabelscope[FILE_CURRENT], fsi->labelscope);
@@ -286,7 +275,6 @@ void io_resetCurrentInput(void) {
     _bufferstart[FILE_CURRENT] = _bufferstart[FILE_INPUT];
 
     strcpy(filename[FILE_CURRENT], filename[FILE_INPUT]);
-    basefilehash[FILE_CURRENT] = basefilehash[FILE_INPUT];
     filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
     _filebuffer[FILE_CURRENT] = _filebuffer[FILE_INPUT];
     _filebuffersize[FILE_CURRENT] = _filebuffersize[FILE_INPUT];
@@ -302,7 +290,6 @@ void io_getFileDefaults(filestackitem *fsi) {
     fsi->bufferstart = 0;
     fsi->fileEOF = 0;
     fsi->linenumber = 1;
-    fsi->basefilehash = 0;
     fsi->labelscope[0] = 0;
 }
 

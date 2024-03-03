@@ -685,8 +685,6 @@ void handle_asm_include(void) {
     io_getFileDefaults(&fsi);
     fsi.fp = fopen(token.start+1, "rb");
     strncpy(fsi.filename, token.start+1, sizeof(fsi.filename));
-    strcpy(fsi.labelscope, "");
-    fsi.basefilehash = hash(fsi.filename);
     fsi.filename[sizeof(fsi.filename)-1] = '\0';
     fsi.bufferstart = &_incbuffer[inclevel][0];
     fsi.filebuffer = fsi.bufferstart;
@@ -1067,8 +1065,6 @@ void expandMacroStart(macro_t *exp) {
     io_getFileDefaults(&fsi);
     io_getMacroFilename(fsi.filename, exp->name);    
     fsi.fp = fopen(fsi.filename, "rb");
-    fsi.basefilehash = hash(fsi.filename);
-    strcpy(fsi.labelscope, "");
 
     // set up temporary buffer for file reads from macro
     fsi.bufferstart = &_macrobuffer[0];
