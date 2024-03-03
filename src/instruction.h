@@ -53,6 +53,7 @@ typedef enum { // permitted operand type
     OPTYPE_INDIRECT_IYd         // Displacement type
 } permittype_t;
 
+/*
 typedef enum {
     R_NONE,
     R_A,
@@ -77,6 +78,31 @@ typedef enum {
     R_MB,
     R_I
 } cpuregister;
+*/
+#define R_NONE  0x000000
+#define R_A     0x000001
+#define R_B     0x000002
+#define R_C     0x000004
+#define R_D     0x000008
+#define R_E     0x000010
+#define R_H     0x000020
+#define R_L     0x000040
+#define R_BC    0x000080
+#define R_DE    0x000100
+#define R_HL    0x000200
+#define R_SP    0x000400
+#define R_AF    0x000800
+#define R_IX    0x001000
+#define R_IY    0x002000
+#define R_IXH   0x004000
+#define R_IXL   0x008000
+#define R_IYH   0x010000
+#define R_IYL   0x020000
+#define R_R     0x040000
+#define R_MB    0x080000
+#define R_I     0x100000
+
+typedef uint24_t cpuregister;
 
 #define R_INDEX_B   0
 #define R_INDEX_C   1
@@ -124,6 +150,12 @@ typedef enum {
 #define CODE_SIL    0x52
 #define CODE_LIL    0x5B
 
+#define STATE_INDIRECT     0x00    // bit 0
+#define STATE_IMMEDIATE    0x01    // bit 1
+#define STATE_DISPLACEMENT 0x02    // bit 2
+#define STATE_CC           0x04    // bit 3
+#define STATE_CCA          0x08    // bit 4
+
 typedef struct {
     cpuregister         reg;
     uint8_t             reg_index;
@@ -134,6 +166,8 @@ typedef struct {
     bool                displacement_provided;
     bool                immediate_provided;
     int32_t             immediate;
+// new
+    uint8_t             state;
 } operand_t;
 
 typedef struct {

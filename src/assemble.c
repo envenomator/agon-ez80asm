@@ -33,6 +33,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
     // direct or indirect
     if(*ptr == '(') {
         operand->indirect = true;
+        operand->state |= STATE_INDIRECT;
         // find closing bracket or error out
         if(string[len-1] == ')') string[len-1] = 0; // terminate on closing bracket
         else error(message[ERROR_CLOSINGBRACKET]);
@@ -41,6 +42,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
     }
     else {
         operand->indirect = false;
+        operand->state &= ~(STATE_INDIRECT);
         // should not find a closing bracket
         if(string[len-1] == ')') error(message[ERROR_OPENINGBRACKET]);
     }
@@ -97,7 +99,9 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                     operand->reg = R_C;
                     operand->reg_index = R_INDEX_C;
                     operand->cc = true;
+                    operand->state |= STATE_CC;
                     operand->cc_index = CC_INDEX_C;
+                    operand->state |= STATE_CCA;
                     return;
                 default:
                     break;
@@ -182,6 +186,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IX;
                             operand->displacement_provided = true;
+                            operand->state |= STATE_DISPLACEMENT;
                             if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
                             else operand->displacement = (int16_t) getValue(ptr, false);
                             return;
@@ -216,6 +221,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IY;
                             operand->displacement_provided = true;
+                            operand->state |= STATE_DISPLACEMENT;
                             if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
                             else operand->displacement = (int16_t) getValue(ptr, false);
                             return;
@@ -245,6 +251,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
             }
             if(*ptr == 0) {
                 operand->cc = true;
+                operand->state |= STATE_CC;
                 operand->cc_index = CC_INDEX_M;
                 return;
             }
@@ -256,7 +263,9 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                 case 'C':
                     if(*ptr == 0) {
                         operand->cc = true;
+                        operand->state |= STATE_CC;
                         operand->cc_index = CC_INDEX_NC;
+                        operand->state |= STATE_CCA;
                         return;
                     }
                     break;
@@ -264,7 +273,9 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                 case 'Z':
                     if(*ptr == 0) {
                         operand->cc = true;
+                        operand->state |= STATE_CC;
                         operand->cc_index = CC_INDEX_NZ;
+                        operand->state |= STATE_CCA;
                         return;
                     }
                     break;
@@ -277,12 +288,14 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
             switch(*ptr++) {
                 case 0:
                     operand->cc = true;
+                    operand->state |= STATE_CC;
                     operand->cc_index = CC_INDEX_P;
                     return;
                 case 'e':
                 case 'E':
                     if(*ptr == 0) {
                         operand->cc = true;
+                        operand->state |= STATE_CC;
                         operand->cc_index = CC_INDEX_PE;
                         return;
                     }
@@ -291,6 +304,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                 case 'O':
                     if(*ptr == 0) {
                         operand->cc = true;
+                        operand->state |= STATE_CC;
                         operand->cc_index = CC_INDEX_PO;
                         return;
                     }
@@ -319,7 +333,9 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
         case 'Z':
             if(*ptr == 0) {
                 operand->cc = true;
+                operand->state |= STATE_CC;
                 operand->cc_index = CC_INDEX_Z;
+                operand->state |= STATE_CCA;
                 return;
             }
             break;
@@ -331,6 +347,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
         if(operand->indirect) string++;
         operand->immediate = getValue(string, false);
         operand->immediate_provided = true;
+        operand->state |= STATE_IMMEDIATE;
     }
 }
 
@@ -1154,7 +1171,6 @@ bool assemble(void){
     char macroline[LINEMAX]; // Temp line buffer for macro expansion
     filestackitem fsitem;
     bool incfileState;
-
     global_errors = 0;
     
     // Assemble in two passes
