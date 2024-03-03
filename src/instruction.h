@@ -79,6 +79,8 @@ typedef enum {
     R_I
 } cpuregister;
 */
+
+// Individual registers - 24-bit bitfield
 #define R_NONE  0x000000
 #define R_A     0x000001
 #define R_B     0x000002
@@ -101,6 +103,16 @@ typedef enum {
 #define R_R     0x040000
 #define R_MB    0x080000
 #define R_I     0x100000
+
+// Register sets (mask filters)
+#define RS_NONE    0x0
+#define RS_R    R_A | R_B | R_C | R_D | R_E | R_H | R_L
+#define RS_RR   R_BC | R_DE | R_HL
+#define RS_IR   R_IXH | R_IXL | R_IYH | R_IYL
+#define RS_IXY  R_IX | R_IY
+#define RS_RXY  R_BC | R_DE | R_IX | R_IY
+#define RS_XY   R_IX | R_IY
+#define RS_AE   R_A | R_B | R_C | R_D | R_E
 
 typedef uint24_t cpuregister;
 
@@ -150,11 +162,14 @@ typedef uint24_t cpuregister;
 #define CODE_SIL    0x52
 #define CODE_LIL    0x5B
 
-#define STATE_INDIRECT     0x00    // bit 0
-#define STATE_IMMEDIATE    0x01    // bit 1
-#define STATE_DISPLACEMENT 0x02    // bit 2
-#define STATE_CC           0x04    // bit 3
-#define STATE_CCA          0x08    // bit 4
+// Status bitfield codes
+#define STATE_INDIRECT      0x00    // bit 0
+#define STATE_IMMEDIATE     0x01    // bit 1
+#define STATE_DISPLACEMENT  0x02    // bit 2
+#define STATE_CC            0x04    // bit 3
+#define STATE_CCA           0x08    // bit 4
+
+#define NOREQ               0x00    // no requirement - used in matching filter
 
 typedef struct {
     cpuregister         reg;
@@ -203,6 +218,12 @@ typedef enum {
 }opcodetransformtype_t;
 
 typedef struct {
+// new
+    uint24_t            regsetA;
+    uint8_t             conditionsA;
+    uint24_t            regsetB;
+    uint8_t             conditionsB;
+// old
     permittype_t          operandA;           // Filter for operandA - which register applies?
     permittype_t          operandB;           // Filter for operandB
     bool                  ddfdpermitted;         
