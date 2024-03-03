@@ -19,6 +19,8 @@ uint8_t fillbyte;
 uint24_t start_address;
 bool coloroutput;
 
+unsigned int labelcollisions;
+
 tokenline_t currentline;
 
 operand_t operand1;

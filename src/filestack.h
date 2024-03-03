@@ -11,10 +11,12 @@ typedef struct {
     uint16_t linenumber;
     FILE*    fp;
     char     filename[FILENAMEMAXLENGTH + 1];
+    char     labelscope[MAXNAMELENGTH + 1];
     char *   filebuffer;
     char *   bufferstart;
     uint24_t filebuffersize;
     bool     fileEOF;
+    uint16_t basefilehash;
 } filestackitem;
 
 void filestackInit(void);

@@ -40,6 +40,7 @@ extern uint8_t fillbyte;
 extern uint24_t start_address;
 extern bool coloroutput;
 
+extern unsigned int labelcollisions;
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code
 extern operand_t operand1;

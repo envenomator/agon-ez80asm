@@ -533,7 +533,8 @@ void handle_asm_data(uint8_t wordtype) {
     streamtoken_t token;
     bool expectarg = true;
 
-    if(pass == 1) definelabel(address);
+    //if(pass == 1) definelabel(address);
+    definelabel(address);
 
     while(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
@@ -600,10 +601,10 @@ void handle_asm_equ(void) {
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
-            if(pass == 1) {
+            //if(pass == 1) {
                 if(currentline.label) definelabel(getValue(token.start, true)); // needs to be defined in pass 1
                 else error(message[ERROR_MISSINGLABEL]);
-            }
+            //}
         }
         else error(message[ERROR_MISSINGOPERAND]);
     }
@@ -654,7 +655,9 @@ void handle_asm_org(void) {
     // address needs to be given in pass 1
     newaddress = operand1.immediate;
     if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE]); 
-    if(pass == 1) definelabel(address);
+    //if(pass == 1) definelabel(address);
+    definelabel(address);
+
     address = newaddress;
 }
 
@@ -686,6 +689,8 @@ void handle_asm_include(void) {
     io_getFileDefaults(&fsi);
     fsi.fp = fopen(token.start+1, "rb");
     strncpy(fsi.filename, token.start+1, sizeof(fsi.filename));
+    strcpy(fsi.labelscope, "");
+    fsi.basefilehash = hash(fsi.filename);
     fsi.filename[sizeof(fsi.filename)-1] = '\0';
     fsi.bufferstart = &_incbuffer[inclevel][0];
     fsi.filebuffer = fsi.bufferstart;
@@ -770,7 +775,8 @@ void handle_asm_blk(uint8_t width) {
     int32_t val = 0;
     streamtoken_t token;
 
-    if(pass == 1) definelabel(address);
+    //if(pass == 1) definelabel(address);
+    definelabel(address);
 
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND]);
@@ -853,9 +859,9 @@ uint24_t delta;
     while(delta--) emit_8bit(fillbyte);
 
     address = base;
-    if(pass == 1) {
+    //if(pass == 1) {
         definelabel(address); // set address to current line
-    }
+    //}
 }
 
 void handle_asm_endmacro(void) {
@@ -873,10 +879,12 @@ void handle_asm_definemacro(void) {
     
     recordingMacro = true;
 
+    definelabel(address);
+
     if(pass == 2) return;
 
     // Only define macros in pass 1
-    definelabel(address);
+    //definelabel(address);
 
     // parse arguments into array
     if(!currentline.next) {
@@ -1040,7 +1048,8 @@ void expandMacroStart(macro_t *exp) {
     uint8_t argcount = 0;
     filestackitem fsi;
 
-    if(pass == 1) definelabel(address);
+    //if(pass == 1) definelabel(address);
+    definelabel(address);
 
     currentExpandedMacro = currentline.current_macro;
     // parse arguments into given macro substitution space
@@ -1068,6 +1077,9 @@ void expandMacroStart(macro_t *exp) {
     io_getFileDefaults(&fsi);
     io_getMacroFilename(fsi.filename, exp->name);    
     fsi.fp = fopen(fsi.filename, "rb");
+    fsi.basefilehash = hash(fsi.filename);
+    strcpy(fsi.labelscope, "");
+
     // set up temporary buffer for file reads from macro
     fsi.bufferstart = &_macrobuffer[0];
     fsi.filebuffer = fsi.bufferstart;
@@ -1094,14 +1106,19 @@ void processInstructions(char *macroline){
             }
             if((currentline.label) && (currentline.label[0] != '@')) error(message[ERROR_MACRO_NOGLOBALLABELS]);
         }
+/*
         else {
             if(currentline.mnemonic == NULL) {
                 // check if there is a single label on a line in during pass 1
-                if(pass == 1) definelabel(address);
+                //if(pass == 1) definelabel(address);
+                definelabel(address);
+
                 return;
             }
         }
+        */
     }
+    if(!recordingMacro && (currentline.mnemonic == NULL)) definelabel(address);
 
     if(currentline.current_instruction) {
         if(currentline.current_instruction->type == EZ80) {
@@ -1129,6 +1146,7 @@ void processInstructions(char *macroline){
     if(currentline.current_macro) {
         expandMacroStart(currentline.current_macro);
     }
+    //if(currentline.label) printf("DEBUG: label <%s>\r\n",currentline.label);
     return;
 }
 
@@ -1174,6 +1192,8 @@ bool assemble(void){
             if(recordingMacro) strcpy(macroline, line);
             parseLine(line);
             processInstructions(macroline);
+            //if(currentline.label) printf("DEBUG: label <%s>\r\n",currentline.label);
+
             processDelayedLineNumberReset();
             if(global_errors) {
                 vdp_set_text_colour(DARK_YELLOW);

@@ -36,6 +36,12 @@ void printHelp(void) {
 
 void displayStatistics(void) {
     printf("\r\nAssembly statistics\r\n========================\r\nLabel memory  : %d\r\nLabels        : %d/%d\r\n\r\nMacro memory  : %d\r\nMacros        : %d/%d\r\n\r\nSources parsed: %d\r\nBinfiles read : %d\r\nOutput size   : %d\r\n", labelmemsize, getGlobalLabelCount(), GLOBAL_LABEL_TABLE_SIZE, macromemsize, macroTableCounter, MAXIMUM_MACROS, sourcefilecount, binfilecount, (address - start_address));
+    printf("\r\nCollisions: %d\r\n", labelcollisions);
+
+    printf("File hashes:\n\n");
+    for(int n = 0; n < FILES; n++) {
+        printf("%s - 0x%04X\r\n", filename[n], basefilehash[n]);
+    }
 }
 
 int main(int argc, char *argv[]) {

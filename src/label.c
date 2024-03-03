@@ -47,6 +47,7 @@ uint16_t getLocalLabelCount(void) {
 void initGlobalLabelTable(void) {
     labelmemsize = 0;
     globalLabelCounter = 0;
+    labelcollisions = 0;
     memset(globalLabelTable, 0, sizeof(globalLabelTable));
 }
 
@@ -85,11 +86,30 @@ int findLocalLabelIndex(char *key) {
 	return (LOCAL_LABEL_TABLE_SIZE);
 }
 
+label_t * findLocalLabel(char *key) {
+    char compoundname[(MAXNAMELENGTH * 2)+1];
+
+    if(filelabelscope[0] == 0) {
+        // local to file label
+        strcpy(compoundname, filename[FILE_CURRENT]);
+    }
+    else {
+        // local to global label
+        strcpy(compoundname, filelabelscope[FILE_CURRENT]);
+    } // append local label
+    strcat(compoundname, key);
+
+    //printf("DEBUG: finding local label <%s>\r\n",compoundname);
+    return findGlobalLabel(compoundname);
+}
+
+/*
 label_t * findLocalLabel(char *key){
     int p = findLocalLabelIndex(key);
     if(p < LOCAL_LABEL_TABLE_SIZE) return &localLabelTable[p];
     else return NULL;
 }
+*/
 
 void writeLocalLabels(void) {
     // the number of labels
@@ -151,6 +171,22 @@ void readAnonymousLabel(void) {
 }
 
 bool insertLocalLabel(char *labelname, int24_t labelAddress) {
+    char compoundname[(MAXNAMELENGTH * 2)+1];
+
+    if(filelabelscope[0] == 0) {
+        // local to file label
+        strcpy(compoundname, filename[FILE_CURRENT]);
+    }
+    else {
+        // local to global label
+        strcpy(compoundname, filelabelscope[FILE_CURRENT]);
+    } // append local label
+    strcat(compoundname, labelname);
+
+    return insertGlobalLabel(compoundname, labelAddress);
+}
+
+bool insertLocalLabel_old(char *labelname, int24_t labelAddress) {
     int len,i;
     int p;
     char *ptr;
@@ -199,9 +235,10 @@ bool insertLocalLabel(char *labelname, int24_t labelAddress) {
 }
 
 bool insertGlobalLabel(char *labelname, int24_t labelAddress){
-    int index,i,try,len;
-    label_t *tmp;
+    int index,len;
+    label_t *tmp,*try;
 
+    //printf("DEBUG: inserting label <%s>\r\n",labelname);
     len = strlen(labelname);
 
     // allocate space in buffer for label_t struct
@@ -216,37 +253,49 @@ bool insertGlobalLabel(char *labelname, int24_t labelAddress){
 
     strcpy(tmp->name, labelname);
     tmp->address = labelAddress;
+    tmp->next = NULL;
+
     index = hash(labelname) % GLOBAL_LABEL_TABLE_SIZE;
-    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++) {
-        try = (i + index) % GLOBAL_LABEL_TABLE_SIZE;
-        if(globalLabelTable[try] == NULL){
-            globalLabelTable[try] = tmp;
+    try = globalLabelTable[index];
+
+    // First item on index
+    if(try == NULL) {
+        globalLabelTable[index] = tmp;
+        globalLabelCounter++;
+        return true;
+    }
+
+    // Collision on index, place at end of linked list if unique
+    while(true) {
+        if(strcmp(try->name, labelname) == 0) {
+            error(message[ERROR_LABELDEFINED]);
+            return false;
+        }
+        labelcollisions++;
+        if(try->next) {
+            try = try->next;
+        }
+        else {
+            try->next = tmp;
             globalLabelCounter++;
             return true;
         }
-        if(strcmp(globalLabelTable[try]->name, tmp->name) == 0) {
-            error(message[ERROR_LABELDEFINED]);
-            return false;
-        } 
     }
-    return false;
 }
 
 label_t * findGlobalLabel(char *name){
-    int index,i,try;
+    int index;
+    label_t *try;
 
     index = hash(name) % GLOBAL_LABEL_TABLE_SIZE;
-    for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++){
-        try = (index + i) % GLOBAL_LABEL_TABLE_SIZE;
-        if(globalLabelTable[try] == NULL){
-            return NULL;
-        }
-        if(globalLabelTable[try] != NULL &&
-            strcmp(globalLabelTable[try]->name,name) == 0){
-            return globalLabelTable[try];
-        }
+    try = globalLabelTable[index];
+
+    while(true)
+    {
+        if(try == NULL) return NULL;
+        if(strcmp(try->name, name) == 0) return try;
+        try = try->next;
     }
-    return NULL;
 }
 
 label_t *findLabel(char *name) {
@@ -281,35 +330,47 @@ void advanceLocalLabel(void) {
 }
 
 void definelabel(int24_t num){
-    if(currentline.label == NULL) return;
+    if(pass == 1) {
+        if(currentline.label == NULL) return;
 
-    if(currentline.label[0] == '@') {
-        if(currentline.label[1] == '@') {
-            writeAnonymousLabel(num);
+        if(currentline.label[0] == '@') {
+            if(currentline.label[1] == '@') {
+                writeAnonymousLabel(num);
+                return;
+            }
+            if(insertLocalLabel(currentline.label, num) == false) {
+                error(message[ERROR_CREATINGLABEL]);
+                return;
+            }
             return;
         }
-        if(insertLocalLabel(currentline.label, num) == false) {
+        if(currentline.label[0] == '$') {
+            error(message[ERROR_INVALIDLABEL]);
+            return;
+        }
+        str2num(currentline.label, strlen(currentline.label)); 
+        if(!err_str2num) { // labels can't have a valid number format
+            error(message[ERROR_INVALIDLABEL]);
+            return;
+        }
+        if(insertGlobalLabel(currentline.label, num) == false){
             error(message[ERROR_CREATINGLABEL]);
             return;
         }
-        return;
-    }
-    if(currentline.label[0] == '$') {
-        error(message[ERROR_INVALIDLABEL]);
-        return;
-    }
-    str2num(currentline.label, strlen(currentline.label)); 
-    if(!err_str2num) { // labels can't have a valid number format
-        error(message[ERROR_INVALIDLABEL]);
-        return;
-    }
-    if(insertGlobalLabel(currentline.label, num) == false){
-        error(message[ERROR_CREATINGLABEL]);
-        return;
-    }
+        writeLocalLabels();
+        clearLocalLabels();
 
-    writeLocalLabels();
-    clearLocalLabels();
+        if(currentline.label) {
+            strcpy(filelabelscope[FILE_CURRENT], currentline.label);
+            //printf("DEBUG: changing scope to <%s> at address <0x%06X>\r\n",currentline.label, num);
+        }
+
+        return;
+    }
+    if(currentline.label && currentline.label[0] != '@') {
+        strcpy(filelabelscope[FILE_CURRENT], currentline.label);
+        //printf("DEBUG: changing scope to <%s> at address <0x%06X>\r\n",currentline.label, num);
+    }
 }
 
 void refreshlocalLabels(void) {

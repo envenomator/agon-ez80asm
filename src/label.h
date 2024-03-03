@@ -21,6 +21,7 @@ enum {
 
 typedef struct {
     char *name;
+    void *next;
     int24_t address;
 } label_t;
 

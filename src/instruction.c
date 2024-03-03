@@ -325,7 +325,8 @@ void emit_instruction(operandlist_t *list) {
     output.prefix2 = list->prefix;
     output.opcode = list->opcode;
 
-    if(pass == 1) definelabel(address);
+    //if(pass == 1) definelabel(address);
+    definelabel(address);
 
     // Output displacement if needed, even when none is given (handles implicit cases)
     if(list->operandA > OPTYPE_R_AEONLY) op1_displacement_required = true;

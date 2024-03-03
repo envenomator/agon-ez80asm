@@ -19,6 +19,8 @@ extern bool list_enabled;
 extern bool consolelist_enabled;
 extern char filename[FILES][FILENAMEMAXLENGTH + 1];    // 0 - current, 1 - input, 2 - binary output, 3 - local labels, 4 - anonymous labels, 5 - listing
 extern FILE* filehandle[FILES];
+extern uint16_t basefilehash[FILES];
+extern char filelabelscope[FILES][FILENAMEMAXLENGTH + 1];
 extern uint16_t sourcefilecount;
 extern uint16_t binfilecount;
 
