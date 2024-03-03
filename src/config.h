@@ -16,7 +16,7 @@ typedef uint32_t uint24_t;
 #endif
 
 #define VERSION                       1
-#define REVISION                      3
+#define REVISION                      4
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
 #define FILLBYTE                   0xFF // Same as ZDS
@@ -25,10 +25,8 @@ typedef uint32_t uint24_t;
 #define LINEMAX                     256 // Input line length maximum uint8_t
 #define FILENAMEMAXLENGTH            64
 #define FILES                         7
-#define LOCAL_LABEL_BUFFERSIZE   0x4000 // 16KB local label space
 #define GLOBAL_LABEL_TABLE_SIZE    8192 // 8K global labels
-#define LOCAL_LABEL_TABLE_SIZE       64 //  64 local labels
-#define FILE_BUFFERSIZE            8192 // For each specified input/output file (io.c)
+#define FILE_BUFFERSIZE           32768 // For each specified input/output file (io.c)
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX                   128 // Token maximum length
 #define MAXNAMELENGTH                32 // Maximum name length of labels/macros/mnemonics
