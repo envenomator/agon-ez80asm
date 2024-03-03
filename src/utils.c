@@ -486,12 +486,17 @@ int32_t getValue(char *str, bool req_firstpass) {
 }
 
 // efficient strcpy/strcat compound function
-void strcompound(char *dest, const char *src1, const char *src2) {
+uint8_t strcompound(char *dest, const char *src1, const char *src2) {
+    uint8_t len = 0;
+
     while(*src1) {
         *dest++ = *src1++;
+        len++;
     }
     while(*src2) {
         *dest++ = *src2++;
+        len++;
     }
     *dest = 0;
+    return len;
 }

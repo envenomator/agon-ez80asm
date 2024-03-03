@@ -43,7 +43,7 @@ uint8_t getMnemonicToken(streamtoken_t *token, char *src);          // terminate
 uint8_t getOperandToken(streamtoken_t *token, char *src);           // terminates on , or ;  transparent literals
 uint8_t getDefineValueToken(streamtoken_t *token, char *src);       // terminates on all operator symbols, ',' and ';' transparent literals and strings
 
-void    strcompound(char *dest, const char *src1, const char *src2);
+uint8_t strcompound(char *dest, const char *src1, const char *src2);
 void validateRange8bit(int32_t value);
 void validateRange16bit(int32_t value);
 void validateRange24bit(int32_t value);

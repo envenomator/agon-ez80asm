@@ -98,24 +98,22 @@ void readAnonymousLabel(void) {
 
 bool insertLocalLabel(char *labelname, int24_t labelAddress) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
+    uint8_t len;
 
     if(filelabelscope[0] == 0) {
         // local to file label
-        strcompound(compoundname, filename[FILE_CURRENT], labelname);
+        len = strcompound(compoundname, filename[FILE_CURRENT], labelname);
     }
     else {
         // local to global label
-        strcompound(compoundname, filelabelscope[FILE_CURRENT], labelname);
+        len = strcompound(compoundname, filelabelscope[FILE_CURRENT], labelname);
     }
-    return insertGlobalLabel(compoundname, labelAddress);
+    return insertGlobalLabel(compoundname, len, labelAddress);
 }
 
-bool insertGlobalLabel(char *labelname, int24_t labelAddress){
-    int index,len;
+bool insertGlobalLabel(char *labelname, uint8_t len, int24_t labelAddress){
+    int index;
     label_t *tmp,*try;
-
-    //printf("DEBUG: inserting label <%s>\r\n",labelname);
-    len = strlen(labelname);
 
     // allocate space in buffer for label_t struct
     tmp = (label_t *)malloc(sizeof(label_t));
@@ -124,7 +122,7 @@ bool insertGlobalLabel(char *labelname, int24_t labelAddress){
 
     // allocate space in buffer for string and store it to buffer
     tmp->name = (char*)malloc(len+1);
-    labelmemsize += len+1;
+    labelmemsize += (uint24_t)len +1;
     if(tmp->name == 0) return false;
 
     strcpy(tmp->name, labelname);
@@ -206,6 +204,8 @@ void advanceAnonymousLabel(void) {
 }
 
 void definelabel(int24_t num){
+    uint8_t len;
+
     if(pass == 1) {
         if(currentline.label == NULL) return;
 
@@ -224,17 +224,17 @@ void definelabel(int24_t num){
             error(message[ERROR_INVALIDLABEL]);
             return;
         }
-        str2num(currentline.label, strlen(currentline.label)); 
+
+        len = strlen(currentline.label);
+        str2num(currentline.label, len); 
         if(!err_str2num) { // labels can't have a valid number format
             error(message[ERROR_INVALIDLABEL]);
             return;
         }
-        if(insertGlobalLabel(currentline.label, num) == false){
+        if(insertGlobalLabel(currentline.label, len, num) == false){
             error(message[ERROR_CREATINGLABEL]);
             return;
         }
-        //writeLocalLabels();
-        //clearLocalLabels();
 
         if(currentline.label) {
             strcpy(filelabelscope[FILE_CURRENT], currentline.label);
