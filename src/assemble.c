@@ -1192,8 +1192,6 @@ bool assemble(void){
             if(recordingMacro) strcpy(macroline, line);
             parseLine(line);
             processInstructions(macroline);
-            //if(currentline.label) printf("DEBUG: label <%s>\r\n",currentline.label);
-
             processDelayedLineNumberReset();
             if(global_errors) {
                 vdp_set_text_colour(DARK_YELLOW);
@@ -1212,7 +1210,6 @@ bool assemble(void){
         }
         else incfileState = false;
     } while(incfileState);
-    writeLocalLabels();
 
     if(global_errors) return false;
 
@@ -1222,7 +1219,6 @@ bool assemble(void){
     if(consolelist_enabled || list_enabled) {
         listInit();
     }
-    readLocalLabels();
     readAnonymousLabel();
     
     do {
@@ -1233,7 +1229,6 @@ bool assemble(void){
                 listStartLine(line);
             }
             parseLine(line);
-            refreshlocalLabels();
             processInstructions(macroline);
             if(consolelist_enabled || list_enabled) {
                 listEndLine();

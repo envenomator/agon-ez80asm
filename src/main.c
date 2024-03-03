@@ -177,7 +177,6 @@ int main(int argc, char *argv[]) {
     // Initialization
     init_instruction_hashtable();
     initGlobalLabelTable();
-    initLocalLabelTable();
     initAnonymousLabelTable();
     initMacros();
     

@@ -8,14 +8,9 @@ anonymouslabel_t an_prev;
 anonymouslabel_t an_next;
 label_t an_return;
 
-char localLabelBuffer[LOCAL_LABEL_BUFFERSIZE];
-uint16_t localLabelBufferIndex;
-
 // tables
 label_t* globalLabelTable[GLOBAL_LABEL_TABLE_SIZE]; // hash table
 uint16_t globalLabelCounter;
-label_t localLabelTable[LOCAL_LABEL_TABLE_SIZE]; // indexed table
-uint16_t localLabelCounter;
 
 void saveGlobalLabelTable(void) {
     int i;
@@ -41,9 +36,7 @@ void saveGlobalLabelTable(void) {
 uint16_t getGlobalLabelCount(void) {
     return globalLabelCounter;
 }
-uint16_t getLocalLabelCount(void) {
-    return localLabelCounter;
-}
+
 void initGlobalLabelTable(void) {
     labelmemsize = 0;
     globalLabelCounter = 0;
@@ -55,35 +48,6 @@ void initAnonymousLabelTable(void) {
     an_prev.defined = false;
     an_next.defined = false;
     an_return.name = NULL;
-}
-
-void initLocalLabelTable(void) {
-    localLabelBufferIndex = 0;
-    localLabelCounter = 0;
-    memset(localLabelTable, 0, sizeof(localLabelTable));
-}
-
-void clearLocalLabels(void) {
-    localLabelBufferIndex = 0;
-    localLabelCounter = 0;
-}
-
-int findLocalLabelIndex(char *key) {
-    int base = 0;
-	int lim, cmp;
-    int p;
-
-	for (lim = localLabelCounter; lim != 0; lim >>= 1) {
-		p = base + (lim >> 1);
-		cmp = strcmp(key,localLabelTable[p].name);
-		if (cmp == 0)
-			return p;
-		if (cmp > 0) {
-			base = p + 1;
-			lim--;
-		}
-	}
-	return (LOCAL_LABEL_TABLE_SIZE);
 }
 
 label_t * findLocalLabel(char *key) {
@@ -101,41 +65,6 @@ label_t * findLocalLabel(char *key) {
 
     //printf("DEBUG: finding local label <%s>\r\n",compoundname);
     return findGlobalLabel(compoundname);
-}
-
-/*
-label_t * findLocalLabel(char *key){
-    int p = findLocalLabelIndex(key);
-    if(p < LOCAL_LABEL_TABLE_SIZE) return &localLabelTable[p];
-    else return NULL;
-}
-*/
-
-void writeLocalLabels(void) {
-    // the number of labels
-    fwrite((char *)&localLabelCounter, sizeof(localLabelCounter), 1, filehandle[FILE_LOCAL_LABELS]);
-    if(localLabelCounter) {
-        fwrite((char *)&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, filehandle[FILE_LOCAL_LABELS]);
-        // the actual bytes from the string buffer
-        if(localLabelBufferIndex) 
-            fwrite((char *)localLabelBuffer, localLabelBufferIndex, 1, filehandle[FILE_LOCAL_LABELS]);
-        // the label table
-        fwrite((char *)localLabelTable, localLabelCounter * sizeof(label_t), 1, filehandle[FILE_LOCAL_LABELS]);
-    }
-}
-
-void readLocalLabels(void) {
-    // the number of labels
-    fread((char*)&localLabelCounter, sizeof(localLabelCounter), 1, filehandle[FILE_LOCAL_LABELS]);
-    if(localLabelCounter) {
-        fread((char*)&localLabelBufferIndex, sizeof(localLabelBufferIndex), 1, filehandle[FILE_LOCAL_LABELS]);
-        if(localLabelBufferIndex) 
-            fread((char*)&localLabelBuffer, localLabelBufferIndex, 1, filehandle[FILE_LOCAL_LABELS]);
-        fread((char *)localLabelTable, localLabelCounter * sizeof(label_t), 1, filehandle[FILE_LOCAL_LABELS]);
-    }
-    else {
-        localLabelBufferIndex = 0;
-    }
 }
 
 void writeAnonymousLabel(int24_t labelAddress) {
@@ -184,54 +113,6 @@ bool insertLocalLabel(char *labelname, int24_t labelAddress) {
     strcat(compoundname, labelname);
 
     return insertGlobalLabel(compoundname, labelAddress);
-}
-
-bool insertLocalLabel_old(char *labelname, int24_t labelAddress) {
-    int len,i;
-    int p;
-    char *ptr;
-    char *old_name;
-    int24_t old_address;
-
-    if(labelname[1] == 0) {
-        error(message[ERROR_INVALIDLABEL]);
-        return false;
-    }
-    p = findLocalLabelIndex(labelname);
-
-    if(p >= LOCAL_LABEL_TABLE_SIZE) {
-        if(localLabelCounter < LOCAL_LABEL_TABLE_SIZE) {
-            len = strlen(labelname);
-            // check space first
-            if((localLabelBufferIndex + len + 1) > LOCAL_LABEL_BUFFERSIZE -1)
-                return false; // no more space in buffer
-            // allocate space in buffer for string
-            ptr = &localLabelBuffer[localLabelBufferIndex];
-            localLabelBufferIndex += len + 1;
-            strcpy(ptr, labelname);
-
-            for(i = 0; i < localLabelCounter; i++) {
-                if(strcmp(labelname, localLabelTable[i].name) < 0) break;
-            }
-            if(i < localLabelCounter) {
-                for(; i < localLabelCounter; i++ ) {
-                    old_name = localLabelTable[i].name;
-                    old_address = localLabelTable[i].address;
-                    localLabelTable[i].name = ptr;
-                    localLabelTable[i].address = labelAddress;
-                    ptr = old_name;
-                    labelAddress = old_address;
-                }
-            }
-            localLabelTable[localLabelCounter].name = ptr;
-            localLabelTable[localLabelCounter].address = labelAddress;
-            localLabelCounter++;
-            return true;
-        }
-        else error(message[ERROR_MAXLOCALLABELS]);
-    }
-    else error(message[ERROR_LABELDEFINED]);
-    return false;
 }
 
 bool insertGlobalLabel(char *labelname, int24_t labelAddress){
@@ -357,8 +238,8 @@ void definelabel(int24_t num){
             error(message[ERROR_CREATINGLABEL]);
             return;
         }
-        writeLocalLabels();
-        clearLocalLabels();
+        //writeLocalLabels();
+        //clearLocalLabels();
 
         if(currentline.label) {
             strcpy(filelabelscope[FILE_CURRENT], currentline.label);
@@ -372,10 +253,11 @@ void definelabel(int24_t num){
         //printf("DEBUG: changing scope to <%s> at address <0x%06X>\r\n",currentline.label, num);
     }
 }
-
+/*
 void refreshlocalLabels(void) {
     if((pass == 2) && (currentline.label) && (currentline.label[0] != '@')) {
         clearLocalLabels();
         readLocalLabels();
     }
 }
+*/
