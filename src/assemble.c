@@ -188,7 +188,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IX;
                             operand->displacement_provided = true;
-                            operand->state |= STATE_DISPLACEMENT;
+                            //operand->state |= STATE_DISPLACEMENT;
                             if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
                             else operand->displacement = (int16_t) getValue(ptr, false);
                             return;
@@ -223,7 +223,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IY;
                             operand->displacement_provided = true;
-                            operand->state |= STATE_DISPLACEMENT;
+                            //operand->state |= STATE_DISPLACEMENT;
                             if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
                             else operand->displacement = (int16_t) getValue(ptr, false);
                             return;

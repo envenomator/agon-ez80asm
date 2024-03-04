@@ -12,46 +12,12 @@
 
 #define MAX_MNEMONIC_SIZE         10
 
-typedef enum { // permitted operand type
-    OPTYPE_NONE,
-    OPTYPE_CC,
-    OPTYPE_IR,
-    OPTYPE_IXY,
-    OPTYPE_MMN,
-    OPTYPE_INDIRECT_MMN,
-    OPTYPE_N,
-    OPTYPE_A,
-    OPTYPE_HL,
-    OPTYPE_INDIRECT_HL,
-    OPTYPE_RR,
-    OPTYPE_INDIRECT_RR,
-    OPTYPE_RXY,
-    OPTYPE_SP,
-    OPTYPE_INDIRECT_SP,
-    OPTYPE_R,
-    OPTYPE_REG_R,
-    OPTYPE_MB,
-    OPTYPE_I,
-    OPTYPE_BIT,
-    OPTYPE_AF,
-    OPTYPE_DE,
-    OPTYPE_NSELECT,
-    OPTYPE_INDIRECT_N,
-    OPTYPE_INDIRECT_BC,
-    OPTYPE_INDIRECT_C,
-    OPTYPE_INDIRECT_IXY,
-    OPTYPE_CCA,
-    OPTYPE_INDIRECT_DE,
-    OPTYPE_IX,
-    OPTYPE_IY,
-    OPTYPE_R_AEONLY,
-    OPTYPE_IXYd,                // From here on, only DISPLACEMENT OPTYPES for fast access
-    OPTYPE_INDIRECT_IXYd,       // Displacement type
-    OPTYPE_IXd,                 // Displacement type
-    OPTYPE_IYd,                 // Displacement type
-    OPTYPE_INDIRECT_IXd,        // Displacement type
-    OPTYPE_INDIRECT_IYd         // Displacement type
-} permittype_t;
+// Immediate field lenght
+#define VAL_NONE    0x00
+#define VAL_N       0x01
+#define VAL_MMN     0x02
+#define VAL_BIT     0x04
+#define VAL_NSELECT 0x08
 
 // Individual registers - 24-bit bitfield
 #define R_NONE  0x000000
@@ -138,9 +104,8 @@ typedef uint24_t cpuregister;
 // Status bitfield codes
 #define STATE_INDIRECT      0x01    // bit 1
 #define STATE_IMMEDIATE     0x02    // bit 2
-#define STATE_DISPLACEMENT  0x0    // bit 3
-#define STATE_CC            0x04    // bit 4
-#define STATE_CCA           0x05    // bit 5
+#define STATE_CC            0x04    // bit 3
+#define STATE_CCA           0x08    // bit 4
 
 #define NOREQ               0x0    // bit 7 - no requirement - used in matching filter
 
@@ -199,9 +164,8 @@ typedef struct {
     uint8_t             conditionsA;
     uint24_t            regsetB;
     uint8_t             conditionsB;
-// old
-    permittype_t          operandA;           // Filter for operandA - which register applies?
-    permittype_t          operandB;           // Filter for operandB
+    uint8_t             valLengthA;
+    uint8_t             valLengthB;
     bool                  ddfdpermitted;         
     opcodetransformtype_t transformA;         // Do we transform acc to operandA
     opcodetransformtype_t transformB;         //  "        "       " "  operandB
@@ -257,20 +221,9 @@ typedef struct {
 } instruction_t;
 
 instruction_t * instruction_table_lookup(char *name);
-//regcc_t * regcc_table_lookup(char *key);
 instruction_t * instruction_hashtable_lookup(char *name);
-
-//void setup_regcc_hashtable(void);
 void init_instruction_hashtable(void);
-
 void emit_instruction(operandlist_t *list);
-
 uint8_t get_immediate_size(operand_t *op, uint8_t suffix);
-// An array-based index of this structure will act as a fast lookup table
-typedef struct {
-    permittype_t type;
-    bool (*match)(operand_t *);
-} permittype_match_t;
 
-extern permittype_match_t permittype_matchlist[];
 #endif // INSTRUCTION_H
