@@ -30,6 +30,9 @@ void parse_command(char *src) {
 void parse_operand(char *string, uint8_t len, operand_t *operand) {
     char *ptr = string;
 
+    operand->state = NOREQ;
+    operand->reg = R_NONE;
+
     // direct or indirect
     if(*ptr == '(') {
         operand->indirect = true;
@@ -42,7 +45,6 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
     }
     else {
         operand->indirect = false;
-        operand->state &= ~(STATE_INDIRECT);
         // should not find a closing bracket
         if(string[len-1] == ')') error(message[ERROR_OPENINGBRACKET]);
     }
@@ -99,9 +101,9 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                     operand->reg = R_C;
                     operand->reg_index = R_INDEX_C;
                     operand->cc = true;
-                    operand->state |= STATE_CC;
+                    //operand->state |= STATE_CC;
                     operand->cc_index = CC_INDEX_C;
-                    operand->state |= STATE_CCA;
+                    //operand->state |= STATE_CCA;
                     return;
                 default:
                     break;
@@ -1100,6 +1102,7 @@ void processInstructions(char *macroline){
     operandlist_t *list;
     uint8_t listitem;
     bool match;
+    bool regmatch, condmatch;
 
     if(recordingMacro) {
         if(pass == 1) {
@@ -1121,11 +1124,21 @@ void processInstructions(char *macroline){
                     list = currentline.current_instruction->list;
                     match = false;
                     for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
-                        if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
-                        match = true;
-                        // mnemonic index distribution optimization
-                        emit_instruction(list);
-                        break;
+                        //if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
+                        regmatch = ((list->regsetA & operand1.reg) && (list->regsetB & operand2.reg)) || !(list->regsetA | operand1.reg) || !(list->regsetB | operand2.reg);
+                        condmatch = (list->conditionsA == operand1.state) && (list->conditionsB == operand2.state);
+                        if(list->cc_allowed) condmatch |= operand1.cc;
+                            //printf("Index list [[%d]]\r\n", listitem);
+                            //printf("regsetA: <0x%03X> - regsetB <0x%03X>\r\n", list->regsetA, list->regsetB);
+                            //printf("    opA: <0x%03X> -     opB <0x%03X>\r\n", operand1.reg, operand2.reg);
+                            //printf("  condA: <0x%0X>  -   condB <0x%0X>\r\n", list->conditionsA, list->conditionsB);
+                            //printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.state, operand2.state);
+                            //printf("--------------------------------------\r\n");
+                        if(regmatch && condmatch) {
+                            match = true;
+                            // mnemonic index distribution optimization
+                            emit_instruction(list);
+                            break;
                         }
                         list++;
                     }

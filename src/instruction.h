@@ -163,13 +163,13 @@ typedef uint24_t cpuregister;
 #define CODE_LIL    0x5B
 
 // Status bitfield codes
-#define STATE_INDIRECT      0x00    // bit 0
-#define STATE_IMMEDIATE     0x01    // bit 1
-#define STATE_DISPLACEMENT  0x02    // bit 2
-#define STATE_CC            0x04    // bit 3
-#define STATE_CCA           0x08    // bit 4
+#define STATE_INDIRECT      0x01    // bit 1
+#define STATE_IMMEDIATE     0x02    // bit 2
+#define STATE_DISPLACEMENT  0x03    // bit 3
+#define STATE_CC            0x04    // bit 4
+#define STATE_CCA           0x05    // bit 5
 
-#define NOREQ               0x00    // no requirement - used in matching filter
+#define NOREQ               0x0    // bit 7 - no requirement - used in matching filter
 
 typedef struct {
     cpuregister         reg;
@@ -219,6 +219,7 @@ typedef enum {
 
 typedef struct {
 // new
+    bool                cc_allowed;
     uint24_t            regsetA;
     uint8_t             conditionsA;
     uint24_t            regsetB;
