@@ -33,16 +33,12 @@ void prefix_ddfd_suffix(operandlist_t *op) {
     prefix1 = get_ddfd_prefix(operand1.reg);
     prefix2 = get_ddfd_prefix(operand2.reg);
 
-    // prefix in either of these two cases
-    if(prefix1) {
-        if(prefix2) {
-            // both prefixes set
-            if(operand1.indirect) output.prefix1 = prefix1;
-            else output.prefix1 = prefix2;
-        }
-        else output.prefix1 = prefix1;
+    if((!prefix1 && prefix2) || (!operand1.indirect && prefix1 && prefix2)) {
+        output.prefix1 = prefix2;
     }
-    else if(prefix2) output.prefix1 = prefix2;
+    else {
+        output.prefix1 = prefix1;
+    }
 }
 
 void transform_instruction(operand_t *op, uint8_t type) {
