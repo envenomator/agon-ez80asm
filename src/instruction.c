@@ -7,125 +7,6 @@
 // instruction hash table
 instruction_t *instruction_hashtable[INSTRUCTION_HASHTABLESIZE];
 
-bool none_match(operand_t *op) {
-    return ((op->reg == R_NONE) && (op->immediate_provided == false) & !(op->cc));
-}
-bool cc_match(operand_t *op) {
-    return op->cc;
-}
-bool ir_match(operand_t *op) {
-    return ((op->reg >= R_IXH) && (op->reg <= R_IYL) && !(op->indirect));
-}
-bool ixy_match(operand_t *op) {
-    return (((op->reg == R_IX) || (op->reg == R_IY)) && !(op->indirect)  && !(op->displacement_provided));
-}
-bool ixyd_match(operand_t *op) {
-    return (((op->reg == R_IX) || (op->reg == R_IY)) && !(op->indirect));
-}
-bool indirect_ixyd_match(operand_t *op) {
-    return (((op->reg == R_IX) || (op->reg == R_IY)) && op->indirect);
-}
-bool mmn_match(operand_t *op) {
-    return (!(op->indirect) && (op->immediate_provided));
-}
-bool indirect_mmn_match(operand_t *op) {
-    return ((op->indirect) && (op->immediate_provided));
-}
-bool n_match(operand_t *op) {
-    return (!(op->indirect) && (op->immediate_provided));
-}
-bool a_match(operand_t *op) {
-    return(op->reg == R_A);
-}
-bool hl_match(operand_t *op) {
-    return((op->reg == R_HL) && !(op->indirect));
-}
-bool indirect_hl_match(operand_t *op) {
-    return((op->reg == R_HL) && (op->indirect));
-}
-bool rr_match(operand_t *op) {
-    return((op->reg >= R_BC) && (op->reg <= R_HL) && !(op->indirect));
-}
-bool indirect_rr_match(operand_t *op) {
-    return((op->reg >= R_BC) && (op->reg <= R_HL) && (op->indirect));
-}
-bool rxy_match(operand_t *op) {
-    return(!(op->indirect) && ((op->reg == R_BC) || (op->reg == R_DE) || (op->reg == R_IX) || (op->reg == R_IY)));
-}
-bool sp_match(operand_t *op) {
-    return(!(op->indirect) && (op->reg == R_SP));
-}
-bool indirect_sp_match(operand_t *op) {
-    return((op->indirect) && (op->reg == R_SP));
-}
-bool r_match(operand_t *op) {
-    return((op->reg >= R_A) && (op->reg <= R_L));
-}
-bool reg_r_match(operand_t *op) {
-    return(op->reg == R_R);
-}
-bool mb_match(operand_t *op) {
-    return(op->reg == R_MB);
-}
-bool i_match(operand_t *op) {
-    return(op->reg == R_I);
-}
-bool b_match(operand_t *op) {
-    return (!(op->indirect) && (op->immediate_provided));
-}
-bool af_match(operand_t *op) {
-    return(op->reg == R_AF);
-}
-bool de_match(operand_t *op) {
-    return(op->reg == R_DE);
-}
-bool nselect_match(operand_t *op) {
-    return (!(op->indirect) && (op->immediate_provided));
-}
-bool indirect_n_match(operand_t *op) {
-    return ((op->indirect) && (op->immediate_provided));
-}
-bool indirect_bc_match(operand_t *op) {
-    return((op->indirect) && (op->reg == R_BC));
-}
-bool indirect_c_match(operand_t *op) {
-    return((op->indirect) && (op->reg == R_C));
-}
-bool indirect_ixy_match(operand_t *op) {
-    return (((op->reg == R_IX) || (op->reg == R_IY)) && (op->indirect)  && !(op->displacement_provided));
-}
-bool cca_match(operand_t *op) {
-    return ((op->cc) && 
-            ((op->cc_index == CC_INDEX_NZ) ||
-             (op->cc_index == CC_INDEX_Z) ||
-             (op->cc_index == CC_INDEX_NC) ||
-             (op->cc_index == CC_INDEX_C)));
-}
-bool indirect_de_match(operand_t *op) {
-    return((op->indirect) && (op->reg == R_DE));
-}
-bool ix_match(operand_t *op) {
-    return(!(op->indirect) && (op->reg == R_IX));
-}
-bool iy_match(operand_t *op) {
-    return(!(op->indirect) && (op->reg == R_IY));
-}
-bool ixd_match(operand_t *op) {
-    return(!(op->indirect) && (op->reg == R_IX));
-}
-bool iyd_match(operand_t *op) {
-    return(!(op->indirect) && (op->reg == R_IY));
-}
-bool indirect_ixd_match(operand_t *op) {
-    return((op->indirect) && (op->reg == R_IX));
-}
-bool indirect_iyd_match(operand_t *op) {
-    return((op->indirect) && (op->reg == R_IY));
-}
-bool raeonly_match(operand_t *op) {
-    return((op->reg >= R_A) && (op->reg <= R_E));
-}
-
 // get the number of bytes to emit from an immediate
 uint8_t get_immediate_size(operand_t *op, uint8_t suffix) {
     uint8_t num;
@@ -331,11 +212,16 @@ void emit_instruction(operandlist_t *list) {
     // Output displacement if needed, even when none is given (handles implicit cases)
     if(list->operandA > OPTYPE_R_AEONLY) op1_displacement_required = true;
     if(list->operandB > OPTYPE_R_AEONLY) op2_displacement_required = true;
+    //if(list->conditionsA & STATE_DISPLACEMENT) op1_displacement_required = true;
+    //if(list->conditionsB & STATE_DISPLACEMENT) op2_displacement_required = true;
 
     // issue any errors here
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
         if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
         if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
+        //if((((list->conditionsA & STATE_IMMEDIATE) && (operand1.immediate > 0xFF)) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
+        //if((((list->conditionsB & STATE_IMMEDIATE) && (operand2.immediate > 0xFF)) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
+    
     }
     if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
     if((op2_displacement_required) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
@@ -378,47 +264,6 @@ void emit_instruction(operandlist_t *list) {
     if((list->operandB == OPTYPE_MMN) || (list->operandB == OPTYPE_INDIRECT_MMN)) emit_immediate(&operand2, output.suffix);
 }
 
-// table with fast access to functions that perform matching to an specific permittype
-permittype_match_t permittype_matchlist[] = {
-    {OPTYPE_NONE,           none_match},
-    {OPTYPE_CC,             cc_match},
-    {OPTYPE_IR,             ir_match},
-    {OPTYPE_IXY,            ixy_match},
-    {OPTYPE_MMN,            mmn_match},
-    {OPTYPE_INDIRECT_MMN,   indirect_mmn_match},
-    {OPTYPE_N,              n_match},
-    {OPTYPE_A,              a_match},
-    {OPTYPE_HL,             hl_match},
-    {OPTYPE_INDIRECT_HL,    indirect_hl_match},
-    {OPTYPE_RR,             rr_match},
-    {OPTYPE_INDIRECT_RR,    indirect_rr_match},
-    {OPTYPE_RXY,            rxy_match},
-    {OPTYPE_SP,             sp_match},
-    {OPTYPE_INDIRECT_SP,    indirect_sp_match},
-    {OPTYPE_R,              r_match},
-    {OPTYPE_REG_R,          reg_r_match},
-    {OPTYPE_MB,             mb_match},
-    {OPTYPE_I,              i_match},
-    {OPTYPE_BIT,            b_match},
-    {OPTYPE_AF,             af_match},
-    {OPTYPE_DE,             de_match},
-    {OPTYPE_NSELECT,        nselect_match},
-    {OPTYPE_INDIRECT_N,     indirect_n_match},
-    {OPTYPE_INDIRECT_BC,    indirect_bc_match},
-    {OPTYPE_INDIRECT_C,     indirect_c_match},
-    {OPTYPE_INDIRECT_IXY,   indirect_ixy_match},
-    {OPTYPE_CCA,            cca_match},
-    {OPTYPE_INDIRECT_DE,    indirect_de_match},
-    {OPTYPE_IX,             ix_match},
-    {OPTYPE_IY,             iy_match},
-    {OPTYPE_R_AEONLY,       raeonly_match},
-    {OPTYPE_IXYd,           ixyd_match},
-    {OPTYPE_INDIRECT_IXYd,  indirect_ixyd_match},
-    {OPTYPE_IXd,            ixd_match},
-    {OPTYPE_IYd,            iyd_match},
-    {OPTYPE_INDIRECT_IXd,   indirect_ixd_match},
-    {OPTYPE_INDIRECT_IYd,   indirect_iyd_match}
-};
 
 operandlist_t operands_adc[] = {
     {false,R_A, NOREQ, R_HL, STATE_INDIRECT, OPTYPE_A, OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x8E, S_ANY},

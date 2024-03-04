@@ -53,33 +53,6 @@ typedef enum { // permitted operand type
     OPTYPE_INDIRECT_IYd         // Displacement type
 } permittype_t;
 
-/*
-typedef enum {
-    R_NONE,
-    R_A,
-    R_B,
-    R_C,
-    R_D,
-    R_E,
-    R_H,
-    R_L,
-    R_BC,
-    R_DE,
-    R_HL,
-    R_SP,
-    R_AF,
-    R_IX,
-    R_IY,
-    R_IXH,
-    R_IXL,
-    R_IYH,
-    R_IYL,
-    R_R,
-    R_MB,
-    R_I
-} cpuregister;
-*/
-
 // Individual registers - 24-bit bitfield
 #define R_NONE  0x000000
 #define R_A     0x000001
@@ -165,7 +138,7 @@ typedef uint24_t cpuregister;
 // Status bitfield codes
 #define STATE_INDIRECT      0x01    // bit 1
 #define STATE_IMMEDIATE     0x02    // bit 2
-#define STATE_DISPLACEMENT  0x03    // bit 3
+#define STATE_DISPLACEMENT  0x0    // bit 3
 #define STATE_CC            0x04    // bit 4
 #define STATE_CCA           0x05    // bit 5
 
