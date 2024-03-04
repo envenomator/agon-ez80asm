@@ -1125,8 +1125,6 @@ void processInstructions(char *macroline){
                     list = currentline.current_instruction->list;
                     match = false;
                     for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
-                        //if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
-                        //regmatch = ((list->regsetA & operand1.reg) && (list->regsetB & operand2.reg)) || !(list->regsetA | operand1.reg) || !(list->regsetB | operand2.reg);
                         regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
                         regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
 

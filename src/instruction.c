@@ -197,8 +197,6 @@ uint8_t getADLsuffix(void) {
 
 void emit_instruction(operandlist_t *list) {
     bool ddbeforeopcode; // determine position of displacement byte in case of DDCBdd/DDFDdd
-    //bool op1_displacement_required = false;
-    //bool op2_displacement_required = false;
 
     // Transform necessary prefix/opcode in output, according to given list and operands
     output.suffix = getADLsuffix();
@@ -209,20 +207,12 @@ void emit_instruction(operandlist_t *list) {
     //if(pass == 1) definelabel(address);
     definelabel(address);
 
-    // Output displacement if needed, even when none is given (handles implicit cases)
-    //if(list->operandA > OPTYPE_R_AEONLY) op1_displacement_required = true;
-    //if(list->operandB > OPTYPE_R_AEONLY) op2_displacement_required = true;
-
     // issue any errors here
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
         if(((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N)) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
         if(((list->operandB == OPTYPE_N) || (list->operandB == OPTYPE_INDIRECT_N)) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
-        //if((((list->conditionsA & STATE_IMMEDIATE) && (operand1.immediate > 0xFF)) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
-        //if((((list->conditionsB & STATE_IMMEDIATE) && (operand2.immediate > 0xFF)) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
-    
     }
     if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
-    //if((op2_displacement_required) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
     if((list->displacement_requiredB) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
 
     // Specific checks
@@ -248,8 +238,6 @@ void emit_instruction(operandlist_t *list) {
     if(!ddbeforeopcode) emit_8bit(output.opcode);
     
     // output displacement
-    //if(op1_displacement_required) emit_8bit(operand1.displacement & 0xFF);
-    //if(op2_displacement_required) emit_8bit(operand2.displacement & 0xFF);
     if(list->displacement_requiredA) emit_8bit(operand1.displacement & 0xFF);
     if(list->displacement_requiredB) emit_8bit(operand2.displacement & 0xFF);
     
