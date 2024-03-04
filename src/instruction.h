@@ -193,6 +193,8 @@ typedef enum {
 typedef struct {
 // new
     bool                cc_allowed;
+    bool                displacement_requiredA;
+    bool                displacement_requiredB;
     uint24_t            regsetA;
     uint8_t             conditionsA;
     uint24_t            regsetB;
