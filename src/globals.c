@@ -18,6 +18,7 @@ bool consolelist_enabled;
 uint8_t fillbyte;
 uint24_t start_address;
 bool coloroutput;
+bool debug;
 
 unsigned int labelcollisions;
 

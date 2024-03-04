@@ -39,6 +39,7 @@ extern bool consolelist_enabled;
 extern uint8_t fillbyte;
 extern uint24_t start_address;
 extern bool coloroutput;
+extern bool debug;
 
 extern unsigned int labelcollisions;
 // Global parsed results

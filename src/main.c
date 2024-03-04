@@ -55,8 +55,9 @@ int main(int argc, char *argv[]) {
     exportsymbols = false;
     displaystatistics = false;
     coloroutput = true;
+    debug = false;
     
-    while ((opt = getopt(argc, argv, "-:ldvhsxcb:a:o:")) != -1) {
+    while ((opt = getopt(argc, argv, "-:ldvhsxpcb:a:o:")) != -1) {
         switch(opt) {
             case 'a':
                 if((strlen(optarg) != 1) || 
@@ -66,6 +67,9 @@ int main(int argc, char *argv[]) {
                 }
                 adlmode = (*optarg == '1')?true:false;
                 printf("Setting ADL mode to %d\r\n",adlmode);
+                break;
+            case 'p':
+                debug = true;
                 break;
             case 's':
                 printf("Exporting symbols\r\n");

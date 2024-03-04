@@ -1103,6 +1103,7 @@ void processInstructions(char *macroline){
     uint8_t listitem;
     bool match;
     bool regmatch, condmatch;
+    bool regamatch, regbmatch;
 
     if(recordingMacro) {
         if(pass == 1) {
@@ -1125,15 +1126,27 @@ void processInstructions(char *macroline){
                     match = false;
                     for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
                         //if(permittype_matchlist[list->operandA].match(&operand1) && permittype_matchlist[list->operandB].match(&operand2)) {
-                        regmatch = ((list->regsetA & operand1.reg) && (list->regsetB & operand2.reg)) || !(list->regsetA | operand1.reg) || !(list->regsetB | operand2.reg);
+                        //regmatch = ((list->regsetA & operand1.reg) && (list->regsetB & operand2.reg)) || !(list->regsetA | operand1.reg) || !(list->regsetB | operand2.reg);
+                        regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
+                        regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
+
                         condmatch = (list->conditionsA == operand1.state) && (list->conditionsB == operand2.state);
-                        if(list->cc_allowed) condmatch |= operand1.cc;
-                            //printf("Index list [[%d]]\r\n", listitem);
-                            //printf("regsetA: <0x%03X> - regsetB <0x%03X>\r\n", list->regsetA, list->regsetB);
-                            //printf("    opA: <0x%03X> -     opB <0x%03X>\r\n", operand1.reg, operand2.reg);
-                            //printf("  condA: <0x%0X>  -   condB <0x%0X>\r\n", list->conditionsA, list->conditionsB);
-                            //printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.state, operand2.state);
-                            //printf("--------------------------------------\r\n");
+                        if(list->cc_allowed) {
+                            condmatch |= operand1.cc;
+                            regamatch = true;
+                        }
+                        regmatch = regamatch && regbmatch;
+                        if(debug) {
+                            printf("Index list [[%d]]\r\n", listitem);
+                            printf("regamatch: %d\r\n", regamatch);
+                            printf("regbmatch: %d\r\n", regbmatch);
+                            printf("condmatch: %d\r\n", condmatch);
+                            printf("regsetA: <0x%03X> - regsetB <0x%03X>\r\n", list->regsetA, list->regsetB);
+                            printf("    opA: <0x%03X> -     opB <0x%03X>\r\n", operand1.reg, operand2.reg);
+                            printf("  condA: <0x%0X>  -   condB <0x%0X>\r\n", list->conditionsA, list->conditionsB);
+                            printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.state, operand2.state);
+                            printf("--------------------------------------\r\n");
+                        }
                         if(regmatch && condmatch) {
                             match = true;
                             // mnemonic index distribution optimization
