@@ -197,8 +197,8 @@ uint8_t getADLsuffix(void) {
 
 void emit_instruction(operandlist_t *list) {
     bool ddbeforeopcode; // determine position of displacement byte in case of DDCBdd/DDFDdd
-    bool op1_displacement_required = false;
-    bool op2_displacement_required = false;
+    //bool op1_displacement_required = false;
+    //bool op2_displacement_required = false;
 
     // Transform necessary prefix/opcode in output, according to given list and operands
     output.suffix = getADLsuffix();
@@ -210,10 +210,8 @@ void emit_instruction(operandlist_t *list) {
     definelabel(address);
 
     // Output displacement if needed, even when none is given (handles implicit cases)
-    if(list->operandA > OPTYPE_R_AEONLY) op1_displacement_required = true;
-    if(list->operandB > OPTYPE_R_AEONLY) op2_displacement_required = true;
-    //if(list->conditionsA & STATE_DISPLACEMENT) op1_displacement_required = true;
-    //if(list->conditionsB & STATE_DISPLACEMENT) op2_displacement_required = true;
+    //if(list->operandA > OPTYPE_R_AEONLY) op1_displacement_required = true;
+    //if(list->operandB > OPTYPE_R_AEONLY) op2_displacement_required = true;
 
     // issue any errors here
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
@@ -224,7 +222,8 @@ void emit_instruction(operandlist_t *list) {
     
     }
     if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
-    if((op2_displacement_required) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
+    //if((op2_displacement_required) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
+    if((list->displacement_requiredB) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
 
     // Specific checks
     if((list->operandA == OPTYPE_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
@@ -238,7 +237,7 @@ void emit_instruction(operandlist_t *list) {
     transform_instruction(&operand2, (permittype_t)list->transformB);
     // determine position of dd
     ddbeforeopcode = (((output.prefix1 == 0xDD) || (output.prefix1 == 0xFD)) && (output.prefix2 == 0xCB) &&
-                ((op1_displacement_required) || (op2_displacement_required)));
+                ((list->displacement_requiredA) || (list->displacement_requiredB)));
     
     // output adl suffix and any prefixes
     if(output.suffix > 0) emit_adlsuffix_code(output.suffix);
@@ -249,8 +248,10 @@ void emit_instruction(operandlist_t *list) {
     if(!ddbeforeopcode) emit_8bit(output.opcode);
     
     // output displacement
-    if(op1_displacement_required) emit_8bit(operand1.displacement & 0xFF);
-    if(op2_displacement_required) emit_8bit(operand2.displacement & 0xFF);
+    //if(op1_displacement_required) emit_8bit(operand1.displacement & 0xFF);
+    //if(op2_displacement_required) emit_8bit(operand2.displacement & 0xFF);
+    if(list->displacement_requiredA) emit_8bit(operand1.displacement & 0xFF);
+    if(list->displacement_requiredB) emit_8bit(operand2.displacement & 0xFF);
     
     // output n
     if((operand1.immediate_provided) && ((list->operandA == OPTYPE_N) || (list->operandA == OPTYPE_INDIRECT_N))) emit_8bit(operand1.immediate & 0xFF);
@@ -288,7 +289,7 @@ operandlist_t operands_add[] = {
     {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, OPTYPE_A,OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x86, S_ANY},
 // end optimized set
     {false,false,false,R_A, NOREQ, RS_IR, NOREQ, OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x84, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x86, S_ANY},
+    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x86, S_ANY},
     {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xC6, S_NONE},
     // same set, without A register
     {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x86, S_ANY},
@@ -307,7 +308,7 @@ operandlist_t operands_and[] = {
 // end optimized set
     {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, OPTYPE_A,OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_ANY},
     {false,false,false,R_A, NOREQ, RS_IR, NOREQ, OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xA4, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_ANY},
+    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_ANY},
     {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE6, S_NONE},
     {false,false,false,R_A, NOREQ, RS_R, NOREQ, OPTYPE_A,OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xA0, S_NONE},
     // same set, without A register
@@ -512,7 +513,7 @@ operandlist_t operands_ld[] = {
     {false,true,false,R_IY, STATE_INDIRECT | STATE_DISPLACEMENT, R_IY, NOREQ, OPTYPE_INDIRECT_IYd, OPTYPE_IY,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3F, S_ANY},
     {false,true,false,R_IX, STATE_INDIRECT | STATE_DISPLACEMENT, R_IY, NOREQ, OPTYPE_INDIRECT_IXd, OPTYPE_IY,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3E, S_ANY},
     {false,true,false,R_IY, STATE_INDIRECT | STATE_DISPLACEMENT, R_IX, NOREQ, OPTYPE_INDIRECT_IYd, OPTYPE_IX,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3E, S_ANY},
-    {false,false,false,RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, RS_NONE, STATE_IMMEDIATE, OPTYPE_INDIRECT_IXYd, OPTYPE_N,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x36, S_ANY},  
+    {false,true,false,RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, RS_NONE, STATE_IMMEDIATE, OPTYPE_INDIRECT_IXYd, OPTYPE_N,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x36, S_ANY},  
     {false,true,false,RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, RS_R, NOREQ, OPTYPE_INDIRECT_IXYd, OPTYPE_R,     true, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x70, S_ANY},  
     {false,false,false,R_MB, NOREQ, R_A, NOREQ, OPTYPE_MB, OPTYPE_A,               false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x6D, S_NONE}, 
     {false,false,false,RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, RS_RR, NOREQ, OPTYPE_INDIRECT_MMN, OPTYPE_RR,    false, TRANSFORM_NONE,   TRANSFORM_P,    0xED, 0x43, S_ANY},
@@ -568,7 +569,7 @@ operandlist_t operands_or[] = {
 // end optimized set
     {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, OPTYPE_A,OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_ANY},
     {false,false,false,R_A, NOREQ, RS_IR, NOREQ, OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xB4, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_ANY},
+    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_ANY},
     {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF6, S_NONE},
     {false,false,false,R_A, NOREQ, RS_R, NOREQ, OPTYPE_A,OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xB0, S_NONE},
     // same set, without A register
@@ -702,7 +703,7 @@ operandlist_t operands_rst[] = {
 operandlist_t operands_sbc[] = {
     {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, OPTYPE_A,OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x9E, S_ANY},
     {false,false,false,R_A, NOREQ, RS_IR, NOREQ, OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x9C, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x9E, S_ANY},
+    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x9E, S_ANY},
     {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xDE, S_NONE},
     {false,false,false,R_A, NOREQ, RS_R, NOREQ, OPTYPE_A,OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x98, S_NONE},
     // same set, without A register
@@ -720,7 +721,7 @@ operandlist_t operands_scf[] = {
 };
 operandlist_t operands_set[] = {
     {false,false,false,RS_NONE, STATE_IMMEDIATE, R_HL, STATE_INDIRECT, OPTYPE_BIT, OPTYPE_INDIRECT_HL,    false, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0xC6, S_ANY},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,   true, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0xC6, S_ANY},
+    {false,false,true,RS_NONE, STATE_IMMEDIATE, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_BIT, OPTYPE_INDIRECT_IXYd,   true, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0xC6, S_ANY},
     {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_R, NOREQ, OPTYPE_BIT, OPTYPE_R,              false, TRANSFORM_BIT,    TRANSFORM_Z,    0xCB, 0xC0, S_NONE},
 };
 operandlist_t operands_sla[] = {
@@ -733,7 +734,7 @@ operandlist_t operands_slp[] = {
 };
 operandlist_t operands_sra[] = {
     {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, OPTYPE_INDIRECT_HL, OPTYPE_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x2E, S_ANY},
-    {false,false,false,RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, RS_NONE, NOREQ, OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x2E, S_ANY},
+    {false,true,false,RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, RS_NONE, NOREQ, OPTYPE_INDIRECT_IXYd, OPTYPE_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x2E, S_ANY},
     {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, OPTYPE_R, OPTYPE_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x28, S_NONE},
 };
 operandlist_t operands_srl[] = {
@@ -750,7 +751,7 @@ operandlist_t operands_sub[] = {
 // end optimized set
     {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, OPTYPE_A,OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x96, S_ANY},
     {false,false,false,R_A, NOREQ, RS_IR, NOREQ, OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x94, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x96, S_ANY},
+    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x96, S_ANY},
     {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xD6, S_NONE},
     {false,false,false,R_A, NOREQ, RS_R, NOREQ, OPTYPE_A,OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x90, S_NONE},
     // same set, without A register
@@ -779,7 +780,7 @@ operandlist_t operands_xor[] = {
 // end optimized set
     {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, OPTYPE_A,OPTYPE_INDIRECT_HL,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_ANY},
     {false,false,false,R_A, NOREQ, RS_IR, NOREQ, OPTYPE_A, OPTYPE_IR,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xAC, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_ANY},
+    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT | STATE_DISPLACEMENT, OPTYPE_A, OPTYPE_INDIRECT_IXYd,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_ANY},
     {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, OPTYPE_A, OPTYPE_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xEE, S_NONE},
     {false,false,false,R_A, NOREQ, RS_R, NOREQ, OPTYPE_A,OPTYPE_R,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xA8, S_NONE},
     // same set, without A register
