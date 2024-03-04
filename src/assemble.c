@@ -101,9 +101,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                     operand->reg = R_C;
                     operand->reg_index = R_INDEX_C;
                     operand->cc = true;
-                    //operand->state |= STATE_CC;
                     operand->cc_index = CC_INDEX_C;
-                    //operand->state |= STATE_CCA;
                     return;
                 default:
                     break;
@@ -1102,7 +1100,7 @@ void processInstructions(char *macroline){
     operandlist_t *list;
     uint8_t listitem;
     bool match;
-    bool regmatch, condmatch;
+    bool condmatch;
     bool regamatch, regbmatch;
 
     if(recordingMacro) {
@@ -1133,7 +1131,7 @@ void processInstructions(char *macroline){
                             condmatch |= operand1.cc;
                             regamatch = true;
                         }
-                        regmatch = regamatch && regbmatch;
+                        /*
                         if(debug) {
                             printf("Index list [[%d]]\r\n", listitem);
                             printf("regamatch: %d\r\n", regamatch);
@@ -1145,9 +1143,9 @@ void processInstructions(char *macroline){
                             printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.state, operand2.state);
                             printf("--------------------------------------\r\n");
                         }
-                        if(regmatch && condmatch) {
+                        */
+                        if(regamatch && regbmatch && condmatch) {
                             match = true;
-                            // mnemonic index distribution optimization
                             emit_instruction(list);
                             break;
                         }
@@ -1163,7 +1161,6 @@ void processInstructions(char *macroline){
     if(currentline.current_macro) {
         expandMacroStart(currentline.current_macro);
     }
-    //if(currentline.label) printf("DEBUG: label <%s>\r\n",currentline.label);
     return;
 }
 

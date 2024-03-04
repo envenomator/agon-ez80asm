@@ -378,7 +378,7 @@ void emit_quotedstring(char *str) {
 void emit_immediate(operand_t *op, uint8_t suffix) {
     uint8_t num;
 
-    num = get_immediate_size(op, suffix);
+    num = get_immediate_size(suffix);
     emit_8bit(op->immediate & 0xFF);
     emit_8bit((op->immediate >> 8) & 0xFF);
     if(num == 3) emit_8bit((op->immediate >> 16) & 0xFF);

@@ -12,7 +12,7 @@
 
 #define MAX_MNEMONIC_SIZE         10
 
-// Immediate field lenght
+// Immediate field lenght - determines output size for a given immediate
 #define VAL_NONE    0x00
 #define VAL_N       0x01
 #define VAL_MMN     0x02
@@ -52,8 +52,6 @@
 #define RS_RXY  R_BC | R_DE | R_IX | R_IY
 #define RS_XY   R_IX | R_IY
 #define RS_AE   R_A | R_B | R_C | R_D | R_E
-
-typedef uint24_t cpuregister;
 
 #define R_INDEX_B   0
 #define R_INDEX_C   1
@@ -102,15 +100,15 @@ typedef uint24_t cpuregister;
 #define CODE_LIL    0x5B
 
 // Status bitfield codes
+#define NOREQ               0x00    // no requirement
 #define STATE_INDIRECT      0x01    // bit 1
 #define STATE_IMMEDIATE     0x02    // bit 2
 #define STATE_CC            0x04    // bit 3
 #define STATE_CCA           0x08    // bit 4
 
-#define NOREQ               0x0    // bit 7 - no requirement - used in matching filter
 
 typedef struct {
-    cpuregister         reg;
+    uint24_t            reg;
     uint8_t             reg_index;
     bool                indirect;
     bool                cc;
@@ -125,7 +123,7 @@ typedef struct {
 
 typedef struct {
     char                name[MAX_MNEMONIC_SIZE];
-    cpuregister         reg;
+    uint24_t            reg;
     uint8_t             reg_index;
     bool                cc;
     uint8_t             cc_index;
@@ -156,16 +154,15 @@ typedef enum {
 }opcodetransformtype_t;
 
 typedef struct {
-// new
-    bool                cc_allowed;
-    bool                displacement_requiredA;
-    bool                displacement_requiredB;
-    uint24_t            regsetA;
-    uint8_t             conditionsA;
-    uint24_t            regsetB;
-    uint8_t             conditionsB;
-    uint8_t             valLengthA;
-    uint8_t             valLengthB;
+    bool                  cc_allowed;
+    bool                  displacement_requiredA;
+    bool                  displacement_requiredB;
+    uint24_t              regsetA;
+    uint8_t               conditionsA;
+    uint24_t              regsetB;
+    uint8_t               conditionsB;
+    uint8_t               immLengthA;
+    uint8_t               immLengthB;
     bool                  ddfdpermitted;         
     opcodetransformtype_t transformA;         // Do we transform acc to operandA
     opcodetransformtype_t transformB;         //  "        "       " "  operandB
@@ -224,6 +221,6 @@ instruction_t * instruction_table_lookup(char *name);
 instruction_t * instruction_hashtable_lookup(char *name);
 void init_instruction_hashtable(void);
 void emit_instruction(operandlist_t *list);
-uint8_t get_immediate_size(operand_t *op, uint8_t suffix);
+uint8_t get_immediate_size(uint8_t suffix);
 
 #endif // INSTRUCTION_H

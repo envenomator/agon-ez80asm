@@ -8,43 +8,21 @@
 instruction_t *instruction_hashtable[INSTRUCTION_HASHTABLESIZE];
 
 // get the number of bytes to emit from an immediate
-uint8_t get_immediate_size(operand_t *op, uint8_t suffix) {
-    uint8_t num;
-    switch(suffix) {
-        case S_SIS:
-        case S_LIS:
-            num = 2;
-            break;
-        case S_SIL:
-        case S_LIL:
-            num = 3;
-            break;
-        case 0: // Use current ADL mode to determine 16/24 bit
-            if(adlmode) num = 3;
-            else num = 2;
-            break;
-        default:
-            error(message[ERROR_INVALIDMNEMONIC]);
-            return 0;
+uint8_t get_immediate_size(uint8_t suffix) {
+    if(suffix) {
+        if(suffix & (S_SIS | S_LIS)) return 2;
+        if(suffix & (S_SIL | S_LIL)) return 3;
+        error(message[ERROR_INVALIDMNEMONIC]);
+        return 0;
     }
-    if(num == 2) op->immediate &= 0xFFFF;
-    return num;
+    if(adlmode) return 3;
+    else return 2;
 }
 
-uint8_t get_ddfd_prefix(cpuregister reg) {
-    switch(reg) {
-        case R_IX:
-        case R_IXH:
-        case R_IXL:
-            return 0xDD;
-        case R_IY:
-        case R_IYH:
-        case R_IYL:
-            return 0xFD;
-        default:
-            break;
-    }
-    return 0;    
+uint8_t get_ddfd_prefix(uint24_t reg) {
+    if(reg & (R_IX | R_IXH | R_IXL)) return 0xDD;
+    if(reg & (R_IY | R_IYH | R_IYL)) return 0xFD;
+    return 0;
 }
 
 void prefix_ddfd_suffix(operandlist_t *op) {
@@ -73,10 +51,10 @@ void transform_instruction(operand_t *op, uint8_t type) {
 
     switch(type) {
         case TRANSFORM_IR0:
-            if((op->reg == R_IXL) || (op->reg == R_IYL)) output.opcode |= 0x01;
+            if(op->reg & (R_IXL | R_IYL)) output.opcode |= 0x01;
             break;
         case TRANSFORM_IR3:
-            if((op->reg == R_IXL) || (op->reg == R_IYL)) output.opcode |= 0x08;
+            if(op->reg & (R_IXL | R_IYL)) output.opcode |= 0x08;
             break;
         case TRANSFORM_Z:
             output.opcode |= op->reg_index;
@@ -197,27 +175,26 @@ uint8_t getADLsuffix(void) {
 
 void emit_instruction(operandlist_t *list) {
     bool ddbeforeopcode; // determine position of displacement byte in case of DDCBdd/DDFDdd
-
+    
     // Transform necessary prefix/opcode in output, according to given list and operands
     output.suffix = getADLsuffix();
     output.prefix1 = 0;
     output.prefix2 = list->prefix;
     output.opcode = list->opcode;
 
-    //if(pass == 1) definelabel(address);
     definelabel(address);
 
     // issue any errors here
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
-        if(((list->valLengthA == VAL_N) || (list->valLengthA == VAL_N)) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
-        if(((list->valLengthB == VAL_N) || (list->valLengthB == VAL_N)) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
+        if((list->immLengthA == VAL_N) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
+        if((list->immLengthB == VAL_N) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
     }
     if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
     if((list->displacement_requiredB) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
 
     // Specific checks
-    if((list->valLengthA == VAL_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
-    if((list->valLengthA == VAL_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE]);
+    if((list->immLengthA == VAL_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
+    if((list->immLengthA == VAL_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE]);
     if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0x47)) error(message[ERROR_ILLEGALRESTARTADDRESS]);
 
     // prepare extra DD/FD suffix if needed
@@ -230,7 +207,7 @@ void emit_instruction(operandlist_t *list) {
                 ((list->displacement_requiredA) || (list->displacement_requiredB)));
     
     // output adl suffix and any prefixes
-    if(output.suffix > 0) emit_adlsuffix_code(output.suffix);
+    if(output.suffix) emit_adlsuffix_code(output.suffix);
     if(output.prefix1) emit_8bit(output.prefix1);
     if(output.prefix2) emit_8bit(output.prefix2);
 
@@ -238,19 +215,19 @@ void emit_instruction(operandlist_t *list) {
     if(!ddbeforeopcode) emit_8bit(output.opcode);
     
     // output displacement
-    if(list->displacement_requiredA) emit_8bit(operand1.displacement & 0xFF);
-    if(list->displacement_requiredB) emit_8bit(operand2.displacement & 0xFF);
+    if(list->displacement_requiredA) emit_8bit(operand1.displacement);
+    if(list->displacement_requiredB) emit_8bit(operand2.displacement);
     
     // output n
-    if((operand1.immediate_provided) && ((list->valLengthA == VAL_N) || (list->valLengthA == VAL_N))) emit_8bit(operand1.immediate & 0xFF);
-    if((operand2.immediate_provided) && ((list->valLengthB == VAL_N) || (list->valLengthB == VAL_N))) emit_8bit(operand2.immediate & 0xFF);
+    if((operand1.immediate_provided) && (list->immLengthA == VAL_N)) emit_8bit(operand1.immediate);
+    if((operand2.immediate_provided) && (list->immLengthB == VAL_N)) emit_8bit(operand2.immediate);
 
     // opcode in DDCBdd/DFCBdd position
     if(ddbeforeopcode) emit_8bit(output.opcode);
 
     //output remaining immediate bytes
-    if((list->valLengthA == VAL_MMN) || (list->valLengthA == VAL_MMN)) emit_immediate(&operand1, output.suffix);
-    if((list->valLengthB == VAL_MMN) || (list->valLengthB == VAL_MMN)) emit_immediate(&operand2, output.suffix);
+    if(list->immLengthA == VAL_MMN) emit_immediate(&operand1, output.suffix);
+    if(list->immLengthB == VAL_MMN) emit_immediate(&operand2, output.suffix);
 }
 
 
