@@ -76,23 +76,6 @@
 #define CC_INDEX_P  6
 #define CC_INDEX_M  7
 
-// bitfield codes to check allowed emission
-#define S_SIS         0x01
-#define S_LIS         0x02
-#define S_SIL         0x04
-#define S_LIL         0x08
-#define S_ANY         0xFF
-#define S_NONE        0x00
-#define S_SISLIL      S_SIS | S_LIL
-#define S_S1L0        S_SIL | S_LIS
-#define S_LILLIS      S_LIL | S_LIS
-
-// actual codes to emit
-#define CODE_SIS    0x40
-#define CODE_LIS    0x49
-#define CODE_SIL    0x52
-#define CODE_LIL    0x5B
-
 // Status bitfield codes
 #define NOREQ         0x00    // no requirement
 #define INDIRECT      0x01    // bit 1              - checked for match during processInstructions
@@ -106,11 +89,25 @@
 #define MODECHECK     (INDIRECT | IMM | CC | CCA)
 
 // Flag bitfield codes
-#define F_NONE          0x00
-#define F_DISPA         0x01
-#define F_DISPB         0x02
-#define F_CCOK          0x04
-#define F_DDFDOK        0x08
+#define F_NONE          0x00    // Nothing set
+#define F_DISPA         0x01    // Displacement required for operand A
+#define F_DISPB         0x02    // Displacement required for operand B
+#define F_CCOK          0x04    // Condition code accepted as operand
+#define F_DDFDOK        0x08    // DD/FD accepted
+#define S_SIS           0x10    // SUFFIX permitted
+#define S_LIS           0x20    // SUFFIX permitted
+#define S_SIL           0x40    // SUFFIX permitted
+#define S_LIL           0x80    // SUFFIX permitted
+#define S_ANY           S_SIS | S_LIS | S_SIL | S_LIL
+#define S_SISLIL        S_SIS | S_LIL
+#define S_S1L0          S_SIL | S_LIS
+#define S_LILLIS        S_LIL | S_LIS
+
+// actual codes to emit when permitted
+#define CODE_SIS    0x40
+#define CODE_LIS    0x49
+#define CODE_SIL    0x52
+#define CODE_LIL    0x5B
 
 typedef struct {
     uint24_t            reg;
@@ -165,7 +162,6 @@ typedef struct {
     uint8_t               transformA;         // Do we transform acc to operandA
     uint8_t               transformB;         //  "        "       " "  operandB
     uint8_t               flags;
-    uint8_t               adl;                // the adl mode allowed in set of operands
     uint8_t               prefix;             // base prefix1, or 0 if none to output
     uint8_t               opcode;             // base opcode, may be transformed by A/B, according to opcodetransformtype
 } operandlist_t;
