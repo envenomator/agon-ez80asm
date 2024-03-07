@@ -13,11 +13,11 @@
 #define MAX_MNEMONIC_SIZE         10
 
 // Immediate field lenght - determines output size for a given immediate
-#define VAL_NONE    0x00
-#define VAL_N       0x01
-#define VAL_MMN     0x02
-#define VAL_BIT     0x04
-#define VAL_NSELECT 0x08
+#define NOIMM       0x00
+#define IMM_N       0x01
+#define IMM_MMN     0x02
+#define IMM_BIT     0x04
+#define IMM_NSELECT 0x08
 
 // Individual registers - 24-bit bitfield
 #define R_NONE  0x000000
@@ -92,6 +92,7 @@
 #define S_NONE        0x00
 #define S_SISLIL      S_SIS | S_LIL
 #define S_S1L0        S_SIL | S_LIS
+#define S_LILLIS      S_LIL | S_LIS
 
 // actual codes to emit
 #define CODE_SIS    0x40
@@ -100,12 +101,13 @@
 #define CODE_LIL    0x5B
 
 // Status bitfield codes
-#define NOREQ               0x00    // no requirement
-#define STATE_INDIRECT      0x01    // bit 1
-#define STATE_IMMEDIATE     0x02    // bit 2
-#define STATE_CC            0x04    // bit 3
-#define STATE_CCA           0x08    // bit 4
+#define NOREQ         0x00    // no requirement
+#define INDIRECT      0x01    // bit 1
+#define IMMEDIATE     0x02    // bit 2
+#define CC            0x04    // bit 3
+#define CCA           0x08    // bit 4
 
+#define INDIRECT_IMMEDIATE    INDIRECT | IMMEDIATE
 
 typedef struct {
     uint24_t            reg;
@@ -117,8 +119,7 @@ typedef struct {
     bool                displacement_provided;
     bool                immediate_provided;
     int32_t             immediate;
-// new
-    uint8_t             state;
+    uint8_t             addressmode;
 } operand_t;
 
 typedef struct {
@@ -154,21 +155,21 @@ typedef enum {
 }opcodetransformtype_t;
 
 typedef struct {
-    bool                  cc_allowed;
-    bool                  displacement_requiredA;
-    bool                  displacement_requiredB;
-    uint24_t              regsetA;
-    uint8_t               conditionsA;
+    uint24_t              regsetA;            // one or more registers that need to match this operand
+    uint8_t               conditionsA;        // specific addressing conditions that need to match this operand
     uint24_t              regsetB;
     uint8_t               conditionsB;
-    uint8_t               immLengthA;
+    uint8_t               immLengthA;         // the length of any immediate value for this operand
     uint8_t               immLengthB;
-    bool                  ddfdpermitted;         
     opcodetransformtype_t transformA;         // Do we transform acc to operandA
     opcodetransformtype_t transformB;         //  "        "       " "  operandB
-    uint8_t               prefix;            // base prefix1, or 0 if none to output
-    uint8_t               opcode;             // base opcode, may be transformed by A/B, according to opcodetransformtype
+    bool                  displacement_requiredA;
+    bool                  displacement_requiredB;
+    bool                  cc_allowed;         // is a condition name allowed as operand?
+    bool                  ddfdpermitted;      
     uint8_t               adl;                // the adl mode allowed in set of operands
+    uint8_t               prefix;             // base prefix1, or 0 if none to output
+    uint8_t               opcode;             // base opcode, may be transformed by A/B, according to opcodetransformtype
 } operandlist_t;
 
 enum {

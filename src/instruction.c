@@ -182,15 +182,15 @@ void emit_instruction(operandlist_t *list) {
 
     // issue any errors here
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
-        if((list->immLengthA == VAL_N) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
-        if((list->immLengthB == VAL_N) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
+        if((list->immLengthA == IMM_N) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
+        if((list->immLengthB == IMM_N) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
     }
     if((output.suffix) && ((list->adl & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
     if((list->displacement_requiredB) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
 
     // Specific checks
-    if((list->immLengthA == VAL_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
-    if((list->immLengthA == VAL_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE]);
+    if((list->immLengthA == IMM_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
+    if((list->immLengthA == IMM_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE]);
     if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0x47)) error(message[ERROR_ILLEGALRESTARTADDRESS]);
 
     // prepare extra DD/FD suffix if needed
@@ -215,538 +215,635 @@ void emit_instruction(operandlist_t *list) {
     if(list->displacement_requiredB) emit_8bit(operand2.displacement);
     
     // output n
-    if((operand1.immediate_provided) && (list->immLengthA == VAL_N)) emit_8bit(operand1.immediate);
-    if((operand2.immediate_provided) && (list->immLengthB == VAL_N)) emit_8bit(operand2.immediate);
+    if((operand1.immediate_provided) && (list->immLengthA == IMM_N)) emit_8bit(operand1.immediate);
+    if((operand2.immediate_provided) && (list->immLengthB == IMM_N)) emit_8bit(operand2.immediate);
 
     // opcode in DDCBdd/DFCBdd position
     if(ddbeforeopcode) emit_8bit(output.opcode);
 
     //output remaining immediate bytes
-    if(list->immLengthA == VAL_MMN) emit_immediate(&operand1, output.suffix);
-    if(list->immLengthB == VAL_MMN) emit_immediate(&operand2, output.suffix);
+    if(list->immLengthA == IMM_MMN) emit_immediate(&operand1, output.suffix);
+    if(list->immLengthB == IMM_MMN) emit_immediate(&operand2, output.suffix);
 }
 
-
 operandlist_t operands_adc[] = {
-    {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE, VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x8E, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_IR, NOREQ, VAL_NONE, VAL_NONE,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x8C, S_NONE},
-    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x8E, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xCE, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_R, NOREQ, VAL_NONE, VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x88, S_NONE},
-    // same set, without A register
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x8E, S_ANY},
-    {false,false,false,RS_IR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0x8C, S_NONE},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x8E, S_ANY},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xCE, S_NONE},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0x88, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {    R_A,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x8E},
+   {    R_A,             NOREQ,  RS_IR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE, TRANSFORM_IR0,false,false,false, true,  S_NONE,0x00,0x8C},
+   {    R_A,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x8E},
+   {    R_A,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xCE},
+   {    R_A,             NOREQ,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Z,false,false,false,false,  S_NONE,0x00,0x88},
+// same set, without A register
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x8E},
+   {  RS_IR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR0,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0x8C},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x8E},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xCE},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x88},
 
-    {false,false,false,R_HL, NOREQ, RS_RR, NOREQ, VAL_NONE, VAL_NONE,              false, TRANSFORM_NONE,   TRANSFORM_P,    0xED, 0x4A, S_ANY},
-    {false,false,false,R_HL, NOREQ, R_SP, NOREQ, VAL_NONE, VAL_NONE,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7A, S_ANY},
+   {   R_HL,             NOREQ,  RS_RR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_P,false,false,false,false,   S_ANY,0xED,0x4A},
+   {   R_HL,             NOREQ,   R_SP,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x7A},
 };
 operandlist_t operands_add[] = {
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
 // optimized set
-    {false,false,false,R_HL, NOREQ, RS_RR, NOREQ, VAL_NONE,VAL_NONE,              false, TRANSFORM_NONE,   TRANSFORM_P,    0x00, 0x09, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_R, NOREQ, VAL_NONE,VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x80, S_NONE},
-    {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE,VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x86, S_ANY},
+   {   R_HL,             NOREQ,  RS_RR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_P,false,false,false,false,   S_ANY,0x00,0x09},
+   {    R_A,             NOREQ,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Z,false,false,false,false,  S_NONE,0x00,0x80},
+   {    R_A,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x86},
 // end optimized set
-    {false,false,false,R_A, NOREQ, RS_IR, NOREQ, VAL_NONE, VAL_NONE,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x84, S_NONE},
-    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x86, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xC6, S_NONE},
-    // same set, without A register
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x86, S_ANY},
-    {false,false,false,RS_IR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0x84, S_NONE},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x86, S_ANY},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xC6, S_NONE},
+   {    R_A,             NOREQ,  RS_IR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE, TRANSFORM_IR0,false,false,false, true,  S_NONE,0x00,0x84},
+   {    R_A,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x86},
+   {    R_A,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xC6},
+// same set, without A register
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x86},
+   {  RS_IR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR0,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0x84},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x86},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xC6},
 
-    {false,false,false,R_HL, NOREQ, R_SP, NOREQ, VAL_NONE, VAL_NONE,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x39, S_ANY},
-    {false,false,false,RS_IXY, NOREQ, RS_RXY, NOREQ, VAL_NONE, VAL_NONE,             true, TRANSFORM_NONE,   TRANSFORM_P,    0x00, 0x09, S_ANY},
-    {false,false,false,RS_IXY, NOREQ, R_SP, NOREQ, VAL_NONE, VAL_NONE,              true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x39, S_ANY},
+   {   R_HL,             NOREQ,   R_SP,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x39},
+   { RS_IXY,             NOREQ, RS_RXY,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_P,false,false,false, true,   S_ANY,0x00,0x09},
+   { RS_IXY,             NOREQ,   R_SP,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0x39},
 };
 operandlist_t operands_and[] = {
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
 // optimized set
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xA0, S_NONE},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE6, S_NONE},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xA0},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xE6},
 // end optimized set
-    {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE,VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_IR, NOREQ, VAL_NONE, VAL_NONE,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xA4, S_NONE},
-    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE6, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_R, NOREQ, VAL_NONE,VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xA0, S_NONE},
-    // same set, without A register
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_ANY},
-    {false,false,false,RS_IR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0xA4, S_NONE},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xA6, S_ANY},
+   {    R_A,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xA6},
+   {    R_A,             NOREQ,  RS_IR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE, TRANSFORM_IR0,false,false,false, true,  S_NONE,0x00,0xA4},
+   {    R_A,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0xA6},
+   {    R_A,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xE6},
+   {    R_A,             NOREQ,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Z,false,false,false,false,  S_NONE,0x00,0xA0},
+// same set, without A register
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xA6},
+   {  RS_IR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR0,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0xA4},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0xA6},
 };
 operandlist_t operands_bit[] = {
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, R_HL, STATE_INDIRECT, VAL_BIT, VAL_NONE,    false, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0x46, S_ANY},
-    {false,false,true,RS_NONE, STATE_IMMEDIATE, RS_IXY, STATE_INDIRECT, VAL_BIT, VAL_NONE,   true, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0x46, S_ANY},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_R, NOREQ, VAL_BIT, VAL_NONE,              false, TRANSFORM_Y,      TRANSFORM_Z,    0xCB, 0x40, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,         IMMEDIATE,   R_HL,          INDIRECT,    IMM_BIT,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xCB,0x46},
+   {RS_NONE,         IMMEDIATE, RS_IXY,          INDIRECT,    IMM_BIT,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false, true,false, true,   S_ANY,0xCB,0x46},
+   {RS_NONE,         IMMEDIATE,   RS_R,             NOREQ,    IMM_BIT,  NOIMM,     TRANSFORM_Y,   TRANSFORM_Z,false,false,false,false,  S_NONE,0xCB,0x40},
 };
 operandlist_t operands_call[] = {
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_MMN, VAL_NONE ,           false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xCD, S_ANY},
-    {true,false,false,RS_NONE, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_MMN,             false, TRANSFORM_CC,     TRANSFORM_NONE, 0x00, 0xC4, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,    IMM_MMN,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xCD},
+   {RS_NONE,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,IMM_MMN,    TRANSFORM_CC,TRANSFORM_NONE,false,false, true,false,   S_ANY,0x00,0xC4},
 };
 operandlist_t operands_ccf[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3F, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x3F},
 };
 operandlist_t operands_cp[]= {
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
 // optimized set
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N,  VAL_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xFE, S_NONE},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xB8, S_NONE},
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xBE, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xFE, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_R, NOREQ, VAL_NONE,VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xB8, S_NONE},
-    {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE,VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xBE, S_ANY},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xFE},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xB8},
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xBE},
+   {    R_A,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xFE},
+   {    R_A,             NOREQ,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Z,false,false,false,false,  S_NONE,0x00,0xB8},
+   {    R_A,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xBE},
 // end optimized set
-    {false,false,false,R_A, NOREQ, RS_IR, NOREQ, VAL_NONE, VAL_NONE,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xBC, S_NONE},
-    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xBE, S_ANY},
-    // same set, without A register
-    {false,false,false,RS_IR, NOREQ, RS_NONE, NOREQ, VAL_NONE,  VAL_NONE,            true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0xBC, S_NONE},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ ,VAL_NONE, VAL_NONE, true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xBE, S_ANY},
+   {    R_A,             NOREQ,  RS_IR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE, TRANSFORM_IR0,false,false,false, true,  S_NONE,0x00,0xBC},
+   {    R_A,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0xBE},
+// same set, without A register
+   {  RS_IR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR0,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0xBC},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0xBE},
 };
 operandlist_t operands_cpd[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA9, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xA9},
 };
 operandlist_t operands_cpdr[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB9, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xB9},
 };
 operandlist_t operands_cpi[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA1, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xA1},
 };
 operandlist_t operands_cpir[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB1, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xB1},
 };
 operandlist_t operands_cpl[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x2F, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x2F},
 };
 operandlist_t operands_daa[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x27, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x27},
 };
 operandlist_t operands_dec[]= {
 // optimized set
-    {false,false,false,RS_RR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0x0B, S_ANY}, 
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Y,      TRANSFORM_NONE, 0x00, 0x05, S_NONE}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {  RS_RR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_P,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x0B},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x05},
 // end optimized set
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x35, S_ANY}, 
-    {false,false,false,RS_IR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             true, TRANSFORM_IR3,     TRANSFORM_NONE,0x00, 0x25, S_NONE}, 
-    {false,false,false,RS_IXY, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x2B, S_ANY}, 
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x35, S_ANY}, 
-    {false,false,false,R_SP, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3B, S_ANY}, 
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x35},
+   {  RS_IR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR3,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0x25},
+   { RS_IXY,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0x2B},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x35},
+   {   R_SP,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x3B},
 };
 operandlist_t operands_di[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF3, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xF3},
 };
 operandlist_t operands_djnz[]= {
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_REL,    TRANSFORM_NONE, 0x00, 0x10, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,   TRANSFORM_REL,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x10},
 };
 operandlist_t operands_ei[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xFB, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xFB},
 };
 operandlist_t operands_ex[]= {
 // optimized set
-    {false,false,false,R_DE, NOREQ, R_HL, NOREQ, VAL_NONE, VAL_NONE,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xEB, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_DE,             NOREQ,   R_HL,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xEB},
 // end optimized set
-    {false,false,false,R_AF, NOREQ, R_AF, NOREQ, VAL_NONE, VAL_NONE,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x08, S_NONE},
-    {false,false,false,R_SP, STATE_INDIRECT, R_HL, NOREQ, VAL_NONE, VAL_NONE,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE3, S_ANY},
-    {false,false,false,R_SP, STATE_INDIRECT, RS_IXY, NOREQ, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE3, S_ANY},
+   {   R_AF,             NOREQ,   R_AF,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x08},
+   {   R_SP,          INDIRECT,   R_HL,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xE3},
+   {   R_SP,          INDIRECT, RS_IXY,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0xE3},
 };
 operandlist_t operands_exx[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xD9, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xD9},
 };
 operandlist_t operands_halt[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x76, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x76},
 };
 operandlist_t operands_im[]= {
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_NSELECT, VAL_NONE,       false, TRANSFORM_SELECT, TRANSFORM_NONE, 0xED, 0x46, S_NONE}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,IMM_NSELECT,  NOIMM,TRANSFORM_SELECT,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x46},
 };
 operandlist_t operands_in[]= {
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, VAL_NONE, VAL_N,       false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xDB, S_NONE}, 
-    {false,false,false,RS_R, NOREQ, R_BC, STATE_INDIRECT, VAL_NONE, VAL_NONE,      false, TRANSFORM_Y,      TRANSFORM_NONE, 0xED, 0x40, S_NONE}, 
-    {false,false,false,RS_R, NOREQ, R_C, STATE_INDIRECT, VAL_NONE, VAL_NONE,       false, TRANSFORM_Y,      TRANSFORM_NONE, 0xED, 0x40, S_NONE}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {    R_A,             NOREQ,RS_NONE,INDIRECT_IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xDB},
+   {   RS_R,             NOREQ,   R_BC,          INDIRECT,      NOIMM,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x40},
+   {   RS_R,             NOREQ,    R_C,          INDIRECT,      NOIMM,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x40},
 };
 operandlist_t operands_in0[]= {
-    {false,false,false,RS_R, NOREQ, RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, VAL_NONE, VAL_N,       false, TRANSFORM_Y,      TRANSFORM_NONE, 0xED, 0x00, S_NONE}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   RS_R,             NOREQ,RS_NONE,INDIRECT_IMMEDIATE,      NOIMM,  IMM_N,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x00},
 };
 operandlist_t operands_inc[]= {
 // optimized set
-    {false,false,false,RS_RR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0x03, S_ANY}, 
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Y,      TRANSFORM_NONE, 0x00, 0x04, S_NONE}, 
-    {false,false,false,RS_IXY, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x23, S_ANY}, 
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x34, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {  RS_RR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_P,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x03},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x04},
+   { RS_IXY,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0x23},
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x34},
 // end optimized set
-    {false,false,false,RS_IR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             true, TRANSFORM_IR3,     TRANSFORM_NONE,0x00, 0x24, S_NONE}, 
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x34, S_ANY}, 
-    {false,false,false,R_SP, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x33, S_ANY}, 
+   {  RS_IR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR3,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0x24},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x34},
+   {   R_SP,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x33},
 };
 operandlist_t operands_ind[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xAA, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xAA},
 };
 operandlist_t operands_ind2[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x8C, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x8C},
 };
 operandlist_t operands_ind2r[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x9C, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x9C},
 };
 operandlist_t operands_indm[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x8A, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x8A},
 };
 operandlist_t operands_indmr[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x9A, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x9A},
 };
 operandlist_t operands_indr[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xBA, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xBA},
 };
 operandlist_t operands_indrx[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xCA, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xCA},
 };
 operandlist_t operands_ini[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA2, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xA2},
 };
 operandlist_t operands_ini2[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x84, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x84},
 };
 operandlist_t operands_ini2r[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x94, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x94},
 };
 operandlist_t operands_inim[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x82, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x82},
 };
 operandlist_t operands_inimr[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x92, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x92},
 };
 operandlist_t operands_inir[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB2, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xB2},
 };
 operandlist_t operands_inirx[]= {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xC2, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xC2},
 };
 operandlist_t operands_jp[] = {
-    {true,false,false,RS_NONE, STATE_CC, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_MMN,             false, TRANSFORM_CC,     TRANSFORM_NONE, 0x00, 0xC2, S_SISLIL},
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE9, S_ANY},
-    {false,false,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE9, S_SISLIL},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_MMN, VAL_NONE ,           false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xC3, S_SISLIL},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,                CC,RS_NONE,         IMMEDIATE,      NOIMM,IMM_MMN,    TRANSFORM_CC,TRANSFORM_NONE,false,false, true,false,S_SISLIL,0x00,0xC2},
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xE9},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,S_SISLIL,0x00,0xE9},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,    IMM_MMN,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,S_SISLIL,0x00,0xC3},
 };
 operandlist_t operands_jr[]= {
-    {true,false,false,RS_NONE, STATE_CCA, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,              false, TRANSFORM_CC,     TRANSFORM_REL,  0x00, 0x20, S_NONE},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_REL,    TRANSFORM_NONE, 0x00, 0x18, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,               CCA,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,    TRANSFORM_CC, TRANSFORM_REL,false,false, true,false,  S_NONE,0x00,0x20},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,   TRANSFORM_REL,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x18},
 };
 operandlist_t operands_ld[] = {
 // start optimized set
-    {false,false,false,RS_RR, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_MMN,              true, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0x01, S_ANY},
-    {false,false,false,RS_R, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                false, TRANSFORM_Y,      TRANSFORM_NONE, 0x00, 0x06, S_NONE},
-    {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE,VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x7E, S_ANY},  
-    {false,false,false,RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, R_A, NOREQ, VAL_MMN, VAL_NONE,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x32, S_ANY},
-    {false,false,false,RS_R, NOREQ, RS_R, NOREQ, VAL_NONE, VAL_NONE,                false, TRANSFORM_Y,      TRANSFORM_Z,    0x00, 0x40, S_NONE}, 
-    {false,false,false,R_HL, NOREQ, RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, VAL_NONE, VAL_MMN,    false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x2A, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, VAL_NONE, VAL_MMN,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3A, S_ANY}, 
-    {false,false,false,RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, R_HL, NOREQ, VAL_MMN, VAL_NONE,    false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x22, S_ANY},
-    {false,false,false,R_HL, STATE_INDIRECT, RS_R, NOREQ, VAL_NONE, VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x70, S_ANY},  
-    {false,false,false,R_A, NOREQ, R_DE, STATE_INDIRECT, VAL_NONE, VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x1A, S_ANY},  
-    {false,false,false,RS_RR, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE, VAL_NONE,     false, TRANSFORM_P,      TRANSFORM_NONE, 0xED, 0x07, S_ANY},
-    {false,false,false,RS_RR, STATE_INDIRECT, R_A, NOREQ, VAL_NONE, VAL_NONE,      false, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0x02, S_ANY},
-    {false,false,false,RS_IXY, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_MMN,             true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x21, S_ANY},  
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_RR, NOREQ, VAL_NONE, VAL_NONE,    true, TRANSFORM_NONE,   TRANSFORM_P,    0x00, 0x0F, S_ANY},  
-    {false,false,false,RS_NONE, STATE_INDIRECT | STATE_IMMEDIATE, RS_IXY, NOREQ, VAL_MMN, VAL_NONE,    true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x22, S_ANY}, 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {  RS_RR,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,IMM_MMN,     TRANSFORM_P,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0x01},
+   {   RS_R,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x06},
+   {    R_A,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x7E},
+   {RS_NONE,INDIRECT_IMMEDIATE,    R_A,             NOREQ,    IMM_MMN,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x32},
+   {   RS_R,             NOREQ,   RS_R,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Y,   TRANSFORM_Z,false,false,false,false,  S_NONE,0x00,0x40},
+   {   R_HL,             NOREQ,RS_NONE,INDIRECT_IMMEDIATE,      NOIMM,IMM_MMN,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x2A},
+   {    R_A,             NOREQ,RS_NONE,INDIRECT_IMMEDIATE,      NOIMM,IMM_MMN,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x3A},
+   {RS_NONE,INDIRECT_IMMEDIATE,   R_HL,             NOREQ,    IMM_MMN,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x22},
+   {   R_HL,          INDIRECT,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Z,false,false,false,false,   S_ANY,0x00,0x70},
+   {    R_A,             NOREQ,   R_DE,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x1A},
+   {  RS_RR,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,     TRANSFORM_P,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x07},
+   {  RS_RR,          INDIRECT,    R_A,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_P,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x02},
+   { RS_IXY,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,IMM_MMN,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0x21},
+   { RS_IXY,          INDIRECT,  RS_RR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_P, true,false,false, true,   S_ANY,0x00,0x0F},
+   {RS_NONE,INDIRECT_IMMEDIATE, RS_IXY,             NOREQ,    IMM_MMN,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0x22},
 // end optimized set
-    {false,false,false,R_A, NOREQ, R_I, NOREQ, VAL_NONE, VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x57, S_NONE}, 
-    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x7E, S_ANY},
-    {false,false,false,R_A, NOREQ, R_MB, NOREQ, VAL_NONE, VAL_NONE,               false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x6E, S_NONE}, 
-    {false,false,false,R_A, NOREQ, R_R, NOREQ, VAL_NONE,VAL_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x5F, S_NONE},
-    {false,false,false,R_A, NOREQ, R_BC, STATE_INDIRECT, VAL_NONE, VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x0A, S_ANY},  
-    {false,false,false,R_HL, NOREQ, R_I, NOREQ, VAL_NONE, VAL_NONE,               false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xD7, S_NONE}, 
-    {false,false,false,R_HL, STATE_INDIRECT, R_IX, NOREQ, VAL_NONE, VAL_NONE,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x3F, S_ANY},  
-    {false,false,false,R_HL, STATE_INDIRECT, R_IY, NOREQ, VAL_NONE, VAL_NONE,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x3E, S_ANY},  
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x36, S_ANY},  
-    {false,false,false,R_HL, STATE_INDIRECT, RS_RR, NOREQ, VAL_NONE, VAL_NONE,     false, TRANSFORM_NONE,   TRANSFORM_P,    0xED, 0x0F, S_ANY}, 
-    {false,false,false,R_I, NOREQ, R_HL, NOREQ, VAL_NONE, VAL_NONE,               false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xC7, S_NONE},  
-    {false,false,false,R_I, NOREQ, R_A, NOREQ, VAL_NONE, VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x47, S_NONE},  
-    {false,false,false,RS_IR, NOREQ, RS_IR, NOREQ, VAL_NONE, VAL_NONE,               true, TRANSFORM_IR3,     TRANSFORM_IR0, 0x00, 0x64, S_NONE}, 
-    {false,false,false,RS_IR, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                true, TRANSFORM_IR3,     TRANSFORM_NONE,0x00, 0x26, S_NONE}, 
-    {false,false,false,RS_IR, NOREQ, RS_AE, NOREQ, VAL_NONE, VAL_NONE,         true, TRANSFORM_IR3,     TRANSFORM_Z,   0x00, 0x60, S_NONE}, 
-    {false,false,false,R_IX, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE, VAL_NONE,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x37, S_ANY}, 
-    {false,false,false,R_IY, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE, VAL_NONE,     false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x31, S_ANY}, 
-    {false,false,true,R_IX, NOREQ, R_IX, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x37, S_ANY}, 
-    {false,false,true,R_IY, NOREQ, R_IY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x37, S_ANY}, 
-    {false,false,true,R_IX, NOREQ, R_IY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x31, S_ANY}, 
-    {false,false,true,R_IY, NOREQ, R_IX, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x31, S_ANY}, 
-    {false,false,false,RS_IXY, NOREQ, RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, VAL_NONE, VAL_MMN,    true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x2A, S_ANY},  
-    {false,true,false,R_IX, STATE_INDIRECT, R_IX, NOREQ, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3F, S_ANY},
-    {false,true,false,R_IY, STATE_INDIRECT, R_IY, NOREQ, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3F, S_ANY},
-    {false,true,false,R_IX, STATE_INDIRECT, R_IY, NOREQ, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3E, S_ANY},
-    {false,true,false,R_IY, STATE_INDIRECT, R_IX, NOREQ, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x3E, S_ANY},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x36, S_ANY},  
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_R, NOREQ, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x70, S_ANY},  
-    {false,false,false,R_MB, NOREQ, R_A, NOREQ, VAL_NONE, VAL_NONE,               false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x6D, S_NONE}, 
-    {false,false,false,RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, RS_RR, NOREQ, VAL_MMN, VAL_NONE,    false, TRANSFORM_NONE,   TRANSFORM_P,    0xED, 0x43, S_ANY},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, R_SP, NOREQ, VAL_MMN, VAL_NONE,    false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x73, S_ANY},
-    {false,false,false,R_R, NOREQ, R_A, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x4F, S_NONE},
-    {false,false,false,RS_R, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE, VAL_NONE,      false, TRANSFORM_Y,      TRANSFORM_NONE, 0x00, 0x46, S_ANY},
-    {false,false,false,RS_AE, NOREQ, RS_IR, NOREQ, VAL_NONE, VAL_NONE,         true, TRANSFORM_Y,      TRANSFORM_IR0,  0x00, 0x44, S_NONE},
-    {false,false,true,RS_R, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_Y,      TRANSFORM_NONE, 0x00, 0x46, S_ANY},
-    {false,false,true,RS_RR, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,    true, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0x07, S_ANY},
-    {false,false,false,RS_RR, NOREQ, RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, VAL_NONE, VAL_MMN,    false, TRANSFORM_P,      TRANSFORM_NONE, 0xED, 0x4B, S_ANY},
-    {false,false,false,R_HL, STATE_INDIRECT, R_A, NOREQ, VAL_NONE, VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x77, S_ANY},
-    {false,false,false,R_SP, NOREQ, R_HL, NOREQ, VAL_NONE, VAL_NONE,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF9, S_ANY},
-    {false,false,false,R_SP, NOREQ, RS_IXY, NOREQ, VAL_NONE, VAL_NONE,              true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF9, S_ANY},
-    {false,false,false,R_SP, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_MMN,              true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x31, S_ANY},
-    {false,false,false,R_SP, NOREQ, RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, VAL_NONE, VAL_MMN,    false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7B, S_ANY},
+   {    R_A,             NOREQ,    R_I,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x57},
+   {    R_A,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x7E},
+   {    R_A,             NOREQ,   R_MB,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x6E},
+   {    R_A,             NOREQ,    R_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x5F},
+   {    R_A,             NOREQ,   R_BC,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x0A},
+   {   R_HL,             NOREQ,    R_I,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0xD7},
+   {   R_HL,          INDIRECT,   R_IX,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x3F},
+   {   R_HL,          INDIRECT,   R_IY,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x3E},
+   {   R_HL,          INDIRECT,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x36},
+   {   R_HL,          INDIRECT,  RS_RR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_P,false,false,false,false,   S_ANY,0xED,0x0F},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {    R_I,             NOREQ,   R_HL,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0xC7},
+   {    R_I,             NOREQ,    R_A,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x47},
+   {  RS_IR,             NOREQ,  RS_IR,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR3, TRANSFORM_IR0,false,false,false, true,  S_NONE,0x00,0x64},
+   {  RS_IR,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,   TRANSFORM_IR3,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0x26},
+   {  RS_IR,             NOREQ,  RS_AE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR3,   TRANSFORM_Z,false,false,false, true,  S_NONE,0x00,0x60},
+   {   R_IX,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x37},
+   {   R_IY,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x31},
+   {   R_IX,             NOREQ,   R_IX,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x37},
+   {   R_IY,             NOREQ,   R_IY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x37},
+   {   R_IX,             NOREQ,   R_IY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x31},
+   {   R_IY,             NOREQ,   R_IX,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x31},
+   { RS_IXY,             NOREQ,RS_NONE,INDIRECT_IMMEDIATE,      NOIMM,IMM_MMN,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0x2A},
+   {   R_IX,          INDIRECT,   R_IX,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x3F},
+   {   R_IY,          INDIRECT,   R_IY,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x3F},
+   {   R_IX,          INDIRECT,   R_IY,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x3E},
+   {   R_IY,          INDIRECT,   R_IX,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x3E},
+   { RS_IXY,          INDIRECT,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x36},
+   { RS_IXY,          INDIRECT,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Z, true,false,false, true,   S_ANY,0x00,0x70},
+   {   R_MB,             NOREQ,    R_A,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x6D},
+   {RS_NONE,INDIRECT_IMMEDIATE,  RS_RR,             NOREQ,    IMM_MMN,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_P,false,false,false,false,   S_ANY,0xED,0x43},
+   {RS_NONE,INDIRECT_IMMEDIATE,   R_SP,             NOREQ,    IMM_MMN,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x73},
+   {    R_R,             NOREQ,    R_A,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x4F},
+   {   RS_R,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x46},
+   {  RS_AE,             NOREQ,  RS_IR,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Y, TRANSFORM_IR0,false,false,false, true,  S_NONE,0x00,0x44},
+   {   RS_R,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x46},
+   {  RS_RR,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,     TRANSFORM_P,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x07},
+   {  RS_RR,             NOREQ,RS_NONE,INDIRECT_IMMEDIATE,      NOIMM,IMM_MMN,     TRANSFORM_P,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x4B},
+   {   R_HL,          INDIRECT,    R_A,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x77},
+   {   R_SP,             NOREQ,   R_HL,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xF9},
+   {   R_SP,             NOREQ, RS_IXY,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0xF9},
+   {   R_SP,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,IMM_MMN,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0x31},
+   {   R_SP,             NOREQ,RS_NONE,INDIRECT_IMMEDIATE,      NOIMM,IMM_MMN,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x7B},
 };
 operandlist_t operands_ldd[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA8, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xA8},
 };
 operandlist_t operands_lddr[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB8, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xB8},
 };
 operandlist_t operands_ldi[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA0, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xA0},
 };
 operandlist_t operands_ldir[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB0, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xB0},
 };
 operandlist_t operands_lea[] = {
 // optimized set
-    {false,false,true,RS_RR, NOREQ, R_IX, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_P,      TRANSFORM_NONE, 0xED, 0x02, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {  RS_RR,             NOREQ,   R_IX,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_P,TRANSFORM_NONE,false, true,false,false,   S_ANY,0xED,0x02},
 // end optimized set
-    {false,false,true,R_IX, NOREQ, R_IX, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x32, S_ANY},
-    {false,false,true,R_IY, NOREQ, R_IX, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x55, S_ANY},
-    {false,false,true,R_IX, NOREQ, R_IY, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x54, S_ANY},
-    {false,false,true,R_IY, NOREQ, R_IY, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x33, S_ANY},
-    {false,false,true,RS_RR, NOREQ, R_IY, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_P,      TRANSFORM_NONE, 0xED, 0x03, S_ANY},
+   {   R_IX,             NOREQ,   R_IX,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false,false,   S_ANY,0xED,0x32},
+   {   R_IY,             NOREQ,   R_IX,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false,false,   S_ANY,0xED,0x55},
+   {   R_IX,             NOREQ,   R_IY,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false,false,   S_ANY,0xED,0x54},
+   {   R_IY,             NOREQ,   R_IY,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false,false,   S_ANY,0xED,0x33},
+   {  RS_RR,             NOREQ,   R_IY,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_P,TRANSFORM_NONE,false, true,false,false,   S_ANY,0xED,0x03},
 };
 operandlist_t operands_mlt[] = {
-    {false,false,false,RS_RR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_P,      TRANSFORM_NONE, 0xED, 0x4C, S_NONE},
-    {false,false,false,R_SP, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7C, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {  RS_RR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_P,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x4C},
+   {   R_SP,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x7C},
 };
 operandlist_t operands_neg[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x44, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x44},
 };
 operandlist_t operands_nop[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x00, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x00},
 };
 operandlist_t operands_or[] = {
 // optimized set
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xB0, S_NONE},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF6, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xB0},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xF6},
 // end optimized set
-    {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE,VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_IR, NOREQ, VAL_NONE, VAL_NONE,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xB4, S_NONE},
-    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF6, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_R, NOREQ, VAL_NONE,VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xB0, S_NONE},
-    // same set, without A register
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_ANY},
-    {false,false,false,RS_IR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0xB4, S_NONE},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xB6, S_ANY},
+   {    R_A,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xB6},
+   {    R_A,             NOREQ,  RS_IR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE, TRANSFORM_IR0,false,false,false, true,  S_NONE,0x00,0xB4},
+   {    R_A,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0xB6},
+   {    R_A,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xF6},
+   {    R_A,             NOREQ,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Z,false,false,false,false,  S_NONE,0x00,0xB0},
+// same set, without A register
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xB6},
+   {  RS_IR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR0,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0xB4},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0xB6},
 };
 operandlist_t operands_otd2r[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xBC, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xBC},
 };
 operandlist_t operands_otdm[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x8B, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x8B},
 };
 operandlist_t operands_otdmr[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x9B, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x9B},
 };
 operandlist_t operands_otdr[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xBB, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xBB},
 };
 operandlist_t operands_otdrx[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xCB, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xCB},
 };
 operandlist_t operands_oti2r[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB4, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xB4},
 };
 operandlist_t operands_otim[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x83, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x83},
 };
 operandlist_t operands_otimr[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x93, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x93},
 };
 operandlist_t operands_otir[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xB3, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xB3},
 };
 operandlist_t operands_otirx[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xC3, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xC3},
 };
 operandlist_t operands_out[] = {
-    {false,false,false,R_BC, STATE_INDIRECT, RS_R, NOREQ, VAL_NONE, VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_Y,    0xED, 0x41, S_NONE},
-    {false,false,false,R_C, STATE_INDIRECT, RS_R, NOREQ, VAL_NONE, VAL_NONE,       false, TRANSFORM_NONE,   TRANSFORM_Y,    0xED, 0x41, S_NONE},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, R_A, NOREQ, VAL_N, VAL_NONE,       false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xD3, S_NONE},
-}; 
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_BC,          INDIRECT,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Y,false,false,false,false,  S_NONE,0xED,0x41},
+   {    R_C,          INDIRECT,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Y,false,false,false,false,  S_NONE,0xED,0x41},
+   {RS_NONE,INDIRECT_IMMEDIATE,    R_A,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xD3},
+};
 operandlist_t operands_out0[] = {
-    {false,false,false,RS_NONE, STATE_IMMEDIATE | STATE_INDIRECT, RS_R, NOREQ, VAL_N, VAL_NONE,       false, TRANSFORM_NONE,   TRANSFORM_Y,    0xED, 0x01, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,INDIRECT_IMMEDIATE,   RS_R,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Y,false,false,false,false,  S_NONE,0xED,0x01},
 };
 operandlist_t operands_outd[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xAB, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xAB},
 };
 operandlist_t operands_outd2[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xAC, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xAC},
 };
 operandlist_t operands_outi[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA3, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xA3},
 };
 operandlist_t operands_outi2[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0xA4, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0xA4},
 };
 operandlist_t operands_pea[] = {
-    {false,true,false,R_IX, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,           false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x65, S_ANY},
-    {false,true,false,R_IY, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,           false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x66, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_IX,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false,false,   S_ANY,0xED,0x65},
+   {   R_IY,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false,false,   S_ANY,0xED,0x66},
 };
 operandlist_t operands_pop[] = {
-    {false,false,false,RS_RR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0xC1, S_ANY},
-    {false,false,false,R_AF, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF1, S_ANY},
-    {false,false,false,RS_IXY, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE1, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {  RS_RR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_P,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xC1},
+   {   R_AF,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xF1},
+   { RS_IXY,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0xE1},
 };
 operandlist_t operands_push[] = {
-    {false,false,false,RS_RR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_P,      TRANSFORM_NONE, 0x00, 0xC5, S_ANY},
-    {false,false,false,R_AF, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xF5, S_ANY},
-    {false,false,false,RS_IXY, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xE5, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {  RS_RR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_P,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xC5},
+   {   R_AF,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xF5},
+   { RS_IXY,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false, true,   S_ANY,0x00,0xE5},
 };
 operandlist_t operands_res[] = {
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, R_HL, STATE_INDIRECT, VAL_BIT, VAL_NONE,    false, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0x86, S_ANY},
-    {false,false,true,RS_NONE, STATE_IMMEDIATE, RS_IXY, STATE_INDIRECT, VAL_BIT, VAL_NONE,   true, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0x86, S_ANY},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_R, NOREQ, VAL_BIT, VAL_NONE,              false, TRANSFORM_BIT,    TRANSFORM_Z,    0xCB, 0x80, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,         IMMEDIATE,   R_HL,          INDIRECT,    IMM_BIT,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xCB,0x86},
+   {RS_NONE,         IMMEDIATE, RS_IXY,          INDIRECT,    IMM_BIT,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false, true,false, true,   S_ANY,0xCB,0x86},
+   {RS_NONE,         IMMEDIATE,   RS_R,             NOREQ,    IMM_BIT,  NOIMM,   TRANSFORM_BIT,   TRANSFORM_Z,false,false,false,false,  S_NONE,0xCB,0x80},
 };
 operandlist_t operands_ret[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xC9, S_LIL | S_LIS},
-    {true,false,false,RS_NONE, STATE_CC, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,            false, TRANSFORM_CC,     TRANSFORM_NONE, 0x00, 0xC0, S_LIL | S_LIS},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,S_LILLIS,0x00,0xC9},
+   {RS_NONE,                CC,RS_NONE,             NOREQ,      NOIMM,  NOIMM,    TRANSFORM_CC,TRANSFORM_NONE,false,false, true,false,S_LILLIS,0x00,0xC0},
 };
 operandlist_t operands_reti[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x4D, S_LIL | S_LIS},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,S_LILLIS,0xED,0x4D},
 };
 operandlist_t operands_retn[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x45, S_LIL | S_LIS},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,S_LILLIS,0xED,0x45},
 };
 operandlist_t operands_rl[] = {
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x16, S_ANY},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x16, S_ANY},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x10, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xCB,0x16},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0xCB,0x16},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xCB,0x10},
 };
 operandlist_t operands_rla[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x17, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x17},
 };
 operandlist_t operands_rlc[] = {
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x06, S_ANY},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x06, S_ANY},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,     TRANSFORM_NONE,  0xCB, 0x00, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xCB,0x06},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0xCB,0x06},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xCB,0x00},
 };
 operandlist_t operands_rlca[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x07, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x07},
 };
 operandlist_t operands_rld[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x6F, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x6F},
 };
 operandlist_t operands_rr[] = {
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x1E, S_ANY},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x1E, S_ANY},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x18, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xCB,0x1E},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0xCB,0x1E},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xCB,0x18},
 };
 operandlist_t operands_rra[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x1F, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x1F},
 };
 operandlist_t operands_rrc[] = {
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x0E, S_ANY},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x0E, S_ANY},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x08, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xCB,0x0E},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0xCB,0x0E},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xCB,0x08},
 };
 operandlist_t operands_rrca[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x0F, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x0F},
 };
 operandlist_t operands_rrd[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x67, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x67},
 };
 operandlist_t operands_rsmix[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7E, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x7E},
 };
 operandlist_t operands_rst[] = {
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_N,      TRANSFORM_NONE, 0x00, 0xC7, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,     TRANSFORM_N,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xC7},
 };
 operandlist_t operands_sbc[] = {
-    {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE,VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x9E, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_IR, NOREQ, VAL_NONE, VAL_NONE,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x9C, S_NONE},
-    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x9E, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xDE, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_R, NOREQ, VAL_NONE,VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x98, S_NONE},
-    // same set, without A register
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x9E, S_ANY},
-    {false,false,false,RS_IR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0x9C, S_NONE},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x9E, S_ANY},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xDE, S_NONE},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0x98, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {    R_A,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x9E},
+   {    R_A,             NOREQ,  RS_IR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE, TRANSFORM_IR0,false,false,false, true,  S_NONE,0x00,0x9C},
+   {    R_A,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x9E},
+   {    R_A,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xDE},
+   {    R_A,             NOREQ,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Z,false,false,false,false,  S_NONE,0x00,0x98},
+// same set, without A register
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x9E},
+   {  RS_IR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR0,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0x9C},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x9E},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xDE},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x98},
 
-    {false,false,false,R_HL, NOREQ, RS_RR, NOREQ, VAL_NONE,VAL_NONE,              false, TRANSFORM_NONE,   TRANSFORM_P,    0xED, 0x42, S_ANY},
-    {false,false,false,R_HL, NOREQ, R_SP, NOREQ, VAL_NONE, VAL_NONE,              false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x72, S_ANY},
+   {   R_HL,             NOREQ,  RS_RR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_P,false,false,false,false,   S_ANY,0xED,0x42},
+   {   R_HL,             NOREQ,   R_SP,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x72},
 };
 operandlist_t operands_scf[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x37, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x37},
 };
 operandlist_t operands_set[] = {
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, R_HL, STATE_INDIRECT, VAL_BIT, VAL_NONE,    false, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0xC6, S_ANY},
-    {false,false,true,RS_NONE, STATE_IMMEDIATE, RS_IXY, STATE_INDIRECT, VAL_BIT, VAL_NONE,   true, TRANSFORM_Y,      TRANSFORM_NONE, 0xCB, 0xC6, S_ANY},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_R, NOREQ, VAL_BIT, VAL_NONE,              false, TRANSFORM_BIT,    TRANSFORM_Z,    0xCB, 0xC0, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,         IMMEDIATE,   R_HL,          INDIRECT,    IMM_BIT,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xCB,0xC6},
+   {RS_NONE,         IMMEDIATE, RS_IXY,          INDIRECT,    IMM_BIT,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false, true,false, true,   S_ANY,0xCB,0xC6},
+   {RS_NONE,         IMMEDIATE,   RS_R,             NOREQ,    IMM_BIT,  NOIMM,   TRANSFORM_BIT,   TRANSFORM_Z,false,false,false,false,  S_NONE,0xCB,0xC0},
 };
 operandlist_t operands_sla[] = {
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x26, S_ANY},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x26, S_ANY},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x20, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xCB,0x26},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0xCB,0x26},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xCB,0x20},
 };
 operandlist_t operands_slp[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x76, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x76},
 };
 operandlist_t operands_sra[] = {
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x2E, S_ANY},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x2E, S_ANY},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x28, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xCB,0x2E},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0xCB,0x2E},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xCB,0x28},
 };
 operandlist_t operands_srl[] = {
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x3E, S_ANY},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0xCB, 0x3E, S_ANY},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0xCB, 0x38, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xCB,0x3E},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0xCB,0x3E},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xCB,0x38},
 };
 operandlist_t operands_stmix[] = {
-    {false,false,false,RS_NONE, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,          false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x7D, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x7D},
 };
 operandlist_t operands_sub[] = {
 // optimized set
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,    false, TRANSFORM_NONE,   TRANSFORM_NONE,0x00, 0x96, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x96},
 // end optimized set
-    {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE,VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x96, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_IR, NOREQ, VAL_NONE, VAL_NONE,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0x94, S_NONE},
-    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0x96, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xD6, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_R, NOREQ, VAL_NONE,VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0x90, S_NONE},
-    // same set, without A register
-    {false,false,false,RS_IR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,              true, TRANSFORM_IR0,    TRANSFORM_NONE,0x00, 0x94, S_NONE},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   true, TRANSFORM_NONE,   TRANSFORM_NONE,0x00, 0x96, S_ANY},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,              false, TRANSFORM_NONE,   TRANSFORM_NONE,0x00, 0xD6, S_NONE},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,              false, TRANSFORM_Z,      TRANSFORM_NONE,0x00, 0x90, S_NONE},
+   {    R_A,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0x96},
+   {    R_A,             NOREQ,  RS_IR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE, TRANSFORM_IR0,false,false,false, true,  S_NONE,0x00,0x94},
+   {    R_A,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0x96},
+   {    R_A,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xD6},
+   {    R_A,             NOREQ,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Z,false,false,false,false,  S_NONE,0x00,0x90},
+// same set, without A register
+   {  RS_IR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR0,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0x94},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0x96},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xD6},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0x90},
 };
 operandlist_t operands_tst[] = {
-    {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE,VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x34, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x64, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_R, NOREQ, VAL_NONE,VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_Y,    0xED, 0x04, S_NONE},
-    // same set, without A register
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x34, S_ANY},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x64, S_NONE},
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Y,      TRANSFORM_NONE, 0xED, 0x04, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {    R_A,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x34},
+   {    R_A,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x64},
+   {    R_A,             NOREQ,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Y,false,false,false,false,  S_NONE,0xED,0x04},
+// same set, without A register
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0xED,0x34},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x64},
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Y,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x04},
 };
 operandlist_t operands_tstio[] = {
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0xED, 0x74, S_NONE},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0xED,0x74},
 };
 operandlist_t operands_xor[] = {
 // optimized set
-    {false,false,false,RS_R, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             false, TRANSFORM_Z,      TRANSFORM_NONE, 0x00, 0xA8, S_NONE},
-    {false,false,false,RS_NONE, STATE_IMMEDIATE, RS_NONE, NOREQ, VAL_N, VAL_NONE,             false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xEE, S_NONE},
-    {false,false,false,R_HL, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,   false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_ANY},
+//     REGA       ADDRESSMODEA    REGB       ADDRESSMODEB        LENA    LENB       TRANSFORMA     TRANSFORMB DISPA DISPB    CC  DDFD      ADL PREF CODE
+   {   RS_R,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,     TRANSFORM_Z,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xA8},
+   {RS_NONE,         IMMEDIATE,RS_NONE,             NOREQ,      IMM_N,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xEE},
+   {   R_HL,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xAE},
 // end optimized set
-    {false,false,false,R_A, NOREQ, R_HL, STATE_INDIRECT, VAL_NONE,VAL_NONE,      false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_IR, NOREQ, VAL_NONE, VAL_NONE,                true, TRANSFORM_NONE,   TRANSFORM_IR0,  0x00, 0xAC, S_NONE},
-    {false,false,true,R_A, NOREQ, RS_IXY, STATE_INDIRECT, VAL_NONE, VAL_NONE,     true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_ANY},
-    {false,false,false,R_A, NOREQ, RS_NONE, STATE_IMMEDIATE, VAL_NONE, VAL_N,                false, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xEE, S_NONE},
-    {false,false,false,R_A, NOREQ, RS_R, NOREQ, VAL_NONE,VAL_NONE,                false, TRANSFORM_NONE,   TRANSFORM_Z,    0x00, 0xA8, S_NONE},
-    // same set, without A register
-    {false,false,false,RS_IR, NOREQ, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,             true, TRANSFORM_IR0,    TRANSFORM_NONE, 0x00, 0xAC, S_NONE},
-    {false,true,false,RS_IXY, STATE_INDIRECT, RS_NONE, NOREQ, VAL_NONE, VAL_NONE,  true, TRANSFORM_NONE,   TRANSFORM_NONE, 0x00, 0xAE, S_ANY},
+   {    R_A,             NOREQ,   R_HL,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,   S_ANY,0x00,0xAE},
+   {    R_A,             NOREQ,  RS_IR,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE, TRANSFORM_IR0,false,false,false, true,  S_NONE,0x00,0xAC},
+   {    R_A,             NOREQ, RS_IXY,          INDIRECT,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE,false, true,false, true,   S_ANY,0x00,0xAE},
+   {    R_A,             NOREQ,RS_NONE,         IMMEDIATE,      NOIMM,  IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,false,false,false,false,  S_NONE,0x00,0xEE},
+   {    R_A,             NOREQ,   RS_R,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,   TRANSFORM_Z,false,false,false,false,  S_NONE,0x00,0xA8},
+// same set, without A register
+   {  RS_IR,             NOREQ,RS_NONE,             NOREQ,      NOIMM,  NOIMM,   TRANSFORM_IR0,TRANSFORM_NONE,false,false,false, true,  S_NONE,0x00,0xAC},
+   { RS_IXY,          INDIRECT,RS_NONE,             NOREQ,      NOIMM,  NOIMM,  TRANSFORM_NONE,TRANSFORM_NONE, true,false,false, true,   S_ANY,0x00,0xAE},
 };
 
 instruction_t instructions[] = {

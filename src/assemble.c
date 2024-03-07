@@ -30,13 +30,13 @@ void parse_command(char *src) {
 void parse_operand(char *string, uint8_t len, operand_t *operand) {
     char *ptr = string;
 
-    operand->state = NOREQ;
+    operand->addressmode = NOREQ;
     operand->reg = R_NONE;
 
     // direct or indirect
     if(*ptr == '(') {
         operand->indirect = true;
-        operand->state |= STATE_INDIRECT;
+        operand->addressmode |= INDIRECT;
         // find closing bracket or error out
         if(string[len-1] == ')') string[len-1] = 0; // terminate on closing bracket
         else error(message[ERROR_CLOSINGBRACKET]);
@@ -186,7 +186,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IX;
                             operand->displacement_provided = true;
-                            //operand->state |= STATE_DISPLACEMENT;
+                            //operand->addressmode |= DISPLACEMENT;
                             if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
                             else operand->displacement = (int16_t) getValue(ptr, false);
                             return;
@@ -221,7 +221,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IY;
                             operand->displacement_provided = true;
-                            //operand->state |= STATE_DISPLACEMENT;
+                            //operand->addressmode |= DISPLACEMENT;
                             if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
                             else operand->displacement = (int16_t) getValue(ptr, false);
                             return;
@@ -251,7 +251,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
             }
             if(*ptr == 0) {
                 operand->cc = true;
-                operand->state |= STATE_CC;
+                operand->addressmode |= CC;
                 operand->cc_index = CC_INDEX_M;
                 return;
             }
@@ -263,9 +263,9 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                 case 'C':
                     if(*ptr == 0) {
                         operand->cc = true;
-                        operand->state |= STATE_CC;
+                        operand->addressmode |= CC;
                         operand->cc_index = CC_INDEX_NC;
-                        operand->state |= STATE_CCA;
+                        operand->addressmode |= CCA;
                         return;
                     }
                     break;
@@ -273,9 +273,9 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                 case 'Z':
                     if(*ptr == 0) {
                         operand->cc = true;
-                        operand->state |= STATE_CC;
+                        operand->addressmode |= CC;
                         operand->cc_index = CC_INDEX_NZ;
-                        operand->state |= STATE_CCA;
+                        operand->addressmode |= CCA;
                         return;
                     }
                     break;
@@ -288,14 +288,14 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
             switch(*ptr++) {
                 case 0:
                     operand->cc = true;
-                    operand->state |= STATE_CC;
+                    operand->addressmode |= CC;
                     operand->cc_index = CC_INDEX_P;
                     return;
                 case 'e':
                 case 'E':
                     if(*ptr == 0) {
                         operand->cc = true;
-                        operand->state |= STATE_CC;
+                        operand->addressmode |= CC;
                         operand->cc_index = CC_INDEX_PE;
                         return;
                     }
@@ -304,7 +304,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                 case 'O':
                     if(*ptr == 0) {
                         operand->cc = true;
-                        operand->state |= STATE_CC;
+                        operand->addressmode |= CC;
                         operand->cc_index = CC_INDEX_PO;
                         return;
                     }
@@ -333,9 +333,9 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
         case 'Z':
             if(*ptr == 0) {
                 operand->cc = true;
-                operand->state |= STATE_CC;
+                operand->addressmode |= CC;
                 operand->cc_index = CC_INDEX_Z;
-                operand->state |= STATE_CCA;
+                operand->addressmode |= CCA;
                 return;
             }
             break;
@@ -347,7 +347,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
         if(operand->indirect) string++;
         operand->immediate = getValue(string, false);
         operand->immediate_provided = true;
-        operand->state |= STATE_IMMEDIATE;
+        operand->addressmode |= IMMEDIATE;
     }
 }
 
@@ -1126,7 +1126,7 @@ void processInstructions(char *macroline){
                         regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
                         regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
 
-                        condmatch = (list->conditionsA == operand1.state) && (list->conditionsB == operand2.state);
+                        condmatch = (list->conditionsA == operand1.addressmode) && (list->conditionsB == operand2.addressmode);
                         if(list->cc_allowed) {
                             condmatch |= operand1.cc;
                             regamatch = true;
@@ -1140,7 +1140,7 @@ void processInstructions(char *macroline){
                             printf("regsetA: <0x%03X> - regsetB <0x%03X>\r\n", list->regsetA, list->regsetB);
                             printf("    opA: <0x%03X> -     opB <0x%03X>\r\n", operand1.reg, operand2.reg);
                             printf("  condA: <0x%0X>  -   condB <0x%0X>\r\n", list->conditionsA, list->conditionsB);
-                            printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.state, operand2.state);
+                            printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.addressmode, operand2.addressmode);
                             printf("--------------------------------------\r\n");
                         }
                         */
