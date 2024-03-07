@@ -13,11 +13,11 @@
 #define MAX_MNEMONIC_SIZE         10
 
 // Immediate field lenght - determines output size for a given immediate
-#define NOIMM       0x00
-#define IMM_N       0x01
-#define IMM_MMN     0x02
-#define IMM_BIT     0x04
-#define IMM_NSELECT 0x08
+//#define NOIMM       0x00
+//#define IMM_N       0x01
+//#define IMM_MMN     0x02
+//#define IMM_BIT     0x04
+//#define IMM_NSELECT 0x08
 
 // Individual registers - 24-bit bitfield
 #define R_NONE  0x000000
@@ -102,10 +102,15 @@
 
 // Status bitfield codes
 #define NOREQ         0x00    // no requirement
-#define INDIRECT      0x01    // bit 1
-#define IMMEDIATE     0x02    // bit 2
-#define CC            0x04    // bit 3
-#define CCA           0x08    // bit 4
+#define INDIRECT      0x01    // bit 1              - checked for match during processInstructions
+#define IMMEDIATE     0x02    // bit 2              - checked for match during processInstructions
+#define CC            0x04    // bit 3              - checked for match during processInstructions
+#define CCA           0x08    // bit 4              - checked for match during processInstructions
+#define IMM_N         0x10    // bit 5              - immediate length information for emission
+#define IMM_MMN       0x20    // bit 6              - immediate length information for emission
+#define IMM_BIT       0x40    // bit 7              - immediate length information for emission
+#define IMM_NSELECT   0x80    // bit 8              - immediate length information for emission
+#define MODECHECK     (INDIRECT | IMMEDIATE | CC | CCA)
 
 #define INDIRECT_IMMEDIATE    INDIRECT | IMMEDIATE
 
@@ -159,8 +164,8 @@ typedef struct {
     uint8_t               conditionsA;        // specific addressing conditions that need to match this operand
     uint24_t              regsetB;
     uint8_t               conditionsB;
-    uint8_t               immLengthA;         // the length of any immediate value for this operand
-    uint8_t               immLengthB;
+//    uint8_t               immLengthA;         // the length of any immediate value for this operand
+//    uint8_t               immLengthB;
     opcodetransformtype_t transformA;         // Do we transform acc to operandA
     opcodetransformtype_t transformB;         //  "        "       " "  operandB
     bool                  displacement_requiredA;

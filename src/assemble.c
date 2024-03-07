@@ -1126,7 +1126,7 @@ void processInstructions(char *macroline){
                         regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
                         regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
 
-                        condmatch = (list->conditionsA == operand1.addressmode) && (list->conditionsB == operand2.addressmode);
+                        condmatch = ((list->conditionsA & MODECHECK) == operand1.addressmode) && ((list->conditionsB & MODECHECK) == operand2.addressmode);
                         if(list->cc_allowed) {
                             condmatch |= operand1.cc;
                             regamatch = true;
