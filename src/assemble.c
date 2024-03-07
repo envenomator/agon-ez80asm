@@ -347,7 +347,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
         if(operand->indirect) string++;
         operand->immediate = getValue(string, false);
         operand->immediate_provided = true;
-        operand->addressmode |= IMMEDIATE;
+        operand->addressmode |= IMM;
     }
 }
 
@@ -1127,7 +1127,7 @@ void processInstructions(char *macroline){
                         regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
 
                         condmatch = ((list->conditionsA & MODECHECK) == operand1.addressmode) && ((list->conditionsB & MODECHECK) == operand2.addressmode);
-                        if(list->cc_allowed) {
+                        if(list->flags & F_CCOK) {
                             condmatch |= operand1.cc;
                             regamatch = true;
                         }

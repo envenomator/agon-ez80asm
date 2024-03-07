@@ -12,13 +12,6 @@
 
 #define MAX_MNEMONIC_SIZE         10
 
-// Immediate field lenght - determines output size for a given immediate
-//#define NOIMM       0x00
-//#define IMM_N       0x01
-//#define IMM_MMN     0x02
-//#define IMM_BIT     0x04
-//#define IMM_NSELECT 0x08
-
 // Individual registers - 24-bit bitfield
 #define R_NONE  0x000000
 #define R_A     0x000001
@@ -103,16 +96,21 @@
 // Status bitfield codes
 #define NOREQ         0x00    // no requirement
 #define INDIRECT      0x01    // bit 1              - checked for match during processInstructions
-#define IMMEDIATE     0x02    // bit 2              - checked for match during processInstructions
+#define IMM           0x02    // bit 2              - checked for match during processInstructions
 #define CC            0x04    // bit 3              - checked for match during processInstructions
 #define CCA           0x08    // bit 4              - checked for match during processInstructions
 #define IMM_N         0x10    // bit 5              - immediate length information for emission
 #define IMM_MMN       0x20    // bit 6              - immediate length information for emission
 #define IMM_BIT       0x40    // bit 7              - immediate length information for emission
 #define IMM_NSELECT   0x80    // bit 8              - immediate length information for emission
-#define MODECHECK     (INDIRECT | IMMEDIATE | CC | CCA)
+#define MODECHECK     (INDIRECT | IMM | CC | CCA)
 
-#define INDIRECT_IMMEDIATE    INDIRECT | IMMEDIATE
+// Flag bitfield codes
+#define F_NONE          0x00
+#define F_DISPA         0x01
+#define F_DISPB         0x02
+#define F_CCOK          0x04
+#define F_DDFDOK        0x08
 
 typedef struct {
     uint24_t            reg;
@@ -142,7 +140,7 @@ typedef struct {
     uint8_t opcode;
 } opcodesequence_t;
 
-typedef enum {
+enum {
     TRANSFORM_NONE,
     TRANSFORM_X,
     TRANSFORM_Y,
@@ -157,21 +155,16 @@ typedef enum {
     TRANSFORM_N,            // only used by RST
     TRANSFORM_BIT,          // only used by RES/SET
     TRANSFORM_REL,          // only used by JR/DJNZ
-}opcodetransformtype_t;
+};
 
 typedef struct {
     uint24_t              regsetA;            // one or more registers that need to match this operand
     uint8_t               conditionsA;        // specific addressing conditions that need to match this operand
     uint24_t              regsetB;
     uint8_t               conditionsB;
-//    uint8_t               immLengthA;         // the length of any immediate value for this operand
-//    uint8_t               immLengthB;
-    opcodetransformtype_t transformA;         // Do we transform acc to operandA
-    opcodetransformtype_t transformB;         //  "        "       " "  operandB
-    bool                  displacement_requiredA;
-    bool                  displacement_requiredB;
-    bool                  cc_allowed;         // is a condition name allowed as operand?
-    bool                  ddfdpermitted;      
+    uint8_t               transformA;         // Do we transform acc to operandA
+    uint8_t               transformB;         //  "        "       " "  operandB
+    uint8_t               flags;
     uint8_t               adl;                // the adl mode allowed in set of operands
     uint8_t               prefix;             // base prefix1, or 0 if none to output
     uint8_t               opcode;             // base opcode, may be transformed by A/B, according to opcodetransformtype
