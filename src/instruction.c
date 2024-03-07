@@ -46,6 +46,8 @@ void transform_instruction(operand_t *op, uint8_t type) {
     int24_t rel;
 
     switch(type) {
+        case TRANSFORM_NONE:
+            break;
         case TRANSFORM_IR0:
             if(op->reg & (R_IXL|R_IYL)) output.opcode |= 0x01;
             break;
@@ -100,8 +102,6 @@ void transform_instruction(operand_t *op, uint8_t type) {
                 op->immediate = ((int8_t)(rel & 0xFF));
                 op->immediate_provided = true;
             }
-            break;
-        case TRANSFORM_NONE:
             break;
         default:
             error(message[ERROR_TRANSFORMATION]);
