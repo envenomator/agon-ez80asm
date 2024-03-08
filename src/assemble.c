@@ -867,6 +867,22 @@ uint24_t delta;
     definelabel(address); // set address to current line
 }
 
+// strncasecmp is boken on CEDev
+int agon_strncasecmp(char *s1, char *s2, int n) {
+  if (n == 0)
+    return 0;
+
+  while (n-- != 0 && tolower(*s1) == tolower(*s2))
+    {
+      if (n == 0 || *s1 == '\0' || *s2 == '\0')
+    break;
+      s1++;
+      s2++;
+    }
+
+  return tolower(*(unsigned char *) s1) - tolower(*(unsigned char *) s2);
+}
+
 void handle_asm_definemacro(void) {
     streamtoken_t token;
     uint8_t argcount = 0;
@@ -896,11 +912,11 @@ void handle_asm_definemacro(void) {
         }
         // skip leading space
         while(*src && (isspace(*src))) src++;
-        if(strncasecmp(src, "macro", 5) == 0) {
+        if(agon_strncasecmp(src, "macro", 5) == 0) {
             error(message[ERROR_MACROINMACRO]);
             break;
         }
-        if(strncasecmp(src, "endmacro", 8) == 0) {
+        if(agon_strncasecmp(src, "endmacro", 8) == 0) {
             foundend = true;
             break;
         }
