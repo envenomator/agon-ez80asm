@@ -890,6 +890,10 @@ void handle_asm_definemacro(void) {
             listStartLine(macroline);
             listEndLine();
         }
+        if((!isspace(src[0])) && (src[0] != '@') && (src[0] != ';')) {
+            error(message[ERROR_MACRO_NOGLOBALLABELS]);
+            break;
+        }
         // skip leading space
         while(*src && (isspace(*src))) src++;
         if(strncasecmp(src, "macro", 5) == 0) {
