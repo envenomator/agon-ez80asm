@@ -915,10 +915,15 @@ void handle_asm_definemacro(void) {
         if(!filehandle[FILE_MACRO]) error(message[ERROR_WRITINGMACROFILE]);
     }
     while(io_getline(FILE_CURRENT, macroline)) {
+        linenumber++;
         char *src = macroline;
         // skip leading space
         while(*src && (isspace(*src))) src++;
-        if(strncasecmp(src, "endmacro\n",8) == 0) {
+        if(strncasecmp(src, "macro", 5) == 0) {
+            error("No macro definitions allowed inside a macro");
+            break;
+        }
+        if(strncasecmp(src, "endmacro", 8) == 0) {
             foundend = true;
             break;
         }
@@ -1050,7 +1055,7 @@ void handle_assembler_command(void) {
 }
 
 // Process the instructions found at each line, after parsing them
-void processInstructions(char *macroline){
+void processInstructions(void){
     operandlist_t *list;
     uint8_t listitem;
     bool match;
@@ -1137,11 +1142,12 @@ void processMacro(void) {
     fh = fopen(filename, "rb");
     // Process the macro
     while(fgets(macroline, LINEMAX, fh)) {
+        linenumber++;
         if(consolelist_enabled || list_enabled) {
             listStartLine(macroline);
         }
         parseLine(macroline);
-        processInstructions(macroline);
+        processInstructions();
         if(consolelist_enabled || list_enabled) {
             listEndLine();
         }
@@ -1177,7 +1183,7 @@ void processDelayedLineNumberReset(void) {
 bool assemble(void){
     char line[LINEMAX]; // Temp line buffer, will be deconstructed during streamtoken_t parsing
     char errorline[LINEMAX]; // Full integrity copy of each line
-    char macroline[LINEMAX]; // Temp line buffer for macro expansion
+    //char macroline[LINEMAX]; // Temp line buffer for macro expansion
     filestackitem fsitem;
     bool incfileState;
     global_errors = 0;
@@ -1192,7 +1198,7 @@ bool assemble(void){
             linenumber++;
             parseLine(line);
             if(!currentline.current_macro) {
-                processInstructions(macroline);
+                processInstructions();
                 processDelayedLineNumberReset();
             }
             else processMacro();
@@ -1233,7 +1239,7 @@ bool assemble(void){
             }
             parseLine(line);
             if(!currentline.current_macro) {
-                processInstructions(macroline);
+                processInstructions();
                 if(consolelist_enabled || list_enabled) {
                     listEndLine();
                 }
