@@ -1182,7 +1182,6 @@ void processMacro(void) {
     }
 
     // end processing
-    //lineNumberNeedsReset = true;
     currentExpandedMacro = NULL;
 }
 
