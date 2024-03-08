@@ -500,3 +500,23 @@ uint8_t strcompound(char *dest, const char *src1, const char *src2) {
     *dest = 0;
     return len;
 }
+
+char * _nextline_ptr;
+
+uint16_t getnextline(char *dst) {
+    uint16_t len = 0;
+
+    while(*_nextline_ptr) {
+        *dst++ = *_nextline_ptr;
+        len++;
+        if(*_nextline_ptr++ == '\n') {
+            break;
+        }
+    }
+    *dst = 0;
+    return len;
+}
+
+void resetnextline(char *src) {
+    _nextline_ptr = src;
+}

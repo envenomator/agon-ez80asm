@@ -872,8 +872,45 @@ void handle_asm_definemacro(void) {
     uint8_t argcount = 0;
     char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
     char macroline[LINEMAX];
+    char *strend;
     definelabel(address);
     bool foundend = false;
+    macro_t *macro;
+
+    _macrobuffer[0] = 0; // empty string
+    strend = _macrobuffer;
+
+    if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine(); // print out first line of macro definition
+
+    while(io_getline(FILE_CURRENT, macroline)) {
+        linenumber++;
+        char *src = macroline;
+
+        if(pass == 2 && (consolelist_enabled || list_enabled)) {
+            listStartLine(macroline);
+            listEndLine();
+        }
+        // skip leading space
+        while(*src && (isspace(*src))) src++;
+        if(strncasecmp(src, "macro", 5) == 0) {
+            error(message[ERROR_MACROINMACRO]);
+            break;
+        }
+        if(strncasecmp(src, "endmacro", 8) == 0) {
+            foundend = true;
+            break;
+        }
+        // concatenate to buffer end
+        if(pass == 1) {
+            char *tmp = macroline;
+            while(*tmp) *strend++ = *tmp++;
+            *strend = 0;
+        }
+    }
+    if(!foundend) {
+        error(message[ERROR_MACROUNFINISHED]);
+        return;
+    }
 
     // Only define macros in pass 1
     // parse arguments into array
@@ -908,34 +945,12 @@ void handle_asm_definemacro(void) {
             }
         }
         // record the macro to memory
-        defineMacro(currentline.mnemonic, argcount, (char *)arglist);
-        // define macro filename
-        io_getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
-        filehandle[FILE_MACRO] = fopen(filename[FILE_MACRO], "wb+");
-        if(!filehandle[FILE_MACRO]) error(message[ERROR_WRITINGMACROFILE]);
-    }
-    while(io_getline(FILE_CURRENT, macroline)) {
-        linenumber++;
-        char *src = macroline;
-        // skip leading space
-        while(*src && (isspace(*src))) src++;
-        if(strncasecmp(src, "macro", 5) == 0) {
-            error("No macro definitions allowed inside a macro");
-            break;
+        macro = defineMacro(currentline.mnemonic, argcount, (char *)arglist);
+        if(!macro) {
+            error(message[ERROR_MACROMEMORYALLOCATION]);
+            return;
         }
-        if(strncasecmp(src, "endmacro", 8) == 0) {
-            foundend = true;
-            break;
-        }
-        // store macro body
-        if(pass == 1) io_puts(FILE_MACRO, macroline);
-    }
-    if(pass == 1) {
-        fclose(filehandle[FILE_MACRO]);
-        filehandle[FILE_MACRO] = NULL;
-    }
-    if(!foundend) {
-        error("macro not closed");
+        setMacroBody(macro, _macrobuffer);
     }
 }
 
@@ -1112,9 +1127,7 @@ void processMacro(void) {
     streamtoken_t token;
     uint8_t argcount = 0;
     macro_t *exp = currentline.current_macro;
-    char filename[FILENAMEMAXLENGTH];
     char macroline[LINEMAX];
-    FILE *fh;
 
     // set for additional line-based parsing/processing of the macro
     currentExpandedMacro = currentline.current_macro;
@@ -1138,25 +1151,19 @@ void processMacro(void) {
     if(argcount != exp->argcount) error(message[ERROR_MACROINCORRECTARG]);
 
     // open macro storage
-    io_getMacroFilename(filename, exp->name);    
-    fh = fopen(filename, "rb");
-    // Process the macro
-    while(fgets(macroline, LINEMAX, fh)) {
-        linenumber++;
-        if(consolelist_enabled || list_enabled) {
-            listStartLine(macroline);
-        }
+    resetnextline(exp->body);
+
+    // process body
+    while(getnextline(macroline)) {
+        if(pass == 2 && (consolelist_enabled || list_enabled)) listStartLine(macroline);
         parseLine(macroline);
         processInstructions();
-        if(consolelist_enabled || list_enabled) {
-            listEndLine();
-        }
+        if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine();
     }
 
     // end processing
-    lineNumberNeedsReset = true;
+    //lineNumberNeedsReset = true;
     currentExpandedMacro = NULL;
-    fclose(fh);
 }
 
 // Initialize pass 1 / pass2 states for the assembler
@@ -1234,19 +1241,17 @@ bool assemble(void){
         while(io_getline(FILE_CURRENT, line)) {
             strcpy(errorline, line);
             linenumber++;
-            if(consolelist_enabled || list_enabled) {
-                listStartLine(line);
-            }
+            if(consolelist_enabled || list_enabled) listStartLine(line);
             parseLine(line);
             if(!currentline.current_macro) {
                 processInstructions();
-                if(consolelist_enabled || list_enabled) {
-                    listEndLine();
-                }
+                if(consolelist_enabled || list_enabled) listEndLine();
                 processDelayedLineNumberReset();
             }
-            else processMacro();
-
+            else {
+                if(consolelist_enabled || list_enabled) listEndLine();
+                processMacro();
+            }
             if(global_errors) {
                 vdp_set_text_colour(DARK_YELLOW);
                 printf("%s\r\n",errorline);

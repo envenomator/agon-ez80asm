@@ -42,6 +42,8 @@ void    getLabelToken(streamtoken_t *token, char *src);                // termin
 uint8_t getMnemonicToken(streamtoken_t *token, char *src);          // terminated on spaces
 uint8_t getOperandToken(streamtoken_t *token, char *src);           // terminates on , or ;  transparent literals
 uint8_t getDefineValueToken(streamtoken_t *token, char *src);       // terminates on all operator symbols, ',' and ';' transparent literals and strings
+uint16_t getnextline(char *dst);
+void     resetnextline(char *src);
 
 uint8_t strcompound(char *dest, const char *src1, const char *src2);
 void validateRange8bit(int32_t value);

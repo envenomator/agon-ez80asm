@@ -71,25 +71,10 @@ void _prepare_filenames(char *input_filename, char *output_filename) {
     strcat(filename[FILE_SYMBOLS], ".symbols");
 }
 
-void io_getMacroFilename(char *filename, char *macroname) {
-    strcpy(filename, _fileBasename);
-    strcat(filename, ".m.");
-    strcat(filename, macroname);
-}
-
 void _deleteFiles(void) {
-    char macrofilename[FILENAMEMAXLENGTH];
-    int n;
-
     if(CLEANUPFILES) {
         remove(filename[FILE_ANONYMOUS_LABELS]);
     }
-    for(n = 0; n < macroTableCounter; n++) {
-        io_getMacroFilename(macrofilename, macroTable[n].name);
-        if(CLEANUPFILES) remove(macrofilename);
-
-    }
-
     if(global_errors && CLEANUPFILES) remove(filename[FILE_OUTPUT]);
 }
 
@@ -98,7 +83,6 @@ void _closeAllFiles() {
     if(filehandle[FILE_OUTPUT]) fclose(filehandle[FILE_OUTPUT]);
     if(filehandle[FILE_ANONYMOUS_LABELS]) fclose(filehandle[FILE_ANONYMOUS_LABELS]);
     if(list_enabled && filehandle[FILE_LISTING]) fclose(filehandle[FILE_LISTING]);
-    if(filehandle[FILE_MACRO]) fclose(filehandle[FILE_MACRO]);
 }
 
 bool _openfiles(void) {

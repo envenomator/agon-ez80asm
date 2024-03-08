@@ -38,7 +38,16 @@ macro_t* findMacro(char *name){
     else return NULL;
 }
 
-bool defineMacro(char *name, uint8_t argcount, char *arguments) {
+void setMacroBody(macro_t *macro, const char *body) {
+    macro->body = (char*)malloc(strlen(body)+1);
+    if(macro->body == NULL) {
+        error(message[ERROR_MACROMEMORYALLOCATION]);
+        return;
+    }
+    strcpy(macro->body, body);
+}
+
+macro_t * defineMacro(char *name, uint8_t argcount, char *arguments) {
     int len,i,j;
     int index;
     char *ptr,*subs;
@@ -52,11 +61,11 @@ bool defineMacro(char *name, uint8_t argcount, char *arguments) {
             len = strlen(name);
             if(len > MAXNAMELENGTH) {
                 error(message[ERROR_MACRONAMELENGTH]);
-                return false;
+                return NULL;
             }
             newmacro.name = (char*)malloc(len+1);
             macromemsize += len+1;
-            if(newmacro.name == NULL) return false;
+            if(newmacro.name == NULL) return NULL;
             strcpy(newmacro.name, name);
             newmacro.argcount = argcount;
             newmacro.substitutions = NULL;
@@ -66,18 +75,18 @@ bool defineMacro(char *name, uint8_t argcount, char *arguments) {
                 macromemsize += argcount * sizeof(char *);
                 newmacro.substitutions = (char **)malloc(argcount * sizeof(char *));
                 macromemsize += argcount * sizeof(char *);
-                if((newmacro.arguments == NULL) || (newmacro.substitutions == NULL)) return false;
+                if((newmacro.arguments == NULL) || (newmacro.substitutions == NULL)) return NULL;
                 for(j = 0; j < argcount; j++) {
                     len = strlen(arguments + j*(MACROARGLENGTH+1));
                     if(len > MACROARGLENGTH) {
                         error(message[ERROR_MACROARGLENGTH]);
-                        return false;
+                        return NULL;
                     }
                     ptr = (char*)malloc(len+1);
                     macromemsize += len+1;
                     subs = (char*)malloc(MACROARGLENGTH+1);
                     macromemsize += MACROARGLENGTH+1;
-                    if((ptr == NULL) || (subs == NULL)) return false;
+                    if((ptr == NULL) || (subs == NULL)) return NULL;
                     strcpy(ptr, arguments + j*(MACROARGLENGTH+1));
                     newmacro.arguments[j] = ptr;
                     newmacro.substitutions[j] = subs;
@@ -94,14 +103,13 @@ bool defineMacro(char *name, uint8_t argcount, char *arguments) {
                     newmacro = tempmacro;
                 }
             }
-            macroTable[macroTableCounter] = newmacro;
-            macroTableCounter++;
-            return true;
+            macroTable[macroTableCounter++] = newmacro;
+            return findMacro(name);
         }
         else error(message[ERROR_MAXMACROS]);
     }
     else error(message[ERROR_MACRODEFINED]);
-    return false;
+    return NULL;
 }
 
 uint8_t macroExpandArg(char *dst, char *src, macro_t *m) {
