@@ -14,9 +14,9 @@ typedef struct {
     uint8_t argcount;
     char**  arguments;
     char**  substitutions;
+    void*   next;
 } macro_t;
 
-extern macro_t macroTable[MAXIMUM_MACROS]; // indexed table
 extern uint8_t macroTableCounter;
 extern uint24_t macromemsize;
 
