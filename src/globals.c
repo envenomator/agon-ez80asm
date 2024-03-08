@@ -7,7 +7,6 @@
 bool lineNumberNeedsReset;
 unsigned int linenumber;
 unsigned int pass;
-bool recordingMacro;
 int inConditionalSection;
 macro_t *currentExpandedMacro;
 uint24_t address;

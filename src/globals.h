@@ -27,7 +27,6 @@ typedef struct {
 extern bool lineNumberNeedsReset;
 extern unsigned int linenumber;
 extern unsigned int pass;
-extern bool recordingMacro;
 extern int inConditionalSection; // 0: outside conditional section, 1: negative section, 2: positive section
 extern macro_t *currentExpandedMacro;
 extern uint24_t address;

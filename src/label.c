@@ -197,7 +197,7 @@ void advanceAnonymousLabel(void) {
     if(currentline.label) {
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
-                if(!recordingMacro) readAnonymousLabel();
+                readAnonymousLabel();
             }
         }
     }

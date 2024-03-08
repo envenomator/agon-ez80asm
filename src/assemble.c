@@ -451,29 +451,26 @@ void parseLine(char *src) {
                     break;
                 }
                 // Valid EZ80 instruction
-                if(!recordingMacro) {
-                    switch(streamtoken.terminator) {
-                        case ';':
-                            state = PS_COMMENT;
-                            currentline.next = streamtoken.next;
-                            break;
-                        case 0:
-                            currentline.next = NULL;
-                            state = PS_DONE;
-                            break;
-                        default:
-                            if(streamtoken.next) {
-                                oplength = getOperandToken(&streamtoken, streamtoken.next);
-                                if(oplength) {
-                                    state = PS_OP1;
-                                    break;
-                                }
+                switch(streamtoken.terminator) {
+                    case ';':
+                        state = PS_COMMENT;
+                        currentline.next = streamtoken.next;
+                        break;
+                    case 0:
+                        currentline.next = NULL;
+                        state = PS_DONE;
+                        break;
+                    default:
+                        if(streamtoken.next) {
+                            oplength = getOperandToken(&streamtoken, streamtoken.next);
+                            if(oplength) {
+                                state = PS_OP1;
+                                break;
                             }
-                            state = PS_DONE; // ignore any comments
-                            break;
-                    }
-                } 
-                else state = PS_DONE;
+                        }
+                        state = PS_DONE; // ignore any comments
+                        break;
+                }
                 break;
             case PS_OP1:
                 argcount++;                
@@ -720,8 +717,6 @@ void handle_asm_incbin(void) {
     FILE* fh;
     uint24_t n, size = 0;
 
-    if(recordingMacro) return;
-
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND]);
         return;
@@ -872,62 +867,71 @@ uint24_t delta;
     definelabel(address); // set address to current line
 }
 
-void handle_asm_endmacro(void) {
-    if(pass == 1) {
-        fclose(filehandle[FILE_MACRO]);
-        filehandle[FILE_MACRO] = NULL;
-    }
-    recordingMacro = false;
-}
-
 void handle_asm_definemacro(void) {
     streamtoken_t token;
     uint8_t argcount = 0;
     char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
-    
-    recordingMacro = true;
-
+    char macroline[LINEMAX];
     definelabel(address);
-
-    if(pass == 2) return;
+    bool foundend = false;
 
     // Only define macros in pass 1
     // parse arguments into array
-    if(!currentline.next) {
-        error(message[ERROR_MACRONAME]);
-        return;
-    }
-    if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
-        error(message[ERROR_MACRONAME]);
-        return;
-    }
-    if(findMacro(currentline.mnemonic) != 0) {
-        error(message[ERROR_MACRODEFINED]);
-        return;
-    }
-    currentline.mnemonic = token.start;
+    if(pass == 1) {
+        if(!currentline.next) {
+            error(message[ERROR_MACRONAME]);
+            return;
+        }
+        if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
+            error(message[ERROR_MACRONAME]);
+            return;
+        }
+        if(findMacro(currentline.mnemonic) != 0) {
+            error(message[ERROR_MACRODEFINED]);
+            return;
+        }
+        currentline.mnemonic = token.start;
 
-    currentline.next = token.next;
-    if((token.terminator == ' ') || (token.terminator == '\t')) {
-        while(currentline.next) {
-            if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT]);
-            if(getDefineValueToken(&token, currentline.next)) {
-                strcpy(arglist[argcount], token.start);
-                argcount++;
-            }
-            if(token.terminator == ',') currentline.next = token.next;
-            else {
-                if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
-                currentline.next = NULL; 
+        currentline.next = token.next;
+        if((token.terminator == ' ') || (token.terminator == '\t')) {
+            while(currentline.next) {
+                if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT]);
+                if(getDefineValueToken(&token, currentline.next)) {
+                    strcpy(arglist[argcount], token.start);
+                    argcount++;
+                }
+                if(token.terminator == ',') currentline.next = token.next;
+                else {
+                    if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+                    currentline.next = NULL; 
+                }
             }
         }
+        // record the macro to memory
+        defineMacro(currentline.mnemonic, argcount, (char *)arglist);
+        // define macro filename
+        io_getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
+        filehandle[FILE_MACRO] = fopen(filename[FILE_MACRO], "wb+");
+        if(!filehandle[FILE_MACRO]) error(message[ERROR_WRITINGMACROFILE]);
     }
-    // record the macro to memory
-    defineMacro(currentline.mnemonic, argcount, (char *)arglist);
-    // define macro filename
-    io_getMacroFilename(filename[FILE_MACRO], currentline.mnemonic);
-    filehandle[FILE_MACRO] = fopen(filename[FILE_MACRO], "wb+");
-    if(!filehandle[FILE_MACRO]) error(message[ERROR_WRITINGMACROFILE]);
+    while(io_getline(FILE_CURRENT, macroline)) {
+        char *src = macroline;
+        // skip leading space
+        while(*src && (isspace(*src))) src++;
+        if(strncasecmp(src, "endmacro\n",8) == 0) {
+            foundend = true;
+            break;
+        }
+        // store macro body
+        if(pass == 1) io_puts(FILE_MACRO, macroline);
+    }
+    if(pass == 1) {
+        fclose(filehandle[FILE_MACRO]);
+        filehandle[FILE_MACRO] = NULL;
+    }
+    if(!foundend) {
+        error("macro not closed");
+    }
 }
 
 void handle_asm_if(void) {
@@ -976,8 +980,7 @@ void handle_asm_fillbyte(void) {
 }
 
 void handle_assembler_command(void) {
-    if(!recordingMacro) {
-        switch(currentline.current_instruction->asmtype) {
+    switch(currentline.current_instruction->asmtype) {
         case(ASM_ADL):
             handle_asm_adl();
             break;
@@ -1042,22 +1045,76 @@ void handle_assembler_command(void) {
         case(ASM_ENDIF):
             handle_asm_endif();
             break;
-        }
-        return;
     }
-    if(currentline.current_instruction->asmtype == ASM_MACRO_END) handle_asm_endmacro();
     return;
 }
 
-void expandMacroStart(macro_t *exp) {    
+// Process the instructions found at each line, after parsing them
+void processInstructions(char *macroline){
+    operandlist_t *list;
+    uint8_t listitem;
+    bool match;
+    bool condmatch;
+    bool regamatch, regbmatch;
+
+    if(currentline.mnemonic == NULL) definelabel(address);
+    
+    if(currentline.current_instruction) {
+        if(currentline.current_instruction->type == EZ80) {
+            if(inConditionalSection != 1) {
+                // process this mnemonic by applying the instruction list as a filter to the operand-set
+                list = currentline.current_instruction->list;
+                match = false;
+                for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
+                    regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
+                    regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
+
+                    condmatch = ((list->conditionsA & MODECHECK) == operand1.addressmode) && ((list->conditionsB & MODECHECK) == operand2.addressmode);
+                    if(list->flags & F_CCOK) {
+                        condmatch |= operand1.cc;
+                        regamatch = true;
+                    }
+                    /*
+                    if(debug) {
+                        printf("Index list [[%d]]\r\n", listitem);
+                        printf("regamatch: %d\r\n", regamatch);
+                        printf("regbmatch: %d\r\n", regbmatch);
+                        printf("condmatch: %d\r\n", condmatch);
+                        printf("regsetA: <0x%03X> - regsetB <0x%03X>\r\n", list->regsetA, list->regsetB);
+                        printf("    opA: <0x%03X> -     opB <0x%03X>\r\n", operand1.reg, operand2.reg);
+                        printf("  condA: <0x%0X>  -   condB <0x%0X>\r\n", list->conditionsA, list->conditionsB);
+                        printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.addressmode, operand2.addressmode);
+                        printf("--------------------------------------\r\n");
+                    }
+                    */
+                    if(regamatch && regbmatch && condmatch) {
+                        match = true;
+                        emit_instruction(list);
+                        break;
+                    }
+                    list++;
+                }
+                if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
+                return;
+            }
+        }
+        else handle_assembler_command();
+    }
+    return;
+}
+
+void processMacro(void) {
     streamtoken_t token;
     uint8_t argcount = 0;
-    filestackitem fsi;
+    macro_t *exp = currentline.current_macro;
+    char filename[FILENAMEMAXLENGTH];
+    char macroline[LINEMAX];
+    FILE *fh;
 
-    definelabel(address);
-
+    // set for additional line-based parsing/processing of the macro
     currentExpandedMacro = currentline.current_macro;
-    // parse arguments into given macro substitution space
+
+    // get arguments
     while(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
             argcount++;
@@ -1074,94 +1131,26 @@ void expandMacroStart(macro_t *exp) {
         }
     }
     if(argcount != exp->argcount) error(message[ERROR_MACROINCORRECTARG]);
-    // push current file to the stack
-    io_getCurrent(&fsi);
-    filestackPush(&fsi);
 
-    // set new file
-    io_getFileDefaults(&fsi);
-    io_getMacroFilename(fsi.filename, exp->name);    
-    fsi.fp = fopen(fsi.filename, "rb");
-
-    // set up temporary buffer for file reads from macro
-    fsi.bufferstart = &_macrobuffer[0];
-    fsi.filebuffer = fsi.bufferstart;
-    io_setCurrent(&fsi);
-
-    if(filehandle[FILE_CURRENT] == 0) {
-        filestackPop(&fsi);
-        error(message[ERROR_MACROFILEWRITE]);
+    // open macro storage
+    io_getMacroFilename(filename, exp->name);    
+    fh = fopen(filename, "rb");
+    // Process the macro
+    while(fgets(macroline, LINEMAX, fh)) {
+        if(consolelist_enabled || list_enabled) {
+            listStartLine(macroline);
+        }
+        parseLine(macroline);
+        processInstructions(macroline);
+        if(consolelist_enabled || list_enabled) {
+            listEndLine();
+        }
     }
+
+    // end processing
     lineNumberNeedsReset = true;
-}
-
-// Process the instructions found at each line, after parsing them
-void processInstructions(char *macroline){
-    operandlist_t *list;
-    uint8_t listitem;
-    bool match;
-    bool condmatch;
-    bool regamatch, regbmatch;
-
-    if(recordingMacro) {
-        if(pass == 1) {
-            if((currentline.mnemonic == NULL) || fast_strcasecmp(currentline.mnemonic, "endmacro")) {
-                io_puts(FILE_MACRO, macroline);
-            }
-            if((currentline.label) && (currentline.label[0] != '@')) error(message[ERROR_MACRO_NOGLOBALLABELS]);
-        }
-    }
-    else {
-        if(currentline.mnemonic == NULL) definelabel(address);
-    }
-    
-    if(currentline.current_instruction) {
-        if(currentline.current_instruction->type == EZ80) {
-            if(!recordingMacro) {
-                if(inConditionalSection != 1) {
-                    // process this mnemonic by applying the instruction list as a filter to the operand-set
-                    list = currentline.current_instruction->list;
-                    match = false;
-                    for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
-                        regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
-                        regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
-
-                        condmatch = ((list->conditionsA & MODECHECK) == operand1.addressmode) && ((list->conditionsB & MODECHECK) == operand2.addressmode);
-                        if(list->flags & F_CCOK) {
-                            condmatch |= operand1.cc;
-                            regamatch = true;
-                        }
-                        /*
-                        if(debug) {
-                            printf("Index list [[%d]]\r\n", listitem);
-                            printf("regamatch: %d\r\n", regamatch);
-                            printf("regbmatch: %d\r\n", regbmatch);
-                            printf("condmatch: %d\r\n", condmatch);
-                            printf("regsetA: <0x%03X> - regsetB <0x%03X>\r\n", list->regsetA, list->regsetB);
-                            printf("    opA: <0x%03X> -     opB <0x%03X>\r\n", operand1.reg, operand2.reg);
-                            printf("  condA: <0x%0X>  -   condB <0x%0X>\r\n", list->conditionsA, list->conditionsB);
-                            printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.addressmode, operand2.addressmode);
-                            printf("--------------------------------------\r\n");
-                        }
-                        */
-                        if(regamatch && regbmatch && condmatch) {
-                            match = true;
-                            emit_instruction(list);
-                            break;
-                        }
-                        list++;
-                    }
-                    if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
-                    return;
-                }
-            }
-        }
-        else handle_assembler_command();
-    }
-    if(currentline.current_macro) {
-        expandMacroStart(currentline.current_macro);
-    }
-    return;
+    currentExpandedMacro = NULL;
+    fclose(fh);
 }
 
 // Initialize pass 1 / pass2 states for the assembler
@@ -1169,7 +1158,6 @@ void passInitialize(uint8_t passnumber) {
     pass = passnumber;
     linenumber = 0;
     address = start_address;
-    recordingMacro = false;
     currentExpandedMacro = NULL;
     inConditionalSection = 0;
     io_setpass(passnumber);
@@ -1202,10 +1190,12 @@ bool assemble(void){
         while(io_getline(FILE_CURRENT, line)) {
             strcpy(errorline, line);
             linenumber++;
-            if(recordingMacro) strcpy(macroline, line);
             parseLine(line);
-            processInstructions(macroline);
-            processDelayedLineNumberReset();
+            if(!currentline.current_macro) {
+                processInstructions(macroline);
+                processDelayedLineNumberReset();
+            }
+            else processMacro();
             if(global_errors) {
                 vdp_set_text_colour(DARK_YELLOW);
                 printf("%s\r\n",errorline);
@@ -1242,11 +1232,15 @@ bool assemble(void){
                 listStartLine(line);
             }
             parseLine(line);
-            processInstructions(macroline);
-            if(consolelist_enabled || list_enabled) {
-                listEndLine();
+            if(!currentline.current_macro) {
+                processInstructions(macroline);
+                if(consolelist_enabled || list_enabled) {
+                    listEndLine();
+                }
+                processDelayedLineNumberReset();
             }
-            processDelayedLineNumberReset();
+            else processMacro();
+
             if(global_errors) {
                 vdp_set_text_colour(DARK_YELLOW);
                 printf("%s\r\n",errorline);
