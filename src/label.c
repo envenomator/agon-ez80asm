@@ -15,6 +15,7 @@ uint16_t globalLabelCounter;
 void saveGlobalLabelTable(void) {
     int i;
     char *ptr;
+    label_t *lbl;
     char buffer[LINEMAX];
 
     filehandle[FILE_SYMBOLS] = fopen(filename[FILE_SYMBOLS], "wb+");
@@ -25,9 +26,13 @@ void saveGlobalLabelTable(void) {
 
     for(i = 0; i < GLOBAL_LABEL_TABLE_SIZE; i++) {
         if(globalLabelTable[i]) {
-            sprintf(buffer, "%s $%x\r\n", globalLabelTable[i]->name, globalLabelTable[i]->address);
-            ptr = buffer;
-            while(*ptr) fputc(*ptr++, filehandle[FILE_SYMBOLS]);
+            lbl = globalLabelTable[i];
+            while(lbl) {
+                sprintf(buffer, "%s $%x\r\n", lbl->name, lbl->address);
+                ptr = buffer;
+                while(*ptr) fputc(*ptr++, filehandle[FILE_SYMBOLS]);
+                lbl = lbl->next;
+            }
         }
     }
     fclose(filehandle[FILE_SYMBOLS]);

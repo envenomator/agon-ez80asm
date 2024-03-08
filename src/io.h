@@ -17,7 +17,7 @@
 // Global variables
 extern bool list_enabled;
 extern bool consolelist_enabled;
-extern char filename[FILES][FILENAMEMAXLENGTH + 1];    // 0 - current, 1 - input, 2 - binary output, 3 - anonymous labels, 5 - listing, 6 - Macro, 7 - symbols
+extern char filename[FILES][FILENAMEMAXLENGTH + 1];    // 0 - current, 1 - input, 2 - binary output, 3 - anonymous labels, 4 - listing, 5 - symbols
 extern FILE* filehandle[FILES];
 extern char filelabelscope[FILES][FILENAMEMAXLENGTH + 1];
 extern uint16_t sourcefilecount;
