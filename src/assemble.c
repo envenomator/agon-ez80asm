@@ -868,6 +868,7 @@ uint24_t delta;
 }
 
 // strncasecmp is boken on CEDev
+/*
 int agon_strncasecmp(char *s1, char *s2, int n) {
   if (n == 0)
     return 0;
@@ -882,7 +883,7 @@ int agon_strncasecmp(char *s1, char *s2, int n) {
 
   return tolower(*(unsigned char *) s1) - tolower(*(unsigned char *) s2);
 }
-
+*/
 void handle_asm_definemacro(void) {
     streamtoken_t token;
     uint8_t argcount = 0;
@@ -912,13 +913,15 @@ void handle_asm_definemacro(void) {
         }
         // skip leading space
         while(*src && (isspace(*src))) src++;
-        if(agon_strncasecmp(src, "macro", 5) == 0) {
+        if(fast_strncasecmp(src, "macro", 5) == 0) {
             error(message[ERROR_MACROINMACRO]);
             break;
         }
-        if(agon_strncasecmp(src, "endmacro", 8) == 0) {
-            foundend = true;
-            break;
+        if(fast_strncasecmp(src, "endmacro", 8) == 0) {
+            if(isspace(src[8]) || (src[8] == 0) || (src[8] == ';')) {
+                foundend = true;
+                break;
+            }
         }
         // concatenate to buffer end
         if(pass == 1) {
