@@ -19,6 +19,9 @@ uint24_t start_address;
 bool coloroutput;
 bool debug;
 
+clock_t total;
+clock_t begin, end;
+
 unsigned int labelcollisions;
 
 tokenline_t currentline;

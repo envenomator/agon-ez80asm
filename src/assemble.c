@@ -1,4 +1,5 @@
 #include "assemble.h"
+#include <time.h>
 
 // Local file buffer
 char _buffer[FILE_BUFFERSIZE];
@@ -575,19 +576,19 @@ void handle_asm_data(uint8_t wordtype) {
                             break;
                         default:
                             value = getValue(token.start, false); // not needed in pass 1
-                            validateRange8bit(value);
+                            if(pass == 2) validateRange8bit(value);
                             emit_8bit(value);
                             break;
                     }
                     break;
                 case ASM_DW:
                     value = getValue(token.start, false);
-                    validateRange16bit(value);
+                    if(pass == 2) validateRange16bit(value);
                     emit_16bit(value);
                     break;
                 case ASM_DW24:
                     value = getValue(token.start, false);
-                    validateRange24bit(value);
+                    if(pass == 2) validateRange24bit(value);
                     emit_24bit(value);
                     break;
                 case ASM_DW32:
@@ -763,6 +764,7 @@ void handle_asm_incbin(void) {
     }
 
     if(pass == 2) {
+
         while(1) {
             size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
             if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
@@ -826,15 +828,15 @@ void handle_asm_blk(uint8_t width) {
     while(num--) {
         switch(width) {
             case 1:
-                validateRange8bit(val);
+                if(pass == 2) validateRange8bit(val);
                 emit_8bit(val);
                 break;
             case 2:
-                validateRange16bit(val);
+                if(pass == 2) validateRange16bit(val);
                 emit_16bit(val);
                 break;
             case 3:
-                validateRange24bit(val);
+                if(pass == 2) validateRange24bit(val);
                 emit_24bit(val);
                 break;
             case 4:
@@ -1232,6 +1234,8 @@ bool assemble(void){
     bool incfileState;
     global_errors = 0;
     
+    total = 0;
+
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\r\n");
@@ -1306,5 +1310,6 @@ bool assemble(void){
         else incfileState = false;
     } while(incfileState);
 
+    printf("Test takes %.2f seconds\r\n",((double)(total) / CLOCKS_PER_SEC));
     return true;
 }

@@ -7,6 +7,7 @@
 #include "instruction.h"
 #include "config.h"
 #include "macro.h"
+#include <time.h>
 
 typedef struct {
     instruction_t *current_instruction;
@@ -39,6 +40,9 @@ extern uint8_t fillbyte;
 extern uint24_t start_address;
 extern bool coloroutput;
 extern bool debug;
+
+extern clock_t total;
+extern clock_t begin, end;
 
 extern unsigned int labelcollisions;
 // Global parsed results
