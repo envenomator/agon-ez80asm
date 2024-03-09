@@ -93,5 +93,6 @@ char *message[] = {
     "Illegal escape sequence in string",
     "String type not allowed",
     "Couldn't open file for writing global label table",
-    "Error resetting input file(s)\r\n"
+    "Error resetting input file(s)\r\n",
+    "Maximum number of instructions reached"
 };

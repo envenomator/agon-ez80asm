@@ -3,9 +3,13 @@
 // Local file buffer
 char _buffer[FILE_BUFFERSIZE];
 char _incbuffer[FILESTACK_MAXFILES][FILE_BUFFERSIZE];
-char _macrobuffer[FILE_BUFFERSIZE];
+char _macrobuffer[MACRO_BUFFERSIZE];
 char _macro_OP_buffer[MACROARGLENGTH + 1]; // replacement buffer for operands during macro expansion
 char _macro_ASM_buffer[MACROARGLENGTH + 1];// replacement buffer for values during ASSEMBLER macro expansion
+
+uint8_t pass2matchlog[PASS2LOGSIZE];
+uint8_t *pass2matchlogptr;
+uint24_t passmatchcounter;
 
 // Parse a command-token string to currentline.mnemonic & currentline.suffix
 void parse_command(char *src) {
@@ -1107,38 +1111,47 @@ void processInstructions(void){
             if(inConditionalSection != 1) {
                 // process this mnemonic by applying the instruction list as a filter to the operand-set
                 list = currentline.current_instruction->list;
-                match = false;
-                for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
-                    regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
-                    regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
+                if(pass == 1) {
+                    match = false;
+                    for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
+                        regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
+                        regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
 
-                    condmatch = ((list->conditionsA & MODECHECK) == operand1.addressmode) && ((list->conditionsB & MODECHECK) == operand2.addressmode);
-                    if(list->flags & F_CCOK) {
-                        condmatch |= operand1.cc;
-                        regamatch = true;
+                        condmatch = ((list->conditionsA & MODECHECK) == operand1.addressmode) && ((list->conditionsB & MODECHECK) == operand2.addressmode);
+                        if(list->flags & F_CCOK) {
+                            condmatch |= operand1.cc;
+                            regamatch = true;
+                        }
+                        /*
+                        if(debug) {
+                            printf("Index list [[%d]]\r\n", listitem);
+                            printf("regamatch: %d\r\n", regamatch);
+                            printf("regbmatch: %d\r\n", regbmatch);
+                            printf("condmatch: %d\r\n", condmatch);
+                            printf("regsetA: <0x%03X> - regsetB <0x%03X>\r\n", list->regsetA, list->regsetB);
+                            printf("    opA: <0x%03X> -     opB <0x%03X>\r\n", operand1.reg, operand2.reg);
+                            printf("  condA: <0x%0X>  -   condB <0x%0X>\r\n", list->conditionsA, list->conditionsB);
+                            printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.addressmode, operand2.addressmode);
+                            printf("--------------------------------------\r\n");
+                        }
+                        */
+                        if(regamatch && regbmatch && condmatch) {
+                            match = true;
+                            emit_instruction(list);
+                            *pass2matchlogptr++ = listitem; // record log for pass 2
+                            passmatchcounter++;
+                            if(passmatchcounter == PASS2LOGSIZE) {
+                                error(message[ERROR_MAXINSTRUCTIONS]);
+                            }
+                            break;
+                        }
+                        list++;
                     }
-                    /*
-                    if(debug) {
-                        printf("Index list [[%d]]\r\n", listitem);
-                        printf("regamatch: %d\r\n", regamatch);
-                        printf("regbmatch: %d\r\n", regbmatch);
-                        printf("condmatch: %d\r\n", condmatch);
-                        printf("regsetA: <0x%03X> - regsetB <0x%03X>\r\n", list->regsetA, list->regsetB);
-                        printf("    opA: <0x%03X> -     opB <0x%03X>\r\n", operand1.reg, operand2.reg);
-                        printf("  condA: <0x%0X>  -   condB <0x%0X>\r\n", list->conditionsA, list->conditionsB);
-                        printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.addressmode, operand2.addressmode);
-                        printf("--------------------------------------\r\n");
-                    }
-                    */
-                    if(regamatch && regbmatch && condmatch) {
-                        match = true;
-                        emit_instruction(list);
-                        break;
-                    }
-                    list++;
+                    if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
+                    return;
                 }
-                if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
-                return;
+                list += *pass2matchlogptr++;
+                emit_instruction(list);
             }
         }
         else handle_assembler_command();
@@ -1199,6 +1212,8 @@ void passInitialize(uint8_t passnumber) {
     filestackInit();
     initAnonymousLabelTable();
     io_resetCurrentInput();
+    pass2matchlogptr = pass2matchlog;
+    if(pass == 1) passmatchcounter = 0;
 }
 
 // Assembler directives may demand a late reset of the linenumber, after the listing has been done
@@ -1290,5 +1305,6 @@ bool assemble(void){
         }
         else incfileState = false;
     } while(incfileState);
+
     return true;
 }
