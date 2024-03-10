@@ -55,4 +55,9 @@ typedef enum {
     PS_ERROR
 } parsestate;
 
+struct incbinitem {
+    unsigned int size;
+    char *buffer;
+};
+
 #endif // ASSEMBLE_H

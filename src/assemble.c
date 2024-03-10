@@ -12,6 +12,9 @@ uint8_t pass2matchlog[PASS2LOGSIZE];
 uint8_t *pass2matchlogptr;
 uint24_t passmatchcounter;
 
+struct incbinitem incbins[INCBINBUFFERMAX];
+uint8_t incbincounter;
+
 // Parse a command-token string to currentline.mnemonic & currentline.suffix
 void parse_command(char *src) {
     currentline.mnemonic = src;
@@ -719,7 +722,7 @@ void handle_asm_include(void) {
 void handle_asm_incbin(void) {
     streamtoken_t token;
     FILE* fh;
-    uint24_t n, size = 0;
+    uint24_t n, filesize, size = 0;
 
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND]);
@@ -740,47 +743,78 @@ void handle_asm_incbin(void) {
     }
 
     token.start[strlen(token.start)-1] = 0;
-    begin = clock();
-    fh = fopen(token.start+1, "rb");
-    end = clock();
-    total += (end-begin);
-
-    if(!fh) {
-        error(message[ERROR_INCLUDEFILE]);            
-        return;
-    }
 
     if(pass == 1) {
+        fh = fopen(token.start+1, "rb");
+        if(!fh) {
+            error(message[ERROR_INCLUDEFILE]);            
+            return;
+        }
         #ifdef CEDEV
             // Use optimal assembly routine in moscalls.asm
-            size = getfilesize(fh->fhandle);
-            address += size;
+            filesize = getfilesize(fh->fhandle);
+            address += filesize;
         #else
+            filesize = 0;
             while(1) {
                 // Other non-agon compilers
                 size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
+                filesize += size;
                 address += size;
                 if(size < FILE_BUFFERSIZE) break;
             }
+            fseek(fh, 0, SEEK_SET);
         #endif
+        if(incbincounter < INCBINBUFFERMAX) {
+            incbins[incbincounter].size = filesize;
+            incbins[incbincounter].buffer = (char *)malloc(filesize);
+            if(incbins[incbincounter].buffer == NULL) {
+                error("Memory error");
+                return;
+            }
+            size = fread(incbins[incbincounter].buffer, 1, filesize, fh);
+            if(size != incbins[incbincounter].size) {
+                error("Error reading incbin");
+                return;
+            }
+            incbincounter++;
+        }
+        fclose(fh);
     }
 
     if(pass == 2) {
-
-        while(1) {
-            size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
+        if(incbincounter < INCBINBUFFERMAX) { // read from buffer
+            size = incbins[incbincounter].size;
             if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
-                for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
+                for(n = 0; n < size; n++) emit_8bit(incbins[incbincounter].buffer[n]);
             }
             else {
-                io_write(FILE_OUTPUT, _buffer, size);
+                io_write(FILE_OUTPUT, incbins[incbincounter].buffer, size);
                 address += size;
             }
-            if(size < FILE_BUFFERSIZE) break;
+            incbincounter++;        
+        }
+        else { // read from file
+            fh = fopen(token.start+1, "rb");
+            if(!fh) {
+                error(message[ERROR_INCLUDEFILE]);            
+                return;
+            }
+            while(1) {
+                size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
+                if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
+                    for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
+                }
+                else {
+                    io_write(FILE_OUTPUT, _buffer, size);
+                    address += size;
+                }
+                if(size < FILE_BUFFERSIZE) break;
+            }
+            fclose(fh);
         }
         binfilecount++;
     }
-    fclose(fh);
     if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
 }
 
@@ -1218,6 +1252,7 @@ void passInitialize(uint8_t passnumber) {
     io_resetCurrentInput();
     pass2matchlogptr = pass2matchlog;
     if(pass == 1) passmatchcounter = 0;
+    incbincounter = 0;
 }
 
 // Assembler directives may demand a late reset of the linenumber, after the listing has been done
