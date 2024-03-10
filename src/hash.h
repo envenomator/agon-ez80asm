@@ -6,7 +6,8 @@
 #include "hash.h"
 #include <stdint.h>
 
-uint16_t hash(char *key); // returns hash as 16bit unsigned int
-uint16_t lowercaseHash(char *key);
+//uint16_t hash(char *key); // returns hash as 16bit unsigned int
+uint8_t hash256(char *key);
+uint8_t lowercaseHash256(char *key);
 
 #endif // HASH_H

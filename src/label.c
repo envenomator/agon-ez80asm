@@ -117,7 +117,7 @@ bool insertLocalLabel(char *labelname, int24_t labelAddress) {
 }
 
 bool insertGlobalLabel(char *labelname, uint8_t len, int24_t labelAddress){
-    int index;
+    uint8_t index;
     label_t *tmp,*try;
 
     // allocate space in buffer for label_t struct
@@ -134,8 +134,7 @@ bool insertGlobalLabel(char *labelname, uint8_t len, int24_t labelAddress){
     tmp->address = labelAddress;
     tmp->next = NULL;
 
-    //index = hash(labelname) % GLOBAL_LABEL_TABLE_SIZE;
-    index = hash(labelname) & (GLOBAL_LABEL_TABLE_SIZE-1);
+    index = hash256(labelname);
     try = globalLabelTable[index];
 
     // First item on index
@@ -164,11 +163,10 @@ bool insertGlobalLabel(char *labelname, uint8_t len, int24_t labelAddress){
 }
 
 label_t * findGlobalLabel(char *name){
-    int index;
+    uint8_t index;
     label_t *try;
 
-    //index = hash(name) % GLOBAL_LABEL_TABLE_SIZE;
-    index = hash(name) & (GLOBAL_LABEL_TABLE_SIZE-1);
+    index = hash256(name);
     try = globalLabelTable[index];
 
     while(true)

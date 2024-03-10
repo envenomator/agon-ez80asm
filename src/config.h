@@ -20,12 +20,12 @@ typedef uint32_t uint24_t;
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
 #define FILLBYTE                   0xFF // Same as ZDS
-#define INSTRUCTION_HASHTABLESIZE  2048 // Number of entries in the hashtable
+#define INSTRUCTION_HASHTABLESIZE   256 // Number of entries in the hashtable
 #define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'
 #define LINEMAX                     256 // Input line length maximum uint8_t
 #define FILENAMEMAXLENGTH            64
 #define FILES                         6
-#define GLOBAL_LABEL_TABLE_SIZE    8192 // 8K global labels
+#define GLOBAL_LABEL_TABLE_SIZE     256
 #define PASS2LOGSIZE			  65535 // Maximum number of instructions to output
 #define FILE_BUFFERSIZE           32768 // For each specified input/output file (io.c)
 #define MACRO_BUFFERSIZE		   8192

@@ -877,10 +877,10 @@ instruction_t instructions[] = {
 };
 
 instruction_t * instruction_lookup(char *name) {
-    int index;
+    uint8_t index;
     instruction_t *try;
 
-    index = lowercaseHash(name) & (INSTRUCTION_HASHTABLESIZE-1);
+    index = lowercaseHash256(name);
     try = instruction_table[index];
 
     while(true)
@@ -893,13 +893,13 @@ instruction_t * instruction_lookup(char *name) {
 
 void init_instruction_table(void) {
     uint16_t n;
-    uint16_t index;
+    uint8_t index;
     instruction_t *try;
 
     memset(instruction_table, 0, sizeof(instruction_table));
 
     for(n = 0; n < (sizeof(instructions) / sizeof(instruction_t)); n++) {
-      index = hash(instructions[n].name) & (INSTRUCTION_HASHTABLESIZE-1);
+      index = lowercaseHash256(instructions[n].name);
       try = instruction_table[index];
 
       // First item on index

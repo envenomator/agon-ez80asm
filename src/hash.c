@@ -19,6 +19,7 @@ static uint8_t pearson[256] = {
      51,  65,  28, 144, 254, 221,  93, 189, 194, 139, 112,  43,  71, 109, 184, 209
 };
 
+/*
 uint16_t hash(char *key) {
     uint16_t h;
     unsigned char h1, h2;
@@ -35,20 +36,25 @@ uint16_t hash(char *key) {
     h = ((uint16_t)h1 << 8)|(uint16_t)h2;
     return h;
 }
-
-uint16_t lowercaseHash(char *key) {
-    uint16_t h;
-    unsigned char h1, h2;
+*/
+uint8_t hash256(char *key) {
+    uint8_t h = 0;
     
     if (*key == 0) return 0;
-    h1 = tolower(*key); h2 = tolower(*key + 1);
-    key++;
     while (*key) {
-        h1 = pearson[h1 ^ tolower(*key)];
-        h2 = pearson[h2 ^ tolower(*key)];
+        h = pearson[h ^ *key];
         key++;
     }
+    return h;
+}
 
-    h = ((uint16_t)h1 << 8)|(uint16_t)h2;
+uint8_t lowercaseHash256(char *key) {
+    uint8_t h = 0;
+    
+    if (*key == 0) return 0;
+    while (*key) {
+        h = pearson[h ^ tolower(*key)];
+        key++;
+    }
     return h;
 }

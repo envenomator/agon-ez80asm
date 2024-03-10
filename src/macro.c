@@ -24,7 +24,8 @@ void setMacroBody(macro_t *macro, const char *body) {
 }
 
 macro_t *defineMacro(char *name, uint8_t argcount, char *arguments) {
-    int len, index, i;
+    int len, i;
+    uint8_t index;
     char *ptr,*subs;
     macro_t *tmp;
     instruction_t *try, *macroinstruction;
@@ -78,7 +79,7 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments) {
         }
     }
 
-    index = lowercaseHash(name) & (INSTRUCTION_HASHTABLESIZE-1);
+    index = lowercaseHash256(name);
     try = instruction_table[index];
 
     // First item on index
