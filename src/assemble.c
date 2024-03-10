@@ -229,7 +229,6 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IY;
                             operand->displacement_provided = true;
-                            //operand->addressmode |= DISPLACEMENT;
                             if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
                             else operand->displacement = (int16_t) getValue(ptr, false);
                             return;
@@ -1171,19 +1170,6 @@ void processInstructions(void){
                             condmatch |= operand1.cc;
                             regamatch = true;
                         }
-                        /*
-                        if(debug) {
-                            printf("Index list [[%d]]\r\n", listitem);
-                            printf("regamatch: %d\r\n", regamatch);
-                            printf("regbmatch: %d\r\n", regbmatch);
-                            printf("condmatch: %d\r\n", condmatch);
-                            printf("regsetA: <0x%03X> - regsetB <0x%03X>\r\n", list->regsetA, list->regsetB);
-                            printf("    opA: <0x%03X> -     opB <0x%03X>\r\n", operand1.reg, operand2.reg);
-                            printf("  condA: <0x%0X>  -   condB <0x%0X>\r\n", list->conditionsA, list->conditionsB);
-                            printf("    opA: <0x%0X>  -     opB <0x%0X>\r\n", operand1.addressmode, operand2.addressmode);
-                            printf("--------------------------------------\r\n");
-                        }
-                        */
                         if(regamatch && regbmatch && condmatch) {
                             match = true;
                             emit_instruction(list);
@@ -1213,6 +1199,7 @@ void processMacro(void) {
     uint8_t argcount = 0;
     macro_t *exp = currentline.current_macro;
     char macroline[LINEMAX];
+    char errorline[LINEMAX];
 
     // set for additional line-based parsing/processing of the macro
     currentExpandedMacro = currentline.current_macro;
@@ -1239,11 +1226,21 @@ void processMacro(void) {
     resetnextline(exp->body);
 
     // process body
+    macrolinenumber = 1;
     while(getnextline(macroline)) {
+        strcpy(errorline, macroline);
         if(pass == 2 && (consolelist_enabled || list_enabled)) listStartLine(macroline);
         parseLine(macroline);
         processInstructions();
         if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine();
+        macrolinenumber++;
+        if(global_errors) {
+            vdp_set_text_colour(DARK_YELLOW);
+            trimRight(errorline);
+            printf("%s\r\n\r\nInvoked as:\r\n",errorline);
+            vdp_set_text_colour(BRIGHT_WHITE);
+            return;
+        }
     }
 
     // end processing
@@ -1277,7 +1274,6 @@ void processDelayedLineNumberReset(void) {
 bool assemble(void){
     char line[LINEMAX]; // Temp line buffer, will be deconstructed during streamtoken_t parsing
     char errorline[LINEMAX]; // Full integrity copy of each line
-    //char macroline[LINEMAX]; // Temp line buffer for macro expansion
     filestackitem fsitem;
     bool incfileState;
     global_errors = 0;

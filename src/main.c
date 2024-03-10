@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
                 break;
         }
     }
-    
+
     if((argc == 1) || (filenamecount == 0)) {
         error("No input filename");
         printHelp();

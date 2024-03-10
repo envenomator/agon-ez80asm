@@ -6,6 +6,7 @@
 
 bool lineNumberNeedsReset;
 unsigned int linenumber;
+unsigned int macrolinenumber;
 unsigned int pass;
 int inConditionalSection;
 macro_t *currentExpandedMacro;

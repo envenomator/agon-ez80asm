@@ -243,21 +243,11 @@ void definelabel(int24_t num){
 
         if(currentline.label) {
             strcpy(filelabelscope[FILE_CURRENT], currentline.label);
-            //printf("DEBUG: changing scope to <%s> at address <0x%06X>\r\n",currentline.label, num);
         }
 
         return;
     }
     if(currentline.label && currentline.label[0] != '@') {
         strcpy(filelabelscope[FILE_CURRENT], currentline.label);
-        //printf("DEBUG: changing scope to <%s> at address <0x%06X>\r\n",currentline.label, num);
     }
 }
-/*
-void refreshlocalLabels(void) {
-    if((pass == 2) && (currentline.label) && (currentline.label[0] != '@')) {
-        clearLocalLabels();
-        readLocalLabels();
-    }
-}
-*/

@@ -115,5 +115,6 @@ uint8_t macroExpandArg(char *dst, char *src, macro_t *m) {
             return strlen(dst);
         }
     }
-    return 0;
+    strcpy(dst, src); // no changes found, copy source
+    return strlen(dst);
 }

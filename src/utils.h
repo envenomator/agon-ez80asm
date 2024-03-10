@@ -7,8 +7,8 @@
 enum {
     BLACK = 0,
     DARK_RED,
-    DARK_GREEN,
     DARK_YELLOW,
+    DARK_GREEN,
     DARK_BLUE,
     DARK_MAGENTA,
     DARK_CYAN,

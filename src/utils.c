@@ -38,10 +38,9 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
 void error(char* msg) {
     if(!global_errors) {
         vdp_set_text_colour(DARK_RED);
-        if(currentExpandedMacro) printf("MACRO [%s]",currentExpandedMacro->name);
-        else if(strlen(filename[FILE_CURRENT])) printf("\"%s\"", filename[FILE_CURRENT]);
-        if(linenumber) printf(" - line %d - ", linenumber);
-        printf("%s\r\n",  msg);
+        if(currentExpandedMacro) printf("MACRO \"%s\" definition line %d\r\n",currentExpandedMacro->name, macrolinenumber);
+        printf("FILE \"%s\" line %d\r\n", filename[FILE_CURRENT], linenumber);
+        printf("\r\n%s\r\n",  msg);
         vdp_set_text_colour(BRIGHT_WHITE);
         global_errors++;
     }
