@@ -134,7 +134,8 @@ bool insertGlobalLabel(char *labelname, uint8_t len, int24_t labelAddress){
     tmp->address = labelAddress;
     tmp->next = NULL;
 
-    index = hash(labelname) % GLOBAL_LABEL_TABLE_SIZE;
+    //index = hash(labelname) % GLOBAL_LABEL_TABLE_SIZE;
+    index = hash(labelname) & (GLOBAL_LABEL_TABLE_SIZE-1);
     try = globalLabelTable[index];
 
     // First item on index
@@ -166,7 +167,8 @@ label_t * findGlobalLabel(char *name){
     int index;
     label_t *try;
 
-    index = hash(name) % GLOBAL_LABEL_TABLE_SIZE;
+    //index = hash(name) % GLOBAL_LABEL_TABLE_SIZE;
+    index = hash(name) & (GLOBAL_LABEL_TABLE_SIZE-1);
     try = globalLabelTable[index];
 
     while(true)

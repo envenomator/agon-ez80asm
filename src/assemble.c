@@ -741,7 +741,10 @@ void handle_asm_incbin(void) {
     }
 
     token.start[strlen(token.start)-1] = 0;
+    begin = clock();
     fh = fopen(token.start+1, "rb");
+    end = clock();
+    total += (end-begin);
 
     if(!fh) {
         error(message[ERROR_INCLUDEFILE]);            

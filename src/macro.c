@@ -20,7 +20,8 @@ macro_t* findMacro(char *name){
     int index;
     macro_t *try;
 
-    index = hash(name) % MACRO_TABLESIZE;
+    //index = hash(name) % MACRO_TABLESIZE;
+    index = hash(name) & (MACRO_TABLESIZE-1);
     try = macroTable[index];
 
     while(true)
@@ -88,7 +89,8 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments) {
         }
     }
 
-    index = hash(name) % MACRO_TABLESIZE;
+    //index = hash(name) % MACRO_TABLESIZE;
+    index = hash(name) & (MACRO_TABLESIZE-1);
     try = macroTable[index];
 
     // First item on index

@@ -881,7 +881,8 @@ instruction_t * instruction_hashtable_lookup(char *name) {
 
     index = lowercaseHash(name) % INSTRUCTION_HASHTABLESIZE;
     for(i = 0; i < INSTRUCTION_HASHTABLESIZE; i++){
-        try = (index + i) % INSTRUCTION_HASHTABLESIZE;
+        //try = (index + i) % INSTRUCTION_HASHTABLESIZE;
+        try = (index + i) & (INSTRUCTION_HASHTABLESIZE-1);
         if(instruction_hashtable[try] == NULL){
             return NULL;
         }
@@ -899,7 +900,8 @@ void init_instruction_hashtable(void) {
     memset(instruction_hashtable, 0, sizeof(instruction_hashtable));
 
     for(n = 0; n < (sizeof(instructions) / sizeof(instruction_t)); n++) {
-        h = hash(instructions[n].name) % INSTRUCTION_HASHTABLESIZE;
+        //h = hash(instructions[n].name) % INSTRUCTION_HASHTABLESIZE;
+        h = hash(instructions[n].name) & (INSTRUCTION_HASHTABLESIZE-1);
         while(instruction_hashtable[h]) {
             h = h + 1;
         }
