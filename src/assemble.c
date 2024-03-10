@@ -364,6 +364,7 @@ void parseLine(char *src) {
     uint8_t oplength = 0;
     uint8_t x;
     bool done;
+    bool pseudo = false;
     uint8_t state;
     uint8_t argcount = 0;
     streamtoken_t streamtoken;
@@ -436,10 +437,16 @@ void parseLine(char *src) {
                 if(streamtoken.start[0] == '.') {
                     // pseudo command
                     currentline.mnemonic = streamtoken.start + 1;
+                    pseudo = true;
                 }
                 else parse_command(streamtoken.start);
                 currentline.current_instruction = instruction_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
+                    error(message[ERROR_INVALIDMNEMONIC]);
+                    state = PS_ERROR;
+                    break;
+                }
+                if(pseudo && currentline.current_instruction->type != ASSEMBLER) {
                     error(message[ERROR_INVALIDMNEMONIC]);
                     state = PS_ERROR;
                     break;
