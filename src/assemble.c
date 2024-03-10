@@ -435,45 +435,44 @@ void parseLine(char *src) {
                     currentline.mnemonic = streamtoken.start + 1;
                 }
                 else parse_command(streamtoken.start);
-                currentline.current_instruction = instruction_hashtable_lookup(currentline.mnemonic);
+                currentline.current_instruction = instruction_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
-                    // check if a defined macro exists, before erroring out
-                    currentline.current_macro = findMacro(currentline.mnemonic);
-                    if(currentline.current_macro) {
-                        currentline.next = streamtoken.next;
-                        state = PS_DONE;
-                        break;
-                    }
-                    else {
-                        error(message[ERROR_INVALIDMNEMONIC]);
-                        state = PS_ERROR;
-                        break;
-                    }
-                }
-                if(currentline.current_instruction->type == ASSEMBLER) {
-                    currentline.next = streamtoken.next;
-                    state = PS_DONE;
+                    error(message[ERROR_INVALIDMNEMONIC]);
+                    state = PS_ERROR;
                     break;
                 }
-                // Valid EZ80 instruction
-                switch(streamtoken.terminator) {
-                    case ';':
-                        state = PS_COMMENT;
-                        currentline.next = streamtoken.next;
+                switch(currentline.current_instruction->type) {
+                    case EZ80:
+                        switch(streamtoken.terminator) {
+                            case ';':
+                                state = PS_COMMENT;
+                                currentline.next = streamtoken.next;
+                                break;
+                            case 0:
+                                currentline.next = NULL;
+                                state = PS_DONE;
+                                break;
+                            default:
+                                if(streamtoken.next) {
+                                    oplength = getOperandToken(&streamtoken, streamtoken.next);
+                                    if(oplength) {
+                                        state = PS_OP1;
+                                        break;
+                                    }
+                                }
+                                state = PS_DONE; // ignore any comments
+                                break;
+                        }
                         break;
-                    case 0:
-                        currentline.next = NULL;
+                    case ASSEMBLER:
+                        currentline.next = streamtoken.next;
                         state = PS_DONE;
                         break;
-                    default:
-                        if(streamtoken.next) {
-                            oplength = getOperandToken(&streamtoken, streamtoken.next);
-                            if(oplength) {
-                                state = PS_OP1;
-                                break;
-                            }
-                        }
-                        state = PS_DONE; // ignore any comments
+                    case MACRO:
+                        currentline.current_macro = currentline.current_instruction->macro;
+                        currentline.current_instruction = NULL;
+                        currentline.next = streamtoken.next;
+                        state = PS_DONE;
                         break;
                 }
                 break;
@@ -955,10 +954,10 @@ void handle_asm_definemacro(void) {
             error(message[ERROR_MACRONAME]);
             return;
         }
-        if(findMacro(currentline.mnemonic) != 0) {
-            error(message[ERROR_MACRODEFINED]);
-            return;
-        }
+        //if(findMacro(currentline.mnemonic) != 0) {
+        //    error(message[ERROR_MACRODEFINED]);
+        //    return;
+        //}
         currentline.mnemonic = token.start;
 
         currentline.next = token.next;

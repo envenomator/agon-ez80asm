@@ -17,12 +17,11 @@ typedef struct {
     void*   next;
 } macro_t;
 
-extern uint8_t macroTableCounter;
+extern uint8_t macroCounter;
 extern uint24_t macromemsize;
 
 void      initMacros(void);
 macro_t * defineMacro(char *name, uint8_t argcount, char *arguments);
-macro_t * findMacro(char *name);
 void      setMacroBody(macro_t *macro, const char *body);
 uint8_t   macroExpandArg(char *dst, char *src, macro_t *m);
 #endif // MACRO_H

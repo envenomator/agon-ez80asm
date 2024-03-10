@@ -35,7 +35,7 @@ void printHelp(void) {
 }
 
 void displayStatistics(void) {
-    printf("\r\nAssembly statistics\r\n========================\r\nLabel memory  : %d\r\nLabels        : %d\r\n\r\nMacro memory  : %d\r\nMacros        : %d\r\n\r\nSources parsed: %d\r\nBinfiles read : %d\r\n\r\nInstructions  : %d/%d\r\n\r\nOutput size   : %d\r\n", labelmemsize, getGlobalLabelCount(), macromemsize, macroTableCounter, sourcefilecount, binfilecount, passmatchcounter, PASS2LOGSIZE, (address - start_address));
+    printf("\r\nAssembly statistics\r\n========================\r\nLabel memory  : %d\r\nLabels        : %d\r\n\r\nMacro memory  : %d\r\nMacros        : %d\r\n\r\nSources parsed: %d\r\nBinfiles read : %d\r\n\r\nInstructions  : %d/%d\r\n\r\nOutput size   : %d\r\n", labelmemsize, getGlobalLabelCount(), macromemsize, macroCounter, sourcefilecount, binfilecount, passmatchcounter, PASS2LOGSIZE, (address - start_address));
 }
 
 int main(int argc, char *argv[]) {
@@ -173,7 +173,7 @@ int main(int argc, char *argv[]) {
     if(list_enabled) printf("Listing to %s\r\n", filename[FILE_LISTING]);
 
     // Initialization
-    init_instruction_hashtable();
+    init_instruction_table();
     initGlobalLabelTable();
     initAnonymousLabelTable();
     initMacros();

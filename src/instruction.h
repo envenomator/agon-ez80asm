@@ -9,8 +9,9 @@
 #include <stdlib.h>
 #include "hash.h"
 #include "utils.h"
+#include "macro.h"
 
-#define MAX_MNEMONIC_SIZE         10
+#define MAX_MNEMONIC_SIZE         32
 
 // Individual registers - 24-bit bitfield
 #define R_NONE  0x000000
@@ -168,7 +169,8 @@ typedef struct {
 
 enum {
     EZ80,
-    ASSEMBLER
+    ASSEMBLER,
+    MACRO
 };
 
 enum {
@@ -197,18 +199,20 @@ enum {
 };
 
 typedef struct {
-    char        name[MAX_MNEMONIC_SIZE];
-    uint8_t     type;                       // EZ80 / Assembler
+    char       *name;
+    uint8_t     type;                       // EZ80 / Assembler / MACRO
     uint8_t     asmtype;                    // assembler subcommand
     uint8_t     listnumber;                 // number of items to iterate over in the list
     operandlist_t *list;
-    void        *next;
+    macro_t    *macro;
+    void       *next;
 } instruction_t;
 
-instruction_t * instruction_table_lookup(char *name);
-instruction_t * instruction_hashtable_lookup(char *name);
-void init_instruction_hashtable(void);
+instruction_t * instruction_lookup(char *name);
+void init_instruction_table(void);
 void emit_instruction(operandlist_t *list);
 uint8_t get_immediate_size(uint8_t suffix);
+
+extern instruction_t *instruction_table[INSTRUCTION_HASHTABLESIZE];
 
 #endif // INSTRUCTION_H

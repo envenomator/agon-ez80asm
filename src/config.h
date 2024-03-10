@@ -32,7 +32,6 @@ typedef uint32_t uint24_t;
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX                   128 // Token maximum length
 #define MAXNAMELENGTH                32 // Maximum name length of labels/macros/mnemonics
-#define MACRO_TABLESIZE              64 // hash table
 #define MACROMAXARGS                  8 // Maximum arguments to a macro
 #define MACROARGLENGTH               32 // Maximum length of macro argument
 #define CLEANUPFILES               true

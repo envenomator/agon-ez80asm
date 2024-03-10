@@ -2,34 +2,16 @@
 #include "globals.h"
 #include "hash.h"
 #include "config.h"
+#include "instruction.h"
+#include "moscalls.h"
 
 // Total allocated memory for macros
 uint24_t macromemsize;
-
-// tables
-macro_t *macroTable[MACRO_TABLESIZE]; // indexed table
-uint8_t macroTableCounter;
+uint8_t macroCounter;
 
 void initMacros(void) {
     macromemsize = 0;
-    macroTableCounter = 0;
-    memset(macroTable, 0, sizeof(macroTable));
-}
-
-macro_t* findMacro(char *name){
-    int index;
-    macro_t *try;
-
-    //index = hash(name) % MACRO_TABLESIZE;
-    index = hash(name) & (MACRO_TABLESIZE-1);
-    try = macroTable[index];
-
-    while(true)
-    {
-        if(try == NULL) return NULL;
-        if(strcmp(try->name, name) == 0) return try;
-        try = try->next;
-    }
+    macroCounter = 0;
 }
 
 void setMacroBody(macro_t *macro, const char *body) {
@@ -44,25 +26,32 @@ void setMacroBody(macro_t *macro, const char *body) {
 macro_t *defineMacro(char *name, uint8_t argcount, char *arguments) {
     int len, index, i;
     char *ptr,*subs;
-    macro_t *tmp,*try;
+    macro_t *tmp;
+    instruction_t *try, *macroinstruction;
 
     // allocate space in buffer for macro_t struct
     tmp = (macro_t *)malloc(sizeof(macro_t));
+    macromemsize += sizeof(macro_t);
     if(tmp == 0) return NULL;
 
-    // allocate space in buffer for string and store it to buffer
-    len = strlen(name);
-    if(len > MAXNAMELENGTH) {
-        error(message[ERROR_MACRONAMELENGTH]);
-        return NULL;
-    }
-    tmp->name = (char*)malloc(len+1);
-    macromemsize += len+1;
-    if(tmp->name == 0) return NULL;
+    macroinstruction = (instruction_t *)malloc(sizeof(instruction_t));
+    macromemsize += sizeof(instruction_t);
+    if(macroinstruction == 0) return NULL;
 
-    strcpy(tmp->name, name);
-    tmp->next = NULL;
+    // Link together
+    macroinstruction->type = MACRO;
+    macroinstruction->macro = tmp;
 
+    len = strlen(name)+1;
+    macroinstruction->name = (char *)malloc(len);
+    macromemsize += len;
+    if(macroinstruction->name == 0) return NULL;
+
+    tmp->name = macroinstruction->name;
+    strcpy(macroinstruction->name, name);
+    macroinstruction->next = NULL;
+
+    // Set up macro specific content
     tmp->argcount = argcount;
     tmp->substitutions = NULL;
     if(argcount == 0) tmp->arguments = NULL;
@@ -89,20 +78,19 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments) {
         }
     }
 
-    //index = hash(name) % MACRO_TABLESIZE;
-    index = hash(name) & (MACRO_TABLESIZE-1);
-    try = macroTable[index];
+    index = lowercaseHash(name) & (INSTRUCTION_HASHTABLESIZE-1);
+    try = instruction_table[index];
 
     // First item on index
     if(try == NULL) {
-        macroTable[index] = tmp;
-        macroTableCounter++;
+        instruction_table[index] = macroinstruction;
+        macroCounter++;
         return tmp;
     }
 
     // Collision on index, place at end of linked list if unique
     while(true) {
-        if(strcmp(try->name, name) == 0) {
+        if(fast_strcasecmp(try->name, name) == 0) {
             error(message[ERROR_MACRODEFINED]);
             return NULL;
         }
@@ -110,8 +98,8 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments) {
             try = try->next;
         }
         else {
-            try->next = tmp;
-            macroTableCounter++;
+            try->next = macroinstruction;
+            macroCounter++;
             return tmp;
         }
     }
