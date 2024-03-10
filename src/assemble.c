@@ -364,7 +364,7 @@ void parseLine(char *src) {
     uint8_t oplength = 0;
     uint8_t x;
     bool done;
-    bool pseudo = false;
+    bool asmcmd = false;
     uint8_t state;
     uint8_t argcount = 0;
     streamtoken_t streamtoken;
@@ -435,21 +435,29 @@ void parseLine(char *src) {
                 break;
             case PS_COMMAND:
                 if(streamtoken.start[0] == '.') {
-                    // pseudo command
-                    currentline.mnemonic = streamtoken.start + 1;
-                    pseudo = true;
+                    // should be an assembler command
+                    asmcmd = true;
+                    currentline.mnemonic = streamtoken.start;
                 }
-                else parse_command(streamtoken.start);
+                else parse_command(streamtoken.start); // ez80 split suffix and set mnemonic for search
+
                 currentline.current_instruction = instruction_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
-                    error(message[ERROR_INVALIDMNEMONIC]);
-                    state = PS_ERROR;
-                    break;
-                }
-                if(pseudo && currentline.current_instruction->type != ASSEMBLER) {
-                    error(message[ERROR_INVALIDMNEMONIC]);
-                    state = PS_ERROR;
-                    break;
+                    if(!asmcmd) {
+                        error(message[ERROR_INVALIDMNEMONIC]);
+                        state = PS_ERROR;
+                        break;
+                    }
+                    // Check for assembler command
+                    currentline.mnemonic = streamtoken.start + 1;
+                    currentline.current_instruction = instruction_lookup(currentline.mnemonic);
+                    if((currentline.current_instruction == NULL) ||
+                       (currentline.current_instruction->type != ASSEMBLER)) {
+                        error(message[ERROR_INVALIDMNEMONIC]);
+                        state = PS_ERROR;
+                        break;
+                    }
+                    // Valid assembler command found (with a .)
                 }
                 switch(currentline.current_instruction->type) {
                     case EZ80:
