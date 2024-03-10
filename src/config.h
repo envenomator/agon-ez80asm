@@ -29,10 +29,10 @@ typedef uint32_t uint24_t;
 #define GLOBAL_LABEL_TABLE_SIZE     256
 #define PASS2LOGSIZE			  65535 // Maximum number of instructions to output
 #define FILE_BUFFERSIZE           32768 // For each specified input/output file (io.c)
-#define MACRO_BUFFERSIZE		   8192
+#define MACRO_BUFFERSIZE		   8192 // maximum macro (ascii text) body size
 #define LISTING_OBJECTS_PER_LINE      6 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX                   128 // Token maximum length
-#define MAXNAMELENGTH                32 // Maximum name length of labels/macros/mnemonics
+#define MAXNAMELENGTH                32 // Maximum name length of labels
 #define MACROMAXARGS                  8 // Maximum arguments to a macro
 #define MACROARGLENGTH               32 // Maximum length of macro argument
 #define CLEANUPFILES               true

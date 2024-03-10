@@ -988,10 +988,6 @@ void handle_asm_definemacro(void) {
             error(message[ERROR_MACRONAME]);
             return;
         }
-        //if(findMacro(currentline.mnemonic) != 0) {
-        //    error(message[ERROR_MACRODEFINED]);
-        //    return;
-        //}
         currentline.mnemonic = token.start;
 
         currentline.next = token.next;
