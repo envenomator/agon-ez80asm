@@ -196,20 +196,12 @@ enum {
     ASM_ENDIF
 };
 
-typedef enum {
-    ASM_ARG_NONE,
-    ASM_ARG_SINGLE,
-    ASM_ARG_LIST,
-    ASM_ARG_KEYVAL
-} asm_argtype;
-
 typedef struct {
     char        name[MAX_MNEMONIC_SIZE];
     uint8_t     type;                       // EZ80 / Assembler
     uint8_t     asmtype;                    // assembler subcommand
     uint8_t     listnumber;                 // number of items to iterate over in the list
     operandlist_t *list;
-    asm_argtype asmargument;
 } instruction_t;
 
 instruction_t * instruction_table_lookup(char *name);
