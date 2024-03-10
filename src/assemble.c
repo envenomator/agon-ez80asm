@@ -1282,8 +1282,6 @@ bool assemble(void){
     bool incfileState;
     global_errors = 0;
     
-    total = 0;
-
     // Assemble in two passes
     // Pass 1
     printf("Pass 1...\r\n");
@@ -1357,7 +1355,5 @@ bool assemble(void){
         }
         else incfileState = false;
     } while(incfileState);
-
-    printf("Test takes %.2f seconds\r\n",((double)(total) / CLOCKS_PER_SEC));
     return true;
 }

@@ -41,9 +41,6 @@ extern uint24_t start_address;
 extern bool coloroutput;
 extern bool debug;
 
-extern clock_t total;
-extern clock_t begin, end;
-
 extern unsigned int labelcollisions;
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code
