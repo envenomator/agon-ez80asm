@@ -202,6 +202,7 @@ typedef struct {
     uint8_t     asmtype;                    // assembler subcommand
     uint8_t     listnumber;                 // number of items to iterate over in the list
     operandlist_t *list;
+    void        *next;
 } instruction_t;
 
 instruction_t * instruction_table_lookup(char *name);

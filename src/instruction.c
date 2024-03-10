@@ -14,7 +14,7 @@ uint8_t get_immediate_size(uint8_t suffix) {
         if(suffix & (S_SIL|S_LIL)) return 3;
         error(message[ERROR_INVALIDMNEMONIC]);
         return 0;
-    }
+   }
     if(adlmode) return 3;
     else return 2;
 }
@@ -35,10 +35,10 @@ void prefix_ddfd_suffix(operandlist_t *op) {
 
     if((!prefix1 && prefix2) || (!operand1.indirect && prefix1 && prefix2)) {
         output.prefix1 = prefix2;
-    }
+   }
     else {
         output.prefix1 = prefix1;
-    }
+   }
 }
 
 void transform_instruction(operand_t *op, uint8_t type) {
@@ -88,7 +88,7 @@ void transform_instruction(operand_t *op, uint8_t type) {
                     break;
                 default:
                     y = 0;
-            }
+           }
             output.opcode |= (y << 3); // shift 3 lower bits 3 to the left
             op->immediate_provided = false; // no separate output for this transform
             break;
@@ -98,15 +98,15 @@ void transform_instruction(operand_t *op, uint8_t type) {
                 rel = op->immediate - address - 2;
                 if((rel > 127) || (rel < -128)) {
                     error(message[ERROR_RELATIVEJUMPTOOLARGE]);
-                }
+               }
                 op->immediate = ((int8_t)(rel & 0xFF));
                 op->immediate_provided = true;
-            }
+           }
             break;
         default:
             error(message[ERROR_TRANSFORMATION]);
             break;
-    }
+   }
     return;
 }
 
@@ -128,7 +128,7 @@ uint8_t getADLsuffix(void) {
                     break;
                 default: // illegal suffix
                     break;
-            }
+           }
             break;
         case 2: // .is or .il
             if(tolower(currentline.suffix[0]) != 'i') break; // illegal suffix
@@ -143,7 +143,7 @@ uint8_t getADLsuffix(void) {
                     break;
                 default: // illegal suffix
                     break;
-            }
+           }
             break;
         case 3:
             if(tolower(currentline.suffix[1]) != 'i') break; // illegal suffix
@@ -160,11 +160,11 @@ uint8_t getADLsuffix(void) {
                     break;
                 default: // illegal suffix
                     break;
-            }
+           }
             break;
         default: // illegal suffix
             break;
-    }
+   }
     error(message[ERROR_INVALIDSUFFIX]);
     return 0;
 }
@@ -184,7 +184,7 @@ void emit_instruction(operandlist_t *list) {
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
         if((list->conditionsA & IMM_N) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) error(message[ERROR_8BITRANGE]);
         if((list->conditionsB & IMM_N) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) error(message[ERROR_8BITRANGE]);
-    }
+   }
     if((output.suffix) && ((list->flags & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
     if((list->flags & F_DISPB) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
 
@@ -749,162 +749,173 @@ operandlist_t operands_xor[] = {
 };
 
 instruction_t instructions[] = {
-    {"adc",      EZ80, 0, sizeof(operands_adc)/sizeof(operandlist_t), operands_adc },
-    {"add",      EZ80, 0, sizeof(operands_add)/sizeof(operandlist_t), operands_add },
-    {"align",    ASSEMBLER, ASM_ALIGN, 0, NULL},
-    {"and",      EZ80, 0, sizeof(operands_and)/sizeof(operandlist_t), operands_and },
-    {"ascii",    ASSEMBLER, ASM_DB, 0, NULL},
-    {"asciz",    ASSEMBLER, ASM_ASCIZ, 0, NULL},
-    {"assume",   ASSEMBLER, ASM_ADL, 0, NULL},
-    {"bit",      EZ80, 0, sizeof(operands_bit)/sizeof(operandlist_t), operands_bit },
-    {"blkb",     ASSEMBLER, ASM_BLKB, 0, NULL},
-    {"blkl",     ASSEMBLER, ASM_BLKL, 0, NULL},
-    {"blkp",     ASSEMBLER, ASM_BLKP, 0, NULL},
-    {"blkw",     ASSEMBLER, ASM_BLKW, 0, NULL},
-    {"byte",     ASSEMBLER, ASM_DB, 0, NULL},
-    {"call",     EZ80, 0, sizeof(operands_call)/sizeof(operandlist_t), operands_call },
-    {"ccf",      EZ80, 0, sizeof(operands_ccf)/sizeof(operandlist_t), operands_ccf },
-    {"cp",       EZ80, 0, sizeof(operands_cp)/sizeof(operandlist_t), operands_cp },
-    {"cpd",      EZ80, 0, sizeof(operands_cpd)/sizeof(operandlist_t), operands_cpd },
-    {"cpdr",     EZ80, 0, sizeof(operands_cpdr)/sizeof(operandlist_t), operands_cpdr },
-    {"cpi",      EZ80, 0, sizeof(operands_cpi)/sizeof(operandlist_t), operands_cpi },
-    {"cpir",     EZ80, 0, sizeof(operands_cpir)/sizeof(operandlist_t), operands_cpir },
-    {"cpl",      EZ80, 0, sizeof(operands_cpl)/sizeof(operandlist_t), operands_cpl },
-    {"daa",      EZ80, 0, sizeof(operands_daa)/sizeof(operandlist_t), operands_daa },
-    {"db",       ASSEMBLER, ASM_DB, 0, NULL},
-    {"dec",      EZ80, 0, sizeof(operands_dec)/sizeof(operandlist_t), operands_dec },
-    {"defb",     ASSEMBLER, ASM_DB, 0, NULL},
-    {"defs",     ASSEMBLER, ASM_DS, 0, NULL},
-    {"defw",     ASSEMBLER, ASM_DW, 0, NULL},
-    {"di",       EZ80, 0, sizeof(operands_di)/sizeof(operandlist_t), operands_di },
-    {"djnz",     EZ80, 0, sizeof(operands_djnz)/sizeof(operandlist_t), operands_djnz },
-    {"dl",       ASSEMBLER, ASM_DW24, 0, NULL},
-    {"ds",       ASSEMBLER, ASM_DS, 0, NULL},
-    {"dw",       ASSEMBLER, ASM_DW, 0, NULL},
-    {"dw24",     ASSEMBLER, ASM_DW24, 0, NULL},
-    {"dw32",     ASSEMBLER, ASM_DW32, 0, NULL},
-    {"ei",       EZ80, 0, sizeof(operands_ei)/sizeof(operandlist_t), operands_ei },
-    {"else",     ASSEMBLER, ASM_ELSE, 0, NULL},
-    {"endif",    ASSEMBLER, ASM_ENDIF, 0, NULL},
-    {"endmacro", ASSEMBLER, ASM_MACRO_END, 0, NULL},
-    {"equ",      ASSEMBLER, ASM_EQU, 0, NULL},
-    {"ex",       EZ80, 0, sizeof(operands_ex)/sizeof(operandlist_t), operands_ex },
-    {"exx",      EZ80, 0, sizeof(operands_exx)/sizeof(operandlist_t), operands_exx },
-    {"fillbyte", ASSEMBLER, ASM_FILLBYTE, 0, NULL},
-    {"halt",     EZ80, 0, sizeof(operands_halt)/sizeof(operandlist_t), operands_halt },
-    {"if",       ASSEMBLER, ASM_IF, 0, NULL},
-    {"im",       EZ80, 0, sizeof(operands_im)/sizeof(operandlist_t), operands_im },
-    {"in",       EZ80, 0, sizeof(operands_in)/sizeof(operandlist_t), operands_in },
-    {"in0",      EZ80, 0, sizeof(operands_in0)/sizeof(operandlist_t), operands_in0 },
-    {"inc",      EZ80, 0, sizeof(operands_inc)/sizeof(operandlist_t), operands_inc },
-    {"incbin",   ASSEMBLER, ASM_INCBIN, 0, NULL},
-    {"include",  ASSEMBLER, ASM_INCLUDE, 0, NULL},
-    {"ind",      EZ80, 0, sizeof(operands_ind)/sizeof(operandlist_t), operands_ind },
-    {"ind2",     EZ80, 0, sizeof(operands_ind2)/sizeof(operandlist_t), operands_ind2 },
-    {"ind2r",    EZ80, 0, sizeof(operands_ind2r)/sizeof(operandlist_t), operands_ind2r },
-    {"indm",     EZ80, 0, sizeof(operands_indm)/sizeof(operandlist_t), operands_indm },
-    {"indmr",    EZ80, 0, sizeof(operands_indmr)/sizeof(operandlist_t), operands_indmr },
-    {"indr",     EZ80, 0, sizeof(operands_indr)/sizeof(operandlist_t), operands_indr },
-    {"indrx",    EZ80, 0, sizeof(operands_indrx)/sizeof(operandlist_t), operands_indrx },
-    {"ini",      EZ80, 0, sizeof(operands_ini)/sizeof(operandlist_t), operands_ini },
-    {"ini2",     EZ80, 0, sizeof(operands_ini2)/sizeof(operandlist_t), operands_ini2 },
-    {"ini2r",    EZ80, 0, sizeof(operands_ini2r)/sizeof(operandlist_t), operands_ini2r },
-    {"inim",     EZ80, 0, sizeof(operands_inim)/sizeof(operandlist_t), operands_inim },
-    {"inimr",    EZ80, 0, sizeof(operands_inimr)/sizeof(operandlist_t), operands_inimr },
-    {"inir",     EZ80, 0, sizeof(operands_inir)/sizeof(operandlist_t), operands_inir },
-    {"inirx",    EZ80, 0, sizeof(operands_inirx)/sizeof(operandlist_t), operands_inirx },
-    {"jp",       EZ80, 0, sizeof(operands_jp)/sizeof(operandlist_t), operands_jp },
-    {"jr",       EZ80, 0, sizeof(operands_jr)/sizeof(operandlist_t), operands_jr },
-    {"ld",       EZ80, 0, sizeof(operands_ld)/sizeof(operandlist_t), operands_ld },
-    {"ldd",      EZ80, 0, sizeof(operands_ldd)/sizeof(operandlist_t), operands_ldd },
-    {"lddr",     EZ80, 0, sizeof(operands_lddr)/sizeof(operandlist_t), operands_lddr },
-    {"ldi",      EZ80, 0, sizeof(operands_ldi)/sizeof(operandlist_t), operands_ldi },
-    {"ldir",     EZ80, 0, sizeof(operands_ldir)/sizeof(operandlist_t), operands_ldir },
-    {"lea",      EZ80, 0, sizeof(operands_lea)/sizeof(operandlist_t), operands_lea },
-    {"macro",    ASSEMBLER, ASM_MACRO_START, 0, NULL},
-    {"mlt",      EZ80, 0, sizeof(operands_mlt)/sizeof(operandlist_t), operands_mlt },
-    {"neg",      EZ80, 0, sizeof(operands_neg)/sizeof(operandlist_t), operands_neg },
-    {"nop",      EZ80, 0, sizeof(operands_nop)/sizeof(operandlist_t), operands_nop },
-    {"or",       EZ80, 0, sizeof(operands_or)/sizeof(operandlist_t), operands_or },
-    {"org",      ASSEMBLER, ASM_ORG, 0, NULL},
-    {"otd2r",    EZ80, 0, sizeof(operands_otd2r)/sizeof(operandlist_t), operands_otd2r },
-    {"otdm",     EZ80, 0, sizeof(operands_otdm)/sizeof(operandlist_t), operands_otdm },
-    {"otdmr",    EZ80, 0, sizeof(operands_otdmr)/sizeof(operandlist_t), operands_otdmr },
-    {"otdr",     EZ80, 0, sizeof(operands_otdr)/sizeof(operandlist_t), operands_otdr },
-    {"otdrx",    EZ80, 0, sizeof(operands_otdrx)/sizeof(operandlist_t), operands_otdrx },
-    {"oti2r",    EZ80, 0, sizeof(operands_oti2r)/sizeof(operandlist_t), operands_oti2r },
-    {"otim",     EZ80, 0, sizeof(operands_otim)/sizeof(operandlist_t), operands_otim },
-    {"otimr",    EZ80, 0, sizeof(operands_otimr)/sizeof(operandlist_t), operands_otimr },
-    {"otir",     EZ80, 0, sizeof(operands_otir)/sizeof(operandlist_t), operands_otir },
-    {"otirx",    EZ80, 0, sizeof(operands_otirx)/sizeof(operandlist_t), operands_otirx },
-    {"out",      EZ80, 0, sizeof(operands_out)/sizeof(operandlist_t), operands_out },
-    {"out0",     EZ80, 0, sizeof(operands_out0)/sizeof(operandlist_t), operands_out0 },
-    {"outd",     EZ80, 0, sizeof(operands_outd)/sizeof(operandlist_t), operands_outd },
-    {"outd2",    EZ80, 0, sizeof(operands_outd2)/sizeof(operandlist_t), operands_outd2 },
-    {"outi",     EZ80, 0, sizeof(operands_outi)/sizeof(operandlist_t), operands_outi },
-    {"outi2",    EZ80, 0, sizeof(operands_outi2)/sizeof(operandlist_t), operands_outi2 },
-    {"pea",      EZ80, 0, sizeof(operands_pea)/sizeof(operandlist_t), operands_pea },
-    {"pop",      EZ80, 0, sizeof(operands_pop)/sizeof(operandlist_t), operands_pop },
-    {"push",     EZ80, 0, sizeof(operands_push)/sizeof(operandlist_t), operands_push },
-    {"res",      EZ80, 0, sizeof(operands_res)/sizeof(operandlist_t), operands_res },
-    {"ret",      EZ80, 0, sizeof(operands_ret)/sizeof(operandlist_t), operands_ret },
-    {"reti",     EZ80, 0, sizeof(operands_reti)/sizeof(operandlist_t), operands_reti },
-    {"retn",     EZ80, 0, sizeof(operands_retn)/sizeof(operandlist_t), operands_retn },
-    {"rl",       EZ80, 0, sizeof(operands_rl)/sizeof(operandlist_t), operands_rl },
-    {"rla",      EZ80, 0, sizeof(operands_rla)/sizeof(operandlist_t), operands_rla },
-    {"rlc",      EZ80, 0, sizeof(operands_rlc)/sizeof(operandlist_t), operands_rlc },
-    {"rlca",     EZ80, 0, sizeof(operands_rlca)/sizeof(operandlist_t), operands_rlca },
-    {"rld",      EZ80, 0, sizeof(operands_rld)/sizeof(operandlist_t), operands_rld },
-    {"rr",       EZ80, 0, sizeof(operands_rr)/sizeof(operandlist_t), operands_rr },
-    {"rra",      EZ80, 0, sizeof(operands_rra)/sizeof(operandlist_t), operands_rra },
-    {"rrc",      EZ80, 0, sizeof(operands_rrc)/sizeof(operandlist_t), operands_rrc },
-    {"rrca",     EZ80, 0, sizeof(operands_rrca)/sizeof(operandlist_t), operands_rrca },
-    {"rrd",      EZ80, 0, sizeof(operands_rrd)/sizeof(operandlist_t), operands_rrd },
-    {"rsmix",    EZ80, 0, sizeof(operands_rsmix)/sizeof(operandlist_t), operands_rsmix },
-    {"rst",      EZ80, 0, sizeof(operands_rst)/sizeof(operandlist_t), operands_rst },
-    {"sbc",      EZ80, 0, sizeof(operands_sbc)/sizeof(operandlist_t), operands_sbc },
-    {"scf",      EZ80, 0, sizeof(operands_scf)/sizeof(operandlist_t), operands_scf },
-    {"set",      EZ80, 0, sizeof(operands_set)/sizeof(operandlist_t), operands_set },
-    {"sla",      EZ80, 0, sizeof(operands_sla)/sizeof(operandlist_t), operands_sla },
-    {"slp",      EZ80, 0, sizeof(operands_slp)/sizeof(operandlist_t), operands_slp },
-    {"sra",      EZ80, 0, sizeof(operands_sra)/sizeof(operandlist_t), operands_sra },
-    {"srl",      EZ80, 0, sizeof(operands_srl)/sizeof(operandlist_t), operands_srl },
-    {"stmix",    EZ80, 0, sizeof(operands_stmix)/sizeof(operandlist_t), operands_stmix },
-    {"sub",      EZ80, 0, sizeof(operands_sub)/sizeof(operandlist_t), operands_sub },
-    {"tst",      EZ80, 0, sizeof(operands_tst)/sizeof(operandlist_t), operands_tst },
-    {"tstio",    EZ80, 0, sizeof(operands_tstio)/sizeof(operandlist_t), operands_tstio },
-    {"xor",      EZ80, 0, sizeof(operands_xor)/sizeof(operandlist_t), operands_xor }
+    {"adc",      EZ80, 0, sizeof(operands_adc)/sizeof(operandlist_t), operands_adc,NULL},
+    {"add",      EZ80, 0, sizeof(operands_add)/sizeof(operandlist_t), operands_add,NULL},
+    {"align",    ASSEMBLER, ASM_ALIGN, 0, NULL,NULL},
+    {"and",      EZ80, 0, sizeof(operands_and)/sizeof(operandlist_t), operands_and,NULL},
+    {"ascii",    ASSEMBLER, ASM_DB, 0, NULL,NULL},
+    {"asciz",    ASSEMBLER, ASM_ASCIZ, 0, NULL,NULL},
+    {"assume",   ASSEMBLER, ASM_ADL, 0, NULL,NULL},
+    {"bit",      EZ80, 0, sizeof(operands_bit)/sizeof(operandlist_t), operands_bit,NULL},
+    {"blkb",     ASSEMBLER, ASM_BLKB, 0, NULL,NULL},
+    {"blkl",     ASSEMBLER, ASM_BLKL, 0, NULL,NULL},
+    {"blkp",     ASSEMBLER, ASM_BLKP, 0, NULL,NULL},
+    {"blkw",     ASSEMBLER, ASM_BLKW, 0, NULL,NULL},
+    {"byte",     ASSEMBLER, ASM_DB, 0, NULL,NULL},
+    {"call",     EZ80, 0, sizeof(operands_call)/sizeof(operandlist_t), operands_call,NULL},
+    {"ccf",      EZ80, 0, sizeof(operands_ccf)/sizeof(operandlist_t), operands_ccf,NULL},
+    {"cp",       EZ80, 0, sizeof(operands_cp)/sizeof(operandlist_t), operands_cp,NULL},
+    {"cpd",      EZ80, 0, sizeof(operands_cpd)/sizeof(operandlist_t), operands_cpd,NULL},
+    {"cpdr",     EZ80, 0, sizeof(operands_cpdr)/sizeof(operandlist_t), operands_cpdr,NULL},
+    {"cpi",      EZ80, 0, sizeof(operands_cpi)/sizeof(operandlist_t), operands_cpi,NULL},
+    {"cpir",     EZ80, 0, sizeof(operands_cpir)/sizeof(operandlist_t), operands_cpir,NULL},
+    {"cpl",      EZ80, 0, sizeof(operands_cpl)/sizeof(operandlist_t), operands_cpl,NULL},
+    {"daa",      EZ80, 0, sizeof(operands_daa)/sizeof(operandlist_t), operands_daa,NULL},
+    {"db",       ASSEMBLER, ASM_DB, 0, NULL,NULL},
+    {"dec",      EZ80, 0, sizeof(operands_dec)/sizeof(operandlist_t), operands_dec,NULL},
+    {"defb",     ASSEMBLER, ASM_DB, 0, NULL,NULL},
+    {"defs",     ASSEMBLER, ASM_DS, 0, NULL,NULL},
+    {"defw",     ASSEMBLER, ASM_DW, 0, NULL,NULL},
+    {"di",       EZ80, 0, sizeof(operands_di)/sizeof(operandlist_t), operands_di,NULL},
+    {"djnz",     EZ80, 0, sizeof(operands_djnz)/sizeof(operandlist_t), operands_djnz,NULL},
+    {"dl",       ASSEMBLER, ASM_DW24, 0, NULL,NULL},
+    {"ds",       ASSEMBLER, ASM_DS, 0, NULL,NULL},
+    {"dw",       ASSEMBLER, ASM_DW, 0, NULL,NULL},
+    {"dw24",     ASSEMBLER, ASM_DW24, 0, NULL,NULL},
+    {"dw32",     ASSEMBLER, ASM_DW32, 0, NULL,NULL},
+    {"ei",       EZ80, 0, sizeof(operands_ei)/sizeof(operandlist_t), operands_ei,NULL},
+    {"else",     ASSEMBLER, ASM_ELSE, 0, NULL,NULL},
+    {"endif",    ASSEMBLER, ASM_ENDIF, 0, NULL,NULL},
+    {"endmacro", ASSEMBLER, ASM_MACRO_END, 0, NULL,NULL},
+    {"equ",      ASSEMBLER, ASM_EQU, 0, NULL,NULL},
+    {"ex",       EZ80, 0, sizeof(operands_ex)/sizeof(operandlist_t), operands_ex,NULL},
+    {"exx",      EZ80, 0, sizeof(operands_exx)/sizeof(operandlist_t), operands_exx,NULL},
+    {"fillbyte", ASSEMBLER, ASM_FILLBYTE, 0, NULL,NULL},
+    {"halt",     EZ80, 0, sizeof(operands_halt)/sizeof(operandlist_t), operands_halt,NULL},
+    {"if",       ASSEMBLER, ASM_IF, 0, NULL,NULL},
+    {"im",       EZ80, 0, sizeof(operands_im)/sizeof(operandlist_t), operands_im,NULL},
+    {"in",       EZ80, 0, sizeof(operands_in)/sizeof(operandlist_t), operands_in,NULL},
+    {"in0",      EZ80, 0, sizeof(operands_in0)/sizeof(operandlist_t), operands_in0,NULL},
+    {"inc",      EZ80, 0, sizeof(operands_inc)/sizeof(operandlist_t), operands_inc,NULL},
+    {"incbin",   ASSEMBLER, ASM_INCBIN, 0, NULL,NULL},
+    {"include",  ASSEMBLER, ASM_INCLUDE, 0, NULL,NULL},
+    {"ind",      EZ80, 0, sizeof(operands_ind)/sizeof(operandlist_t), operands_ind,NULL},
+    {"ind2",     EZ80, 0, sizeof(operands_ind2)/sizeof(operandlist_t), operands_ind2,NULL},
+    {"ind2r",    EZ80, 0, sizeof(operands_ind2r)/sizeof(operandlist_t), operands_ind2r,NULL},
+    {"indm",     EZ80, 0, sizeof(operands_indm)/sizeof(operandlist_t), operands_indm,NULL},
+    {"indmr",    EZ80, 0, sizeof(operands_indmr)/sizeof(operandlist_t), operands_indmr,NULL},
+    {"indr",     EZ80, 0, sizeof(operands_indr)/sizeof(operandlist_t), operands_indr,NULL},
+    {"indrx",    EZ80, 0, sizeof(operands_indrx)/sizeof(operandlist_t), operands_indrx,NULL},
+    {"ini",      EZ80, 0, sizeof(operands_ini)/sizeof(operandlist_t), operands_ini,NULL},
+    {"ini2",     EZ80, 0, sizeof(operands_ini2)/sizeof(operandlist_t), operands_ini2,NULL},
+    {"ini2r",    EZ80, 0, sizeof(operands_ini2r)/sizeof(operandlist_t), operands_ini2r,NULL},
+    {"inim",     EZ80, 0, sizeof(operands_inim)/sizeof(operandlist_t), operands_inim,NULL},
+    {"inimr",    EZ80, 0, sizeof(operands_inimr)/sizeof(operandlist_t), operands_inimr,NULL},
+    {"inir",     EZ80, 0, sizeof(operands_inir)/sizeof(operandlist_t), operands_inir,NULL},
+    {"inirx",    EZ80, 0, sizeof(operands_inirx)/sizeof(operandlist_t), operands_inirx,NULL},
+    {"jp",       EZ80, 0, sizeof(operands_jp)/sizeof(operandlist_t), operands_jp,NULL},
+    {"jr",       EZ80, 0, sizeof(operands_jr)/sizeof(operandlist_t), operands_jr,NULL},
+    {"ld",       EZ80, 0, sizeof(operands_ld)/sizeof(operandlist_t), operands_ld,NULL},
+    {"ldd",      EZ80, 0, sizeof(operands_ldd)/sizeof(operandlist_t), operands_ldd,NULL},
+    {"lddr",     EZ80, 0, sizeof(operands_lddr)/sizeof(operandlist_t), operands_lddr,NULL},
+    {"ldi",      EZ80, 0, sizeof(operands_ldi)/sizeof(operandlist_t), operands_ldi,NULL},
+    {"ldir",     EZ80, 0, sizeof(operands_ldir)/sizeof(operandlist_t), operands_ldir,NULL},
+    {"lea",      EZ80, 0, sizeof(operands_lea)/sizeof(operandlist_t), operands_lea,NULL},
+    {"macro",    ASSEMBLER, ASM_MACRO_START, 0, NULL,NULL},
+    {"mlt",      EZ80, 0, sizeof(operands_mlt)/sizeof(operandlist_t), operands_mlt,NULL},
+    {"neg",      EZ80, 0, sizeof(operands_neg)/sizeof(operandlist_t), operands_neg,NULL},
+    {"nop",      EZ80, 0, sizeof(operands_nop)/sizeof(operandlist_t), operands_nop,NULL},
+    {"or",       EZ80, 0, sizeof(operands_or)/sizeof(operandlist_t), operands_or,NULL},
+    {"org",      ASSEMBLER, ASM_ORG, 0, NULL,NULL},
+    {"otd2r",    EZ80, 0, sizeof(operands_otd2r)/sizeof(operandlist_t), operands_otd2r,NULL},
+    {"otdm",     EZ80, 0, sizeof(operands_otdm)/sizeof(operandlist_t), operands_otdm,NULL},
+    {"otdmr",    EZ80, 0, sizeof(operands_otdmr)/sizeof(operandlist_t), operands_otdmr,NULL},
+    {"otdr",     EZ80, 0, sizeof(operands_otdr)/sizeof(operandlist_t), operands_otdr,NULL},
+    {"otdrx",    EZ80, 0, sizeof(operands_otdrx)/sizeof(operandlist_t), operands_otdrx,NULL},
+    {"oti2r",    EZ80, 0, sizeof(operands_oti2r)/sizeof(operandlist_t), operands_oti2r,NULL},
+    {"otim",     EZ80, 0, sizeof(operands_otim)/sizeof(operandlist_t), operands_otim,NULL},
+    {"otimr",    EZ80, 0, sizeof(operands_otimr)/sizeof(operandlist_t), operands_otimr,NULL},
+    {"otir",     EZ80, 0, sizeof(operands_otir)/sizeof(operandlist_t), operands_otir,NULL},
+    {"otirx",    EZ80, 0, sizeof(operands_otirx)/sizeof(operandlist_t), operands_otirx,NULL},
+    {"out",      EZ80, 0, sizeof(operands_out)/sizeof(operandlist_t), operands_out,NULL},
+    {"out0",     EZ80, 0, sizeof(operands_out0)/sizeof(operandlist_t), operands_out0,NULL},
+    {"outd",     EZ80, 0, sizeof(operands_outd)/sizeof(operandlist_t), operands_outd,NULL},
+    {"outd2",    EZ80, 0, sizeof(operands_outd2)/sizeof(operandlist_t), operands_outd2,NULL},
+    {"outi",     EZ80, 0, sizeof(operands_outi)/sizeof(operandlist_t), operands_outi,NULL},
+    {"outi2",    EZ80, 0, sizeof(operands_outi2)/sizeof(operandlist_t), operands_outi2,NULL},
+    {"pea",      EZ80, 0, sizeof(operands_pea)/sizeof(operandlist_t), operands_pea,NULL},
+    {"pop",      EZ80, 0, sizeof(operands_pop)/sizeof(operandlist_t), operands_pop,NULL},
+    {"push",     EZ80, 0, sizeof(operands_push)/sizeof(operandlist_t), operands_push,NULL},
+    {"res",      EZ80, 0, sizeof(operands_res)/sizeof(operandlist_t), operands_res,NULL},
+    {"ret",      EZ80, 0, sizeof(operands_ret)/sizeof(operandlist_t), operands_ret,NULL},
+    {"reti",     EZ80, 0, sizeof(operands_reti)/sizeof(operandlist_t), operands_reti,NULL},
+    {"retn",     EZ80, 0, sizeof(operands_retn)/sizeof(operandlist_t), operands_retn,NULL},
+    {"rl",       EZ80, 0, sizeof(operands_rl)/sizeof(operandlist_t), operands_rl,NULL},
+    {"rla",      EZ80, 0, sizeof(operands_rla)/sizeof(operandlist_t), operands_rla,NULL},
+    {"rlc",      EZ80, 0, sizeof(operands_rlc)/sizeof(operandlist_t), operands_rlc,NULL},
+    {"rlca",     EZ80, 0, sizeof(operands_rlca)/sizeof(operandlist_t), operands_rlca,NULL},
+    {"rld",      EZ80, 0, sizeof(operands_rld)/sizeof(operandlist_t), operands_rld,NULL},
+    {"rr",       EZ80, 0, sizeof(operands_rr)/sizeof(operandlist_t), operands_rr,NULL},
+    {"rra",      EZ80, 0, sizeof(operands_rra)/sizeof(operandlist_t), operands_rra,NULL},
+    {"rrc",      EZ80, 0, sizeof(operands_rrc)/sizeof(operandlist_t), operands_rrc,NULL},
+    {"rrca",     EZ80, 0, sizeof(operands_rrca)/sizeof(operandlist_t), operands_rrca,NULL},
+    {"rrd",      EZ80, 0, sizeof(operands_rrd)/sizeof(operandlist_t), operands_rrd,NULL},
+    {"rsmix",    EZ80, 0, sizeof(operands_rsmix)/sizeof(operandlist_t), operands_rsmix,NULL},
+    {"rst",      EZ80, 0, sizeof(operands_rst)/sizeof(operandlist_t), operands_rst,NULL},
+    {"sbc",      EZ80, 0, sizeof(operands_sbc)/sizeof(operandlist_t), operands_sbc,NULL},
+    {"scf",      EZ80, 0, sizeof(operands_scf)/sizeof(operandlist_t), operands_scf,NULL},
+    {"set",      EZ80, 0, sizeof(operands_set)/sizeof(operandlist_t), operands_set,NULL},
+    {"sla",      EZ80, 0, sizeof(operands_sla)/sizeof(operandlist_t), operands_sla,NULL},
+    {"slp",      EZ80, 0, sizeof(operands_slp)/sizeof(operandlist_t), operands_slp,NULL},
+    {"sra",      EZ80, 0, sizeof(operands_sra)/sizeof(operandlist_t), operands_sra,NULL},
+    {"srl",      EZ80, 0, sizeof(operands_srl)/sizeof(operandlist_t), operands_srl,NULL},
+    {"stmix",    EZ80, 0, sizeof(operands_stmix)/sizeof(operandlist_t), operands_stmix,NULL},
+    {"sub",      EZ80, 0, sizeof(operands_sub)/sizeof(operandlist_t), operands_sub,NULL},
+    {"tst",      EZ80, 0, sizeof(operands_tst)/sizeof(operandlist_t), operands_tst,NULL},
+    {"tstio",    EZ80, 0, sizeof(operands_tstio)/sizeof(operandlist_t), operands_tstio,NULL},
+    {"xor",      EZ80, 0, sizeof(operands_xor)/sizeof(operandlist_t), operands_xor,NULL}
 };
 
 instruction_t * instruction_hashtable_lookup(char *name) {
-    int index,i,try;
+    int index;
+    instruction_t *try;
 
-    index = lowercaseHash(name) % INSTRUCTION_HASHTABLESIZE;
-    for(i = 0; i < INSTRUCTION_HASHTABLESIZE; i++){
-        //try = (index + i) % INSTRUCTION_HASHTABLESIZE;
-        try = (index + i) & (INSTRUCTION_HASHTABLESIZE-1);
-        if(instruction_hashtable[try] == NULL){
-            return NULL;
-        }
-        if(instruction_hashtable[try] != NULL &&
-            fast_strcasecmp(instruction_hashtable[try]->name,name) == 0) {
-            return instruction_hashtable[try];
-        }
+    index = lowercaseHash(name) & (INSTRUCTION_HASHTABLESIZE-1);
+    try = instruction_hashtable[index];
+
+    while(true)
+    {
+        if(try == NULL) return NULL;
+        if(fast_strcasecmp(try->name, name) == 0) return try;
+        try = try->next;
     }
-    return NULL;
 }
 
 void init_instruction_hashtable(void) {
-    uint16_t n, h;
+    uint16_t n;
+    uint16_t index;
+    instruction_t *try;
 
     memset(instruction_hashtable, 0, sizeof(instruction_hashtable));
 
     for(n = 0; n < (sizeof(instructions) / sizeof(instruction_t)); n++) {
-        //h = hash(instructions[n].name) % INSTRUCTION_HASHTABLESIZE;
-        h = hash(instructions[n].name) & (INSTRUCTION_HASHTABLESIZE-1);
-        while(instruction_hashtable[h]) {
-            h = h + 1;
-        }
-        instruction_hashtable[h] = &instructions[n];
-    }
+      index = hash(instructions[n].name) & (INSTRUCTION_HASHTABLESIZE-1);
+      try = instruction_hashtable[index];
+
+      // First item on index
+      if(try == NULL) {
+         instruction_hashtable[index] = &instructions[n];
+      }
+      else {
+         while(true) {
+            if(try->next) {
+                  try = try->next;
+            }
+            else {
+                  try->next = &instructions[n];
+                  break;
+            }
+         }
+      }
+   }
 }
