@@ -97,5 +97,7 @@ char *message[] = {
     "String type not allowed",
     "Couldn't open file for writing global label table",
     "Error resetting input file(s)\r\n",
-    "Maximum number of instructions reached"
+    "Maximum number of instructions reached",
+    "Error reading incbin file",
+    "Error allocating memory"
 };

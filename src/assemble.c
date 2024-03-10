@@ -769,12 +769,12 @@ void handle_asm_incbin(void) {
             incbins[incbincounter].size = filesize;
             incbins[incbincounter].buffer = (char *)malloc(filesize);
             if(incbins[incbincounter].buffer == NULL) {
-                error("Memory error");
+                error(message[ERROR_MEMORY]);
                 return;
             }
             size = fread(incbins[incbincounter].buffer, 1, filesize, fh);
             if(size != incbins[incbincounter].size) {
-                error("Error reading incbin");
+                error(message[ERROR_READINGBINFILE]);
                 return;
             }
             incbincounter++;
