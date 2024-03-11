@@ -12,9 +12,6 @@ uint8_t pass2matchlog[PASS2LOGSIZE];
 uint8_t *pass2matchlogptr;
 uint24_t passmatchcounter;
 
-struct incbinitem incbins[INCBINBUFFERMAX];
-uint8_t incbincounter;
-
 struct contentitem *filecontent[256]; // hash table with all file content items
 struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
 uint8_t _contentstacklevel;
@@ -24,6 +21,8 @@ uint24_t filecontentsize;
 bool processContent(char *filename);
 uint16_t getnextContentLine(struct contentitem *ci);
 uint16_t getnextContentMacroLine(char *dst, struct contentitem *ci);
+struct contentitem *findContent(char *filename);
+struct contentitem *insertContent(char *filename);
 
 // Parse a command-token string to currentline.mnemonic & currentline.suffix
 void parse_command(char *src) {
@@ -723,8 +722,8 @@ void handle_asm_include(void) {
 
 void handle_asm_incbin(void) {
     streamtoken_t token;
-    FILE* fh;
-    uint24_t n, filesize, size = 0;
+    struct contentitem *ci;
+    uint24_t n;
 
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND]);
@@ -732,88 +731,35 @@ void handle_asm_incbin(void) {
     }
 
     getDefineValueToken(&token, currentline.next);
-
     if(currentExpandedMacro) {
         if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
             token.start = _macro_ASM_buffer;
         }
     }
-
     if(token.start[0] != '\"') {
         error(message[ERROR_STRINGFORMAT]);
         return;
     }
-
     token.start[strlen(token.start)-1] = 0;
 
-    if(pass == 1) {
-        fh = fopen(token.start+1, "rb");
-        if(!fh) {
-            error(message[ERROR_INCLUDEFILE]);            
-            return;
+    // Prepare content
+    ci = findContent(token.start+1);
+    if(ci == NULL) {
+        if(pass == 1) {
+            ci = insertContent(token.start+1);
+            if(ci == NULL) return;
         }
-        #ifdef CEDEV
-            // Use optimal assembly routine in moscalls.asm
-            filesize = getfilesize(fh->fhandle);
-            address += filesize;
-        #else
-            filesize = 0;
-            while(1) {
-                // Other non-agon compilers
-                size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
-                filesize += size;
-                address += size;
-                if(size < FILE_BUFFERSIZE) break;
-            }
-            fseek(fh, 0, SEEK_SET);
-        #endif
-        if(incbincounter < INCBINBUFFERMAX) {
-            incbins[incbincounter].size = filesize;
-            incbins[incbincounter].buffer = (char *)malloc(filesize);
-            if(incbins[incbincounter].buffer == NULL) {
-                error(message[ERROR_MEMORY]);
-                return;
-            }
-            size = fread(incbins[incbincounter].buffer, 1, filesize, fh);
-            if(size != incbins[incbincounter].size) {
-                error(message[ERROR_READINGBINFILE]);
-                return;
-            }
-            incbincounter++;
-        }
-        fclose(fh);
+        else return;
     }
 
+    if(pass == 1) address += ci->size;
     if(pass == 2) {
-        if(incbincounter < INCBINBUFFERMAX) { // read from buffer
-            size = incbins[incbincounter].size;
-            if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
-                for(n = 0; n < size; n++) emit_8bit(incbins[incbincounter].buffer[n]);
-            }
-            else {
-                io_write(FILE_OUTPUT, incbins[incbincounter].buffer, size);
-                address += size;
-            }
-            incbincounter++;        
+        if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
+            for(n = 0; n < ci->size; n++) emit_8bit(ci->buffer[n]);
         }
-        else { // read from file
-            fh = fopen(token.start+1, "rb");
-            if(!fh) {
-                error(message[ERROR_INCLUDEFILE]);            
-                return;
-            }
-            while(1) {
-                size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
-                if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
-                    for(n = 0; n < size; n++) emit_8bit(_buffer[n]);
-                }
-                else {
-                    io_write(FILE_OUTPUT, _buffer, size);
-                    address += size;
-                }
-                if(size < FILE_BUFFERSIZE) break;
-            }
-            fclose(fh);
+        else {
+            io_write(FILE_OUTPUT, ci->buffer, ci->size);
+            address += ci->size;
         }
         binfilecount++;
     }
@@ -1253,7 +1199,6 @@ void passInitialize(uint8_t passnumber) {
     inConditionalSection = 0;
     initAnonymousLabelTable();
     pass2matchlogptr = pass2matchlog;
-    incbincounter = 0;
     _contentstacklevel = 0;
     if(pass == 1) passmatchcounter = 0;
     if(pass == 2) {

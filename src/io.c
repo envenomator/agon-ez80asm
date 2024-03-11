@@ -111,7 +111,6 @@ void _deleteFiles(void) {
 }
 
 void _closeAllFiles() {
-    //if(filehandle[FILE_INPUT]) fclose(filehandle[FILE_INPUT]);
     if(filehandle[FILE_OUTPUT]) fclose(filehandle[FILE_OUTPUT]);
     if(filehandle[FILE_ANONYMOUS_LABELS]) fclose(filehandle[FILE_ANONYMOUS_LABELS]);
     if(list_enabled && filehandle[FILE_LISTING]) fclose(filehandle[FILE_LISTING]);
@@ -120,7 +119,6 @@ void _closeAllFiles() {
 bool _openfiles(void) {
     bool status = true;
 
-    //status = status && _openFile(FILE_INPUT, "rb");
     status = status && _openFile(FILE_OUTPUT, "wb+");
     status = status && _openFile(FILE_ANONYMOUS_LABELS, "wb+");
     if(list_enabled) status = status && _openFile(FILE_LISTING, "w");
@@ -134,14 +132,6 @@ void _io_flush(uint8_t fh) {
     fwrite(_bufferstart[fh], 1, _filebuffersize[fh], filehandle[fh]);
     _filebuffer[fh] = _bufferstart[fh];
     _filebuffersize[fh] = 0;
-}
-
-// Will be called for reading INPUT buffer
-void _io_fillbuffer(uint8_t fh) {
-    if(_bufferstart[fh]) {
-        _filebuffersize[fh] = fread(_bufferstart[fh], 1, FILE_BUFFERSIZE, filehandle[fh]);
-        _filebuffer[fh] = _bufferstart[fh];
-    }
 }
 
 // Flush all output files
@@ -189,42 +179,6 @@ int io_puts(uint8_t fh, char *s) {
     return number;
 }
 
-// Allocate a LINEMAX buffer for io_getline, max LINEMAX-1 chars will be read
-// Configured to use LINEMAX = uint8_t Maximum for performance
-char* io_getline(uint8_t fh, char *s) {
-	uint8_t maxchars, charsread;
-    char *cs,*ptr;
-    bool finalread = false;
-    bool done = false;
-
-    cs = s;
-    while(!done && !_fileEOF[fh]) {
-        if(_filebuffersize[fh] == 0) {
-            if(finalread) _fileEOF[fh] = true;
-            else {
-                _io_fillbuffer(fh);
-                if(_filebuffersize[fh] < FILE_BUFFERSIZE) finalread = true;
-            }
-        }
-        else {
-            ptr = _filebuffer[fh]; // pointer to read buffer;
-            maxchars = (_filebuffersize[fh] > LINEMAX-1)?LINEMAX-1:(uint8_t)_filebuffersize[fh];
-            charsread = 0;
-            while(maxchars--) {
-                charsread++;
-                if(((*cs++ = *ptr++)) == '\n') {
-                    done = true;
-                    break;
-                }
-            }
-            _filebuffersize[fh] -= charsread;
-            _filebuffer[fh] += charsread;
-        }
-    }
-    *cs = '\0';
-    return (*s == 0)? NULL:s;
-}
-
 void _init_labelscope(void) {
     for(int n = 0; n < FILES; n++) {
         strcpy(filelabelscope[n], ""); // empty scope
@@ -240,40 +194,11 @@ bool io_init(char *input_filename, char *output_filename) {
     _init_labelscope();
     return _openfiles();
 }
-/*
-bool io_setpass(uint8_t pass) {
-    bool result = true;
-    switch(pass) {
-        case 1:
-            return true;
-            break;
-        case 2:
-            _initFileBuffers();
-            _init_labelscope();
-            //result = result && (fseek(filehandle[FILE_INPUT], 0, 0) == 0);
-            result = result && (fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0) == 0);
-            if(!result) error(message[ERROR_RESETINPUTFILE]);
-            return result;
-            break;
-    }
-    return false;
-}
-*/
+
 void io_close(void) {
     _io_flushOutput();
     _closeAllFiles();
     _deleteFiles();
-}
-
-void io_resetCurrentInput(void) {
-    _bufferstart[FILE_CURRENT] = _bufferstart[FILE_INPUT];
-
-    strcpy(filename[FILE_CURRENT], filename[FILE_INPUT]);
-    filehandle[FILE_CURRENT] = filehandle[FILE_INPUT];
-    _filebuffer[FILE_CURRENT] = _filebuffer[FILE_INPUT];
-    _filebuffersize[FILE_CURRENT] = _filebuffersize[FILE_INPUT];
-    _fileEOF[FILE_CURRENT] = false;
-    strcpy(filelabelscope[FILE_CURRENT],"");
 }
 
 void emit_8bit(uint8_t value) {
