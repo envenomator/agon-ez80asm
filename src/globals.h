@@ -25,6 +25,9 @@ typedef struct {
 
 
 // Global variables
+extern uint16_t sourcefilecount;
+extern uint16_t binfilecount;
+extern uint24_t filecontentsize;
 extern bool filesbuffered;
 extern bool lineNumberNeedsReset;
 extern unsigned int linenumber;

@@ -36,7 +36,7 @@ void printHelp(void) {
 }
 
 void displayStatistics(void) {
-    printf("\r\nAssembly statistics\r\n========================\r\nLabel memory  : %d\r\nLabels        : %d\r\n\r\nMacro memory  : %d\r\nMacros        : %d\r\n\r\nSources parsed: %d\r\nBinfiles read : %d\r\n\r\nInstructions  : %d/%d\r\n\r\nOutput size   : %d\r\n", labelmemsize, getGlobalLabelCount(), macromemsize, macroCounter, sourcefilecount, binfilecount, passmatchcounter, PASS2LOGSIZE, (address - start_address));
+    printf("\r\nAssembly statistics\r\n========================\r\nLabel memory  : %d\r\nLabels        : %d\r\n\r\nMacro memory  : %d\r\nMacros        : %d\r\n\r\nBuffer memory : %d\r\n---------------------\r\nTotal memory  : %d\r\n\r\nSources parsed: %d\r\nBinfiles read : %d\r\n\r\nInstructions  : %d/%d\r\n\r\nOutput size   : %d\r\n", labelmemsize, getGlobalLabelCount(), macromemsize, macroCounter, filecontentsize, labelmemsize+macromemsize+filecontentsize, sourcefilecount, binfilecount, passmatchcounter, PASS2LOGSIZE, (address - start_address));
 }
 
 int main(int argc, char *argv[]) {

@@ -3,7 +3,9 @@
 /*
  * Global variables
  */
-
+uint16_t sourcefilecount;
+uint16_t binfilecount;
+uint24_t filecontentsize;
 bool filesbuffered;
 bool lineNumberNeedsReset;
 unsigned int linenumber;

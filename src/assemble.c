@@ -1,9 +1,7 @@
 #include "assemble.h"
 #include <time.h>
 
-// Local file buffer
-char _buffer[FILE_BUFFERSIZE];
-char _incbuffer[FILESTACK_MAXFILES][FILE_BUFFERSIZE];
+// Temp macro buffers
 char _macrobuffer[MACRO_BUFFERSIZE];
 char _macro_OP_buffer[MACROARGLENGTH + 1]; // replacement buffer for operands during macro expansion
 char _macro_ASM_buffer[MACROARGLENGTH + 1];// replacement buffer for values during ASSEMBLER macro expansion
@@ -15,8 +13,6 @@ uint24_t passmatchcounter;
 struct contentitem *filecontent[256]; // hash table with all file content items
 struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
 uint8_t _contentstacklevel;
-
-uint24_t filecontentsize;
 
 bool processContent(char *filename);
 uint16_t getnextContentLine(struct contentitem *ci);
@@ -717,6 +713,8 @@ void handle_asm_include(void) {
     token.start[strlen(token.start)-1] = 0;
     processContent(token.start+1);
 
+    if(pass == 1) sourcefilecount++;
+
     if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
 }
 
@@ -752,7 +750,10 @@ void handle_asm_incbin(void) {
         else return;
     }
 
-    if(pass == 1) address += ci->size;
+    if(pass == 1) {
+        address += ci->size;
+        binfilecount++;
+    }
     if(pass == 2) {
         if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
             for(n = 0; n < ci->size; n++) emit_8bit(ci->buffer[n]);
@@ -935,7 +936,7 @@ void handle_asm_definemacro(void) {
     // Only define macros in pass 1
     // parse arguments into array
     if(pass == 1) {
-        printf("Next arg: <%s>\r\n",currentline.next);
+        //printf("Next arg: <%s>\r\n",currentline.next);
         if(!currentline.next) {
             error(message[ERROR_MACRONAME]);
             return;
@@ -968,8 +969,8 @@ void handle_asm_definemacro(void) {
             return;
         }
         setMacroBody(macro, _macrobuffer);
-        printf("Macro name: <%s>\r\n",currentline.mnemonic);
-        printf("Macrobuffer:\r\n<%s>\r\n",_macrobuffer);
+        //printf("Macro name: <%s>\r\n",currentline.mnemonic);
+        //printf("Macrobuffer:\r\n<%s>\r\n",_macrobuffer);
     }
 }
 
@@ -1200,7 +1201,11 @@ void passInitialize(uint8_t passnumber) {
     initAnonymousLabelTable();
     pass2matchlogptr = pass2matchlog;
     _contentstacklevel = 0;
-    if(pass == 1) passmatchcounter = 0;
+    if(pass == 1) {
+        sourcefilecount = 1;
+        binfilecount = 0;
+        passmatchcounter = 0;
+    }
     if(pass == 2) {
         fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
     }
@@ -1242,6 +1247,12 @@ struct contentitem *insertContent(char *filename) {
     ci->next = NULL;
     fclose(ci->fh);
 
+    // Update statistics
+    filecontentsize += sizeof(struct contentitem);
+    filecontentsize += strlen(filename) + 1;
+    filecontentsize += ci->size + 1;
+
+    // Placement
     index = hash256(filename);
     try = filecontent[index];
     // First item on index

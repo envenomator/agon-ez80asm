@@ -3,8 +3,6 @@
 // Global variables
 char     filename[FILES][FILENAMEMAXLENGTH + 1];
 FILE*    filehandle[FILES];
-uint16_t sourcefilecount;
-uint16_t binfilecount;
 char     filelabelscope[FILES][FILENAMEMAXLENGTH + 1];
 
 // Local variables
