@@ -10,7 +10,7 @@
 #include "io.h"
 
 void listInit(void);
-void listStartLine(char *line);
+void listStartLine(char *line, unsigned int linenumber);
 void listEndLine(void);
 void listEmit8bit(uint8_t value);
 

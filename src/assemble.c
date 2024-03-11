@@ -710,6 +710,8 @@ void handle_asm_include(void) {
         return;
     }
 
+    if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+
     token.start[strlen(token.start)-1] = 0;
     processContent(token.start+1);
 
@@ -902,7 +904,7 @@ void handle_asm_definemacro(void) {
         char *src = macroline;
 
         if(pass == 2 && (consolelist_enabled || list_enabled)) {
-            listStartLine(src);
+            listStartLine(src, ci->currentlinenumber);
             listEndLine();
         }
         if((!isspace(src[0])) && (src[0] != '@') && (src[0] != ';')) {
@@ -1174,7 +1176,7 @@ void processMacro(void) {
     macrolinenumber = 1;
     while(getnextline(macroline)) {
         strcpy(errorline, macroline);
-        if(pass == 2 && (consolelist_enabled || list_enabled)) listStartLine(macroline);
+        if(pass == 2 && (consolelist_enabled || list_enabled)) listStartLine(macroline, macrolinenumber);
         parseLine(macroline);
         processInstructions();
         if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine();
@@ -1208,14 +1210,6 @@ void passInitialize(uint8_t passnumber) {
     }
     if(pass == 2) {
         fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
-    }
-}
-
-// Assembler directives may demand a late reset of the linenumber, after the listing has been done
-void processDelayedLineNumberReset(void) {
-    if(lineNumberNeedsReset) {
-        lineNumberNeedsReset = false;
-        linenumber = 0;
     }
 }
 
@@ -1345,6 +1339,7 @@ bool contentPush(struct contentitem *ci) {
         return false;
     }
     _contentstack[_contentstacklevel++] = ci;
+    if(_contentstacklevel > maxstackdepth) maxstackdepth = _contentstacklevel;
     currentcontentitem = ci;
     return true;
 }
@@ -1380,15 +1375,13 @@ bool processContent(char *filename) {
 
     // Process
     while(getnextContentLine(ci)) {
-        //printf("Content: <%s>\n", ci->currentline);
         ci->currentlinenumber++;
-        if((pass == 2) && (consolelist_enabled || list_enabled)) listStartLine(line);
+        if((pass == 2) && (consolelist_enabled || list_enabled)) listStartLine(line, ci->currentlinenumber);
 
         parseLine(line);
         if(!currentline.current_macro) {
             processInstructions();
             if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
-            processDelayedLineNumberReset();
         }
         else {
             if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
@@ -1414,6 +1407,7 @@ bool processContent(char *filename) {
 
 bool assemble(char *filename) {
     global_errors = 0;
+    maxstackdepth = 0;
     initFileContentTable();
 
     // Pass 1

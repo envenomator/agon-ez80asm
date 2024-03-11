@@ -26,13 +26,14 @@ typedef struct {
 
 
 // Global variables
+extern uint8_t maxstackdepth;
 extern struct contentitem *currentcontentitem;
 extern uint16_t sourcefilecount;
 extern uint16_t binfilecount;
 extern uint24_t filecontentsize;
 extern bool filesbuffered;
 extern bool lineNumberNeedsReset;
-extern unsigned int linenumber;
+//extern unsigned int linenumber;
 extern unsigned int macrolinenumber;
 extern unsigned int pass;
 extern int inConditionalSection; // 0: outside conditional section, 1: negative section, 2: positive section

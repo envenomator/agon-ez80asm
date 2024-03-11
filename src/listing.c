@@ -1,4 +1,5 @@
 #include "listing.h"
+#include "assemble.h"
 
 // Local variables
 char     _listLine[LINEMAX];
@@ -19,7 +20,7 @@ void listInit(void) {
     _listLine[0] = 0;
 }
 
-void listStartLine(char *line) {    
+void listStartLine(char *line, unsigned int linenumber) {    
     strcpy(_listLine, line);
     trimRight(_listLine);
     _listAddress = address;
@@ -54,7 +55,22 @@ void listPrintLine(void) {
         if(consolelist_enabled) printf("%s",buffer);
     }
     if(_listLineNumber == 0) {
-        sprintf(buffer, "%04d %s\r\n",_listSourceLineNumber, _listLine);
+        sprintf(buffer, "%04d", currentExpandedMacro?macrolinenumber:_listSourceLineNumber);
+        for(i = 1; i < currentStackLevel(); i++) {
+            strcat(buffer, "*");
+        }
+        if(currentExpandedMacro) {
+            strcat(buffer, "M");
+        }
+        else {
+            strcat(buffer, " ");
+        }
+        for(i = maxstackdepth - i;i > 0; i--) {
+            strcat(buffer, " ");
+        }
+        if(list_enabled) io_puts(FILE_LISTING, buffer);
+        if(consolelist_enabled) printf("%s",buffer);
+        sprintf(buffer, "%s\r\n", _listLine);
         if(list_enabled) io_puts(FILE_LISTING, buffer);
         if(consolelist_enabled) printf("%s",buffer);
     }

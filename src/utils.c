@@ -57,29 +57,18 @@ void error(char* msg) {
     struct contentitem *ci = currentContent();
 
     if(!global_errors) {
+        vdp_set_text_colour(DARK_RED);
         if(ci) {
-            vdp_set_text_colour(DARK_RED);
             printf("FILE \"%s\" line %d\r\n", ci->name, ci->currentlinenumber);
             if(currentExpandedMacro) printf("MACRO \"%s\" definition line %d\r\n",currentExpandedMacro->name, macrolinenumber);
-            printf("\r\n%s\r\n", msg);
-            vdp_set_text_colour(BRIGHT_WHITE);
+            printf("\r\n");
         }
         global_errors++;
+        printf("%s\r\n", msg);
+        vdp_set_text_colour(BRIGHT_WHITE);
     }
 }
 
-/*
-void error(char* msg) {
-    if(!global_errors) {
-        vdp_set_text_colour(DARK_RED);
-        if(currentExpandedMacro) printf("MACRO \"%s\" definition line %d\r\n",currentExpandedMacro->name, macrolinenumber);
-        printf("FILE \"%s\" line %d\r\n", filename[FILE_CURRENT], linenumber);
-        printf("\r\n%s\r\n",  msg);
-        vdp_set_text_colour(BRIGHT_WHITE);
-        global_errors++;
-    }
-}
-*/
 void trimRight(char *str) {
     while(*str) str++;
     str--;
