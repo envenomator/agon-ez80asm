@@ -23,7 +23,7 @@ void setMacroBody(macro_t *macro, const char *body) {
     strcpy(macro->body, body);
 }
 
-macro_t *defineMacro(char *name, uint8_t argcount, char *arguments) {
+macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t startlinenumber) {
     int len, i;
     uint8_t index;
     char *ptr,*subs;
@@ -78,6 +78,8 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments) {
             tmp->substitutions[i] = subs;
         }
     }
+    tmp->originfilename = currentcontentitem->name;
+    tmp->originlinenumber = startlinenumber;
 
     index = lowercaseHash256(name);
     try = instruction_table[index];

@@ -3,6 +3,7 @@
 /*
  * Global variables
  */
+uint8_t errorreportlevel;
 uint8_t maxstackdepth;
 struct contentitem *currentcontentitem;
 uint16_t sourcefilecount;

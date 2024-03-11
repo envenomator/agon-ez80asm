@@ -56,16 +56,22 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
 void error(char* msg) {
     struct contentitem *ci = currentContent();
 
-    if(!global_errors) {
+    if(global_errors == 0) {
         vdp_set_text_colour(DARK_RED);
         if(ci) {
-            printf("FILE \"%s\" line %d\r\n", ci->name, ci->currentlinenumber);
-            if(currentExpandedMacro) printf("MACRO \"%s\" definition line %d\r\n",currentExpandedMacro->name, macrolinenumber);
+            if(currentExpandedMacro) {
+                printf("MACRO [%s] in \"%s\" line %d\r\n",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
+                //printf("defined in \"%s\" line %d\r\n", currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber);
+            }
+            else {
+                printf("FILE \"%s\" line %d\r\n", ci->name, ci->currentlinenumber);
+            }
             printf("\r\n");
         }
         global_errors++;
         printf("%s\r\n", msg);
         vdp_set_text_colour(BRIGHT_WHITE);
+        errorreportlevel = currentStackLevel();
     }
 }
 

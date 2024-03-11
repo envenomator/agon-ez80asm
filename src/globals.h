@@ -26,6 +26,7 @@ typedef struct {
 
 
 // Global variables
+extern uint8_t errorreportlevel;
 extern uint8_t maxstackdepth;
 extern struct contentitem *currentcontentitem;
 extern uint16_t sourcefilecount;

@@ -887,6 +887,7 @@ void handle_asm_definemacro(void) {
     definelabel(address);
     bool foundend = false;
     macro_t *macro;
+    uint16_t startlinenumber;
 
     _macrobuffer[0] = 0; // empty string
     strend = _macrobuffer;
@@ -899,6 +900,7 @@ void handle_asm_definemacro(void) {
         return;
     }
 
+    startlinenumber = ci->currentlinenumber;
     while(getnextContentMacroLine(macroline, ci)) {
         ci->currentlinenumber++;
         char *src = macroline;
@@ -965,14 +967,12 @@ void handle_asm_definemacro(void) {
             }
         }
         // record the macro to memory
-        macro = defineMacro(currentline.mnemonic, argcount, (char *)arglist);
+        macro = defineMacro(currentline.mnemonic, argcount, (char *)arglist, startlinenumber);
         if(!macro) {
             error(message[ERROR_MACROMEMORYALLOCATION]);
             return;
         }
         setMacroBody(macro, _macrobuffer);
-        //printf("Macro name: <%s>\r\n",currentline.mnemonic);
-        //printf("Macrobuffer:\r\n<%s>\r\n",_macrobuffer);
     }
 }
 
@@ -1182,9 +1182,10 @@ void processMacro(void) {
         if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine();
         macrolinenumber++;
         if(global_errors) {
+            errorreportlevel++; // only show macro error
             vdp_set_text_colour(DARK_YELLOW);
             trimRight(errorline);
-            printf("%s\r\n\r\nInvoked as:\r\n",errorline);
+            printf("%s\r\n",errorline);
             vdp_set_text_colour(BRIGHT_WHITE);
             return;
         }
@@ -1388,9 +1389,11 @@ bool processContent(char *filename) {
             processMacro();
         }
         if(global_errors) {
-            vdp_set_text_colour(DARK_YELLOW);
-            printf("%s\r\n",errorline);
-            vdp_set_text_colour(BRIGHT_WHITE);
+            if(currentStackLevel() == errorreportlevel) {
+                vdp_set_text_colour(DARK_YELLOW);
+                printf("%s\r\n",errorline);
+                vdp_set_text_colour(BRIGHT_WHITE);
+            }
             contentPop();
             return false;
         }
@@ -1407,6 +1410,8 @@ bool processContent(char *filename) {
 
 bool assemble(char *filename) {
     global_errors = 0;
+    errorreportlevel = 0;
+
     maxstackdepth = 0;
     initFileContentTable();
 
