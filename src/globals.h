@@ -25,6 +25,7 @@ typedef struct {
 
 
 // Global variables
+extern bool filesbuffered;
 extern bool lineNumberNeedsReset;
 extern unsigned int linenumber;
 extern unsigned int macrolinenumber;

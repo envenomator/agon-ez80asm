@@ -44,6 +44,8 @@ uint8_t getOperandToken(streamtoken_t *token, char *src);           // terminate
 uint8_t getDefineValueToken(streamtoken_t *token, char *src);       // terminates on all operator symbols, ',' and ';' transparent literals and strings
 uint16_t getnextline(char *dst);
 void     resetnextline(char *src);
+char *  allocateString(char *name);
+void *  allocateMemory(size_t size);
 
 uint8_t strcompound(char *dest, const char *src1, const char *src2);
 void validateRange8bit(int32_t value);

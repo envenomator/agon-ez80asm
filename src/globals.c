@@ -4,6 +4,7 @@
  * Global variables
  */
 
+bool filesbuffered;
 bool lineNumberNeedsReset;
 unsigned int linenumber;
 unsigned int macrolinenumber;

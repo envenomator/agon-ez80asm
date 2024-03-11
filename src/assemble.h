@@ -13,16 +13,9 @@
 #include "label.h"
 #include "str2num.h"
 #include "listing.h"
-#include "filestack.h"
 #include "macro.h"
 #include "io.h"
 #include "moscalls.h"
-
-extern uint24_t passmatchcounter;
-bool assemble(void);
-void emit_8bit(uint8_t value);
-void emit_16bit(uint16_t value);
-void emit_24bit(uint24_t value);
 
 enum {
     STATE_LINESTART,
@@ -59,5 +52,32 @@ struct incbinitem {
     unsigned int size;
     char *buffer;
 };
+
+struct contentitem {
+    // Static items
+    char         *name;
+    unsigned int  size;
+    char         *buffer;
+    FILE         *fh;
+    bool          filebuffered;
+    void         *next;
+    // Items changed during processing
+    char         *readptr;
+    uint16_t      currentlinenumber;
+    char         *currentline;
+    char         *currenterrorline;
+};
+
+extern uint24_t passmatchcounter;
+//bool assemble(void);
+bool assemble(char *filename);
+void emit_8bit(uint8_t value);
+void emit_16bit(uint16_t value);
+void emit_24bit(uint24_t value);
+
+struct contentitem *contentPop(void);
+bool                contentPush(struct contentitem *ci);
+struct contentitem *currentContent(void);
+uint8_t             currentStackLevel(void);
 
 #endif // ASSEMBLE_H

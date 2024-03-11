@@ -23,6 +23,38 @@ char     _fileBasename[FILENAMEMAXLENGTH + 1]; // base filename for all output f
     }
 #endif // else use standard remove()
 
+FILE *io_openfile(char *name, char *mode) {
+    char buffer[256];
+    FILE *fh = fopen(name, mode);
+    if(!fh) {
+        snprintf(buffer, 256, "Error opening \"%s\"", name);
+        error(buffer);
+    }
+    return fh;
+}
+
+uint24_t io_getfilesize(FILE *fh) {
+    uint24_t filesize;
+
+    #ifdef CEDEV
+        // Use optimal assembly routine in moscalls.asm
+        filesize = getfilesize(fh->fhandle);
+    #else
+        char _buffer[FILE_BUFFERSIZE];
+        uint24_t size;
+        filesize = 0;
+        while(1) {
+            // Other non-agon compilers
+            size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
+            filesize += size;
+            if(size < FILE_BUFFERSIZE) break;
+        }
+        fseek(fh, 0, SEEK_SET);
+    #endif
+
+    return filesize;
+}
+
 void _initFileBufferLayout(void) {
     int n;
 
@@ -79,7 +111,7 @@ void _deleteFiles(void) {
 }
 
 void _closeAllFiles() {
-    if(filehandle[FILE_INPUT]) fclose(filehandle[FILE_INPUT]);
+    //if(filehandle[FILE_INPUT]) fclose(filehandle[FILE_INPUT]);
     if(filehandle[FILE_OUTPUT]) fclose(filehandle[FILE_OUTPUT]);
     if(filehandle[FILE_ANONYMOUS_LABELS]) fclose(filehandle[FILE_ANONYMOUS_LABELS]);
     if(list_enabled && filehandle[FILE_LISTING]) fclose(filehandle[FILE_LISTING]);
@@ -88,7 +120,7 @@ void _closeAllFiles() {
 bool _openfiles(void) {
     bool status = true;
 
-    status = status && _openFile(FILE_INPUT, "rb");
+    //status = status && _openFile(FILE_INPUT, "rb");
     status = status && _openFile(FILE_OUTPUT, "wb+");
     status = status && _openFile(FILE_ANONYMOUS_LABELS, "wb+");
     if(list_enabled) status = status && _openFile(FILE_LISTING, "w");
@@ -208,7 +240,7 @@ bool io_init(char *input_filename, char *output_filename) {
     _init_labelscope();
     return _openfiles();
 }
-
+/*
 bool io_setpass(uint8_t pass) {
     bool result = true;
     switch(pass) {
@@ -218,7 +250,7 @@ bool io_setpass(uint8_t pass) {
         case 2:
             _initFileBuffers();
             _init_labelscope();
-            result = result && (fseek(filehandle[FILE_INPUT], 0, 0) == 0);
+            //result = result && (fseek(filehandle[FILE_INPUT], 0, 0) == 0);
             result = result && (fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0) == 0);
             if(!result) error(message[ERROR_RESETINPUTFILE]);
             return result;
@@ -226,34 +258,12 @@ bool io_setpass(uint8_t pass) {
     }
     return false;
 }
-
+*/
 void io_close(void) {
     _io_flushOutput();
     _closeAllFiles();
     _deleteFiles();
 }
-
-void io_getCurrent(filestackitem *fsi) {
-    fsi->fp = filehandle[FILE_CURRENT];
-    fsi->filebuffer = _filebuffer[FILE_CURRENT];
-    fsi->bufferstart = _bufferstart[FILE_CURRENT];
-    fsi->filebuffersize = _filebuffersize[FILE_CURRENT];
-    strcpy(fsi->filename, filename[FILE_CURRENT]);
-    fsi->linenumber = linenumber;
-    fsi->fileEOF = _fileEOF[FILE_CURRENT];
-    strcpy(fsi->labelscope, filelabelscope[FILE_CURRENT]);
-}
-
-void io_setCurrent(filestackitem *fsi) {
-    filehandle[FILE_CURRENT] = fsi->fp;
-    _filebuffer[FILE_CURRENT] = fsi->filebuffer;
-    _bufferstart[FILE_CURRENT] = fsi->bufferstart;
-    _filebuffersize[FILE_CURRENT] = fsi->filebuffersize;
-    strcpy(filename[FILE_CURRENT], fsi->filename);
-    linenumber = fsi->linenumber;
-    _fileEOF[FILE_CURRENT] = fsi->fileEOF;
-    strcpy(filelabelscope[FILE_CURRENT], fsi->labelscope);
-} 
 
 void io_resetCurrentInput(void) {
     _bufferstart[FILE_CURRENT] = _bufferstart[FILE_INPUT];
@@ -264,17 +274,6 @@ void io_resetCurrentInput(void) {
     _filebuffersize[FILE_CURRENT] = _filebuffersize[FILE_INPUT];
     _fileEOF[FILE_CURRENT] = false;
     strcpy(filelabelscope[FILE_CURRENT],"");
-}
-
-void io_getFileDefaults(filestackitem *fsi) {
-    fsi->filename[0] = 0;
-    fsi->fp = 0;
-    fsi->filebuffer = 0;
-    fsi->filebuffersize = 0;
-    fsi->bufferstart = 0;
-    fsi->fileEOF = 0;
-    fsi->linenumber = 1;
-    fsi->labelscope[0] = 0;
 }
 
 void emit_8bit(uint8_t value) {

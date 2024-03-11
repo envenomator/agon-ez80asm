@@ -11,7 +11,6 @@
 #include "str2num.h"
 #include "utils.h"
 #include "globals.h"
-#include "filestack.h"
 #include "io.h"
 
 enum {

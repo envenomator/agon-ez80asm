@@ -15,6 +15,16 @@ uint24_t passmatchcounter;
 struct incbinitem incbins[INCBINBUFFERMAX];
 uint8_t incbincounter;
 
+struct contentitem *filecontent[256]; // hash table with all file content items
+struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
+uint8_t _contentstacklevel;
+
+uint24_t filecontentsize;
+
+bool processContent(char *filename);
+uint16_t getnextContentLine(struct contentitem *ci);
+uint16_t getnextContentMacroLine(char *dst, struct contentitem *ci);
+
 // Parse a command-token string to currentline.mnemonic & currentline.suffix
 void parse_command(char *src) {
     currentline.mnemonic = src;
@@ -694,16 +704,9 @@ void handle_asm_org(void) {
 
 void handle_asm_include(void) {
     streamtoken_t token;
-    filestackitem fsi;
-    uint8_t inclevel;
-    
+
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND]);
-        return;
-    }
-    inclevel = filestackCount();
-    if(inclevel > FILESTACK_MAXFILES) {
-        error(message[ERROR_MAXINCLUDEFILES]);
         return;
     }
     getDefineValueToken(&token, currentline.next);
@@ -713,23 +716,8 @@ void handle_asm_include(void) {
     }
 
     token.start[strlen(token.start)-1] = 0;
-    io_getCurrent(&fsi);
-    filestackPush(&fsi);
-    strcpy(fsi.filename, token.start+1);
-    // set new file
-    io_getFileDefaults(&fsi);
-    fsi.fp = fopen(token.start+1, "rb");
-    strncpy(fsi.filename, token.start+1, sizeof(fsi.filename));
-    fsi.filename[sizeof(fsi.filename)-1] = '\0';
-    fsi.bufferstart = &_incbuffer[inclevel][0];
-    fsi.filebuffer = fsi.bufferstart;
-    io_setCurrent(&fsi);
-    
-    if(filehandle[FILE_CURRENT] == 0) {
-        error(message[ERROR_INCLUDEFILE]);
-        filestackPop(&fsi);
-    }
-    lineNumberNeedsReset = true;
+    processContent(token.start+1);
+
     if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
 }
 
@@ -942,6 +930,7 @@ int agon_strncasecmp(char *s1, char *s2, int n) {
 */
 void handle_asm_definemacro(void) {
     streamtoken_t token;
+    struct contentitem *ci;
     uint8_t argcount = 0;
     char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
     char macroline[LINEMAX];
@@ -955,12 +944,18 @@ void handle_asm_definemacro(void) {
 
     if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine(); // print out first line of macro definition
 
-    while(io_getline(FILE_CURRENT, macroline)) {
-        linenumber++;
+    ci = currentContent();
+    if(!ci) {
+        error("Internal error");
+        return;
+    }
+
+    while(getnextContentMacroLine(macroline, ci)) {
+        ci->currentlinenumber++;
         char *src = macroline;
 
         if(pass == 2 && (consolelist_enabled || list_enabled)) {
-            listStartLine(macroline);
+            listStartLine(src);
             listEndLine();
         }
         if((!isspace(src[0])) && (src[0] != '@') && (src[0] != ';')) {
@@ -994,6 +989,7 @@ void handle_asm_definemacro(void) {
     // Only define macros in pass 1
     // parse arguments into array
     if(pass == 1) {
+        printf("Next arg: <%s>\r\n",currentline.next);
         if(!currentline.next) {
             error(message[ERROR_MACRONAME]);
             return;
@@ -1026,6 +1022,8 @@ void handle_asm_definemacro(void) {
             return;
         }
         setMacroBody(macro, _macrobuffer);
+        printf("Macro name: <%s>\r\n",currentline.mnemonic);
+        printf("Macrobuffer:\r\n<%s>\r\n",_macrobuffer);
     }
 }
 
@@ -1250,17 +1248,17 @@ void processMacro(void) {
 // Initialize pass 1 / pass2 states for the assembler
 void passInitialize(uint8_t passnumber) {
     pass = passnumber;
-    linenumber = 0;
     address = start_address;
     currentExpandedMacro = NULL;
     inConditionalSection = 0;
-    io_setpass(passnumber);
-    filestackInit();
     initAnonymousLabelTable();
-    io_resetCurrentInput();
     pass2matchlogptr = pass2matchlog;
-    if(pass == 1) passmatchcounter = 0;
     incbincounter = 0;
+    _contentstacklevel = 0;
+    if(pass == 1) passmatchcounter = 0;
+    if(pass == 2) {
+        fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
+    }
 }
 
 // Assembler directives may demand a late reset of the linenumber, after the listing has been done
@@ -1271,85 +1269,202 @@ void processDelayedLineNumberReset(void) {
     }
 }
 
-bool assemble(void){
-    char line[LINEMAX]; // Temp line buffer, will be deconstructed during streamtoken_t parsing
+void initFileContentTable(void) {
+    filecontentsize = 0;
+    memset(filecontent, 0, sizeof(filecontent));
+}
+
+struct contentitem *insertContent(char *filename) {
+    struct contentitem *ci, *try;
+    uint8_t index;
+
+    // Allocate memory and fill out ci content
+    ci = allocateMemory(sizeof(struct contentitem));
+    if(ci == NULL) return NULL;
+    ci->name = allocateString(filename);
+    if(ci->name == NULL) return NULL;
+    ci->fh = io_openfile(filename, "rb");
+    if(ci->fh == 0) return NULL;
+    ci->size = io_getfilesize(ci->fh);
+    ci->buffer = allocateMemory(ci->size+1);
+    ci->readptr = ci->buffer;
+    if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
+        error("Reading file");
+        return NULL;
+    }
+    ci->buffer[ci->size] = 0; // terminate stringbuffer
+    ci->filebuffered = filesbuffered;
+    ci->next = NULL;
+    fclose(ci->fh);
+
+    index = hash256(filename);
+    try = filecontent[index];
+    // First item on index
+    if(try == NULL) {
+        filecontent[index] = ci;
+        return ci;
+    }
+
+    // Collision on index, place at end of linked list. Items are always unique
+    while(true) {
+        if(try->next) {
+            try = try->next;
+        }
+        else {
+            try->next = ci;
+            return ci;
+        }
+    }
+}
+
+struct contentitem *findContent(char *filename) {
+    uint8_t index;
+    struct contentitem *try;
+
+    index = hash256(filename);
+    try = filecontent[index];
+
+    while(true)
+    {
+        if(try == NULL) return NULL;
+        if(strcmp(try->name, filename) == 0) return try;
+        try = try->next;
+    }
+}
+uint16_t getnextContentMacroLine(char *dst, struct contentitem *ci) {
+    uint16_t len = 0;
+    char *ptr = ci->readptr;
+
+    while(*ptr) {
+        *dst++ = *ptr;
+        len++;
+        if(*ptr++ == '\n') {
+            break;
+        }
+    }
+    ci->readptr = ptr;
+    *dst = 0;
+    return len;
+}
+
+uint16_t getnextContentLine(struct contentitem *ci) {
+    uint16_t len = 0;
+    char *dst1 = ci->currentline;
+    char *dst2 = ci->currenterrorline;
+    char *ptr = ci->readptr;
+
+    while(*ptr) {
+        *dst1++ = *ptr;
+        *dst2++ = *ptr;
+        len++;
+        if(*ptr++ == '\n') {
+            break;
+        }
+    }
+    ci->readptr = ptr;
+    *dst1 = 0;
+    *dst2 = 0;
+    return len;
+}
+
+uint8_t currentStackLevel(void) {
+    return _contentstacklevel;
+}
+
+struct contentitem *contentPop(void) {
+    if(_contentstacklevel) {
+        return _contentstack[--_contentstacklevel];
+    }
+    else return NULL;
+}
+
+bool contentPush(struct contentitem *ci) {
+    if(_contentstacklevel == FILESTACK_MAXFILES) {
+        error("Max stack level reached");
+        return false;
+    }
+    _contentstack[_contentstacklevel++] = ci;
+    return true;
+}
+
+struct contentitem *currentContent(void) {
+    if(_contentstacklevel) {
+        return _contentstack[_contentstacklevel-1];
+    }
+    else return NULL;
+}
+
+bool processContent(char *filename) {
+    char line[LINEMAX];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
     char errorline[LINEMAX]; // Full integrity copy of each line
-    filestackitem fsitem;
-    bool incfileState;
+    struct contentitem *ci;
+
+    // Prepare content
+    ci = findContent(filename);
+    if(ci == NULL) {
+        if(pass == 1) {
+            ci = insertContent(filename);
+            if(ci == NULL) return false;
+        }
+        else return false;
+    }
+
+    // Prepare processing
+    ci->readptr = ci->buffer;
+    ci->currentlinenumber = 0;
+    ci->currentline = line;
+    ci->currenterrorline = errorline;
+    if(!contentPush(ci)) return false;
+
+    // Process
+    while(getnextContentLine(ci)) {
+        //printf("Content: <%s>\n", ci->currentline);
+        ci->currentlinenumber++;
+        if((pass == 2) && (consolelist_enabled || list_enabled)) listStartLine(line);
+
+        parseLine(line);
+        if(!currentline.current_macro) {
+            processInstructions();
+            if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+            processDelayedLineNumberReset();
+        }
+        else {
+            if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+            processMacro();
+        }
+        if(global_errors) {
+            vdp_set_text_colour(DARK_YELLOW);
+            printf("%s\r\n",errorline);
+            vdp_set_text_colour(BRIGHT_WHITE);
+            contentPop();
+            return false;
+        }
+    }
+    if(inConditionalSection != 0) {
+        error(message[ERROR_MISSINGENDIF]);
+        contentPop();
+        return false;
+    }
+    contentPop();
+    return true;
+}
+
+bool assemble(char *filename) {
     global_errors = 0;
-    
-    // Assemble in two passes
+    initFileContentTable();
+
     // Pass 1
     printf("Pass 1...\r\n");
     passInitialize(1);
-    do {
-        while(io_getline(FILE_CURRENT, line)) {
-            strcpy(errorline, line);
-            linenumber++;
-            parseLine(line);
-            if(!currentline.current_macro) {
-                processInstructions();
-                processDelayedLineNumberReset();
-            }
-            else processMacro();
-            if(global_errors) {
-                vdp_set_text_colour(DARK_YELLOW);
-                printf("%s\r\n",errorline);
-                vdp_set_text_colour(BRIGHT_WHITE);
-                return false;
-            }
-        }
-        if(inConditionalSection != 0) error(message[ERROR_MISSINGENDIF]);
-
-        if(filestackCount()) {
-            currentExpandedMacro = NULL;
-            fclose(filehandle[FILE_CURRENT]);
-            incfileState = filestackPop(&fsitem);
-            io_setCurrent(&fsitem);
-        }
-        else incfileState = false;
-    } while(incfileState);
-
+    processContent(filename);
     if(global_errors) return false;
 
     // Pass 2
     printf("Pass 2...\r\n");
     passInitialize(2);
-    if(consolelist_enabled || list_enabled) {
-        listInit();
-    }
     readAnonymousLabel();
-    
-    do {
-        while(io_getline(FILE_CURRENT, line)) {
-            strcpy(errorline, line);
-            linenumber++;
-            if(consolelist_enabled || list_enabled) listStartLine(line);
-            parseLine(line);
-            if(!currentline.current_macro) {
-                processInstructions();
-                if(consolelist_enabled || list_enabled) listEndLine();
-                processDelayedLineNumberReset();
-            }
-            else {
-                if(consolelist_enabled || list_enabled) listEndLine();
-                processMacro();
-            }
-            if(global_errors) {
-                vdp_set_text_colour(DARK_YELLOW);
-                printf("%s\r\n",errorline);
-                vdp_set_text_colour(BRIGHT_WHITE);
-                return false;
-            }    
-        }
-        sourcefilecount++;
-        if(filestackCount()) {
-            currentExpandedMacro = NULL;
-            fclose(filehandle[FILE_CURRENT]);
-            incfileState = filestackPop(&fsitem);
-            io_setCurrent(&fsitem);
-        }
-        else incfileState = false;
-    } while(incfileState);
+    processContent(filename);
+    if(global_errors) return false;
+
     return true;
 }

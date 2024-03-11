@@ -9,7 +9,6 @@
 #include "config.h"
 #include "globals.h"
 #include "listing.h"
-#include "filestack.h"
 #include "macro.h"
 #include "utils.h"
 #include "moscalls.h"
@@ -36,6 +35,9 @@ enum {
 //extern unsigned int io_filesize(uint8_t fh);
 //#endif
 
+FILE *io_openfile(char *name, char *mode);
+uint24_t io_getfilesize(FILE *fh);
+
 void io_outputc(unsigned char c);
 void io_write(uint8_t fh, char *s, uint16_t size);
 bool io_init(char *input_filename, char *output_filename); // init - called once at start
@@ -44,9 +46,6 @@ void io_close(void);                                // close everything at end, 
 void io_putc(uint8_t fh, unsigned char c);          // buffered write of a single byte / fallback
 int  io_puts(uint8_t fh, char *s);                  // buffered write of a string / fallback
 char*io_getline(uint8_t fh, char *s);     // buffered read of a line / fallback
-void io_getFileDefaults(filestackitem *fsi);        // set file defaults (traditional mode) to fsi object
-void io_getCurrent(filestackitem *fsi);             // retrieve CURRENT as fsi
-void io_setCurrent(filestackitem *fsi);             // set CURRENT from fsi
 void io_resetCurrentInput(void);                    // set FILE_CURRENT to FILE_INPUT specs
 void io_getMacroFilename(char *filename, char *macroname);
 void emit_8bit(uint8_t value);

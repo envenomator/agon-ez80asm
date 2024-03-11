@@ -1,4 +1,5 @@
 #include "label.h"
+#include "assemble.h"
 
 // Total allocated memory for labels
 uint24_t labelmemsize;
@@ -72,8 +73,9 @@ label_t * findLocalLabel(char *key) {
 void writeAnonymousLabel(int24_t labelAddress) {
     uint8_t scope;
 
-    scope = filestackCount();
+    scope = currentStackLevel();
     fwrite((char*)&labelAddress, sizeof(labelAddress), 1, filehandle[FILE_ANONYMOUS_LABELS]);
+    //printf("Writing label address - <%06X>\n", labelAddress);
     fwrite((char*)&scope, sizeof(scope), 1, filehandle[FILE_ANONYMOUS_LABELS]);
     fflush(filehandle[FILE_ANONYMOUS_LABELS]);
 }
@@ -99,6 +101,8 @@ void readAnonymousLabel(void) {
         an_prev.defined = true;
         an_next.defined = false;
     }
+    //printf("DEBUG: LEN: %d\n",len);
+    //printf("DEBUG: Read - <%06X>\n", labelAddress);
 }
 
 bool insertLocalLabel(char *labelname, int24_t labelAddress) {
@@ -180,14 +184,14 @@ label_t * findGlobalLabel(char *name){
 label_t *findLabel(char *name) {
     if(name[0] == '@') {
         if(((tolower(name[1]) == 'f') || (tolower(name[1]) == 'n')) && name[2] == 0) {
-            if(an_next.defined && an_next.scope == filestackCount()) {
+            if(an_next.defined && an_next.scope == currentStackLevel()) {
                 an_return.address = an_next.address;
                 return &an_return;
             }
             else return NULL;
         }
         if(((tolower(name[1]) == 'b') || (tolower(name[1]) == 'p')) && name[2] == 0) {
-            if(an_prev.defined && an_prev.scope == filestackCount()) {
+            if(an_prev.defined && an_prev.scope == currentStackLevel()) {
                 an_return.address = an_prev.address;
                 return &an_return;
             }

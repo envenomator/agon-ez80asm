@@ -9,8 +9,27 @@
 #include "instruction.h"
 #include <stdint.h>
 #include "io.h"
+#include "assemble.h"
 
 char _macro_VAL_buffer[MACROARGLENGTH + 1];// replacement buffer for values during macro expansion
+
+// memory allocate size bytes, raise error if not available
+void *allocateMemory(size_t size) {
+    void *ptr = malloc(size);
+    if(ptr == NULL) {
+        error("Error allocating memory");
+    }
+    return ptr;
+}
+
+// memory allocate a string, copy content and return pointer, or NULL if no memory
+char *allocateString(char *name) {
+    char *ptr = (char *)allocateMemory(strlen(name) + 1);
+    if(ptr) {
+        strcpy(ptr, name);
+    }
+    return ptr;
+}
 
 // return a base filename, stripping the given extension from it
 void remove_ext (char* myStr, char extSep, char pathSep) {
@@ -34,7 +53,22 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
         }
     }
 }
+void error(char* msg) {
+    struct contentitem *ci = currentContent();
 
+    if(!global_errors) {
+        if(ci) {
+            vdp_set_text_colour(DARK_RED);
+            printf("FILE \"%s\" line %d\r\n", ci->name, ci->currentlinenumber);
+            if(currentExpandedMacro) printf("MACRO \"%s\" definition line %d\r\n",currentExpandedMacro->name, macrolinenumber);
+            printf("\r\n%s\r\n", msg);
+            vdp_set_text_colour(BRIGHT_WHITE);
+        }
+        global_errors++;
+    }
+}
+
+/*
 void error(char* msg) {
     if(!global_errors) {
         vdp_set_text_colour(DARK_RED);
@@ -45,7 +79,7 @@ void error(char* msg) {
         global_errors++;
     }
 }
-
+*/
 void trimRight(char *str) {
     while(*str) str++;
     str--;
