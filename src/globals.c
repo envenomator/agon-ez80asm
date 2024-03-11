@@ -3,6 +3,7 @@
 /*
  * Global variables
  */
+struct contentitem *currentcontentitem;
 uint16_t sourcefilecount;
 uint16_t binfilecount;
 uint24_t filecontentsize;

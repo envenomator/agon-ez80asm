@@ -24,7 +24,7 @@ typedef uint32_t uint24_t;
 #define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'
 #define LINEMAX                     256 // Input line length maximum uint8_t
 #define FILENAMEMAXLENGTH            64
-#define FILES                         6
+#define FILES                         3
 #define INCBINBUFFERMAX			     64 // Number of buffered reads from incbin files
 #define GLOBAL_LABEL_TABLE_SIZE     256
 #define PASS2LOGSIZE			  65535 // Maximum number of instructions to output

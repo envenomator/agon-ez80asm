@@ -8,6 +8,7 @@
 #include "config.h"
 #include "macro.h"
 #include <time.h>
+#include "assemble.h"
 
 typedef struct {
     instruction_t *current_instruction;
@@ -25,6 +26,7 @@ typedef struct {
 
 
 // Global variables
+extern struct contentitem *currentcontentitem;
 extern uint16_t sourcefilecount;
 extern uint16_t binfilecount;
 extern uint24_t filecontentsize;

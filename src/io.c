@@ -1,18 +1,20 @@
 #include "io.h"
 #include "instruction.h"
+
+// File basename variable
+char filebasename[FILENAMEMAXLENGTH + 1];
+
 // Global variables
 char     filename[FILES][FILENAMEMAXLENGTH + 1];
 FILE*    filehandle[FILES];
-char     filelabelscope[FILES][FILENAMEMAXLENGTH + 1];
 
 // Local variables
 char *   _bufferstart[FILES];          // statically set start of buffer to each file
 char *   _filebuffer[FILES];            // actual moving pointers in buffer
 uint24_t _filebuffersize[FILES];        // current fill size of each buffer
 bool     _fileEOF[FILES];
-char     _inputbuffer[FILE_BUFFERSIZE];
+//char     _inputbuffer[FILE_BUFFERSIZE];
 char     _outputbuffer[FILE_BUFFERSIZE];
-char     _fileBasename[FILENAMEMAXLENGTH + 1]; // base filename for all output files
 
 #ifdef CEDEV
     // platform-specific for Agon CEDEV
@@ -58,7 +60,6 @@ void _initFileBufferLayout(void) {
 
     for(n = 0; n < FILES; n++) _bufferstart[n] = 0;
     // static layout
-    _bufferstart[FILE_INPUT] = _inputbuffer;
     _bufferstart[FILE_OUTPUT] = _outputbuffer;
 }
 
@@ -80,25 +81,28 @@ bool _openFile(uint8_t filenumber, char* mode) {
     else return false;
 }
 
+void create_filebasename(char *input_filename) {
+    strcpy(filebasename, input_filename);
+    remove_ext(filebasename, '.', '/');
+}
+
 // Prepare filenames according to input filename
 // If output_filename is given, adopt that, 
 // otherwise append base inputfilename + .bin
-void _prepare_filenames(char *input_filename, char *output_filename) {
+void _prepare_filenames(char *output_filename) {
     // prepare filenames
-    strcpy(filename[FILE_INPUT], input_filename);
-    strcpy(filename[FILE_OUTPUT], output_filename);
-    strcpy(_fileBasename, input_filename);
-    remove_ext(_fileBasename, '.', '/');
-    if((strlen(output_filename) == 0) || (output_filename == NULL)){
-        strcpy(filename[FILE_OUTPUT], _fileBasename);
+    if((output_filename == NULL) || (strlen(output_filename) == 0)) {
+        strcpy(filename[FILE_OUTPUT], filebasename);
         strcat(filename[FILE_OUTPUT], ".bin");
     }
-    strcpy(filename[FILE_ANONYMOUS_LABELS],_fileBasename);
-    strcpy(filename[FILE_SYMBOLS],_fileBasename);
-    if(list_enabled) strcpy(filename[FILE_LISTING],_fileBasename);
+    else {
+        strcpy(filename[FILE_OUTPUT], output_filename);
+    }
+
+    strcpy(filename[FILE_ANONYMOUS_LABELS], filebasename);
+    strcpy(filename[FILE_LISTING], filebasename);
     strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
-    if(list_enabled) strcat(filename[FILE_LISTING], ".lst");
-    strcat(filename[FILE_SYMBOLS], ".symbols");
+    strcat(filename[FILE_LISTING], ".lst");
 }
 
 void _deleteFiles(void) {
@@ -177,19 +181,14 @@ int io_puts(uint8_t fh, char *s) {
     return number;
 }
 
-void _init_labelscope(void) {
-    for(int n = 0; n < FILES; n++) {
-        strcpy(filelabelscope[n], ""); // empty scope
-    }
-}
-
 bool io_init(char *input_filename, char *output_filename) {
     sourcefilecount = 0;
     binfilecount = 0;
-    _prepare_filenames(input_filename, output_filename);
+    create_filebasename(input_filename);
+    _prepare_filenames(output_filename);
     _initFileBufferLayout();
     _initFileBuffers();
-    _init_labelscope();
+    //_init_labelscope();
     return _openfiles();
 }
 

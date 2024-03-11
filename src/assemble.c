@@ -1244,6 +1244,7 @@ struct contentitem *insertContent(char *filename) {
     }
     ci->buffer[ci->size] = 0; // terminate stringbuffer
     ci->filebuffered = filesbuffered;
+    strcpy(ci->labelscope, ""); // empty scope
     ci->next = NULL;
     fclose(ci->fh);
 
@@ -1328,8 +1329,12 @@ uint8_t currentStackLevel(void) {
 }
 
 struct contentitem *contentPop(void) {
+    struct contentitem *ci;
     if(_contentstacklevel) {
-        return _contentstack[--_contentstacklevel];
+        ci = _contentstack[--_contentstacklevel];
+        if(_contentstacklevel) currentcontentitem = _contentstack[_contentstacklevel - 1];
+        else currentcontentitem = NULL;
+        return ci;
     }
     else return NULL;
 }
@@ -1340,6 +1345,7 @@ bool contentPush(struct contentitem *ci) {
         return false;
     }
     _contentstack[_contentstacklevel++] = ci;
+    currentcontentitem = ci;
     return true;
 }
 
@@ -1402,6 +1408,7 @@ bool processContent(char *filename) {
         return false;
     }
     contentPop();
+    strcpy(ci->labelscope, ""); // empty scope for next pass
     return true;
 }
 

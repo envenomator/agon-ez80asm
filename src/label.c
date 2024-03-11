@@ -17,10 +17,15 @@ void saveGlobalLabelTable(void) {
     int i;
     char *ptr;
     label_t *lbl;
+    FILE *fh;
     char buffer[LINEMAX];
+    char filename[FILENAMEMAXLENGTH + 1];
 
-    filehandle[FILE_SYMBOLS] = fopen(filename[FILE_SYMBOLS], "wb+");
-    if(filehandle[FILE_SYMBOLS] == 0) {
+    strcpy(filename, filebasename);
+    strcat(filename, ".symbols");
+
+    fh = fopen(filename, "wb+");
+    if(fh == 0) {
         error(message[ERROR_FILEGLOBALLABELS]);
         return;
     }
@@ -31,12 +36,12 @@ void saveGlobalLabelTable(void) {
             while(lbl) {
                 sprintf(buffer, "%s $%x\r\n", lbl->name, lbl->address);
                 ptr = buffer;
-                while(*ptr) fputc(*ptr++, filehandle[FILE_SYMBOLS]);
+                while(*ptr) fputc(*ptr++, fh);
                 lbl = lbl->next;
             }
         }
     }
-    fclose(filehandle[FILE_SYMBOLS]);
+    fclose(fh);
 }
 
 uint16_t getGlobalLabelCount(void) {
@@ -58,14 +63,15 @@ void initAnonymousLabelTable(void) {
 
 label_t * findLocalLabel(char *key) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
+    struct contentitem *ci = currentContent();
 
-    if(filelabelscope[0] == 0) {
+    if(currentcontentitem->labelscope[0] == 0) {
         // local to file label
-        strcompound(compoundname, filename[FILE_CURRENT], key);
+        strcompound(compoundname, ci->name, key);
     }
     else {
         // local to global label
-        strcompound(compoundname, filelabelscope[FILE_CURRENT], key);
+        strcompound(compoundname, ci->labelscope, key);
     }
     return findGlobalLabel(compoundname);
 }
@@ -108,14 +114,15 @@ void readAnonymousLabel(void) {
 bool insertLocalLabel(char *labelname, int24_t labelAddress) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
     uint8_t len;
+    struct contentitem *ci = currentContent();
 
-    if(filelabelscope[0] == 0) {
+    if(currentcontentitem->labelscope[0] == 0) {
         // local to file label
-        len = strcompound(compoundname, filename[FILE_CURRENT], labelname);
+        len = strcompound(compoundname, ci->name , labelname);
     }
     else {
         // local to global label
-        len = strcompound(compoundname, filelabelscope[FILE_CURRENT], labelname);
+        len = strcompound(compoundname, ci->labelscope, labelname);
     }
     return insertGlobalLabel(compoundname, len, labelAddress);
 }
@@ -246,12 +253,12 @@ void definelabel(int24_t num){
         }
 
         if(currentline.label) {
-            strcpy(filelabelscope[FILE_CURRENT], currentline.label);
+            strcpy(currentcontentitem->labelscope, currentline.label);
         }
 
         return;
     }
     if(currentline.label && currentline.label[0] != '@') {
-        strcpy(filelabelscope[FILE_CURRENT], currentline.label);
+        strcpy(currentcontentitem->labelscope, currentline.label);
     }
 }

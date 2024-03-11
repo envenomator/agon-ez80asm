@@ -14,19 +14,16 @@
 #include "moscalls.h"
 
 // Global variables
+extern char filebasename[FILENAMEMAXLENGTH + 1];
 extern bool list_enabled;
 extern bool consolelist_enabled;
 extern char filename[FILES][FILENAMEMAXLENGTH + 1];    // 0 - current, 1 - input, 2 - binary output, 3 - anonymous labels, 4 - listing, 5 - symbols
 extern FILE* filehandle[FILES];
-extern char filelabelscope[FILES][FILENAMEMAXLENGTH + 1];
 
 enum {
-    FILE_CURRENT,
-    FILE_INPUT,
     FILE_OUTPUT,
     FILE_ANONYMOUS_LABELS,
     FILE_LISTING,
-    FILE_SYMBOLS
 };
 
 //#ifdef AGON
