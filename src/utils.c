@@ -17,7 +17,7 @@ char _macro_VAL_buffer[MACROARGLENGTH + 1];// replacement buffer for values duri
 void *allocateMemory(size_t size) {
     void *ptr = malloc(size);
     if(ptr == NULL) {
-        error("Error allocating memory");
+        error(message[ERROR_MEMORY]);
     }
     return ptr;
 }
@@ -61,7 +61,6 @@ void error(char* msg) {
         if(ci) {
             if(currentExpandedMacro) {
                 printf("MACRO [%s] in \"%s\" line %d\r\n",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
-                //printf("defined in \"%s\" line %d\r\n", currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber);
             }
             else {
                 printf("FILE \"%s\" line %d\r\n", ci->name, ci->currentlinenumber);

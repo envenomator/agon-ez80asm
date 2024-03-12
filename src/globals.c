@@ -103,5 +103,6 @@ char *message[] = {
     "Error resetting input file(s)\r\n",
     "Maximum number of instructions reached",
     "Error reading incbin file",
+    "Error reading input file",
     "Error allocating memory"
 };

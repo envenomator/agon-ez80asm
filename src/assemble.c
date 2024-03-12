@@ -894,11 +894,7 @@ void handle_asm_definemacro(void) {
 
     if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine(); // print out first line of macro definition
 
-    ci = currentContent();
-    if(!ci) {
-        error("Internal error");
-        return;
-    }
+    ci = currentcontentitem;
 
     startlinenumber = ci->currentlinenumber;
     while(getnextContentMacroLine(macroline, ci)) {
@@ -940,7 +936,6 @@ void handle_asm_definemacro(void) {
     // Only define macros in pass 1
     // parse arguments into array
     if(pass == 1) {
-        //printf("Next arg: <%s>\r\n",currentline.next);
         if(!currentline.next) {
             error(message[ERROR_MACRONAME]);
             return;
@@ -1234,7 +1229,7 @@ struct contentitem *insertContent(char *filename) {
     ci->buffer = allocateMemory(ci->size+1);
     ci->readptr = ci->buffer;
     if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
-        error("Reading file");
+        error(message[ERROR_READINGINPUT]);
         return NULL;
     }
     ci->buffer[ci->size] = 0; // terminate stringbuffer
@@ -1336,7 +1331,7 @@ struct contentitem *contentPop(void) {
 
 bool contentPush(struct contentitem *ci) {
     if(_contentstacklevel == FILESTACK_MAXFILES) {
-        error("Max stack level reached");
+        error(message[ERROR_MAXINCLUDEFILES]);
         return false;
     }
     _contentstack[_contentstacklevel++] = ci;
