@@ -20,6 +20,7 @@ enum {
 
 typedef struct {
     char *name;
+    bool  local;
     void *next;
     int24_t address;
 } label_t;

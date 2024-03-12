@@ -34,7 +34,7 @@ void saveGlobalLabelTable(void) {
         if(globalLabelTable[i]) {
             lbl = globalLabelTable[i];
             while(lbl) {
-                sprintf(buffer, "%s $%x\r\n", lbl->name, lbl->address);
+                if(!lbl->local) sprintf(buffer, "%s $%x\r\n", lbl->name, lbl->address);
                 ptr = buffer;
                 while(*ptr) fputc(*ptr++, fh);
                 lbl = lbl->next;
@@ -108,23 +108,7 @@ void readAnonymousLabel(void) {
     }
 }
 
-bool insertLocalLabel(char *labelname, int24_t labelAddress) {
-    char compoundname[(MAXNAMELENGTH * 2)+1];
-    uint8_t len;
-    struct contentitem *ci = currentContent();
-
-    if(currentcontentitem->labelscope[0] == 0) {
-        // local to file label
-        len = strcompound(compoundname, ci->name , labelname);
-    }
-    else {
-        // local to global label
-        len = strcompound(compoundname, ci->labelscope, labelname);
-    }
-    return insertGlobalLabel(compoundname, len, labelAddress);
-}
-
-bool insertGlobalLabel(char *labelname, uint8_t len, int24_t labelAddress){
+bool insertLabel(char *labelname, uint8_t len, int24_t labelAddress, bool local){
     uint8_t index;
     label_t *tmp,*try;
 
@@ -139,6 +123,7 @@ bool insertGlobalLabel(char *labelname, uint8_t len, int24_t labelAddress){
     if(tmp->name == 0) return false;
 
     strcpy(tmp->name, labelname);
+    tmp->local = local;
     tmp->address = labelAddress;
     tmp->next = NULL;
 
@@ -170,7 +155,23 @@ bool insertGlobalLabel(char *labelname, uint8_t len, int24_t labelAddress){
     }
 }
 
-label_t * findGlobalLabel(char *name){
+bool insertLocalLabel(char *labelname, int24_t labelAddress) {
+    char compoundname[(MAXNAMELENGTH * 2)+1];
+    uint8_t len;
+    struct contentitem *ci = currentContent();
+
+    if(currentcontentitem->labelscope[0] == 0) {
+        // local to file label
+        len = strcompound(compoundname, ci->name , labelname);
+    }
+    else {
+        // local to global label
+        len = strcompound(compoundname, ci->labelscope, labelname);
+    }
+    return insertLabel(compoundname, len, labelAddress, true);
+}
+
+label_t *findGlobalLabel(char *name){
     uint8_t index;
     label_t *try;
 
@@ -244,7 +245,7 @@ void definelabel(int24_t num){
             error(message[ERROR_INVALIDLABEL]);
             return;
         }
-        if(insertGlobalLabel(currentline.label, len, num) == false){
+        if(insertLabel(currentline.label, len, num, false) == false){
             error(message[ERROR_CREATINGLABEL]);
             return;
         }
