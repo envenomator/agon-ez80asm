@@ -80,6 +80,7 @@ char *message[] = {
     "Illegal unary opeator",
     "Argument is not a power of 2",
     "Maximum nested level of include files reached",
+    "Recursive include detected",
     "Macro already defined",
     "Unfinished macro definition",
     "Invalid macro name",

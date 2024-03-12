@@ -13,7 +13,6 @@ char *   _bufferstart[FILES];          // statically set start of buffer to each
 char *   _filebuffer[FILES];            // actual moving pointers in buffer
 uint24_t _filebuffersize[FILES];        // current fill size of each buffer
 bool     _fileEOF[FILES];
-//char     _inputbuffer[FILE_BUFFERSIZE];
 char     _outputbuffer[FILE_BUFFERSIZE];
 
 #ifdef CEDEV

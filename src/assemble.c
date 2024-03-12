@@ -199,7 +199,6 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IX;
                             operand->displacement_provided = true;
-                            //operand->addressmode |= DISPLACEMENT;
                             if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
                             else operand->displacement = (int16_t) getValue(ptr, false);
                             return;
@@ -709,10 +708,13 @@ void handle_asm_include(void) {
         error(message[ERROR_STRINGFORMAT]);
         return;
     }
-
     if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
 
     token.start[strlen(token.start)-1] = 0;
+    if(strcmp(token.start+1, currentcontentitem->name) == 0) {
+        error(message[ERROR_RECURSIVEINCLUDE]);
+        return;
+    }
     processContent(token.start+1);
 
     if(pass == 1) sourcefilecount++;
@@ -754,7 +756,6 @@ void handle_asm_incbin(void) {
 
     if(pass == 1) {
         address += ci->size;
-        binfilecount++;
     }
     if(pass == 2) {
         if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
@@ -764,8 +765,8 @@ void handle_asm_incbin(void) {
             io_write(FILE_OUTPUT, ci->buffer, ci->size);
             address += ci->size;
         }
-        binfilecount++;
     }
+    binfilecount++;
     if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
 }
 
@@ -860,23 +861,6 @@ uint24_t delta;
     definelabel(address); // set address to current line
 }
 
-// strncasecmp is boken on CEDev
-/*
-int agon_strncasecmp(char *s1, char *s2, int n) {
-  if (n == 0)
-    return 0;
-
-  while (n-- != 0 && tolower(*s1) == tolower(*s2))
-    {
-      if (n == 0 || *s1 == '\0' || *s2 == '\0')
-    break;
-      s1++;
-      s2++;
-    }
-
-  return tolower(*(unsigned char *) s1) - tolower(*(unsigned char *) s2);
-}
-*/
 void handle_asm_definemacro(void) {
     streamtoken_t token;
     struct contentitem *ci;
