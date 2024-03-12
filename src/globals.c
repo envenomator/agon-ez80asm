@@ -87,6 +87,7 @@ char *message[] = {
     "No global labels allowed in macro definition",
     "Error allocating memory for macro",
     "No macro definitions allowed inside a macro",
+    "Macro body larger than 2KB",
     "Illegal escape sequence in literal",
     "Input line too long",
     "Missing conditional expression",
@@ -98,7 +99,6 @@ char *message[] = {
     "String type not allowed",
     "Couldn't open file for writing global label table",
     "Error resetting input file(s)\r\n",
-    "Maximum number of instructions reached",
     "Error reading incbin file",
     "Error reading input file",
     "Error allocating memory"

@@ -6,10 +6,6 @@ char _macrobuffer[MACRO_BUFFERSIZE];
 char _macro_OP_buffer[MACROARGLENGTH + 1]; // replacement buffer for operands during macro expansion
 char _macro_ASM_buffer[MACROARGLENGTH + 1];// replacement buffer for values during ASSEMBLER macro expansion
 
-uint8_t pass2matchlog[PASS2LOGSIZE];
-uint8_t *pass2matchlogptr;
-uint24_t passmatchcounter;
-
 struct contentitem *filecontent[256]; // hash table with all file content items
 struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
 uint8_t _contentstacklevel;
@@ -871,7 +867,7 @@ void handle_asm_definemacro(void) {
     definelabel(address);
     bool foundend = false;
     macro_t *macro;
-    uint16_t startlinenumber;
+    uint16_t startlinenumber,linelength,macrolength;
 
     _macrobuffer[0] = 0; // empty string
     strend = _macrobuffer;
@@ -881,7 +877,8 @@ void handle_asm_definemacro(void) {
     ci = currentcontentitem;
 
     startlinenumber = ci->currentlinenumber;
-    while(getnextContentMacroLine(macroline, ci)) {
+    macrolength = 0;
+    while((linelength = getnextContentMacroLine(macroline, ci))) {
         ci->currentlinenumber++;
         char *src = macroline;
 
@@ -907,8 +904,15 @@ void handle_asm_definemacro(void) {
         }
         // concatenate to buffer end
         if(pass == 1) {
+            if((macrolength + linelength) > MACRO_BUFFERSIZE) {
+                error(message[ERROR_MACROTOOLARGE]);
+                return;
+            }
             char *tmp = macroline;
-            while(*tmp) *strend++ = *tmp++;
+            while(*tmp) {
+                *strend++ = *tmp++;
+                macrolength++;
+            }
             *strend = 0;
         }
     }
@@ -1085,34 +1089,25 @@ void processInstructions(void){
             if(inConditionalSection != 1) {
                 // process this mnemonic by applying the instruction list as a filter to the operand-set
                 list = currentline.current_instruction->list;
-                if(pass == 1) {
-                    match = false;
-                    for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
-                        regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
-                        regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
+                match = false;
+                for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
+                    regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
+                    regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
 
-                        condmatch = ((list->conditionsA & MODECHECK) == operand1.addressmode) && ((list->conditionsB & MODECHECK) == operand2.addressmode);
-                        if(list->flags & F_CCOK) {
-                            condmatch |= operand1.cc;
-                            regamatch = true;
-                        }
-                        if(regamatch && regbmatch && condmatch) {
-                            match = true;
-                            emit_instruction(list);
-                            *pass2matchlogptr++ = listitem; // record log for pass 2
-                            passmatchcounter++;
-                            if(passmatchcounter == PASS2LOGSIZE) {
-                                error(message[ERROR_MAXINSTRUCTIONS]);
-                            }
-                            break;
-                        }
-                        list++;
+                    condmatch = ((list->conditionsA & MODECHECK) == operand1.addressmode) && ((list->conditionsB & MODECHECK) == operand2.addressmode);
+                    if(list->flags & F_CCOK) {
+                        condmatch |= operand1.cc;
+                        regamatch = true;
                     }
-                    if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
-                    return;
+                    if(regamatch && regbmatch && condmatch) {
+                        match = true;
+                        emit_instruction(list);
+                        break;
+                    }
+                    list++;
                 }
-                list += *pass2matchlogptr++;
-                emit_instruction(list);
+                if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
+                return;
             }
         }
         else handle_assembler_command();
@@ -1181,12 +1176,10 @@ void passInitialize(uint8_t passnumber) {
     currentExpandedMacro = NULL;
     inConditionalSection = 0;
     initAnonymousLabelTable();
-    pass2matchlogptr = pass2matchlog;
     _contentstacklevel = 0;
     if(pass == 1) {
         sourcefilecount = 1;
         binfilecount = 0;
-        passmatchcounter = 0;
     }
     if(pass == 2) {
         fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
@@ -1404,6 +1397,7 @@ bool assemble(char *filename) {
     printf("Pass 2...\r\n");
     passInitialize(2);
     readAnonymousLabel();
+    if(consolelist_enabled || list_enabled) listInit();
     processContent(filename);
     if(global_errors) return false;
 

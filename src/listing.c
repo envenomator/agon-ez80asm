@@ -9,7 +9,7 @@ uint8_t  _listLineObjectCount;
 uint16_t  _listLineNumber;
 uint24_t _listSourceLineNumber;
 
-char _listHeader[] = "PC     Output            Line Source\n\r";
+char _listHeader[] = "PC     Output      Line\n\r";
 
 char buffer[LINEMAX * 2];
 
@@ -60,10 +60,10 @@ void listPrintLine(void) {
             strcat(buffer, "*");
         }
         if(currentExpandedMacro) {
-            strcat(buffer, "M");
+            strcat(buffer, "M ");
         }
         else {
-            strcat(buffer, " ");
+            strcat(buffer, "  ");
         }
         for(i = maxstackdepth - i;i > 0; i--) {
             strcat(buffer, " ");
