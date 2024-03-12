@@ -14,7 +14,7 @@ bool lineNumberNeedsReset;
 //unsigned int linenumber;
 unsigned int macrolinenumber;
 unsigned int pass;
-int inConditionalSection;
+uint8_t inConditionalSection;
 macro_t *currentExpandedMacro;
 uint24_t address;
 uint16_t global_errors;

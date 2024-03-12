@@ -60,12 +60,11 @@ void error(char* msg) {
         vdp_set_text_colour(DARK_RED);
         if(ci) {
             if(currentExpandedMacro) {
-                printf("MACRO [%s] in \"%s\" line %d\r\n",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
+                printf("Macro [%s] in \"%s\" line %d\r\n",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
             }
             else {
-                printf("FILE \"%s\" line %d\r\n", ci->name, ci->currentlinenumber);
+                printf("File \"%s\" line %d\r\n", ci->name, ci->currentlinenumber);
             }
-            printf("\r\n");
         }
         global_errors++;
         printf("%s\r\n", msg);

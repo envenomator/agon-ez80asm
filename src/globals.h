@@ -37,7 +37,7 @@ extern bool lineNumberNeedsReset;
 //extern unsigned int linenumber;
 extern unsigned int macrolinenumber;
 extern unsigned int pass;
-extern int inConditionalSection; // 0: outside conditional section, 1: negative section, 2: positive section
+extern uint8_t inConditionalSection; // 0: outside conditional section, 1: negative section, 2: positive section
 extern macro_t *currentExpandedMacro;
 extern uint24_t address;
 extern uint16_t global_errors;
