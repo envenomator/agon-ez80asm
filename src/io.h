@@ -26,10 +26,6 @@ enum {
     FILE_LISTING,
 };
 
-//#ifdef AGON
-//extern unsigned int io_filesize(uint8_t fh);
-//#endif
-
 FILE *io_openfile(char *name, char *mode);
 uint24_t io_getfilesize(FILE *fh);
 

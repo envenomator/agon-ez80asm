@@ -33,8 +33,6 @@ extern uint16_t sourcefilecount;
 extern uint16_t binfilecount;
 extern uint24_t filecontentsize;
 extern bool filesbuffered;
-extern bool lineNumberNeedsReset;
-//extern unsigned int linenumber;
 extern unsigned int macrolinenumber;
 extern unsigned int pass;
 extern uint8_t inConditionalSection; // 0: outside conditional section, 1: negative section, 2: positive section
@@ -48,8 +46,6 @@ extern bool consolelist_enabled;
 extern uint8_t fillbyte;
 extern uint24_t start_address;
 extern bool coloroutput;
-extern bool debug;
-
 extern unsigned int labelcollisions;
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code

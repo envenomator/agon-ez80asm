@@ -54,17 +54,12 @@ uint24_t io_getfilesize(FILE *fh) {
     return filesize;
 }
 
-void _initFileBufferLayout(void) {
+void _initFileBuffers(void) {
     int n;
 
     for(n = 0; n < FILES; n++) _bufferstart[n] = 0;
-    // static layout
     _bufferstart[FILE_OUTPUT] = _outputbuffer;
-}
 
-void _initFileBuffers(void) {
-    int n;
-    // dynamic layout
     for(n = 0; n < FILES; n++) {
         _filebuffer[n] = _bufferstart[n];
         _filebuffersize[n] = 0;
@@ -137,8 +132,9 @@ void _io_flush(uint8_t fh) {
 
 // Flush all output files
 void _io_flushOutput(void) {
-    _io_flush(FILE_OUTPUT);
-    _io_flush(FILE_LISTING);
+    for(int fh = 0; fh < FILES; fh++) {
+        if(_bufferstart[fh]) _io_flush(fh);
+    }
 }
 
 // Only called on output-mode files
@@ -185,9 +181,7 @@ bool io_init(char *input_filename, char *output_filename) {
     binfilecount = 0;
     create_filebasename(input_filename);
     _prepare_filenames(output_filename);
-    _initFileBufferLayout();
     _initFileBuffers();
-    //_init_labelscope();
     return _openfiles();
 }
 

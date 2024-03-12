@@ -10,8 +10,6 @@ uint16_t sourcefilecount;
 uint16_t binfilecount;
 uint24_t filecontentsize;
 bool filesbuffered;
-bool lineNumberNeedsReset;
-//unsigned int linenumber;
 unsigned int macrolinenumber;
 unsigned int pass;
 uint8_t inConditionalSection;
@@ -24,8 +22,6 @@ bool consolelist_enabled;
 uint8_t fillbyte;
 uint24_t start_address;
 bool coloroutput;
-bool debug;
-
 unsigned int labelcollisions;
 
 tokenline_t currentline;

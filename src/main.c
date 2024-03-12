@@ -30,7 +30,6 @@ void printHelp(void) {
     printf("  -s\tExport symbols\r\n");
     printf("  -d\tDirect listing to console\r\n");
     printf("  -c\tNo color codes in output\r\n");
-    printf("  -n\tNo buffering of entire file content\r\n");
     printf("  -x\tDisplay assembly statistics\r\n");
     printf("\r\n");
 }
@@ -56,10 +55,9 @@ int main(int argc, char *argv[]) {
     exportsymbols = false;
     displaystatistics = false;
     coloroutput = true;
-    debug = false;
     filesbuffered = true;
 
-    while ((opt = getopt(argc, argv, "-:ldvhsxpncb:a:o:")) != -1) {
+    while ((opt = getopt(argc, argv, "-:ldvhsxcb:a:o:")) != -1) {
         switch(opt) {
             case 'a':
                 if((strlen(optarg) != 1) || 
@@ -69,12 +67,6 @@ int main(int argc, char *argv[]) {
                 }
                 adlmode = (*optarg == '1')?true:false;
                 printf("Setting ADL mode to %d\r\n",adlmode);
-                break;
-            case 'p':
-                debug = true;
-                break;
-            case 'n':
-                filesbuffered = false;
                 break;
             case 's':
                 printf("Exporting symbols\r\n");
