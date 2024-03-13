@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdint.h>
 #include "globals.h"
 #include "console.h"
 #include "utils.h"
 #include "str2num.h"
 #include "label.h"
 #include "instruction.h"
-#include <stdint.h>
 #include "io.h"
 #include "assemble.h"
 
@@ -158,7 +158,6 @@ char * _findLiteralTokenEnd(char *src) {
 // returns the number of Operator characters found, or 0 if none
 uint8_t getOperandToken(streamtoken_t *token, char *src) {
     uint8_t length = 0;
-    //bool normalmode = true;
 
     // skip leading space
     while(*src && (isspace(*src))) src++;
@@ -170,8 +169,6 @@ uint8_t getOperandToken(streamtoken_t *token, char *src) {
 
     // hunt for end-character (0 , or ; in normal non-literal mode)
     while(*src) {
-        //if(*src == '\'') normalmode = !normalmode;
-        //if((normalmode) && ((*src == ',') || (*src == ';'))) break;
         if((*src == ',') || (*src == ';')) break;
         src++;
         length++;

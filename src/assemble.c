@@ -896,8 +896,9 @@ void handle_asm_definemacro(void) {
             error(message[ERROR_MACROINMACRO]);
             break;
         }
-        if(fast_strncasecmp(src, "endmacro", 8) == 0) {
-            if(isspace(src[8]) || (src[8] == 0) || (src[8] == ';')) {
+        uint8_t skipdot = (*src == '.')?1:0;
+        if(fast_strncasecmp(src+skipdot, "endmacro", 8) == 0) { 
+            if(isspace(src[8+skipdot]) || (src[8+skipdot] == 0) || (src[8+skipdot] == ';')) {
                 foundend = true;
                 break;
             }
@@ -1070,6 +1071,9 @@ void handle_assembler_command(void) {
         case(ASM_ENDIF):
             handle_asm_endif();
             break;
+        case(ASM_MACRO_END):
+            error(message[ERROR_MACRONOTSTARTED]);
+            break;
     }
     return;
 }
@@ -1141,8 +1145,10 @@ void processMacro(void) {
             currentline.next = NULL; 
         }
     }
-    if(argcount != exp->argcount) error(message[ERROR_MACROINCORRECTARG]);
-
+    if(argcount != exp->argcount) {
+        error(message[ERROR_MACROINCORRECTARG]);
+        return;
+    }
     // open macro storage
     resetnextline(exp->body);
 

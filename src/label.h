@@ -34,7 +34,6 @@ typedef struct {
 label_t *findLabel(char *name);
 void initGlobalLabelTable(void);
 void initAnonymousLabelTable(void);
-bool insertGlobalLabel(char *labelname, uint8_t len, int24_t address);
 void writeAnonymousLabel(int24_t address);
 void readAnonymousLabel(void);
 label_t * findGlobalLabel(char *name);

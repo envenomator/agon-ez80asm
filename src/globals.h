@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <time.h>
 #include "instruction.h"
 #include "config.h"
 #include "macro.h"
-#include <time.h>
 #include "assemble.h"
 
 typedef struct {
@@ -104,6 +104,7 @@ enum {
     ERROR_RECURSIVEINCLUDE,
     ERROR_MACRODEFINED,
     ERROR_MACROUNFINISHED,
+    ERROR_MACRONOTSTARTED,
     ERROR_MACRONAME,
     ERROR_MACRONAMELENGTH,
     ERROR_MACROARGLENGTH,

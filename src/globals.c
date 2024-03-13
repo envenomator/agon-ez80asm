@@ -79,6 +79,7 @@ char *message[] = {
     "Recursive include detected",
     "Macro already defined",
     "Unfinished macro definition",
+    "Macro start definition not found",
     "Invalid macro name",
     "Macro maximum name length",
     "Macro maximum arg length",
