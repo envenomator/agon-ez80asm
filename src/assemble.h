@@ -65,7 +65,6 @@ struct contentitem {
 };
 
 extern uint24_t passmatchcounter;
-//bool assemble(void);
 bool assemble(char *filename);
 void emit_8bit(uint8_t value);
 void emit_16bit(uint16_t value);
