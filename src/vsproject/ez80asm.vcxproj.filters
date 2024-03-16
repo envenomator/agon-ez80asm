@@ -21,9 +21,6 @@
     <ClCompile Include="..\console.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\filestack.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\getopt.c">
       <Filter>Source Files</Filter>
     </ClCompile>

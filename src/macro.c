@@ -24,7 +24,7 @@ void setMacroBody(macro_t *macro, const char *body) {
 }
 
 macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t startlinenumber) {
-    int len, i;
+    unsigned int len, i;
     uint8_t index;
     char *ptr,*subs;
     macro_t *tmp;
@@ -43,7 +43,7 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
     macroinstruction->type = MACRO;
     macroinstruction->macro = tmp;
 
-    len = strlen(name)+1;
+    len = (unsigned int)strlen(name)+1;
     macroinstruction->name = (char *)malloc(len);
     macromemsize += len;
     if(macroinstruction->name == 0) return NULL;
@@ -63,7 +63,7 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
         macromemsize += argcount * sizeof(char *);
         if((tmp->arguments == NULL) || (tmp->substitutions == NULL)) return NULL;
         for(i = 0; i < argcount; i++) {
-            len = strlen(arguments + i*(MACROARGLENGTH+1));
+            len = (unsigned int)strlen(arguments + i*(MACROARGLENGTH+1));
             if(len > MACROARGLENGTH) {
                 error(message[ERROR_MACROARGLENGTH]);
                 return NULL;

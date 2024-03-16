@@ -44,7 +44,7 @@ uint24_t io_getfilesize(FILE *fh) {
         filesize = 0;
         while(1) {
             // Other non-agon compilers
-            size = fread(_buffer, 1, FILE_BUFFERSIZE, fh);
+            size = (uint24_t) fread(_buffer, 1, FILE_BUFFERSIZE, fh);
             filesize += size;
             if(size < FILE_BUFFERSIZE) break;
         }
@@ -106,7 +106,7 @@ void _deleteFiles(void) {
     if(global_errors && CLEANUPFILES) remove(filename[FILE_OUTPUT]);
 }
 
-void _closeAllFiles() {
+void _closeAllFiles(void) {
     if(filehandle[FILE_OUTPUT]) fclose(filehandle[FILE_OUTPUT]);
     if(filehandle[FILE_ANONYMOUS_LABELS]) fclose(filehandle[FILE_ANONYMOUS_LABELS]);
     if(list_enabled && filehandle[FILE_LISTING]) fclose(filehandle[FILE_LISTING]);
