@@ -50,6 +50,7 @@ x64/
 
 # Linux build directories
 bin/
+obj/
 
 # Visual studio
 src/.vs/
