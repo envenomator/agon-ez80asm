@@ -1,6 +1,6 @@
 PROJECTNAME=ez80asm
 ARCHITECTURE=linux_elf_x86_64
-
+BUILD_WINDOWS=false
 # Tools and arguments
 MSBUILD='/mnt/c/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe' 
 MSBUILDFLAGS=/property:Configuration=Release
@@ -33,7 +33,11 @@ all: linux agon windows
 linux: $(BINDIR) $(OBJDIR) $(BIN)
 
 windows:
+ifeq ($(WINDOWS_BUILD), true)
 	@$(MSBUILD) $(VSPROJECTDIR)/$(PROJECTNAME).sln $(MSBUILDFLAGS)
+else
+	@echo Windows build disabled in makefile
+endif
 agon:
 	@echo === Compiling Agon target
 	@make --file=Makefile-agon
@@ -88,7 +92,9 @@ package:
 clean:
 	@echo Cleaning directories
 	@find tests -name "*.output" -type f -delete
+ifeq ($(WINDOWS_BUILD), true)
 	@$(MSBUILD) $(VSPROJECTDIR)/$(PROJECTNAME).sln $(MSBUILDFLAGS) -t:Clean >/dev/null
+endif
 ifdef OS
 	del /s /q $(BINDIR) >nul 2>&1
 	del /s /q $(OBJDIR) >nul 2>&1
