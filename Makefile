@@ -42,15 +42,10 @@ agon:
 	@echo === Compiling Agon target
 	@make --file=Makefile-agon
 
-mosloader: $(BINDIR) $(OBJDIR) $(BIN)
-	@echo === Assembling mosloader
-	$(BIN) $(LOADERDIR)/$(PROJECTNAME).s $(LOADERDIR)/$(PROJECTNAME).bin
-
 # Release with optimal settings for release target
 release: CFLAGS=$(RELEASE_CFLAGS)
 release: LFLAGS=$(RELEASE_LFLAGS)
 release: all
-release: mosloader
 release: $(RELEASEDIR)
 release: package
 
@@ -83,12 +78,10 @@ $(RELEASEDIR):
 package:
 	@echo === Packaging binaries
 	@tar -zcvf $(RELEASEDIR)/$(PROJECTNAME)_$(ARCHITECTURE).gz $(BINDIR)/$(PROJECTNAME)
-	@cp $(LOADERDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/$(PROJECTNAME).bin
-	@cp $(BINDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/$(PROJECTNAME).ldr
-	@zip $(RELEASEDIR)/$(PROJECTNAME)_agon.zip $(RELEASEDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/$(PROJECTNAME).ldr
+	@cp $(BINDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/$(PROJECTNAME).bin
+ifeq ($(WINDOWS_BUILD), true)
 	@cp $(VSPROJECTBINDIR)/$(PROJECTNAME).exe $(RELEASEDIR)/	
-	@rm -f $(RELEASEDIR)/$(PROJECTNAME).bin
-	@rm -f $(RELEASEDIR)/$(PROJECTNAME).ldr
+endif
 clean:
 	@echo Cleaning directories
 	@find tests -name "*.output" -type f -delete

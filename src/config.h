@@ -16,7 +16,7 @@ typedef uint32_t uint24_t;
 #endif
 
 #define VERSION                       1
-#define REVISION                      4
+#define REVISION                      5
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
 #define FILLBYTE                   0xFF // Same as ZDS
