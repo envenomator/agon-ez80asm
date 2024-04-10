@@ -1,0 +1,15 @@
+        ; Strings with terminators, to test the various getToken* routines
+        db ","
+        db " , "
+        db ";"
+        db " ; "
+        db "="
+        db " = "
+        db ",;="
+        db ",=;"
+        db ";,="
+        db ";=,"
+        db "=,;"
+        db "=;,"
+        db ",","=",";"
+        db ",","=",";";comment
