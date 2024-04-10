@@ -5,6 +5,12 @@ label1:
         db 'a' , 'b' , 0
         db 'b';comment
         db 'b'	; comment
+        ld a,'a'
+        ld a,'a';comment
+        ld a,'a' ;comment
+        ld a, 'a'
+        ld a, 'a';comment
+        ld a, 'a' ;comment
 charliterals:
         db '\n'
         db '\r'
@@ -14,6 +20,17 @@ charliterals:
         db '\'
         db "\'" ; ZDS assembler can't handle '\'', we'll test this later in string
         db '\"'
+        db ','
+        db ';'
+        ld a, '\n'
+        ld a, '\r'
+        ld a, '\t'
+        ld a, '\b'
+        ld a, '\\'
+        ld a, '\''
+        ld a, '\"'
+        ld a, ','
+        ld a, ';'
 label2:
         db "A string",0
         db "\""

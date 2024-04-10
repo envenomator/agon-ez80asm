@@ -158,6 +158,7 @@ char * _findLiteralTokenEnd(char *src) {
 // returns the number of Operator characters found, or 0 if none
 uint8_t getOperandToken(streamtoken_t *token, char *src) {
     uint8_t length = 0;
+    bool escaped = false;
 
     // skip leading space
     while(*src && (isspace(*src))) src++;
@@ -169,7 +170,8 @@ uint8_t getOperandToken(streamtoken_t *token, char *src) {
 
     // hunt for end-character (0 , or ; in normal non-literal mode)
     while(*src) {
-        if((*src == ',') || (*src == ';')) break;
+        if(*src == '\'') escaped = !escaped;
+        if(!escaped && ((*src == ',') || (*src == ';'))) break;
         src++;
         length++;
     }
