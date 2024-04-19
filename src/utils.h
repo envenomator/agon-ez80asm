@@ -34,6 +34,7 @@ void remove_ext (char* myStr, char extSep, char pathSep);
 void trimRight(char *str);
 
 void error(char* msg);
+void warning(char* msg);
 int32_t getValue(char *str, bool req_firstpass);
 uint8_t getEscapedChar(char c);
 uint8_t getLiteralValue(char *string);

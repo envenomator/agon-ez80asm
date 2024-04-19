@@ -23,6 +23,7 @@ uint8_t fillbyte;
 uint24_t start_address;
 bool coloroutput;
 unsigned int labelcollisions;
+bool ignore_shortening_enabled;
 
 tokenline_t currentline;
 

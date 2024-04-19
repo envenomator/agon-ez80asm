@@ -72,6 +72,22 @@ void error(char* msg) {
         errorreportlevel = currentStackLevel();
     }
 }
+void warning(char* msg) {
+    struct contentitem *ci = currentContent();
+
+    vdp_set_text_colour(DARK_YELLOW);
+    if(ci) {
+        if(currentExpandedMacro) {
+            printf("Macro [%s] in \"%s\" line %d\r\n",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
+        }
+        else {
+            printf("File \"%s\" line %d\r\n", ci->name, ci->currentlinenumber);
+        }
+    }
+    printf("%s\r\n", msg);
+    vdp_set_text_colour(BRIGHT_WHITE);
+}
+
 
 void trimRight(char *str) {
     while(*str) str++;
@@ -344,12 +360,12 @@ void validateRange8bit(int32_t value) {
 }
 
 void validateRange16bit(int32_t value) {
-    if(value > 0xffff) {
+    if((value > 0xffff) && (!ignore_shortening_enabled)) {
         if(adlmode) {
-            error(message[ERROR_16BITRANGE]);
+            warning(message[ERROR_16BITRANGE]);
         }
         else {
-            error(message[ERROR_ADLWORDSIZE]);
+            warning(message[ERROR_ADLWORDSIZE]);
         }
     }
     if(value < -32768) {
