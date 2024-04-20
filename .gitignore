@@ -63,3 +63,6 @@ test.output
 asm.output
 *.asm.output
 tests/*.bin
+
+# vi swap files
+*.swp
