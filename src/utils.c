@@ -53,11 +53,25 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
         }
     }
 }
-void error(char* msg) {
+
+void error_level(char* msg, uint8_t level) {
     struct contentitem *ci = currentContent();
 
-    if(global_errors == 0) {
-        vdp_set_text_colour(DARK_RED);
+    switch(level) {
+        case(LEVEL_ERROR):
+            vdp_set_text_colour(DARK_RED);
+            global_errors++;
+            errorreportlevel = currentStackLevel();
+            break;
+        case(LEVEL_WARNING):
+            vdp_set_text_colour(DARK_YELLOW);
+            issue_warning = true;
+            break;
+        default:
+            break;
+    }
+
+    if((global_errors == 1) || (level == LEVEL_WARNING)) {
         if(ci) {
             if(currentExpandedMacro) {
                 printf("Macro [%s] in \"%s\" line %d - ",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
@@ -66,29 +80,18 @@ void error(char* msg) {
                 printf("File \"%s\" line %d - ", ci->name, ci->currentlinenumber);
             }
         }
-        global_errors++;
         printf("%s\r\n", msg);
-        vdp_set_text_colour(BRIGHT_WHITE);
-        errorreportlevel = currentStackLevel();
     }
-}
-void warning(char* msg) {
-    struct contentitem *ci = currentContent();
-
-    issue_warning = true;
-    vdp_set_text_colour(DARK_YELLOW);
-    if(ci) {
-        if(currentExpandedMacro) {
-            printf("Macro [%s] in \"%s\" line %d - ",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
-        }
-        else {
-            printf("File \"%s\" line %d - ", ci->name, ci->currentlinenumber);
-        }
-    }
-    printf("%s\r\n", msg);
     vdp_set_text_colour(BRIGHT_WHITE);
 }
 
+void error(char *msg) {
+    error_level(msg, LEVEL_ERROR);
+}
+
+void warning(char *msg) {
+    error_level(msg, LEVEL_WARNING);
+}
 
 void trimRight(char *str) {
     while(*str) str++;

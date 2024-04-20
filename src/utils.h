@@ -23,6 +23,12 @@ enum {
     BRIGHT_WHITE
 };
 
+// ERROR LEVELS
+enum {
+    LEVEL_ERROR,
+    LEVEL_WARNING
+};
+
 // Token type that points to the (changed) underlying data string
 typedef struct {
     char    *start;
