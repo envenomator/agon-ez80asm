@@ -809,22 +809,31 @@ void handle_asm_blk(uint8_t width) {
             error(message[ERROR_LISTFORMAT]);
         val = fillbyte;
     }
-    while(num--) {
+    while(num) {
         switch(width) {
+            case 0:
+                address += num;
+                remaining_dsspaces += num;
+                num = 0;
+                break;
             case 1:
                 if(pass == 2) validateRange8bit(val);
                 emit_8bit(val);
+                num -= 1;
                 break;
             case 2:
                 if(pass == 2) validateRange16bit(val);
                 emit_16bit(val);
+                num -= 1;
                 break;
             case 3:
                 if(pass == 2) validateRange24bit(val);
                 emit_24bit(val);
+                num -= 1;
                 break;
             case 4:
                 emit_32bit(val);
+                num -= 1;
                 break;
         }
     }
@@ -1019,7 +1028,7 @@ void handle_assembler_command(void) {
             handle_asm_data(ASM_DB);
             break;
         case(ASM_DS):
-            handle_asm_blk(1);
+            handle_asm_blk(0);
             break;
         case(ASM_DW):
             handle_asm_data(ASM_DW);
@@ -1199,6 +1208,7 @@ void passInitialize(uint8_t passnumber) {
         fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
     }
     issue_warning = false;
+    remaining_dsspaces = 0;
 }
 
 void initFileContentTable(void) {

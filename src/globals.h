@@ -49,6 +49,8 @@ extern bool coloroutput;
 extern unsigned int labelcollisions;
 extern bool ignore_truncation_warnings;
 extern bool issue_warning;
+extern uint24_t remaining_dsspaces;
+
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code
 extern operand_t operand1;

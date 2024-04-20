@@ -25,6 +25,8 @@ bool coloroutput;
 unsigned int labelcollisions;
 bool ignore_truncation_warnings;
 bool issue_warning;
+uint24_t remaining_dsspaces;
+
 tokenline_t currentline;
 
 operand_t operand1;
