@@ -26,7 +26,7 @@ void printHelp(void) {
     printf("  -o\tOrg start address in hexadecimal format, default is %06X\r\n", START_ADDRESS);
     printf("  -b\tFillbyte in hexadecimal format, default is %02X\r\n", FILLBYTE);
     printf("  -a\tADL mode 1/0, default is %d\r\n", ADLMODE_START);
-    printf("  -i\tIgnore 16bit shortening warnings in ADL0\r\n");
+    printf("  -i\tIgnore value truncation warnings\r\n");
     printf("  -l\tListing to file with .lst extension\r\n");
     printf("  -s\tExport symbols\r\n");
     printf("  -d\tDirect listing to console\r\n");
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     displaystatistics = false;
     coloroutput = true;
     filesbuffered = true;
-    ignore_shortening_enabled = false;
+    ignore_truncation_warnings = false;
 
     while ((opt = getopt(argc, argv, "-:lidvhsxcb:a:o:")) != -1) {
         switch(opt) {
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
                 list_enabled = true;
                 break;
             case 'i':
-                ignore_shortening_enabled = true;
+                ignore_truncation_warnings = true;
                 break;
             case 'v':
                 printVersion();

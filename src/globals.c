@@ -23,8 +23,8 @@ uint8_t fillbyte;
 uint24_t start_address;
 bool coloroutput;
 unsigned int labelcollisions;
-bool ignore_shortening_enabled;
-
+bool ignore_truncation_warnings;
+bool issue_warning;
 tokenline_t currentline;
 
 operand_t operand1;
@@ -44,11 +44,10 @@ char *message[] = {
     "Operand(s) not matching mnemonic",
     "Error in opcode transformation",
     "Range error in immediate",
-    "Invalid 8-bit value",
-    "Invalid 16-bit value",
-    "Invalid 24-bit value",
     "Invalid suffix",
-    "Value too large for 16-bits, truncation required",
+    "Value truncated to 8 bit",
+    "Value truncated to 16 bit",
+    "Value truncated to 24 bit",
     "Suffix not matching mnemonic / ADL mode",
     "Index register offset exceeded",
     "String not terminated",

@@ -60,10 +60,10 @@ void error(char* msg) {
         vdp_set_text_colour(DARK_RED);
         if(ci) {
             if(currentExpandedMacro) {
-                printf("Macro [%s] in \"%s\" line %d\r\n",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
+                printf("Macro [%s] in \"%s\" line %d - ",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
             }
             else {
-                printf("File \"%s\" line %d\r\n", ci->name, ci->currentlinenumber);
+                printf("File \"%s\" line %d - ", ci->name, ci->currentlinenumber);
             }
         }
         global_errors++;
@@ -75,13 +75,14 @@ void error(char* msg) {
 void warning(char* msg) {
     struct contentitem *ci = currentContent();
 
+    issue_warning = true;
     vdp_set_text_colour(DARK_YELLOW);
     if(ci) {
         if(currentExpandedMacro) {
-            printf("Macro [%s] in \"%s\" line %d\r\n",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
+            printf("Macro [%s] in \"%s\" line %d - ",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
         }
         else {
-            printf("File \"%s\" line %d\r\n", ci->name, ci->currentlinenumber);
+            printf("File \"%s\" line %d - ", ci->name, ci->currentlinenumber);
         }
     }
     printf("%s\r\n", msg);
@@ -354,28 +355,26 @@ uint8_t getOperatorToken(streamtoken_t *token, char *src) {
 }
 
 void validateRange8bit(int32_t value) {
-    if((value > 0xff) || (value < -128)) {
-        error(message[ERROR_8BITRANGE]);
+    if(!(ignore_truncation_warnings)) {
+        if((value > 0xff) || (value < -128)) {
+            warning(message[WARNING_TRUNCATED_8BIT]);
+        }
     }
 }
 
 void validateRange16bit(int32_t value) {
-    if((value > 0xffff) && (!ignore_shortening_enabled)) {
-        if(adlmode) {
-            warning(message[ERROR_16BITRANGE]);
+    if(!(ignore_truncation_warnings)) {
+        if((value > 0xffff) || (value < -32768)) {
+            warning(message[WARNING_TRUNCATED_16BIT]);
         }
-        else {
-            warning(message[ERROR_ADLWORDSIZE]);
-        }
-    }
-    if(value < -32768) {
-        error(message[ERROR_16BITRANGE]);
     }
 }
 
 void validateRange24bit(int32_t value) {
-    if((value > 0xffffff) || (value < -8388608)) {
-        error(message[ERROR_24BITRANGE]);
+    if(!(ignore_truncation_warnings)) {
+        if((value > 0xffffff) || (value < -8388608)) {
+            warning(message[WARNING_TRUNCATED_24BIT]);
+        }
     }
 }
 

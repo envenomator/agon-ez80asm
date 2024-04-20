@@ -1001,7 +1001,9 @@ void handle_asm_endif(void) {
 
 void handle_asm_fillbyte(void) {
     parse_asm_single_immediate(); // get fillbyte from next token
-    if((operand1.immediate < 0) || (operand1.immediate > 255)) error(message[ERROR_8BITRANGE]);
+    if((!ignore_truncation_warnings) && ((operand1.immediate < -128) || (operand1.immediate > 255))) {
+        warning(message[WARNING_TRUNCATED_8BIT]);
+    }
     fillbyte = operand1.immediate;
 }
 
@@ -1169,6 +1171,12 @@ void processMacro(void) {
             vdp_set_text_colour(BRIGHT_WHITE);
             return;
         }
+        if(issue_warning) {
+            vdp_set_text_colour(DARK_YELLOW);
+            printf("%s\r\n",errorline);
+            vdp_set_text_colour(BRIGHT_WHITE);
+            issue_warning = false;
+        }
     }
 
     // end processing
@@ -1190,6 +1198,7 @@ void passInitialize(uint8_t passnumber) {
     if(pass == 2) {
         fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
     }
+    issue_warning = false;
 }
 
 void initFileContentTable(void) {
@@ -1374,6 +1383,12 @@ bool processContent(char *filename) {
             }
             contentPop();
             return false;
+        }
+        if(issue_warning) {
+            vdp_set_text_colour(DARK_YELLOW);
+            printf("%s\r\n",errorline);
+            vdp_set_text_colour(BRIGHT_WHITE);
+            issue_warning = false;
         }
     }
     if(inConditionalSection != 0) {

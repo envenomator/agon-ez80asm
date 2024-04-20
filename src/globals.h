@@ -47,7 +47,8 @@ extern uint8_t fillbyte;
 extern uint24_t start_address;
 extern bool coloroutput;
 extern unsigned int labelcollisions;
-extern bool ignore_shortening_enabled;
+extern bool ignore_truncation_warnings;
+extern bool issue_warning;
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code
 extern operand_t operand1;
@@ -69,11 +70,10 @@ enum {
     ERROR_OPERANDSNOTMATCHING,
     ERROR_TRANSFORMATION,
     WARNING_N_TOOLARGE,
-    ERROR_8BITRANGE,
-    ERROR_16BITRANGE,
-    ERROR_24BITRANGE,
     ERROR_INVALIDSUFFIX,
-    ERROR_MMN_TOOLARGE,
+    WARNING_TRUNCATED_8BIT,
+    WARNING_TRUNCATED_16BIT,
+    WARNING_TRUNCATED_24BIT,
     ERROR_ILLEGAL_SUFFIXMODE,
     ERROR_DISPLACEMENT_RANGE,
     ERROR_STRING_NOTTERMINATED,
