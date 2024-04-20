@@ -815,6 +815,7 @@ void handle_asm_blk(uint8_t width) {
                 address += num;
                 remaining_dsspaces += num;
                 num = 0;
+                if(val != fillbyte) warning(message[WARNING_UNSUPPORTED_INITIALIZER]);
                 break;
             case 1:
                 if(pass == 2) validateRange8bit(val);

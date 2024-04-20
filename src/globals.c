@@ -104,5 +104,6 @@ char *message[] = {
     "Error resetting input file(s)\r\n",
     "Error reading incbin file",
     "Error reading input file",
-    "Error allocating memory"
+    "Error allocating memory",
+    "Ignoring unsupported initializer value"
 };
