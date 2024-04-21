@@ -9,7 +9,7 @@ void vdp_set_text_colour( int colour ) {
 			case 1: // DARK_RED
 				printf("\033[31m");
 				break;
-			case 2: // DARK_YELLOW
+			case 3: // DARK_YELLOW
 				printf("\033[33m");
 				break;
 			default:

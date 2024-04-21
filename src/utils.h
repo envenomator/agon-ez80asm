@@ -5,10 +5,10 @@
 #include <ctype.h>
 // DEFAULT COLOR INDEXES
 enum {
-    BLACK = 0,
+    DARK_BLACK = 0,
     DARK_RED,
-    DARK_YELLOW,
     DARK_GREEN,
+    DARK_YELLOW,
     DARK_BLUE,
     DARK_MAGENTA,
     DARK_CYAN,
