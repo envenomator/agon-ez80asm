@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
                 if((strlen(optarg) != 1) || 
                    ((*optarg != '0') && (*optarg != '1'))) {
                     error("Incorrect ADL mode option -a");
-                    return 2;
+                    return 0;
                 }
                 adlmode = (*optarg == '1')?true:false;
                 printf("Setting ADL mode to %d\r\n",adlmode);
@@ -98,24 +98,24 @@ int main(int argc, char *argv[]) {
             case 'b':
                 if(strlen(optarg) > 2) {
                     error("option -b: Byte range error");
-                    return 2;
+                    return 0;
                 }
                 fillbyte = str2hex(optarg);
                 if(err_str2num) {
                     error("option -b: Invalid hexadecimal format");
-                    return 2;
+                    return 0;
                 }
                 printf("Setting fillbyte to hex %02X\r\n", fillbyte);
                 break;
             case 'o':
                 if(strlen(optarg) > 6) {
                     error("option -o: Address longer than 24bit");
-                    return 2;
+                    return 0;
                 }
                 start_address = str2hex(optarg);
                 if(err_str2num) {
                     error("option -o: Invalid hexadecimal format");
-                    return 2;
+                    return 0;
                 }
                 printf("Setting org address to hex %06X\r\n", start_address);
                 break;
@@ -136,11 +136,11 @@ int main(int argc, char *argv[]) {
                         break;
                 }
                 vdp_set_text_colour(BRIGHT_WHITE);
-                return 2;
+                return 0;
             case 1:
                 if(strlen(optarg) > FILENAMEMAXLENGTH) {
                     error("Filename too long");
-                    return 2;
+                    return 0;
                 }
                 filenamecount++;
                 switch(filenamecount) {
@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
                         break;
                     default:
                         error("Too many filenames provided");
-                        return 2;
+                        return 0;
                         break;
                 }
                 break;
@@ -162,14 +162,14 @@ int main(int argc, char *argv[]) {
     if((argc == 1) || (filenamecount == 0)) {
         error("No input filename");
         printHelp();
-        return 2;
+        return 0;
     }
 
     if(!io_init(inputfilename, outputfilename)) {
         vdp_set_text_colour(BRIGHT_RED);
         printf("Error opening \"%s\"\r\n", inputfilename);
         vdp_set_text_colour(BRIGHT_WHITE);
-        return 2;
+        return 0;
     }
     printf("Assembling %s\r\n", inputfilename);
     if(list_enabled) printf("Listing to %s\r\n", filename[FILE_LISTING]);
@@ -190,7 +190,7 @@ int main(int argc, char *argv[]) {
     }
     io_close();
 
-    if(global_errors) return 1;
+    if(global_errors) return 0;
     if(exportsymbols) saveGlobalLabelTable();
     if(displaystatistics) displayStatistics();
     
