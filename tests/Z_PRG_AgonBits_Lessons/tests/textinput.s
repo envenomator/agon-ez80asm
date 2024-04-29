@@ -76,13 +76,13 @@ VDUdata:
     .db     "Please enter your name:"  ; print this text
     .db     31, 0, 12                  ; TAB to 10,20
     .db     17, 128+4                  ; background colour
-    .ds     10,32                      ; a line of 10 spaces
+    .blkb   10,32                      ; a line of 10 spaces
     .db     31, 0, 12                  ; TAB to 10,20
 endVDUdata:
 
 answer:         .db "You typed: "
-textBuffer:     .ds 10,0
-lineOfSpaces:   .ds 10,32
+textBuffer:     .blkb 10,0
+lineOfSpaces:   .blkb 10,32
 
 escaped:        .db "You escaped...",0
 

@@ -12,7 +12,7 @@
 
 app_name:      .db     "ink.bin", 0        ; The executable name, only used in arg1
 max_args:      EQU     16                  ; Maximum number of arguments allowed in argv
-arg_pointer:   .ds     max_args * 3, 0     ; max 16 x 3 bytes each
+arg_pointer:   .blkb   max_args * 3, 0     ; max 16 x 3 bytes each
 num_args:      .db     0                   ; the number of arguments entered
 
 ; ---------------------------------------------
