@@ -572,7 +572,6 @@ void handle_asm_data(uint8_t wordtype) {
 
     while(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
-
             if(currentExpandedMacro) {
                 if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
                     token.start = _macro_ASM_buffer;
@@ -598,6 +597,8 @@ void handle_asm_data(uint8_t wordtype) {
                     }
                     break;
                 case ASM_DW:
+                    //printf("DEBUG: pass <%d>\n", pass);
+                    //printf("DEBUG: token <%s>\n", token.start);
                     value = getValue(token.start, false);
                     if(pass == 2) validateRange16bit(value);
                     emit_16bit(value);

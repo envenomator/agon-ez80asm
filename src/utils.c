@@ -11,8 +11,6 @@
 #include "io.h"
 #include "assemble.h"
 
-char _macro_VAL_buffer[MACROARGLENGTH + 1];// replacement buffer for values during macro expansion
-
 // memory allocate size bytes, raise error if not available
 void *allocateMemory(size_t size) {
     void *ptr = malloc(size);
@@ -444,7 +442,7 @@ int32_t getValue(char *str, bool req_firstpass) {
     streamtoken_t token;
     label_t *lbl;
     int32_t total, tmp;
-    uint8_t length, substlength;
+    uint8_t length;
     char prev_op = '+', unary = 0;
     bool expect = true;
 
@@ -453,13 +451,6 @@ int32_t getValue(char *str, bool req_firstpass) {
     total = 0;
     while(str) {
         length = getOperatorToken(&token, str);
-        if(currentExpandedMacro) {
-            substlength = macroExpandArg(_macro_VAL_buffer, token.start, currentExpandedMacro);
-            if(substlength) {
-                token.start = _macro_VAL_buffer;
-                length = substlength;
-            }
-        }
         if(length == 0) { // at begin, or middle, OK. Expect catch at end
             expect = true;
             unary = token.terminator;
