@@ -12,7 +12,7 @@ uint8_t get_immediate_size(uint8_t suffix) {
     if(suffix) {
         if(suffix & (S_SIS|S_LIS)) return 2;
         if(suffix & (S_SIL|S_LIL)) return 3;
-        error(message[ERROR_INVALIDMNEMONIC]);
+        error(message[ERROR_INVALIDMNEMONIC],0);
         return 0;
    }
     if(adlmode) return 3;
@@ -97,14 +97,14 @@ void transform_instruction(operand_t *op, uint8_t type) {
                 // label still potentially unknown in pass 1, so output the existing '0' in pass 1
                 rel = op->immediate - address - 2;
                 if((rel > 127) || (rel < -128)) {
-                    error(message[ERROR_RELATIVEJUMPTOOLARGE]);
+                    error(message[ERROR_RELATIVEJUMPTOOLARGE],0);
                }
                 op->immediate = ((int8_t)(rel & 0xFF));
                 op->immediate_provided = true;
            }
             break;
         default:
-            error(message[ERROR_TRANSFORMATION]);
+            error(message[ERROR_TRANSFORMATION],0);
             break;
    }
     return;
@@ -165,7 +165,7 @@ uint8_t getADLsuffix(void) {
         default: // illegal suffix
             break;
    }
-    error(message[ERROR_INVALIDSUFFIX]);
+    error(message[ERROR_INVALIDSUFFIX],"%s",currentline.suffix);
     return 0;
 }
 
@@ -183,17 +183,17 @@ void emit_instruction(operandlist_t *list) {
     // issue any warnings here
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
         if(!ignore_truncation_warnings) {
-            if((list->conditionsA & IMM_N) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) warning(message[WARNING_TRUNCATED_8BIT]);
-            if((list->conditionsB & IMM_N) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) warning(message[WARNING_TRUNCATED_8BIT]);
+            if((list->conditionsA & IMM_N) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) warning(message[WARNING_TRUNCATED_8BIT],0);
+            if((list->conditionsB & IMM_N) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) warning(message[WARNING_TRUNCATED_8BIT],0);
         }
     }
-    if((output.suffix) && ((list->flags & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE]);
-    if((list->flags & F_DISPB) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE]);
+    if((output.suffix) && ((list->flags & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE],"%s",currentline.suffix);
+    if((list->flags & F_DISPB) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE],"%d",operand2.displacement);
 
     // Specific checks
-    if((list->conditionsA & IMM_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER]);
-    if((list->conditionsA & IMM_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE]);
-    if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0x47)) error(message[ERROR_ILLEGALRESTARTADDRESS]);
+    if((list->conditionsA & IMM_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER],"%d",operand1.immediate);
+    if((list->conditionsA & IMM_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE],"%d",operand1.immediate);
+    if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0x47)) error(message[ERROR_ILLEGALRESTARTADDRESS],"%d / 0x%02x",operand1.immediate, operand1.immediate);
 
     // prepare extra DD/FD suffix if needed
     prefix_ddfd_suffix(list);

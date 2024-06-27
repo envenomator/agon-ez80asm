@@ -48,14 +48,14 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
         operand->addressmode |= INDIRECT;
         // find closing bracket or error out
         if(string[len-1] == ')') string[len-1] = 0; // terminate on closing bracket
-        else error(message[ERROR_CLOSINGBRACKET]);
+        else error(message[ERROR_CLOSINGBRACKET],0);
         ptr = &string[1];
         while(isspace(*ptr)) ptr++; // eat spaces
     }
     else {
         operand->indirect = false;
         // should not find a closing bracket
-        if(string[len-1] == ')') error(message[ERROR_OPENINGBRACKET]);
+        if(string[len-1] == ')') error(message[ERROR_OPENINGBRACKET],0);
     }
     
     switch(*ptr++) {
@@ -392,7 +392,7 @@ void parseLine(char *src) {
                                 break;
                             }
                         default: // intentional fall-through
-                            error(message[ERROR_INVALIDLABEL]);
+                            error(message[ERROR_INVALIDLABEL],0);
                             state = PS_ERROR;                        
                             break;
                     }
@@ -443,7 +443,7 @@ void parseLine(char *src) {
                 currentline.current_instruction = instruction_lookup(currentline.mnemonic);
                 if(currentline.current_instruction == NULL) {
                     if(!asmcmd) {
-                        error(message[ERROR_INVALIDMNEMONIC]);
+                        error(message[ERROR_INVALIDMNEMONIC],"%s",currentline.mnemonic);
                         state = PS_ERROR;
                         break;
                     }
@@ -452,7 +452,7 @@ void parseLine(char *src) {
                     currentline.current_instruction = instruction_lookup(currentline.mnemonic);
                     if((currentline.current_instruction == NULL) ||
                        (currentline.current_instruction->type != ASSEMBLER)) {
-                        error(message[ERROR_INVALIDMNEMONIC]);
+                        error(message[ERROR_INVALIDMNEMONIC],"%s",currentline.mnemonic);
                         state = PS_ERROR;
                         break;
                     }
@@ -518,13 +518,13 @@ void parseLine(char *src) {
                         break;
                     case ',':
                         if(argcount == 2) {
-                            error(message[ERROR_TOOMANYARGUMENTS]);
+                            error(message[ERROR_TOOMANYARGUMENTS],0);
                             state = PS_ERROR;
                             break;
                         }
                         oplength = getOperandToken(&streamtoken, streamtoken.next);
                         if(oplength == 0) {
-                            error(message[ERROR_MISSINGOPERAND]);
+                            error(message[ERROR_MISSINGOPERAND],0);
                             state = PS_ERROR;
                             break;
                         }
@@ -555,11 +555,11 @@ void parse_asm_single_immediate(void) {
         if(getOperandToken(&token, currentline.next)) {
             operand1.immediate = getValue(token.start, true);
             operand1.immediate_provided = true;
-            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
+            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
         }
-        else error(message[ERROR_MISSINGOPERAND]);
+        else error(message[ERROR_MISSINGOPERAND],0);
     }
-    else error(message[ERROR_MISSINGOPERAND]);
+    else error(message[ERROR_MISSINGOPERAND],0);
 }
 
 // Emits list data for the DB/DW/DW24/DW32 etc directives
@@ -579,7 +579,7 @@ void handle_asm_data(uint8_t wordtype) {
             }
 
             if((token.start[0] == '\"') && (wordtype != ASM_DB)) {
-                error(message[ERROR_STRING_NOTALLOWED]);
+                error(message[ERROR_STRING_NOTALLOWED],0);
                 return;
             }
 
@@ -611,7 +611,7 @@ void handle_asm_data(uint8_t wordtype) {
                     emit_32bit(value);
                     break;
                 default:
-                    error(message[ERROR_INTERNAL]);
+                    error(message[ERROR_INTERNAL],0);
                     break;
             }
             expectarg = false;
@@ -621,11 +621,11 @@ void handle_asm_data(uint8_t wordtype) {
             expectarg = true;
         }
         else {
-            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_LISTFORMAT],0);
             currentline.next = NULL;
         }
     }
-    if(expectarg) error(message[ERROR_MISSINGOPERAND]);
+    if(expectarg) error(message[ERROR_MISSINGOPERAND],0);
 }
 
 void handle_asm_equ(void) {
@@ -633,13 +633,13 @@ void handle_asm_equ(void) {
 
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
-            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
+            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
             if(currentline.label) definelabel(getValue(token.start, true)); // needs to be defined in pass 1
-            else error(message[ERROR_MISSINGLABEL]);
+            else error(message[ERROR_MISSINGLABEL],0);
         }
-        else error(message[ERROR_MISSINGOPERAND]);
+        else error(message[ERROR_MISSINGOPERAND],0);
     }
-    else error(message[ERROR_MISSINGOPERAND]);
+    else error(message[ERROR_MISSINGOPERAND],0);
 }
 
 void handle_asm_adl(void) {
@@ -647,7 +647,7 @@ void handle_asm_adl(void) {
 
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next) == 0) {
-            error(message[ERROR_MISSINGOPERAND]);
+            error(message[ERROR_MISSINGOPERAND],0);
             return;
         }
         if(currentExpandedMacro) {
@@ -657,7 +657,7 @@ void handle_asm_adl(void) {
         }
 
         if(fast_strcasecmp(token.start, "adl")) {
-            error(message[ERROR_INVALIDOPERAND]);
+            error(message[ERROR_INVALIDOPERAND],0);
             return;
         }
         if(token.terminator == '=') {
@@ -665,15 +665,15 @@ void handle_asm_adl(void) {
                 operand2.immediate = getValue(token.start, true); // needs to be defined in pass 1
                 operand2.immediate_provided = true;
             }
-            else error(message[ERROR_MISSINGOPERAND]);
+            else error(message[ERROR_MISSINGOPERAND],0);
         }        
-        else error(message[ERROR_MISSINGOPERAND]);
+        else error(message[ERROR_MISSINGOPERAND],0);
     }
-    else error(message[ERROR_MISSINGOPERAND]);
+    else error(message[ERROR_MISSINGOPERAND],0);
 
 
     if((operand2.immediate != 0) && (operand2.immediate != 1)) {
-        error(message[ERROR_INVALID_ADLMODE]);
+        error(message[ERROR_INVALID_ADLMODE],"%d", operand2.immediate);
     }
 
     adlmode = operand2.immediate;
@@ -685,7 +685,7 @@ void handle_asm_org(void) {
     parse_asm_single_immediate(); // get address from next token
     // address needs to be given in pass 1
     newaddress = operand1.immediate;
-    if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE]); 
+    if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE],0); 
     definelabel(address);
 
     address = newaddress;
@@ -695,26 +695,26 @@ void handle_asm_include(void) {
     streamtoken_t token;
 
     if(!currentline.next) {
-        error(message[ERROR_MISSINGOPERAND]);
+        error(message[ERROR_MISSINGOPERAND],0);
         return;
     }
     getDefineValueToken(&token, currentline.next);
     if(token.start[0] != '\"') {
-        error(message[ERROR_STRINGFORMAT]);
+        error(message[ERROR_STRINGFORMAT],0);
         return;
     }
     if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
 
     token.start[strlen(token.start)-1] = 0;
     if(strcmp(token.start+1, currentcontentitem->name) == 0) {
-        error(message[ERROR_RECURSIVEINCLUDE]);
+        error(message[ERROR_RECURSIVEINCLUDE],0);
         return;
     }
     processContent(token.start+1);
 
     if(pass == 1) sourcefilecount++;
 
-    if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
+    if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
 }
 
 void handle_asm_incbin(void) {
@@ -723,7 +723,7 @@ void handle_asm_incbin(void) {
     uint24_t n;
 
     if(!currentline.next) {
-        error(message[ERROR_MISSINGOPERAND]);
+        error(message[ERROR_MISSINGOPERAND],0);
         return;
     }
 
@@ -734,7 +734,7 @@ void handle_asm_incbin(void) {
         }
     }
     if(token.start[0] != '\"') {
-        error(message[ERROR_STRINGFORMAT]);
+        error(message[ERROR_STRINGFORMAT],0);
         return;
     }
     token.start[strlen(token.start)-1] = 0;
@@ -762,7 +762,7 @@ void handle_asm_incbin(void) {
         }
     }
     binfilecount++;
-    if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS]);
+    if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
 }
 
 void handle_asm_blk(uint8_t width) {
@@ -773,12 +773,12 @@ void handle_asm_blk(uint8_t width) {
     definelabel(address);
 
     if(!currentline.next) {
-        error(message[ERROR_MISSINGOPERAND]);
+        error(message[ERROR_MISSINGOPERAND],0);
         return;
     }
 
     if(getDefineValueToken(&token, currentline.next) == 0) {
-        error(message[ERROR_MISSINGOPERAND]); // we need at least one value
+        error(message[ERROR_MISSINGOPERAND],0); // we need at least one value
         return;
     }
 
@@ -792,7 +792,7 @@ void handle_asm_blk(uint8_t width) {
 
     if(token.terminator == ',') {
         if(getDefineValueToken(&token, token.next) == 0) {
-            error(message[ERROR_MISSINGOPERAND]);
+            error(message[ERROR_MISSINGOPERAND],0);
             return;
         }
 
@@ -805,7 +805,7 @@ void handle_asm_blk(uint8_t width) {
     }
     else { // no value given
         if((token.terminator != 0)  && (token.terminator != ';'))
-            error(message[ERROR_LISTFORMAT]);
+            error(message[ERROR_LISTFORMAT],0);
         val = fillbyte;
     }
     while(num) {
@@ -814,7 +814,7 @@ void handle_asm_blk(uint8_t width) {
                 address += num;
                 remaining_dsspaces += num;
                 num = 0;
-                if(val != fillbyte) warning(message[WARNING_UNSUPPORTED_INITIALIZER]);
+                if(val != fillbyte) warning(message[WARNING_UNSUPPORTED_INITIALIZER],0);
                 break;
             case 1:
                 if(pass == 2) validateRange8bit(val);
@@ -846,12 +846,12 @@ uint24_t delta;
 
     parse_asm_single_immediate();
     if(operand1.immediate <= 0) {
-        error(message[ERROR_INVALIDNUMBER]);
+        error(message[ERROR_INVALIDNUMBER],0);
         return;
     }
 
     if((operand1.immediate & (operand1.immediate - 1)) != 0) {
-        error(message[ERROR_POWER2]); 
+        error(message[ERROR_POWER2],0); 
         return;
     }
     
@@ -896,13 +896,13 @@ void handle_asm_definemacro(void) {
             listEndLine();
         }
         if((!isspace(src[0])) && (src[0] != '@') && (src[0] != ';')) {
-            error(message[ERROR_MACRO_NOGLOBALLABELS]);
+            error(message[ERROR_MACRO_NOGLOBALLABELS],0);
             break;
         }
         // skip leading space
         while(*src && (isspace(*src))) src++;
         if(fast_strncasecmp(src, "macro", 5) == 0) {
-            error(message[ERROR_MACROINMACRO]);
+            error(message[ERROR_MACROINMACRO],0);
             break;
         }
         uint8_t skipdot = (*src == '.')?1:0;
@@ -915,7 +915,7 @@ void handle_asm_definemacro(void) {
         // concatenate to buffer end
         if(pass == 1) {
             if((macrolength + linelength) > MACRO_BUFFERSIZE) {
-                error(message[ERROR_MACROTOOLARGE]);
+                error(message[ERROR_MACROTOOLARGE],0);
                 return;
             }
             char *tmp = macroline;
@@ -927,7 +927,7 @@ void handle_asm_definemacro(void) {
         }
     }
     if(!foundend) {
-        error(message[ERROR_MACROUNFINISHED]);
+        error(message[ERROR_MACROUNFINISHED],0);
         return;
     }
 
@@ -935,11 +935,11 @@ void handle_asm_definemacro(void) {
     // parse arguments into array
     if(pass == 1) {
         if(!currentline.next) {
-            error(message[ERROR_MACRONAME]);
+            error(message[ERROR_MACRONAME],0);
             return;
         }
         if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
-            error(message[ERROR_MACRONAME]);
+            error(message[ERROR_MACRONAME],0);
             return;
         }
         currentline.mnemonic = token.start;
@@ -947,14 +947,14 @@ void handle_asm_definemacro(void) {
         currentline.next = token.next;
         if((token.terminator == ' ') || (token.terminator == '\t')) {
             while(currentline.next) {
-                if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT]);
+                if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT],0);
                 if(getDefineValueToken(&token, currentline.next)) {
                     strcpy(arglist[argcount], token.start);
                     argcount++;
                 }
                 if(token.terminator == ',') currentline.next = token.next;
                 else {
-                    if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+                    if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT],0);
                     currentline.next = NULL; 
                 }
             }
@@ -962,7 +962,7 @@ void handle_asm_definemacro(void) {
         // record the macro to memory
         macro = defineMacro(currentline.mnemonic, argcount, (char *)arglist, startlinenumber);
         if(!macro) {
-            error(message[ERROR_MACROMEMORYALLOCATION]);
+            error(message[ERROR_MACROMEMORYALLOCATION],0);
             return;
         }
         setMacroBody(macro, _macrobuffer);
@@ -975,26 +975,26 @@ void handle_asm_if(void) {
     
     // No nested conditionals.
     if(inConditionalSection != 0) {
-        error(message[ERROR_NESTEDCONDITIONALS]);
+        error(message[ERROR_NESTEDCONDITIONALS],0);
         return;
     }
 
     if(currentline.next) {
         if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
-            error(message[ERROR_CONDITIONALEXPRESSION]);
+            error(message[ERROR_CONDITIONALEXPRESSION],0);
             return;
         }
         value = getValue(token.start, true);
 
         inConditionalSection = value ? 2 : 1;
     }
-    else error(message[ERROR_MISSINGOPERAND]);
+    else error(message[ERROR_MISSINGOPERAND],0);
 }
 
 void handle_asm_else(void) {
     // No nested conditionals.
     if(inConditionalSection == 0) {
-        error(message[ERROR_MISSINGIFCONDITION]);
+        error(message[ERROR_MISSINGIFCONDITION],0);
         return;
     }
     inConditionalSection = inConditionalSection == 1 ? 2 : 1;
@@ -1002,7 +1002,7 @@ void handle_asm_else(void) {
 
 void handle_asm_endif(void) {
     if(inConditionalSection == 0) {
-        error(message[ERROR_MISSINGIFCONDITION]);
+        error(message[ERROR_MISSINGIFCONDITION],0);
         return;
     }
     inConditionalSection = 0;
@@ -1011,7 +1011,7 @@ void handle_asm_endif(void) {
 void handle_asm_fillbyte(void) {
     parse_asm_single_immediate(); // get fillbyte from next token
     if((!ignore_truncation_warnings) && ((operand1.immediate < -128) || (operand1.immediate > 255))) {
-        warning(message[WARNING_TRUNCATED_8BIT]);
+        warning(message[WARNING_TRUNCATED_8BIT],0);
     }
     fillbyte = operand1.immediate;
 }
@@ -1083,7 +1083,7 @@ void handle_assembler_command(void) {
             handle_asm_endif();
             break;
         case(ASM_MACRO_END):
-            error(message[ERROR_MACRONOTSTARTED]);
+            error(message[ERROR_MACRONOTSTARTED],0);
             break;
     }
     return;
@@ -1121,7 +1121,7 @@ void processInstructions(void){
                     }
                     list++;
                 }
-                if(!match) error(message[ERROR_OPERANDSNOTMATCHING]);
+                if(!match) error(message[ERROR_OPERANDSNOTMATCHING],0);
                 return;
             }
         }
@@ -1145,19 +1145,19 @@ void processMacro(void) {
         if(getDefineValueToken(&token, currentline.next)) {
             argcount++;
             if(argcount > exp->argcount) {
-                error(message[ERROR_MACROARGCOUNT]);
+                error(message[ERROR_MACROARGCOUNT],0);
                 return;
             }
             strcpy(exp->substitutions[argcount-1], token.start);
         }
         if(token.terminator == ',') currentline.next = token.next;
         else {
-            if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT]);
+            if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT],0);
             currentline.next = NULL; 
         }
     }
     if(argcount != exp->argcount) {
-        error(message[ERROR_MACROINCORRECTARG]);
+        error(message[ERROR_MACROINCORRECTARG],0);
         return;
     }
     // open macro storage
@@ -1229,7 +1229,7 @@ struct contentitem *insertContent(char *filename) {
     ci->buffer = allocateMemory(ci->size+1);
     ci->readptr = ci->buffer;
     if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
-        error(message[ERROR_READINGINPUT]);
+        error(message[ERROR_READINGINPUT],0);
         return NULL;
     }
     ci->buffer[ci->size] = 0; // terminate stringbuffer
@@ -1331,7 +1331,7 @@ struct contentitem *contentPop(void) {
 
 bool contentPush(struct contentitem *ci) {
     if(_contentstacklevel == FILESTACK_MAXFILES) {
-        error(message[ERROR_MAXINCLUDEFILES]);
+        error(message[ERROR_MAXINCLUDEFILES],0);
         return false;
     }
     _contentstack[_contentstacklevel++] = ci;
@@ -1405,7 +1405,7 @@ bool processContent(char *filename) {
         }
     }
     if(inConditionalSection != 0) {
-        error(message[ERROR_MISSINGENDIF]);
+        error(message[ERROR_MISSINGENDIF],0);
         contentPop();
         return false;
     }

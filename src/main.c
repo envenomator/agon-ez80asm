@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
             case 'a':
                 if((strlen(optarg) != 1) || 
                    ((*optarg != '0') && (*optarg != '1'))) {
-                    error("Incorrect ADL mode option -a");
+                    error("Incorrect ADL mode option -a",0);
                     return errorexit;
                 }
                 adlmode = (*optarg == '1')?true:false;
@@ -103,24 +103,24 @@ int main(int argc, char *argv[]) {
                 return 0;
             case 'b':
                 if(strlen(optarg) > 2) {
-                    error("option -b: Byte range error");
+                    error("option -b: Byte range error",0);
                     return errorexit;
                 }
                 fillbyte = str2hex(optarg);
                 if(err_str2num) {
-                    error("option -b: Invalid hexadecimal format");
+                    error("option -b: Invalid hexadecimal format",0);
                     return errorexit;
                 }
                 printf("Setting fillbyte to hex %02X\r\n", fillbyte);
                 break;
             case 'o':
                 if(strlen(optarg) > 6) {
-                    error("option -o: Address longer than 24bit");
+                    error("option -o: Address longer than 24bit",0);
                     return errorexit;
                 }
                 start_address = str2hex(optarg);
                 if(err_str2num) {
-                    error("option -o: Invalid hexadecimal format");
+                    error("option -o: Invalid hexadecimal format",0);
                     return errorexit;
                 }
                 printf("Setting org address to hex %06X\r\n", start_address);
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
                 return errorexit;
             case 1:
                 if(strlen(optarg) > FILENAMEMAXLENGTH) {
-                    error("Filename too long");
+                    error("Filename too long",0);
                     return errorexit;
                 }
                 filenamecount++;
@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
                         strncpy(outputfilename, optarg, FILENAMEMAXLENGTH);
                         break;
                     default:
-                        error("Too many filenames provided");
+                        error("Too many filenames provided",0);
                         return errorexit;
                         break;
                 }
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
     }
 
     if((argc == 1) || (filenamecount == 0)) {
-        error("No input filename");
+        error("No input filename",0);
         printHelp();
         return errorexit;
     }

@@ -26,7 +26,7 @@ void saveGlobalLabelTable(void) {
 
     fh = fopen(filename, "wb+");
     if(fh == 0) {
-        error(message[ERROR_FILEGLOBALLABELS]);
+        error(message[ERROR_FILEGLOBALLABELS],0);
         return;
     }
 
@@ -140,7 +140,7 @@ bool insertLabel(char *labelname, uint8_t len, int24_t labelAddress, bool local)
     // Collision on index, place at end of linked list if unique
     while(true) {
         if(strcmp(try->name, labelname) == 0) {
-            error(message[ERROR_LABELDEFINED]);
+            error(message[ERROR_LABELDEFINED],"%s",labelname);
             return false;
         }
         labelcollisions++;
@@ -229,24 +229,24 @@ void definelabel(int24_t num){
                 return;
             }
             if(insertLocalLabel(currentline.label, num) == false) {
-                error(message[ERROR_CREATINGLABEL]);
+                error(message[ERROR_CREATINGLABEL],0);
                 return;
             }
             return;
         }
         if(currentline.label[0] == '$') {
-            error(message[ERROR_INVALIDLABEL]);
+            error(message[ERROR_INVALIDLABEL],"%s",currentline.label);
             return;
         }
 
         len = strlen(currentline.label);
         str2num(currentline.label, len); 
         if(!err_str2num) { // labels can't have a valid number format
-            error(message[ERROR_INVALIDLABEL]);
+            error(message[ERROR_INVALIDLABEL],"%s",currentline.label);
             return;
         }
         if(insertLabel(currentline.label, len, num, false) == false){
-            error(message[ERROR_CREATINGLABEL]);
+            error(message[ERROR_CREATINGLABEL],0);
             return;
         }
 

@@ -27,7 +27,7 @@ FILE *io_openfile(char *name, char *mode) {
     FILE *fh = fopen(name, mode);
     if(!fh) {
         snprintf(buffer, 256, "Error opening \"%s\"", name);
-        error(buffer);
+        error(buffer,0);
     }
     return fh;
 }
@@ -237,7 +237,7 @@ void emit_adlsuffix_code(uint8_t suffix) {
             code = CODE_LIL;
             break;
         default:
-            error(message[ERROR_INVALIDSUFFIX]);
+            error(message[ERROR_INVALIDSUFFIX],0);
             return;
     }
     emit_8bit(code);
@@ -263,7 +263,7 @@ void emit_quotedstring(char *str) {
         else { // previously escaped
             escaped_char = getEscapedChar(*str);
             if(escaped_char == 0xff) {
-                error(message[ERROR_ILLEGAL_ESCAPESEQUENCE]);
+                error(message[ERROR_ILLEGAL_ESCAPESEQUENCE],0);
                 return;
             }
             emit_8bit(escaped_char);
@@ -272,7 +272,7 @@ void emit_quotedstring(char *str) {
         str++;
     }
     // we missed an end-quote to this string, we shouldn't reach this
-    error(message[ERROR_STRING_NOTTERMINATED]);
+    error(message[ERROR_STRING_NOTTERMINATED],0);
 }
 
 // Emit a 16 or 24 bit immediate number, according to

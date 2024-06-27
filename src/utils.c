@@ -10,12 +10,13 @@
 #include "instruction.h"
 #include "io.h"
 #include "assemble.h"
+#include <stdarg.h>
 
 // memory allocate size bytes, raise error if not available
 void *allocateMemory(size_t size) {
     void *ptr = malloc(size);
     if(ptr == NULL) {
-        error(message[ERROR_MEMORY]);
+        error(message[ERROR_MEMORY],0);
     }
     return ptr;
 }
@@ -52,22 +53,8 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
     }
 }
 
-void error_level(char* msg, uint8_t level) {
+void displayerror(const char *msg, const char *context, uint8_t level) {
     struct contentitem *ci = currentContent();
-
-    switch(level) {
-        case(LEVEL_ERROR):
-            vdp_set_text_colour(DARK_RED);
-            global_errors++;
-            errorreportlevel = currentStackLevel();
-            break;
-        case(LEVEL_WARNING):
-            vdp_set_text_colour(DARK_YELLOW);
-            issue_warning = true;
-            break;
-        default:
-            break;
-    }
 
     if((global_errors == 1) || (level == LEVEL_WARNING)) {
         if(ci) {
@@ -78,17 +65,49 @@ void error_level(char* msg, uint8_t level) {
                 printf("File \"%s\" line %d - ", ci->name, ci->currentlinenumber);
             }
         }
-        printf("%s\r\n", msg);
+        printf("%s", msg);
+        if(strlen(context)) {
+            vdp_set_text_colour(DARK_YELLOW);
+            printf(" \'%s\'", context);
+        }
+        printf("\r\n");
     }
     vdp_set_text_colour(BRIGHT_WHITE);
 }
 
-void error(char *msg) {
-    error_level(msg, LEVEL_ERROR);
+void error(const char *msg, const char *contextformat, ...) {
+    char context[256];
+
+    if(contextformat) {
+        va_list args;
+        va_start(args, contextformat);
+        vsprintf(context, contextformat, args);
+        va_end(args);
+    }
+    else context[0] = 0;
+
+    vdp_set_text_colour(DARK_RED);
+    global_errors++;
+    errorreportlevel = currentStackLevel();
+
+    displayerror(msg, context, LEVEL_ERROR);
 }
 
-void warning(char *msg) {
-    error_level(msg, LEVEL_WARNING);
+void warning(const char *msg, const char *contextformat, ...) {
+    char context[256];
+
+    if(contextformat) {
+        va_list args;
+        va_start(args, contextformat);
+        vsprintf(context, contextformat, args);
+        va_end(args);
+    }
+    else context[0] = 0;
+
+    vdp_set_text_colour(DARK_YELLOW);
+    issue_warning = true;
+
+    displayerror(msg, context, LEVEL_WARNING);
 }
 
 void trimRight(char *str) {
@@ -293,7 +312,7 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
             if(length-- == 0) break;
         }
     }
-    if(state == TOKEN_STRING) error(message[ERROR_STRING_NOTTERMINATED]);
+    if(state == TOKEN_STRING) error(message[ERROR_STRING_NOTTERMINATED],0);
     return length;
 }
 
@@ -358,7 +377,7 @@ uint8_t getOperatorToken(streamtoken_t *token, char *src) {
 void validateRange8bit(int32_t value) {
     if(!(ignore_truncation_warnings)) {
         if((value > 0xff) || (value < -128)) {
-            warning(message[WARNING_TRUNCATED_8BIT]);
+            warning(message[WARNING_TRUNCATED_8BIT],0);
         }
     }
 }
@@ -366,7 +385,7 @@ void validateRange8bit(int32_t value) {
 void validateRange16bit(int32_t value) {
     if(!(ignore_truncation_warnings)) {
         if((value > 0xffff) || (value < -32768)) {
-            warning(message[WARNING_TRUNCATED_16BIT]);
+            warning(message[WARNING_TRUNCATED_16BIT],0);
         }
     }
 }
@@ -374,7 +393,7 @@ void validateRange16bit(int32_t value) {
 void validateRange24bit(int32_t value) {
     if(!(ignore_truncation_warnings)) {
         if((value > 0xffffff) || (value < -8388608)) {
-            warning(message[WARNING_TRUNCATED_24BIT]);
+            warning(message[WARNING_TRUNCATED_24BIT],0);
         }
     }
 }
@@ -422,13 +441,13 @@ uint8_t getLiteralValue(char *string) {
     if((len == 4) && (string[3] == '\'')) {
         uint8_t c = getEscapedChar(string[2]);
         if(c == 0xff) {
-            error(message[ERROR_ILLEGAL_ESCAPELITERAL]);
+            error(message[ERROR_ILLEGAL_ESCAPELITERAL],0);
             return 0;
         }
         return c;
     }
 
-    error(message[ERROR_ASCIIFORMAT]);
+    error(message[ERROR_ASCIIFORMAT],0);
     return 0;
 }
 
@@ -468,12 +487,12 @@ int32_t getValue(char *str, bool req_firstpass) {
                         if(pass == 1) {
                             // Yet unknown label, number incorrect
                             // We only get here if req_firstpass is true, so error
-                            error(message[ERROR_INVALIDNUMBER]);
+                            error(message[ERROR_INVALIDNUMBER],"%s",token.start);
                             return 0;
                         }
                         else {
                             // Unknown label and number incorrect
-                            error(message[ERROR_INVALIDLABELORNUMBER]);
+                            error(message[ERROR_INVALIDLABELORNUMBER], "%s", token.start);                            
                             return 0;
                         }
                     }
@@ -485,7 +504,7 @@ int32_t getValue(char *str, bool req_firstpass) {
                     case '~': tmp = ~tmp; break;
                     case '+': break;
                     default:
-                        error(message[ERROR_UNARYOPERATOR]);
+                        error(message[ERROR_UNARYOPERATOR],"%c",unary);
                         return 0;
                 }
                 unary = 0; // reset
@@ -504,7 +523,7 @@ int32_t getValue(char *str, bool req_firstpass) {
                 case '/': total = total / tmp;  break;
                 case '!':
                 default:
-                    error(message[ERROR_OPERATOR]);
+                    error(message[ERROR_OPERATOR],"%c",prev_op);
                     return total;
             }
             prev_op = token.terminator;
@@ -513,7 +532,7 @@ int32_t getValue(char *str, bool req_firstpass) {
         str = token.next;
     }
     if(expect) {
-        error(message[ERROR_MISSINGOPERAND]);
+        error(message[ERROR_MISSINGOPERAND],0);
         return 0;
     }
     return total;

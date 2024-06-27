@@ -17,7 +17,7 @@ void initMacros(void) {
 void setMacroBody(macro_t *macro, const char *body) {
     macro->body = (char*)malloc(strlen(body)+1);
     if(macro->body == NULL) {
-        error(message[ERROR_MACROMEMORYALLOCATION]);
+        error(message[ERROR_MACROMEMORYALLOCATION],0);
         return;
     }
     strcpy(macro->body, body);
@@ -65,7 +65,7 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
         for(i = 0; i < argcount; i++) {
             len = (unsigned int)strlen(arguments + i*(MACROARGLENGTH+1));
             if(len > MACROARGLENGTH) {
-                error(message[ERROR_MACROARGLENGTH]);
+                error(message[ERROR_MACROARGLENGTH],0);
                 return NULL;
             }
             ptr = (char*)malloc(len+1);
@@ -94,7 +94,7 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
     // Collision on index, place at end of linked list if unique
     while(true) {
         if(fast_strcasecmp(try->name, name) == 0) {
-            error(message[ERROR_MACRODEFINED]);
+            error(message[ERROR_MACRODEFINED],"%s",name);
             return NULL;
         }
         if(try->next) {
