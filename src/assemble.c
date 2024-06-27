@@ -597,8 +597,6 @@ void handle_asm_data(uint8_t wordtype) {
                     }
                     break;
                 case ASM_DW:
-                    //printf("DEBUG: pass <%d>\n", pass);
-                    //printf("DEBUG: token <%s>\n", token.start);
                     value = getValue(token.start, false);
                     if(pass == 2) validateRange16bit(value);
                     emit_16bit(value);
@@ -1175,7 +1173,6 @@ void processMacro(void) {
         if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine();
         macrolinenumber++;
         if(global_errors) {
-            errorreportlevel++; // only show macro error
             vdp_set_text_colour(DARK_YELLOW);
             trimRight(errorline);
             printf("%s\r\n",errorline);
@@ -1189,7 +1186,6 @@ void processMacro(void) {
             issue_warning = false;
         }
     }
-
     // end processing
     currentExpandedMacro = NULL;
 }
@@ -1388,6 +1384,11 @@ bool processContent(char *filename) {
             processMacro();
         }
         if(global_errors) {
+            if(currentExpandedMacro) {
+                vdp_set_text_colour(DARK_RED);
+                printf("Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
+                currentExpandedMacro = NULL;
+            }
             if(currentStackLevel() == errorreportlevel) {
                 vdp_set_text_colour(DARK_YELLOW);
                 printf("%s\r\n",errorline);
@@ -1410,6 +1411,7 @@ bool processContent(char *filename) {
     }
     contentPop();
     strcpy(ci->labelscope, ""); // empty scope for next pass
+
     return true;
 }
 
