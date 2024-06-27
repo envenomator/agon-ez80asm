@@ -33,7 +33,7 @@ all: linux agon windows
 linux: $(BINDIR) $(OBJDIR) $(BIN)
 
 windows:
-ifeq ($(WINDOWS_BUILD), true)
+ifeq ($(BUILD_WINDOWS), true)
 	@$(MSBUILD) $(VSPROJECTDIR)/$(PROJECTNAME).sln $(MSBUILDFLAGS)
 else
 	@echo Windows build disabled in makefile
