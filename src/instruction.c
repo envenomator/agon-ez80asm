@@ -183,17 +183,17 @@ void emit_instruction(operandlist_t *list) {
     // issue any warnings here
     if((list->transformA != TRANSFORM_REL) && (list->transformB != TRANSFORM_REL)) { // TRANSFORM_REL will mask to 0xFF
         if(!ignore_truncation_warnings) {
-            if((list->conditionsA & IMM_N) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) warning(message[WARNING_TRUNCATED_8BIT],0);
-            if((list->conditionsB & IMM_N) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) warning(message[WARNING_TRUNCATED_8BIT],0);
+            if((list->conditionsA & IMM_N) && ((operand1.immediate > 0xFF) || (operand1.immediate < -128))) warning(message[WARNING_TRUNCATED_8BIT],"%s",operand1.immediate_name);
+            if((list->conditionsB & IMM_N) && ((operand2.immediate > 0xFF) || (operand2.immediate < -128))) warning(message[WARNING_TRUNCATED_8BIT],"%s",operand2.immediate_name);
         }
     }
     if((output.suffix) && ((list->flags & output.suffix) == 0)) error(message[ERROR_ILLEGAL_SUFFIXMODE],"%s",currentline.suffix);
     if((list->flags & F_DISPB) && ((operand2.displacement < -128) || (operand2.displacement > 127))) error(message[ERROR_DISPLACEMENT_RANGE],"%d",operand2.displacement);
 
     // Specific checks
-    if((list->conditionsA & IMM_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER],"%d",operand1.immediate);
-    if((list->conditionsA & IMM_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE],"%d",operand1.immediate);
-    if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0x47)) error(message[ERROR_ILLEGALRESTARTADDRESS],"%d / 0x%02x",operand1.immediate, operand1.immediate);
+    if((list->conditionsA & IMM_BIT) && (operand1.immediate > 7)) error(message[ERROR_INVALIDBITNUMBER],"%s",operand1.immediate_name);
+    if((list->conditionsA & IMM_NSELECT) && (operand1.immediate > 2)) error(message[ERROR_ILLEGALINTERRUPTMODE],"%s",operand1.immediate_name);
+    if((list->transformA == TRANSFORM_N) && (operand1.immediate & 0x47)) error(message[ERROR_ILLEGALRESTARTADDRESS],"%s",operand1.immediate_name);
 
     // prepare extra DD/FD suffix if needed
     prefix_ddfd_suffix(list);

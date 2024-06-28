@@ -55,8 +55,8 @@ char *  allocateString(char *name);
 void *  allocateMemory(size_t size);
 
 uint8_t strcompound(char *dest, const char *src1, const char *src2);
-void validateRange8bit(int32_t value);
-void validateRange16bit(int32_t value);
-void validateRange24bit(int32_t value);
+void validateRange8bit(int32_t value, const char *name);
+void validateRange16bit(int32_t value, const char *name);
+void validateRange24bit(int32_t value, const char *name);
 #endif // UTILS_H
 

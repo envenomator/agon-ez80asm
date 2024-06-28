@@ -374,26 +374,26 @@ uint8_t getOperatorToken(streamtoken_t *token, char *src) {
     return length;
 }
 
-void validateRange8bit(int32_t value) {
+void validateRange8bit(int32_t value, const char *name) {
     if(!(ignore_truncation_warnings)) {
         if((value > 0xff) || (value < -128)) {
-            warning(message[WARNING_TRUNCATED_8BIT],0);
+            warning(message[WARNING_TRUNCATED_8BIT],"%s",name);
         }
     }
 }
 
-void validateRange16bit(int32_t value) {
+void validateRange16bit(int32_t value, const char *name) {
     if(!(ignore_truncation_warnings)) {
         if((value > 0xffff) || (value < -32768)) {
-            warning(message[WARNING_TRUNCATED_16BIT],0);
+            warning(message[WARNING_TRUNCATED_16BIT],"%s",name);
         }
     }
 }
 
-void validateRange24bit(int32_t value) {
+void validateRange24bit(int32_t value, const char *name) {
     if(!(ignore_truncation_warnings)) {
         if((value > 0xffffff) || (value < -8388608)) {
-            warning(message[WARNING_TRUNCATED_24BIT],0);
+            warning(message[WARNING_TRUNCATED_24BIT],"%s",name);
         }
     }
 }

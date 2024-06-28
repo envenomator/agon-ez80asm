@@ -354,6 +354,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
         if(operand->indirect) string++;
         operand->immediate = getValue(string, false);
         operand->immediate_provided = true;
+        strcpy(operand->immediate_name, string);
         operand->addressmode |= IMM;
     }
 }
@@ -555,6 +556,7 @@ void parse_asm_single_immediate(void) {
         if(getOperandToken(&token, currentline.next)) {
             operand1.immediate = getValue(token.start, true);
             operand1.immediate_provided = true;
+            strcpy(operand1.immediate_name, token.start);
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
         }
         else error(message[ERROR_MISSINGOPERAND],0);
@@ -591,19 +593,19 @@ void handle_asm_data(uint8_t wordtype) {
                             break;
                         default:
                             value = getValue(token.start, false); // not needed in pass 1
-                            if(pass == 2) validateRange8bit(value);
+                            if(pass == 2) validateRange8bit(value, token.start);
                             emit_8bit(value);
                             break;
                     }
                     break;
                 case ASM_DW:
                     value = getValue(token.start, false);
-                    if(pass == 2) validateRange16bit(value);
+                    if(pass == 2) validateRange16bit(value, token.start);
                     emit_16bit(value);
                     break;
                 case ASM_DW24:
                     value = getValue(token.start, false);
-                    if(pass == 2) validateRange24bit(value);
+                    if(pass == 2) validateRange24bit(value, token.start);
                     emit_24bit(value);
                     break;
                 case ASM_DW32:
@@ -664,6 +666,7 @@ void handle_asm_adl(void) {
             if(getDefineValueToken(&token, token.next)) {
                 operand2.immediate = getValue(token.start, true); // needs to be defined in pass 1
                 operand2.immediate_provided = true;
+                strcpy(operand2.immediate_name, token.start);
             }
             else error(message[ERROR_MISSINGOPERAND],0);
         }        
@@ -673,7 +676,7 @@ void handle_asm_adl(void) {
 
 
     if((operand2.immediate != 0) && (operand2.immediate != 1)) {
-        error(message[ERROR_INVALID_ADLMODE],"%d", operand2.immediate);
+        error(message[ERROR_INVALID_ADLMODE],"%s", operand2.immediate_name);
     }
 
     adlmode = operand2.immediate;
@@ -685,7 +688,7 @@ void handle_asm_org(void) {
     parse_asm_single_immediate(); // get address from next token
     // address needs to be given in pass 1
     newaddress = operand1.immediate;
-    if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE],0); 
+    if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE],"%s", operand1.immediate_name); 
     definelabel(address);
 
     address = newaddress;
@@ -814,20 +817,20 @@ void handle_asm_blk(uint8_t width) {
                 address += num;
                 remaining_dsspaces += num;
                 num = 0;
-                if(val != fillbyte) warning(message[WARNING_UNSUPPORTED_INITIALIZER],0);
+                if(val != fillbyte) warning(message[WARNING_UNSUPPORTED_INITIALIZER],"%s",token.start);
                 break;
             case 1:
-                if(pass == 2) validateRange8bit(val);
+                if(pass == 2) validateRange8bit(val, token.start);
                 emit_8bit(val);
                 num -= 1;
                 break;
             case 2:
-                if(pass == 2) validateRange16bit(val);
+                if(pass == 2) validateRange16bit(val, token.start);
                 emit_16bit(val);
                 num -= 1;
                 break;
             case 3:
-                if(pass == 2) validateRange24bit(val);
+                if(pass == 2) validateRange24bit(val, token.start);
                 emit_24bit(val);
                 num -= 1;
                 break;
@@ -846,12 +849,12 @@ uint24_t delta;
 
     parse_asm_single_immediate();
     if(operand1.immediate <= 0) {
-        error(message[ERROR_INVALIDNUMBER],0);
+        error(message[ERROR_ZEROORNEGATIVE],"%s",operand1.immediate_name);
         return;
     }
 
     if((operand1.immediate & (operand1.immediate - 1)) != 0) {
-        error(message[ERROR_POWER2],0); 
+        error(message[ERROR_POWER2],"%s",operand1.immediate_name); 
         return;
     }
     
@@ -947,7 +950,7 @@ void handle_asm_definemacro(void) {
         currentline.next = token.next;
         if((token.terminator == ' ') || (token.terminator == '\t')) {
             while(currentline.next) {
-                if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT],0);
+                if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT],"%s", token.start);
                 if(getDefineValueToken(&token, currentline.next)) {
                     strcpy(arglist[argcount], token.start);
                     argcount++;
@@ -1011,7 +1014,7 @@ void handle_asm_endif(void) {
 void handle_asm_fillbyte(void) {
     parse_asm_single_immediate(); // get fillbyte from next token
     if((!ignore_truncation_warnings) && ((operand1.immediate < -128) || (operand1.immediate > 255))) {
-        warning(message[WARNING_TRUNCATED_8BIT],0);
+        warning(message[WARNING_TRUNCATED_8BIT],"%s",operand1.immediate_name);
     }
     fillbyte = operand1.immediate;
 }
@@ -1146,7 +1149,7 @@ void processMacro(void) {
         if(getDefineValueToken(&token, currentline.next)) {
             argcount++;
             if(argcount > exp->argcount) {
-                error(message[ERROR_MACROARGCOUNT],0);
+                error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, exp->argcount);
                 return;
             }
             strcpy(exp->substitutions[argcount-1], token.start);
@@ -1158,7 +1161,7 @@ void processMacro(void) {
         }
     }
     if(argcount != exp->argcount) {
-        error(message[ERROR_MACROINCORRECTARG],0);
+        error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, exp->argcount);
         return;
     }
     // open macro storage

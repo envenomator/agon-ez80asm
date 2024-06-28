@@ -120,6 +120,7 @@ typedef struct {
     bool                displacement_provided;
     bool                immediate_provided;
     int32_t             immediate;
+    char                immediate_name[MAXNAMELENGTH+1];    
     uint8_t             addressmode;
 } operand_t;
 
