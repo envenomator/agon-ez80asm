@@ -1136,6 +1136,7 @@ void processMacro(void) {
     macro_t *exp = currentline.current_macro;
     char macroline[LINEMAX];
     char errorline[LINEMAX];
+    bool macro_invocation_warning = false;
 
     // set for additional line-based parsing/processing of the macro
     currentExpandedMacro = currentline.current_macro;
@@ -1180,14 +1181,16 @@ void processMacro(void) {
             return;
         }
         if(issue_warning) {
+            macro_invocation_warning = true;
             vdp_set_text_colour(DARK_YELLOW);
             printf("%s\r\n",errorline);
-            vdp_set_text_colour(BRIGHT_WHITE);
+            vdp_set_text_colour(BRIGHT_WHITE);        
             issue_warning = false;
         }
     }
     // end processing
     currentExpandedMacro = NULL;
+    if(macro_invocation_warning) issue_warning = true; // display invocation warning at upstream caller
 }
 
 // Initialize pass 1 / pass2 states for the assembler
@@ -1382,6 +1385,13 @@ bool processContent(char *filename) {
         else {
             if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
             processMacro();
+            if(issue_warning) { // warnings from the expanded macro
+                vdp_set_text_colour(DARK_YELLOW);
+                printf("Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
+                printf("%s\r\n",errorline);
+                vdp_set_text_colour(BRIGHT_WHITE);
+                issue_warning = false;
+            }
         }
         if(global_errors) {
             if(currentExpandedMacro) {
@@ -1397,7 +1407,7 @@ bool processContent(char *filename) {
             contentPop();
             return false;
         }
-        if(issue_warning) {
+        if(issue_warning) { // local-level warnings
             vdp_set_text_colour(DARK_YELLOW);
             printf("%s\r\n",errorline);
             vdp_set_text_colour(BRIGHT_WHITE);
