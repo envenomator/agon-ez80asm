@@ -79,13 +79,13 @@ package:
 	@echo === Packaging binaries
 	@tar -zcvf $(RELEASEDIR)/$(PROJECTNAME)_$(ARCHITECTURE).gz $(BINDIR)/$(PROJECTNAME)
 	@cp $(BINDIR)/$(PROJECTNAME).bin $(RELEASEDIR)/$(PROJECTNAME).bin
-ifeq ($(WINDOWS_BUILD), true)
+ifeq ($(BUILD_WINDOWS), true)
 	@cp $(VSPROJECTBINDIR)/$(PROJECTNAME).exe $(RELEASEDIR)/	
 endif
 clean:
 	@echo Cleaning directories
 	@find tests -name "*.output" -type f -delete
-ifeq ($(WINDOWS_BUILD), true)
+ifeq ($(BUILD_WINDOWS), true)
 	@$(MSBUILD) $(VSPROJECTDIR)/$(PROJECTNAME).sln $(MSBUILDFLAGS) -t:Clean >/dev/null
 endif
 ifdef OS
