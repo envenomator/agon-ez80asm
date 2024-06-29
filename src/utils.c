@@ -67,7 +67,10 @@ void displayerror(const char *msg, const char *context, uint8_t level) {
         }
         printf("%s", msg);
         if(strlen(context)) {
-            vdp_set_text_colour(DARK_YELLOW);
+            if(level == LEVEL_WARNING)
+                vdp_set_text_colour(BRIGHT_WHITE);
+            else
+                vdp_set_text_colour(DARK_YELLOW);
             printf(" \'%s\'", context);
         }
         printf("\r\n");
