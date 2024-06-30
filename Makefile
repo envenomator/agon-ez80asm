@@ -8,7 +8,7 @@ CC=gcc
 LFLAGS=-g -Wall -DUNIX
 CFLAGS=$(LFLAGS) -c
 OUTFLAG=-o 
-RELEASE_LFLAGS=-s -static -Wall -O2 -DNDEBUG -DUNIX -Wno-unused-result
+RELEASE_LFLAGS=-s -static -Wall -DNDEBUG -DUNIX -Wno-unused-result
 RELEASE_CFLAGS=$(RELEASE_LFLAGS) -c
 .DEFAULT_GOAL := linux
 
