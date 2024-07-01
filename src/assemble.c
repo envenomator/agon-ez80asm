@@ -351,10 +351,20 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
     }
     
     if(*string) {
-        if(operand->indirect) string++;
+        if(operand->indirect) {
+            len--;
+            string++;
+        }
+        if(len < MAXNAMELENGTH) {
+            // Store immediate_name, to provide context in case of warnings/errors
+            strcpy(operand->immediate_name, string);
+        }
+        else {
+            // immediate_name will not fit, ommit context to not sacrifice speed
+            strcpy(operand->immediate_name, "");
+        }
         operand->immediate = getValue(string, false);
         operand->immediate_provided = true;
-        strcpy(operand->immediate_name, string);
         operand->addressmode |= IMM;
     }
 }
@@ -1141,6 +1151,9 @@ void processMacro(void) {
     char errorline[LINEMAX];
     bool macro_invocation_warning = false;
 
+    // Check for defined label
+    if(currentline.label) definelabel(address);
+
     // set for additional line-based parsing/processing of the macro
     currentExpandedMacro = currentline.current_macro;
 
@@ -1309,7 +1322,11 @@ uint16_t getnextContentLine(struct contentitem *ci) {
     while(*ptr) {
         *dst1++ = *ptr;
         *dst2++ = *ptr;
-        len++;
+        if(++len == LINEMAX) {
+            error(message[ERROR_LINETOOLONG],0);
+            return 0;
+        }
+        //len++;
         if(*ptr++ == '\n') {
             break;
         }
@@ -1381,6 +1398,7 @@ bool processContent(char *filename) {
         if((pass == 2) && (consolelist_enabled || list_enabled)) listStartLine(line, ci->currentlinenumber);
 
         parseLine(line);
+
         if(!currentline.current_macro) {
             processInstructions();
             if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
