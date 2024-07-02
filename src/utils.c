@@ -79,7 +79,7 @@ void displayerror(const char *msg, const char *context, uint8_t level) {
 }
 
 void error(const char *msg, const char *contextformat, ...) {
-    char context[256];
+    char context[LINEMAX+1];
 
     if(contextformat) {
         va_list args;
@@ -97,7 +97,7 @@ void error(const char *msg, const char *contextformat, ...) {
 }
 
 void warning(const char *msg, const char *contextformat, ...) {
-    char context[256];
+    char context[LINEMAX+1];
 
     if(contextformat) {
         va_list args;
