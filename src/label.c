@@ -18,7 +18,7 @@ void saveGlobalLabelTable(void) {
     char *ptr;
     label_t *lbl;
     FILE *fh;
-    char buffer[LINEMAX];
+    char buffer[LINEMAX+1];
     char filename[FILENAMEMAXLENGTH + 1];
 
     strcpy(filename, filebasename);

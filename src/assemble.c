@@ -355,14 +355,15 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
             len--;
             string++;
         }
-        if(len < MAXNAMELENGTH) {
-            // Store immediate_name, to provide context in case of warnings/errors
-            strcpy(operand->immediate_name, string);
-        }
-        else {
-            // immediate_name will not fit, ommit context to not sacrifice speed
-            strcpy(operand->immediate_name, "");
-        }
+        //if(len < MAXNAMELENGTH) {
+        //    // Store immediate_name, to provide context in case of warnings/errors
+        //    strcpy(operand->immediate_name, string);
+        //}
+        //else {
+        //    // immediate_name will not fit, ommit context to not sacrifice speed
+        //    strcpy(operand->immediate_name, "");
+        //}
+        strcpy(operand->immediate_name, string);
         operand->immediate = getValue(string, false);
         operand->immediate_provided = true;
         operand->addressmode |= IMM;
@@ -381,8 +382,8 @@ void parseLine(char *src) {
 
     // default current line items
     memset(&currentline, 0, sizeof(currentline));
-    memset(&operand1, 0, sizeof(operand_t));
-    memset(&operand2, 0, sizeof(operand_t));
+    memset(&operand1, 0, (sizeof(operand_t) - sizeof(operand1.immediate_name) + 1));
+    memset(&operand2, 0, (sizeof(operand_t) - sizeof(operand2.immediate_name) + 1));
 
     state = PS_START;
     done = false;
@@ -884,7 +885,7 @@ void handle_asm_definemacro(void) {
     struct contentitem *ci;
     uint8_t argcount = 0;
     char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
-    char macroline[LINEMAX];
+    char macroline[LINEMAX+1];
     char *strend;
     definelabel(address);
     bool foundend = false;
@@ -1147,8 +1148,8 @@ void processMacro(void) {
     streamtoken_t token;
     uint8_t argcount = 0;
     macro_t *exp = currentline.current_macro;
-    char macroline[LINEMAX];
-    char errorline[LINEMAX];
+    char macroline[LINEMAX+1];
+    char errorline[LINEMAX+1];
     bool macro_invocation_warning = false;
 
     // Check for defined label
@@ -1320,13 +1321,12 @@ uint16_t getnextContentLine(struct contentitem *ci) {
     char *ptr = ci->readptr;
 
     while(*ptr) {
-        *dst1++ = *ptr;
-        *dst2++ = *ptr;
-        if(++len == LINEMAX) {
+        if((len++ == LINEMAX) && (*ptr != '\n')) {
             error(message[ERROR_LINETOOLONG],0);
             return 0;
         }
-        //len++;
+        *dst1++ = *ptr;
+        *dst2++ = *ptr;
         if(*ptr++ == '\n') {
             break;
         }
@@ -1371,8 +1371,8 @@ struct contentitem *currentContent(void) {
 }
 
 bool processContent(char *filename) {
-    char line[LINEMAX];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
-    char errorline[LINEMAX]; // Full integrity copy of each line
+    char line[LINEMAX+1];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
+    char errorline[LINEMAX+1]; // Full integrity copy of each line
     struct contentitem *ci;
 
     // Prepare content

@@ -120,8 +120,9 @@ typedef struct {
     bool                displacement_provided;
     bool                immediate_provided;
     int32_t             immediate;
-    char                immediate_name[MAXNAMELENGTH+1];    
     uint8_t             addressmode;
+    char                immediate_name[LINEMAX+1];
+    // No new members after previous array: the array isn't FULLY cleared every init of operand_t, only the first byte is set to 0
 } operand_t;
 
 typedef struct {

@@ -2,7 +2,7 @@
 #include "assemble.h"
 
 // Local variables
-char     _listLine[LINEMAX];
+char     _listLine[LINEMAX+1];
 uint24_t _listAddress;
 uint8_t  _listObjects[LISTING_OBJECTS_PER_LINE];
 uint8_t  _listLineObjectCount;
@@ -11,7 +11,7 @@ uint24_t _listSourceLineNumber;
 
 char _listHeader[] = "PC     Output      Line\n\r";
 
-char buffer[LINEMAX * 2];
+char buffer[(LINEMAX * 2) + 1];
 
 void listInit(void) {
     sprintf(buffer, "%s", _listHeader);

@@ -23,7 +23,7 @@ typedef uint32_t uint24_t;
 #define INSTRUCTION_HASHTABLESIZE   256 // Number of entries in the hashtable
 #define GLOBAL_LABEL_TABLE_SIZE     256
 #define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'
-#define LINEMAX                     256 // Input line length maximum uint8_t
+#define LINEMAX                     256
 #define FILENAMEMAXLENGTH            64
 #define FILES                         3 // Output files (binary / listing / anonymous labels)
 #define FILE_BUFFERSIZE           32768 // For each specified output file (io.c)
