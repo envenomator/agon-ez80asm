@@ -355,14 +355,6 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
             len--;
             string++;
         }
-        //if(len < MAXNAMELENGTH) {
-        //    // Store immediate_name, to provide context in case of warnings/errors
-        //    strcpy(operand->immediate_name, string);
-        //}
-        //else {
-        //    // immediate_name will not fit, ommit context to not sacrifice speed
-        //    strcpy(operand->immediate_name, "");
-        //}
         strcpy(operand->immediate_name, string);
         operand->immediate = getValue(string, false);
         operand->immediate_provided = true;
