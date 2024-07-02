@@ -152,9 +152,11 @@ int main(int argc, char *argv[]) {
                 switch(filenamecount) {
                     case 1:
                         strncpy(inputfilename, optarg, FILENAMEMAXLENGTH);
+                        inputfilename[FILENAMEMAXLENGTH] = 0;
                         break;
                     case 2:
                         strncpy(outputfilename, optarg, FILENAMEMAXLENGTH);
+                        outputfilename[FILENAMEMAXLENGTH] = 0;
                         break;
                     default:
                         error("Too many filenames provided",0);
