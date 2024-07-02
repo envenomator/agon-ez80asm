@@ -61,7 +61,7 @@ int32_t str2dec(char *string) {
 // DECIMAL ...
 // Returns current program counter with just '$'
 int32_t str2num(char *string, uint8_t length) {
-    char buffer[TOKEN_MAX];
+    char buffer[TOKEN_MAX+1];
     char lastchar;
     int32_t result = 0;
     err_str2num = false;
