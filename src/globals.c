@@ -56,7 +56,7 @@ char *message[] = {
     "String not terminated",
     "Invalid ADL mode",
     "Invalid assembler command",
-    "New address lower than PC",
+    "New address lower than current PC address",
     "Address outside 16-bit range",
     "String format error",
     "Relative jump too large",

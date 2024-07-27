@@ -691,10 +691,23 @@ void handle_asm_org(void) {
     parse_asm_single_immediate(); // get address from next token
     // address needs to be given in pass 1
     newaddress = operand1.immediate;
-    if((adlmode == 0) && (newaddress > 0xffff)) error(message[ERROR_ADDRESSRANGE],"%s", operand1.immediate_name); 
+    if((adlmode == 0) && (newaddress > 0xffff)) {
+        error(message[ERROR_ADDRESSRANGE],"%s", operand1.immediate_name); 
+        return;
+    }
+    if((newaddress < address) && (address != start_address)) {
+        error(message[ERROR_ADDRESSLOWER], 0);
+        return;
+    }
     definelabel(address);
 
-    address = newaddress;
+    // Skip filling if this is the first .org statement
+    if(address == start_address) {
+        address = newaddress;
+        return;
+    }
+    // Fill bytes on any subsequent .org statement
+    while(address != newaddress) emit_8bit(fillbyte);
 }
 
 void handle_asm_include(void) {
