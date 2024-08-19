@@ -36,11 +36,11 @@ windows:
 ifeq ($(BUILD_WINDOWS), true)
 	@$(MSBUILD) $(VSPROJECTDIR)/$(PROJECTNAME).sln $(MSBUILDFLAGS)
 else
-	@echo Windows build disabled in makefile
+	@echo === Windows build disabled in makefile
 endif
 agon:
 	@echo === Compiling Agon target
-	@make --file=Makefile-agon
+	@make --file=Makefile-agon --no-print-directory
 
 # Release with optimal settings for release target
 release: CFLAGS=$(RELEASE_CFLAGS)
