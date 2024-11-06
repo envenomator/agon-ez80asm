@@ -108,44 +108,60 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
     }
 }
 
-void replaceSubstring(char *target, const char *needle, const char *replacement)
+// replace the 'argument' substring in a target string, with the 'substitution' substring
+// substitution will only happen on a full word match in the target string:
+// An argument 'word' is a concatenation of alphanumerical characters, ending in a non-alphanumerical character
+// Example arguments:
+// - word
+// - wOrD8
+// - arg1
+void replaceArgument(char *target, const char *argument, const char *substitution)
 {
     char buffer[MACROARGLENGTH + 1] = { 0 };
+    bool bufferdirty = false;
     char *insert_point = &buffer[0];
     const char *tmp = target;
-    size_t needle_len = strlen(needle);
-    size_t replacement_len = strlen(replacement);
+    size_t argument_len = strlen(argument);
+    size_t substitution_len = strlen(substitution);
 
     while (1) {
-        const char *p = strstr(tmp, needle);
+        const char *p = strstr(tmp, argument);
 
-        // walked past last occurrence of needle; copy remaining part
+        // walked past last occurrence of argument; copy remaining part
         if (p == NULL) {
             strcpy(insert_point, tmp);
             break;
         }
 
-        // copy part before needle
+        // copy part before potential argument
         memcpy(insert_point, tmp, p - tmp);
         insert_point += p - tmp;
 
-        // copy replacement string
-        memcpy(insert_point, replacement, replacement_len);
-        insert_point += replacement_len;
+        if(isalnum(*(p + argument_len)) == 0) {
+            // whole word argument match - copy substitution string
+            memcpy(insert_point, substitution, substitution_len);
+            insert_point += substitution_len;            
+            bufferdirty = true;
+        }
+        else {
+            // part match - copy original string
+            memcpy(insert_point, argument, argument_len);
+            insert_point += argument_len;
+        }
 
         // adjust pointers, move on
-        tmp = p + needle_len;
+        tmp = p + argument_len;
     }
 
     // write altered string back to target
-    strcpy(target, buffer);
+    if(bufferdirty) strcpy(target, buffer);
 }
 
 uint8_t macroExpandArg(char *dst, char *src, macro_t *m) {
 
     strcpy(dst, src);
     for(uint8_t i = 0; i < m->argcount; i++) {
-        replaceSubstring(dst, m->arguments[i], m->substitutions[i]);
+        replaceArgument(dst, m->arguments[i], m->substitutions[i]);
     }
     return strlen(dst);
 }
