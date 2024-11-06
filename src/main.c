@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
     clock_t begin, end;
 
     #ifdef UNIX
-    uint8_t errorexit = 2;
+    uint8_t errorexit = 1;
     #else
     uint8_t errorexit = 0;
     #endif

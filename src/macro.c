@@ -108,15 +108,44 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
     }
 }
 
-uint8_t macroExpandArg(char *dst, char *src, macro_t *m) {
-    uint8_t i;
+void replaceSubstring(char *target, const char *needle, const char *replacement)
+{
+    char buffer[MACROARGLENGTH + 1] = { 0 };
+    char *insert_point = &buffer[0];
+    const char *tmp = target;
+    size_t needle_len = strlen(needle);
+    size_t repl_len = strlen(replacement);
 
-    for(i = 0; i < m->argcount; i++) {
-        if(strcmp(src, m->arguments[i]) == 0) {
-            strcpy(dst, m->substitutions[i]);
-            return strlen(dst);
+    while (1) {
+        const char *p = strstr(tmp, needle);
+
+        // walked past last occurrence of needle; copy remaining part
+        if (p == NULL) {
+            strcpy(insert_point, tmp);
+            break;
         }
+
+        // copy part before needle
+        memcpy(insert_point, tmp, p - tmp);
+        insert_point += p - tmp;
+
+        // copy replacement string
+        memcpy(insert_point, replacement, repl_len);
+        insert_point += repl_len;
+
+        // adjust pointers, move on
+        tmp = p + needle_len;
     }
-    strcpy(dst, src); // no changes found, copy source
+
+    // write altered string back to target
+    strcpy(target, buffer);
+}
+
+uint8_t macroExpandArg(char *dst, char *src, macro_t *m) {
+
+    strcpy(dst, src);
+    for(uint8_t i = 0; i < m->argcount; i++) {
+        replaceSubstring(dst, m->arguments[i], m->substitutions[i]);
+    }
     return strlen(dst);
 }
