@@ -3,8 +3,8 @@
 
 // Temp macro buffers
 char _macrobuffer[MACRO_BUFFERSIZE];
-char _macro_OP_buffer[MACROARGLENGTH + 1]; // replacement buffer for operands during macro expansion
-char _macro_ASM_buffer[MACROARGLENGTH + 1];// replacement buffer for values during ASSEMBLER macro expansion
+char _macro_OP_buffer[LINEMAX]; // replacement buffer for operands during macro expansion
+char _macro_ASM_buffer[LINEMAX];// replacement buffer for values during ASSEMBLER macro expansion
 
 struct contentitem *filecontent[256]; // hash table with all file content items
 struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
