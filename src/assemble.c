@@ -573,6 +573,8 @@ void handle_asm_data(uint8_t wordtype) {
     streamtoken_t token;
     bool expectarg = true;
 
+    if(inConditionalSection == 1) return;
+
     definelabel(address);
 
     while(currentline.next) {
@@ -636,6 +638,8 @@ void handle_asm_data(uint8_t wordtype) {
 void handle_asm_equ(void) {
     streamtoken_t token;
 
+    if(inConditionalSection == 1) return;
+
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
@@ -649,6 +653,8 @@ void handle_asm_equ(void) {
 
 void handle_asm_adl(void) {
     streamtoken_t token;
+
+    if(inConditionalSection == 1) return;
 
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next) == 0) {
@@ -688,6 +694,8 @@ void handle_asm_adl(void) {
 void handle_asm_org(void) {
     uint24_t newaddress;
     
+    if(inConditionalSection == 1) return;
+
     parse_asm_single_immediate(); // get address from next token
     // address needs to be given in pass 1
     newaddress = operand1.immediate;
@@ -712,6 +720,8 @@ void handle_asm_org(void) {
 
 void handle_asm_include(void) {
     streamtoken_t token;
+
+    if(inConditionalSection == 1) return;
 
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND],0);
@@ -740,6 +750,8 @@ void handle_asm_incbin(void) {
     streamtoken_t token;
     struct contentitem *ci;
     uint24_t n;
+
+    if(inConditionalSection == 1) return;
 
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND],0);
@@ -788,6 +800,8 @@ void handle_asm_blk(uint8_t width) {
     uint24_t num;
     int32_t val = 0;
     streamtoken_t token;
+
+    if(inConditionalSection == 1) return;
 
     definelabel(address);
 
@@ -863,6 +877,8 @@ uint24_t alignment;
 uint24_t base;
 uint24_t delta;
 
+    if(inConditionalSection == 1) return;
+
     parse_asm_single_immediate();
     if(operand1.immediate <= 0) {
         error(message[ERROR_ZEROORNEGATIVE],"%s",operand1.immediate_name);
@@ -892,10 +908,11 @@ void handle_asm_definemacro(void) {
     char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
     char macroline[LINEMAX+1];
     char *strend;
-    definelabel(address);
     bool foundend = false;
     macro_t *macro;
     uint16_t startlinenumber,linelength,macrolength;
+
+    definelabel(address);
 
     _macrobuffer[0] = 0; // empty string
     strend = _macrobuffer;
@@ -1028,6 +1045,9 @@ void handle_asm_endif(void) {
 }
 
 void handle_asm_fillbyte(void) {
+
+    if(inConditionalSection == 1) return;
+
     parse_asm_single_immediate(); // get fillbyte from next token
     if((!ignore_truncation_warnings) && ((operand1.immediate < -128) || (operand1.immediate > 255))) {
         warning(message[WARNING_TRUNCATED_8BIT],"%s",operand1.immediate_name);
