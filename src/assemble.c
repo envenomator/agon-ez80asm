@@ -715,6 +715,8 @@ void handle_asm_org(void) {
 void handle_asm_include(void) {
     streamtoken_t token;
 
+    if(inConditionalSection == 1) return;
+    
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND],0);
         return;
@@ -742,6 +744,8 @@ void handle_asm_incbin(void) {
     streamtoken_t token;
     struct contentitem *ci;
     uint24_t n;
+
+    if(inConditionalSection == 1) return;
 
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND],0);
@@ -1358,6 +1362,7 @@ struct contentitem *contentPop(void) {
         ci = _contentstack[--_contentstacklevel];
         if(_contentstacklevel) currentcontentitem = _contentstack[_contentstacklevel - 1];
         else currentcontentitem = NULL;
+        inConditionalSection = ci->inConditionalSection;
         return ci;
     }
     else return NULL;
@@ -1401,8 +1406,10 @@ bool processContent(char *filename) {
     ci->currentlinenumber = 0;
     ci->currentline = line;
     ci->currenterrorline = errorline;
+    ci->inConditionalSection = inConditionalSection;
     if(!contentPush(ci)) return false;
 
+    inConditionalSection = 0;
     // Process
     while(getnextContentLine(ci)) {
         ci->currentlinenumber++;

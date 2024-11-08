@@ -62,6 +62,7 @@ struct contentitem {
     char         *currentline;
     char         *currenterrorline;
     char          labelscope[MAXNAMELENGTH+1];
+    uint8_t       inConditionalSection;
 };
 
 extern uint24_t passmatchcounter;
