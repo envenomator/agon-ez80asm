@@ -193,9 +193,12 @@ void io_close(void) {
 
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
-        while(remaining_dsspaces) {
-            io_outputc(fillbyte);
-            remaining_dsspaces--;
+        if(remaining_dsspaces) {
+            if(list_enabled || consolelist_enabled) listPrintDSLines(remaining_dsspaces, fillbyte);
+            while(remaining_dsspaces) {
+                io_outputc(fillbyte);
+                remaining_dsspaces--;
+            }
         }
         if(list_enabled || consolelist_enabled) listEmit8bit(value);
         io_outputc(value);

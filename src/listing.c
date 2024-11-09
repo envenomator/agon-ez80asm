@@ -9,7 +9,8 @@ uint8_t  _listLineObjectCount;
 uint16_t  _listLineNumber;
 uint24_t _listSourceLineNumber;
 
-char _listHeader[] = "PC     Output      Line\n\r";
+char _listHeader[]     = "PC     Output      Line\n\r";
+char _listDataHeader[] = "       ";
 
 char buffer[(LINEMAX * 2) + 1];
 
@@ -30,6 +31,26 @@ void listStartLine(char *line, unsigned int linenumber) {
     _listLineNumber = 0;
 }
 
+void listPrintDSLines(int number, int value) {
+    while(number) {
+        uint8_t i = 0;
+        if(list_enabled) io_puts(FILE_LISTING, _listDataHeader);
+        if(consolelist_enabled) printf("%s",_listDataHeader);
+
+        while(i < LISTING_OBJECTS_PER_LINE) {
+            if(number) {
+                sprintf(buffer, "%02X ",value);
+                if(list_enabled) io_puts(FILE_LISTING, buffer);
+                if(consolelist_enabled) printf("%s",buffer);
+                number--;
+            }
+            i++;
+        }
+        if(list_enabled) io_puts(FILE_LISTING, "\r\n");
+        if(consolelist_enabled) printf("\r\n");
+    }
+}
+
 void listPrintLine(void) {
     uint8_t i,spaces;
 
@@ -39,9 +60,8 @@ void listPrintLine(void) {
         if(consolelist_enabled) printf("%s",buffer);
     }
     else {
-        sprintf(buffer, "       ");
-        if(list_enabled) io_puts(FILE_LISTING, buffer);
-        if(consolelist_enabled) printf("%s",buffer);
+        if(list_enabled) io_puts(FILE_LISTING, _listDataHeader);
+        if(consolelist_enabled) printf("%s", _listDataHeader);
     }
     for(i = 0; i < _listLineObjectCount; i++) {
         sprintf(buffer, "%02X ",_listObjects[i]);
@@ -70,15 +90,14 @@ void listPrintLine(void) {
         }
         if(list_enabled) io_puts(FILE_LISTING, buffer);
         if(consolelist_enabled) printf("%s",buffer);
-        sprintf(buffer, "%s\r\n", _listLine);
+        sprintf(buffer, "%s", _listLine);
         if(list_enabled) io_puts(FILE_LISTING, buffer);
         if(consolelist_enabled) printf("%s",buffer);
     }
-    else {
-        sprintf(buffer, "\r\n");
-        if(list_enabled) io_puts(FILE_LISTING, buffer);
-        if(consolelist_enabled) printf("%s",buffer);
-    }
+
+    if(list_enabled) io_puts(FILE_LISTING, "\r\n");
+    if(consolelist_enabled) printf("\r\n");
+
     _listLineObjectCount = 0;
     _listLineNumber++;
 }
