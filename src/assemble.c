@@ -1082,7 +1082,7 @@ void handle_assembler_command(void) {
             break;
         case(ASM_ASCIZ):
             handle_asm_data(ASM_DB);
-            emit_8bit(0);
+            if((inConditionalSection == 0) || (inConditionalSection == 2)) emit_8bit(0);
             break;
         case(ASM_EQU):
             handle_asm_equ();
