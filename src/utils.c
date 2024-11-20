@@ -248,14 +248,17 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
         case '\"':
             state = TOKEN_STRING;
             src++;
+            length++;
             break;
         case '\'':
             state = TOKEN_LITERAL;
             src++;
+            length++;
             break;
         case '(':
             state = TOKEN_BRACKET;
             src++;
+            length++;
             break;
         default:
             state = TOKEN_REGULAR;

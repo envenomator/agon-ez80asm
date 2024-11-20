@@ -32,6 +32,6 @@ typedef uint32_t uint24_t;
 #define TOKEN_MAX               LINEMAX // Token maximum length
 #define MAXNAMELENGTH                32 // Maximum name length of labels
 #define MACROMAXARGS                  8 // Maximum arguments to a macro
-#define MACROARGLENGTH               32 // Maximum length of macro argument
+#define MACROARGLENGTH               FILENAMEMAXLENGTH+2 // Maximum length of macro argument, account for passing filenames with double quotes
 #define CLEANUPFILES               true
 #endif // CONFIG_H

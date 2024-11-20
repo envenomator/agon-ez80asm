@@ -987,6 +987,10 @@ void handle_asm_definemacro(void) {
             while(currentline.next) {
                 if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT],"%s", token.start);
                 if(getDefineValueToken(&token, currentline.next)) {
+                    if(strlen(token.start) > MACROARGLENGTH) {
+                        error(message[ERROR_MACROARGLENGTH], "%s", token.start);
+                        return;
+                    }
                     strcpy(arglist[argcount], token.start);
                     argcount++;
                 }
@@ -997,6 +1001,12 @@ void handle_asm_definemacro(void) {
                 }
             }
         }
+        // Parsing done, check isolated macro name length
+        if(strlen(currentline.mnemonic) > MAXNAMELENGTH) {
+            error(message[ERROR_MACRONAMELENGTH], "%s", currentline.mnemonic);
+            return;
+        }
+
         // record the macro to memory
         macro = defineMacro(currentline.mnemonic, argcount, (char *)arglist, startlinenumber);
         if(!macro) {
@@ -1175,7 +1185,7 @@ void processInstructions(void){
 
 void processMacro(void) {
     streamtoken_t token;
-    uint8_t argcount = 0;
+    uint8_t argcount = 0, tokenlength;
     macro_t *exp = currentline.current_macro;
     char macroline[LINEMAX+1];
     char errorline[LINEMAX+1];
@@ -1189,10 +1199,15 @@ void processMacro(void) {
 
     // get arguments
     while(currentline.next) {
-        if(getDefineValueToken(&token, currentline.next)) {
+        tokenlength = getDefineValueToken(&token, currentline.next);
+        if(tokenlength) {
             argcount++;
             if(argcount > exp->argcount) {
                 error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, exp->argcount);
+                return;
+            }
+            if(tokenlength > MACROARGLENGTH) {
+                error(message[ERROR_MACROARGSUBSTLENGTH],"%s",token.start);
                 return;
             }
             strcpy(exp->substitutions[argcount-1], token.start);
