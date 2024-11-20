@@ -1082,7 +1082,7 @@ void handle_assembler_command(void) {
             break;
         case(ASM_ASCIZ):
             handle_asm_data(ASM_DB);
-            if((inConditionalSection == 0) || (inConditionalSection == 2)) emit_8bit(0);
+            if(inConditionalSection != 1) emit_8bit(0);
             break;
         case(ASM_EQU):
             handle_asm_equ();
@@ -1140,8 +1140,8 @@ void processInstructions(void){
     bool condmatch;
     bool regamatch, regbmatch;
 
-    if(currentline.mnemonic == NULL) definelabel(address);
-    
+    if((currentline.mnemonic == NULL) && (inConditionalSection != 1)) definelabel(address);
+
     if(currentline.current_instruction) {
         if(currentline.current_instruction->type == EZ80) {
             if(inConditionalSection != 1) {
