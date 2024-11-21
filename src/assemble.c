@@ -3,8 +3,7 @@
 
 // Temp macro buffers
 char _macrobuffer[MACRO_BUFFERSIZE];
-char _macro_OP_buffer[MACROLINEMAX]; // replacement buffer for operands during macro expansion
-char _macro_ASM_buffer[MACROLINEMAX];// replacement buffer for values during ASSEMBLER macro expansion
+char _macro_expansion_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
 
 struct contentitem *filecontent[256]; // hash table with all file content items
 struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
@@ -500,9 +499,9 @@ void parseLine(char *src) {
             case PS_OP1:
                 argcount++;                
                 if(currentExpandedMacro) {
-                    oplength = macroExpandArg(_macro_OP_buffer, streamtoken.start, currentExpandedMacro);
+                    oplength = macroExpandArg(_macro_expansion_buffer, streamtoken.start, currentExpandedMacro);
                     if(oplength) {
-                        streamtoken.start = _macro_OP_buffer;
+                        streamtoken.start = _macro_expansion_buffer;
                     }
                 }
                 if(argcount == 1) {
@@ -580,8 +579,8 @@ void handle_asm_data(uint8_t wordtype) {
     while(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
             if(currentExpandedMacro) {
-                if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-                    token.start = _macro_ASM_buffer;
+                if(macroExpandArg(_macro_expansion_buffer, token.start, currentExpandedMacro)) {
+                    token.start = _macro_expansion_buffer;
                 }
             }
 
@@ -662,8 +661,8 @@ void handle_asm_adl(void) {
             return;
         }
         if(currentExpandedMacro) {
-            if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-                token.start = _macro_ASM_buffer;
+            if(macroExpandArg(_macro_expansion_buffer, token.start, currentExpandedMacro)) {
+                token.start = _macro_expansion_buffer;
             }
         }
 
@@ -760,8 +759,8 @@ void handle_asm_incbin(void) {
 
     getDefineValueToken(&token, currentline.next);
     if(currentExpandedMacro) {
-        if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-            token.start = _macro_ASM_buffer;
+        if(macroExpandArg(_macro_expansion_buffer, token.start, currentExpandedMacro)) {
+            token.start = _macro_expansion_buffer;
         }
     }
     if(token.start[0] != '\"') {
@@ -816,8 +815,8 @@ void handle_asm_blk(uint8_t width) {
     }
 
     if(currentExpandedMacro) {
-        if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-            token.start = _macro_ASM_buffer;
+        if(macroExpandArg(_macro_expansion_buffer, token.start, currentExpandedMacro)) {
+            token.start = _macro_expansion_buffer;
         }
     }
 
@@ -830,8 +829,8 @@ void handle_asm_blk(uint8_t width) {
         }
 
         if(currentExpandedMacro) {
-            if(macroExpandArg(_macro_ASM_buffer, token.start, currentExpandedMacro)) {
-                token.start = _macro_ASM_buffer;
+            if(macroExpandArg(_macro_expansion_buffer, token.start, currentExpandedMacro)) {
+                token.start = _macro_expansion_buffer;
             }
         }
         val = getValue(token.start, false); // value not required in pass 1
