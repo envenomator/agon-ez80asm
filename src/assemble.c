@@ -2,7 +2,7 @@
 #include <time.h>
 
 // Temp macro buffers
-char _macrobuffer[MACRO_BUFFERSIZE];
+char _macrobuffer[MACRO_BUFFERSIZE + 1];
 char _macro_expansion_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
 
 struct contentitem *filecontent[256]; // hash table with all file content items
