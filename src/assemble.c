@@ -573,7 +573,7 @@ void handle_asm_data(uint8_t wordtype) {
     streamtoken_t token;
     bool expectarg = true;
 
-    if(inConditionalSection == 1) return;
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     definelabel(address);
 
@@ -638,7 +638,7 @@ void handle_asm_data(uint8_t wordtype) {
 void handle_asm_equ(void) {
     streamtoken_t token;
 
-    if(inConditionalSection == 1) return;
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
@@ -654,7 +654,7 @@ void handle_asm_equ(void) {
 void handle_asm_adl(void) {
     streamtoken_t token;
 
-    if(inConditionalSection == 1) return;
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next) == 0) {
@@ -694,7 +694,7 @@ void handle_asm_adl(void) {
 void handle_asm_org(void) {
     uint24_t newaddress;
     
-    if(inConditionalSection == 1) return;
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     parse_asm_single_immediate(); // get address from next token
     // address needs to be given in pass 1
@@ -721,7 +721,7 @@ void handle_asm_org(void) {
 void handle_asm_include(void) {
     streamtoken_t token;
 
-    if(inConditionalSection == 1) return;
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
     
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND],0);
@@ -751,7 +751,7 @@ void handle_asm_incbin(void) {
     struct contentitem *ci;
     uint24_t n;
 
-    if(inConditionalSection == 1) return;
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     if(!currentline.next) {
         error(message[ERROR_MISSINGOPERAND],0);
@@ -801,7 +801,7 @@ void handle_asm_blk(uint8_t width) {
     int32_t val = 0;
     streamtoken_t token;
 
-    if(inConditionalSection == 1) return;
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     definelabel(address);
 
@@ -877,7 +877,7 @@ uint24_t alignment;
 uint24_t base;
 uint24_t delta;
 
-    if(inConditionalSection == 1) return;
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     parse_asm_single_immediate();
     if(operand1.immediate <= 0) {
@@ -912,7 +912,7 @@ void handle_asm_definemacro(void) {
     macro_t *macro;
     uint16_t startlinenumber,linelength,macrolength;
 
-    if(inConditionalSection == 1) return;
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     definelabel(address);
 
@@ -1022,7 +1022,7 @@ void handle_asm_if(void) {
     int24_t value;
     
     // No nested conditionals.
-    if(inConditionalSection != 0) {
+    if(inConditionalSection != CONDITIONSTATE_NORMAL) {
         error(message[ERROR_NESTEDCONDITIONALS],0);
         return;
     }
@@ -1034,31 +1034,31 @@ void handle_asm_if(void) {
         }
         value = getValue(token.start, true);
 
-        inConditionalSection = value ? 2 : 1;
+        inConditionalSection = value ? CONDITIONSTATE_TRUE : CONDITIONSTATE_FALSE;
     }
     else error(message[ERROR_MISSINGOPERAND],0);
 }
 
 void handle_asm_else(void) {
     // No nested conditionals.
-    if(inConditionalSection == 0) {
+    if(inConditionalSection == CONDITIONSTATE_NORMAL) {
         error(message[ERROR_MISSINGIFCONDITION],0);
         return;
     }
-    inConditionalSection = inConditionalSection == 1 ? 2 : 1;
+    inConditionalSection = inConditionalSection == CONDITIONSTATE_FALSE ? CONDITIONSTATE_TRUE : CONDITIONSTATE_FALSE;
 }
 
 void handle_asm_endif(void) {
-    if(inConditionalSection == 0) {
+    if(inConditionalSection == CONDITIONSTATE_NORMAL) {
         error(message[ERROR_MISSINGIFCONDITION],0);
         return;
     }
-    inConditionalSection = 0;
+    inConditionalSection = CONDITIONSTATE_NORMAL;
 }
 
 void handle_asm_fillbyte(void) {
 
-    if(inConditionalSection == 1) return;
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     parse_asm_single_immediate(); // get fillbyte from next token
     if((!ignore_truncation_warnings) && ((operand1.immediate < -128) || (operand1.immediate > 255))) {
@@ -1092,7 +1092,7 @@ void handle_assembler_command(void) {
             break;
         case(ASM_ASCIZ):
             handle_asm_data(ASM_DB);
-            if(inConditionalSection != 1) emit_8bit(0);
+            if(inConditionalSection != CONDITIONSTATE_FALSE) emit_8bit(0);
             break;
         case(ASM_EQU):
             handle_asm_equ();
@@ -1134,7 +1134,7 @@ void handle_assembler_command(void) {
             handle_asm_endif();
             break;
         case(ASM_MACRO_END):
-            if(inConditionalSection == 0) {
+            if(inConditionalSection == CONDITIONSTATE_NORMAL) {
                 error(message[ERROR_MACRONOTSTARTED],0);
             }
             break;
@@ -1150,11 +1150,11 @@ void processInstructions(void){
     bool condmatch;
     bool regamatch, regbmatch;
 
-    if((currentline.mnemonic == NULL) && (inConditionalSection != 1)) definelabel(address);
+    if((currentline.mnemonic == NULL) && (inConditionalSection != CONDITIONSTATE_FALSE)) definelabel(address);
 
     if(currentline.current_instruction) {
         if(currentline.current_instruction->type == EZ80) {
-            if(inConditionalSection != 1) {
+            if(inConditionalSection != CONDITIONSTATE_FALSE) {
                 // process this mnemonic by applying the instruction list as a filter to the operand-set
                 list = currentline.current_instruction->list;
                 match = false;
@@ -1259,7 +1259,7 @@ void passInitialize(uint8_t passnumber) {
     pass = passnumber;
     address = start_address;
     currentExpandedMacro = NULL;
-    inConditionalSection = 0;
+    inConditionalSection = CONDITIONSTATE_NORMAL;
     initAnonymousLabelTable();
     _contentstacklevel = 0;
     if(pass == 1) {
@@ -1438,7 +1438,7 @@ bool processContent(char *filename) {
     ci->inConditionalSection = inConditionalSection;
     if(!contentPush(ci)) return false;
 
-    inConditionalSection = 0;
+    inConditionalSection = CONDITIONSTATE_NORMAL;
     // Process
     while(getnextContentLine(ci)) {
         ci->currentlinenumber++;
@@ -1482,7 +1482,7 @@ bool processContent(char *filename) {
             issue_warning = false;
         }
     }
-    if(inConditionalSection != 0) {
+    if(inConditionalSection != CONDITIONSTATE_NORMAL) {
         error(message[ERROR_MISSINGENDIF],0);
         contentPop();
         return false;

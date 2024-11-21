@@ -12,7 +12,7 @@ uint24_t filecontentsize;
 bool filesbuffered;
 unsigned int macrolinenumber;
 unsigned int pass;
-uint8_t inConditionalSection;
+conditionalstate inConditionalSection;
 macro_t *currentExpandedMacro;
 uint24_t address;
 uint16_t global_errors;
