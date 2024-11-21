@@ -23,7 +23,7 @@ typedef uint32_t uint24_t;
 #define INSTRUCTION_HASHTABLESIZE   256 // Number of entries in the hashtable
 #define GLOBAL_LABEL_TABLE_SIZE     256
 #define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'
-#define LINEMAX                     256
+#define LINEMAX                     256 // Maximum characters per line in input file
 #define FILENAMEMAXLENGTH            64
 #define FILES                         3 // Output files (binary / listing / anonymous labels)
 #define FILE_BUFFERSIZE           32768 // For each specified output file (io.c)
@@ -34,5 +34,6 @@ typedef uint32_t uint24_t;
 #define MACROMAXARGS                  8 // Maximum arguments to a macro
 #define MACROARGLENGTH               32
 #define MACROARGSUBSTITUTIONLENGTH  FILENAMEMAXLENGTH+2 // Maximum length of macro argument, accounting for passing filename with double quotes
+#define MACROLINEMAX                MACROARGSUBSTITUTIONLENGTH * MACROMAXARGS + LINEMAX
 #define CLEANUPFILES               true
 #endif // CONFIG_H

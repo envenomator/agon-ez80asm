@@ -159,7 +159,6 @@ void replaceArgument(char *target, const char *argument, const char *substitutio
 }
 
 uint8_t macroExpandArg(char *dst, char *src, macro_t *m) {
-
     strcpy(dst, src);
     for(uint8_t i = 0; i < m->argcount; i++) {
         replaceArgument(dst, m->arguments[i], m->substitutions[i]);
