@@ -23,11 +23,9 @@ char     _outputbuffer[FILE_BUFFERSIZE];
 #endif // else use standard remove()
 
 FILE *io_openfile(char *name, char *mode) {
-    char buffer[256];
     FILE *fh = fopen(name, mode);
     if(!fh) {
-        snprintf(buffer, 256, "Error opening \"%s\"", name);
-        error(buffer,0);
+        error("Error opening", "%s", name);
     }
     return fh;
 }
