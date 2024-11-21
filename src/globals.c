@@ -92,6 +92,7 @@ char *message[] = {
     "No global labels allowed in macro definition",
     "Error allocating memory for macro",
     "No macro definitions allowed inside a macro",
+    "Calling macro from a macro",
     "Macro body larger than 2KB",
     "Illegal escape sequence in literal",
     "Input line too long",

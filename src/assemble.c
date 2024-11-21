@@ -489,6 +489,10 @@ void parseLine(char *src) {
                         state = PS_DONE;
                         break;
                     case MACRO:
+                        if(currentExpandedMacro) {
+                            error(message[ERROR_MACROCALLEDINMACRO], 0);
+                            state = PS_ERROR;
+                        }
                         currentline.current_macro = currentline.current_instruction->macro;
                         currentline.current_instruction = NULL;
                         currentline.next = streamtoken.next;
