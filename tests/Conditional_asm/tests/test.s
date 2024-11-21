@@ -1,4 +1,4 @@
-true: .equ 1
+true:  .equ 1
 false: .equ 0
 
 proc:
@@ -18,7 +18,7 @@ localvar: .db 0     ; the same label can be used, because this entire block will
 .endif
 
 procfalse:
-.if false           ; this block will NOT be selected
+.if false + 1 - 1   ; this block will NOT be selected
     ld hl, localvar2; loading the address of the label in this block
     ld a, (hl)      ; A will be loaded with 1
     ret
