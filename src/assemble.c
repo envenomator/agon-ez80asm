@@ -1189,6 +1189,7 @@ void processMacro(void) {
     macro_t *exp = currentline.current_macro;
     char macroline[LINEMAX+1];
     char errorline[LINEMAX+1];
+    char substitutionlist[MACROMAXARGS][MACROARGSUBSTITUTIONLENGTH + 1]; // temporary storage for substitutions during expansion
     bool macro_invocation_warning = false;
 
     // Check for defined label
@@ -1206,11 +1207,12 @@ void processMacro(void) {
                 error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, exp->argcount);
                 return;
             }
-            if(tokenlength > MACROARGLENGTH) {
+            if(tokenlength > MACROARGSUBSTITUTIONLENGTH) {
                 error(message[ERROR_MACROARGSUBSTLENGTH],"%s",token.start);
                 return;
             }
-            strcpy(exp->substitutions[argcount-1], token.start);
+            strcpy(substitutionlist[argcount-1], token.start);              // copy substitution argument
+            exp->substitutions[argcount-1] = substitutionlist[argcount-1];  // set pointer in macro structure for later processing
         }
         if(token.terminator == ',') currentline.next = token.next;
         else {

@@ -26,7 +26,7 @@ void setMacroBody(macro_t *macro, const char *body) {
 macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t startlinenumber) {
     unsigned int len, i;
     uint8_t index;
-    char *ptr,*subs;
+    char *ptr;
     macro_t *tmp;
     instruction_t *try, *macroinstruction;
 
@@ -62,20 +62,21 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
         tmp->substitutions = (char **)malloc(argcount * sizeof(char *));
         macromemsize += argcount * sizeof(char *);
         if((tmp->arguments == NULL) || (tmp->substitutions == NULL)) return NULL;
-        for(i = 0; i < argcount; i++) {
-            len = (unsigned int)strlen(arguments + i*(MACROARGLENGTH+1));
+
+        char *argptr = arguments;
+        for(i = 0; i < argcount; i++, argptr += MACROARGLENGTH+1) {
+            len = (unsigned int)strlen(argptr);
             if(len > MACROARGLENGTH) {
                 error(message[ERROR_MACROARGLENGTH],0);
                 return NULL;
             }
             ptr = (char*)malloc(len+1);
             macromemsize += len+1;
-            subs = (char*)malloc(MACROARGLENGTH+1);
-            macromemsize += MACROARGLENGTH+1;
-            if((ptr == NULL) || (subs == NULL)) return NULL;
-            strcpy(ptr, arguments + i*(MACROARGLENGTH+1));
+            if(ptr == NULL) return NULL;
+
+            strcpy(ptr, argptr);
             tmp->arguments[i] = ptr;
-            tmp->substitutions[i] = subs;
+            tmp->substitutions[i] = NULL;
         }
     }
     tmp->originfilename = currentcontentitem->name;
@@ -117,7 +118,7 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
 // - arg1
 void replaceArgument(char *target, const char *argument, const char *substitution)
 {
-    char buffer[MACROARGLENGTH + 1] = { 0 };
+    char buffer[MACROARGSUBSTITUTIONLENGTH + 1] = { 0 };
     bool bufferdirty = false;
     char *insert_point = &buffer[0];
     const char *tmp = target;
