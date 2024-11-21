@@ -1031,7 +1031,7 @@ void handle_asm_if(void) {
     }
 
     if(currentline.next) {
-        if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
+        if(getDefineValueToken(&token, currentline.next) == 0) {
             error(message[ERROR_CONDITIONALEXPRESSION],0);
             return;
         }
