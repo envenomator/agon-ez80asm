@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
                 break;
             case 'v':
                 printVersion();
-                break;
+                return 0;
             case 'h':
                 printHelp();
                 return 0;
