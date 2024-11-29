@@ -322,64 +322,6 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
     return length;
 }
 
-// operator tokens assume the following input
-// - no ',' ';' terminators
-// - only 'operator' terminators or a 0
-uint8_t getOperatorToken(streamtoken_t *token, char *src) {
-    uint8_t length = 0;
-    bool normalmode = true;
-    bool shift = false, error = false;
-
-    // skip leading space
-    while(*src && (isspace(*src))) src++;
-
-    if(*src == 0) { // empty string
-        memset(token, 0, sizeof(streamtoken_t));
-        return 0;
-    }
-    token->start = src;
-
-    // check for literal mode at start, tokens like '\n'
-    if(*src == '\'') {
-        src++;
-        length++;
-        normalmode = false;
-    }
-
-    while(*src) {
-        if(*src == '\'') normalmode = !normalmode;
-        if(normalmode && strchr("+-*<>&|^~/",*src)) { // terminator found
-            if((*src == '<') || (*src == '>')) {                
-                if(*(src+1) == *src) {
-                    shift = true;
-                }
-                else {
-                    error = true;
-                }
-            }
-            break;
-        }
-        src++;
-        length++;
-    }
-
-    if(!error) token->terminator = *src;
-    else {
-        token->terminator = '!';
-    }
-    if(*src) token->next = shift?src+2:src+1;
-    else token->next = NULL;
-
-    if(length) {
-        *src-- = 0; // terminate early and revert one character
-        while(isspace(*src)) { // remove trailing space(s)
-            *src-- = 0; // terminate on trailing spaces
-            if(length-- == 0) break;
-        }
-    }
-    return length;
-}
-
 void validateRange8bit(int32_t value, const char *name) {
     if(!(ignore_truncation_warnings)) {
         if((value > 0xff) || (value < -128)) {
@@ -439,7 +381,6 @@ uint8_t getEscapedChar(char c) {
 // Get the ascii value from a single 'x' token.
 uint8_t getLiteralValue(char *string) {
     uint8_t len = strlen(string);
-
     if((len == 3) && (string[2] == '\'')) {
         return string[1];
     }
@@ -457,89 +398,190 @@ uint8_t getLiteralValue(char *string) {
     return 0;
 }
 
-// Get the value from a sequence of 0-n labels and values, separated by +/- operators
-// Examples:
-// labela+5
-// labelb-1
-// labela+labelb+offset1-1
-// The string should not contain any spaces, needs to be a single token
-int32_t getValue(char *str, bool req_firstpass) {
-    streamtoken_t token;
-    label_t *lbl;
-    int32_t total, tmp;
-    uint8_t length;
-    char prev_op = '+', unary = 0;
-    bool expect = true;
+// Resolves a number from a string in this order:
+// 1) Check if a label exists with this name
+// 2) If not, try converting it to a number with str2num
+int32_t resolveNumber(char *str, uint8_t length, bool req_firstpass) {
+    int32_t number;
+    label_t *lbl = findLabel(str);
 
     if((pass == 1) && !req_firstpass) return 0;
 
-    total = 0;
-    while(str) {
-        length = getOperatorToken(&token, str);
-        if(length == 0) { // at begin, or middle, OK. Expect catch at end
-            expect = true;
-            unary = token.terminator;
-        }
-        else { // normal processing
-            lbl = findLabel(token.start);
-            if(lbl) {
-                tmp = lbl->address;
-            }
-            else {
-                if(token.start[0] == '\'') tmp = getLiteralValue(token.start);
+    if(lbl) number = lbl->address;
+    else {
+        if(*str == '\'') number = getLiteralValue(str);
+        else {
+            number = str2num(str, length?length:strlen(str));
+            if(err_str2num) {
+                if(pass == 1) {
+                    // Yet unknown label, number incorrect
+                    // We only get here if req_firstpass is true, so error
+                    error(message[ERROR_INVALIDNUMBER],"%s", str);
+                    return 0;
+                }
                 else {
-                    tmp = str2num(token.start, length);
-                    if(err_str2num) {
-                        if(pass == 1) {
-                            // Yet unknown label, number incorrect
-                            // We only get here if req_firstpass is true, so error
-                            error(message[ERROR_INVALIDNUMBER],"%s",token.start);
-                            return 0;
-                        }
-                        else {
-                            // Unknown label and number incorrect
-                            error(message[ERROR_INVALIDLABELORNUMBER], "%s", token.start);                            
-                            return 0;
-                        }
+                    // Unknown label and number incorrect
+                    error(message[ERROR_INVALIDLABELORNUMBER], "%s", str);                            
+                    return 0;
+                }
+            }
+        }
+    }
+    return number;
+}
+
+// copy a variable-length literal from a string, ending with the non-escaped \' character
+// Examples tokenized:
+// ''
+// ' '
+// '\n'
+// '\''
+// '   \'  ' -> this will copy, getLiteralValue will error out later
+// '       0 -> this will copy, getLiteralValue will error out later
+// 0         -> this will copy, getLiteralValue will error out later
+uint8_t copyLiteralToken(const char *from, char *to) {
+    uint8_t length = 0;
+    bool escaped = false;
+
+    while(isspace(*from)) from++; // eat all spaces
+    if(*from == '\'') {
+        while(*from) {
+            *to++ = *from++;
+            length++;
+            if(*from == '\\') escaped = !escaped;
+            if(!escaped && (*from == '\'')) {
+                length++;
+                break;
+            }
+        }
+        *to++ = *from;
+    }
+    *to = 0;
+    return length;
+}
+
+enum getValueState {
+    START,
+    OP,
+    UNARY,
+    NUMBER,
+    DONE
+};
+
+// Gets the value from an expression, possible consisting of values, labels and operators
+int32_t getValue(char *str, bool req_firstpass) {
+    char buffer[256];
+    char *bufptr;
+    int32_t tmp = 0;
+    int32_t total = 0;
+    enum getValueState state = START;
+    char operator, unaryoperator;
+
+    if((pass == 1) && !req_firstpass) return 0;
+
+    operator = 0; // first implicit operator
+    unaryoperator = 0;
+
+    while(*str) {
+        switch(state) {
+            case START:
+                while(isspace(*str)) str++; // eat all spaces
+                if(strchr("+-*/<>&|^~", *str)) {
+                    if((*str == '-') || (*str == '~') || (*str == '+')) state = UNARY;
+                    else {
+                        error(message[ERROR_UNARYOPERATOR],0);
+                        return 0;
                     }
                 }
-            }
-            if(unary) {
-                switch(unary) {
-                    case '-': tmp = -tmp; break;
-                    case '~': tmp = ~tmp; break;
-                    case '+': break;
-                    default:
-                        error(message[ERROR_UNARYOPERATOR],"%c",unary);
-                        return 0;
+                else state = NUMBER;
+                break;
+            case OP:
+                if(operator) { // check 'dual-character' operator
+                    error(message[ERROR_MISSINGLABELORNUMBER],0);
+                    return 0;
                 }
-                unary = 0; // reset
-                expect = false;
-            }
-            switch(prev_op) {
-                case '+': total += tmp; break;
-                case '-': total -= tmp; break;
-                case '*': total *= tmp; break;
-                case '<': total = total << tmp; break;
-                case '>': total = total >> tmp; break;
-                case '&': total = total & tmp;  break;
-                case '|': total = total | tmp;  break;
-                case '^': total = total ^ tmp;  break;
-                case '~': total = total + ~tmp; break;
-                case '/': total = total / tmp;  break;
-                case '!':
-                default:
-                    error(message[ERROR_OPERATOR],"%c",prev_op);
-                    return total;
-            }
-            prev_op = token.terminator;
-            expect = false;
+
+                if((*str == '<') || (*str == '>')) {                
+                    if(*(str+1) != *str) {
+                        error(message[ERROR_OPERATOR], 0);
+                        return 0;
+                    }
+                    str++; // advance the double operator
+                }
+
+                unaryoperator = 0;
+                operator = *str;
+                str++;
+                while(isspace(*str)) str++; // eat all spaces
+                if(*str == 0) {
+                    error(message[ERROR_MISSINGLABELORNUMBER],0);
+                    return 0;
+                }
+                if(strchr("*/<>&|^", *str)) { // illegal unary
+                    error(message[ERROR_UNARYOPERATOR], 0);
+                    return 0;
+                }
+                state = START;
+                break;
+            case UNARY:
+                unaryoperator = *str++;
+                while(isspace(*str)) str++; // eat all spaces
+                if(*str == 0) {
+                    error(message[ERROR_MISSINGLABELORNUMBER],0);
+                    return 0;
+                }
+                if(strchr("+-*/<>&|^~", *str)) {
+                    error(message[ERROR_UNARYOPERATOR],0);
+                    return 0;
+                }
+                state = NUMBER;
+                break;
+            case NUMBER:
+                bufptr = buffer;
+                if(*str == '\'') {
+                    uint8_t tmplength = copyLiteralToken(str, buffer);
+                    str += tmplength;
+                    tmp = resolveNumber(buffer, tmplength, req_firstpass);
+                }
+                else {
+                    while(*str && (!strchr("\t +-*/<>&|^~", *str))) *bufptr++ = *str++;
+                    *bufptr = 0; // terminate string in buffer
+                    tmp = resolveNumber(buffer, bufptr - buffer, req_firstpass);
+                }
+                
+                if(unaryoperator == '-') tmp = -tmp;
+                if(unaryoperator == '~') tmp = ~tmp;
+
+                switch(operator) {
+                    case 0:
+                    case '+': total += tmp; break;
+                    case '-': total -= tmp; break;
+                    case '*': total *= tmp; break;
+                    case '<': total = total << tmp; break;
+                    case '>': total = total >> tmp; break;
+                    case '&': total = total & tmp;  break;
+                    case '|': total = total | tmp;  break;
+                    case '^': total = total ^ tmp;  break;
+                    case '~': total = total + ~tmp; break;
+                    case '/': total = total / tmp;  break;
+                    default:
+                        error(message[ERROR_OPERATOR],"%c",operator);
+                        return total;
+                }
+                // reset operators 
+                operator = 0;
+                unaryoperator = 0;
+
+                while(isspace(*str)) str++; // eat all spaces
+                if(*str) state = OP;
+                else state = DONE;
+                break;
+            case DONE:
+                return total;
+            default:
+                str++;
+                break;
         }
-        str = token.next;
-    }
-    if(expect) {
-        error(message[ERROR_MISSINGOPERAND],0);
-        return 0;
     }
     return total;
 }
