@@ -194,8 +194,8 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IX;
                             operand->displacement_provided = true;
-                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
-                            else operand->displacement = (int16_t) getValue(ptr, false);
+                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getExpressionValue(ptr, false);
+                            else operand->displacement = (int16_t) getExpressionValue(ptr, false);
                             return;
                             break;
                         default:
@@ -228,8 +228,8 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IY;
                             operand->displacement_provided = true;
-                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getValue(ptr, false);
-                            else operand->displacement = (int16_t) getValue(ptr, false);
+                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getExpressionValue(ptr, false);
+                            else operand->displacement = (int16_t) getExpressionValue(ptr, false);
                             return;
                             break;
                         default:
@@ -355,7 +355,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
             string++;
         }
         strcpy(operand->immediate_name, string);
-        operand->immediate = getValue(string, false);
+        operand->immediate = getExpressionValue(string, false);
         operand->immediate_provided = true;
         operand->addressmode |= IMM;
     }
@@ -560,7 +560,7 @@ void parse_asm_single_immediate(void) {
 
     if(currentline.next) {
         if(getOperandToken(&token, currentline.next)) {
-            operand1.immediate = getValue(token.start, true);
+            operand1.immediate = getExpressionValue(token.start, true);
             operand1.immediate_provided = true;
             strcpy(operand1.immediate_name, token.start);
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
@@ -600,24 +600,24 @@ void handle_asm_data(uint8_t wordtype) {
                             emit_quotedstring(token.start);
                             break;
                         default:
-                            value = getValue(token.start, false); // not needed in pass 1
+                            value = getExpressionValue(token.start, false); // not needed in pass 1
                             if(pass == 2) validateRange8bit(value, token.start);
                             emit_8bit(value);
                             break;
                     }
                     break;
                 case ASM_DW:
-                    value = getValue(token.start, false);
+                    value = getExpressionValue(token.start, false);
                     if(pass == 2) validateRange16bit(value, token.start);
                     emit_16bit(value);
                     break;
                 case ASM_DW24:
-                    value = getValue(token.start, false);
+                    value = getExpressionValue(token.start, false);
                     if(pass == 2) validateRange24bit(value, token.start);
                     emit_24bit(value);
                     break;
                 case ASM_DW32:
-                    value = getValue(token.start, false);
+                    value = getExpressionValue(token.start, false);
                     emit_32bit(value);
                     break;
                 default:
@@ -646,7 +646,7 @@ void handle_asm_equ(void) {
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
-            if(currentline.label) definelabel(getValue(token.start, true)); // needs to be defined in pass 1
+            if(currentline.label) definelabel(getExpressionValue(token.start, true)); // needs to be defined in pass 1
             else error(message[ERROR_MISSINGLABEL],0);
         }
         else error(message[ERROR_MISSINGOPERAND],0);
@@ -676,7 +676,7 @@ void handle_asm_adl(void) {
         }
         if(token.terminator == '=') {
             if(getDefineValueToken(&token, token.next)) {
-                operand2.immediate = getValue(token.start, true); // needs to be defined in pass 1
+                operand2.immediate = getExpressionValue(token.start, true); // needs to be defined in pass 1
                 operand2.immediate_provided = true;
                 strcpy(operand2.immediate_name, token.start);
             }
@@ -824,7 +824,7 @@ void handle_asm_blk(uint8_t width) {
         }
     }
 
-    num = getValue(token.start, true); // <= needs a number of items during pass 1, otherwise addresses will be off later on
+    num = getExpressionValue(token.start, true); // <= needs a number of items during pass 1, otherwise addresses will be off later on
 
     if(token.terminator == ',') {
         if(getDefineValueToken(&token, token.next) == 0) {
@@ -837,7 +837,7 @@ void handle_asm_blk(uint8_t width) {
                 token.start = _macro_expansion_buffer;
             }
         }
-        val = getValue(token.start, false); // value not required in pass 1
+        val = getExpressionValue(token.start, false); // value not required in pass 1
     }
     else { // no value given
         if((token.terminator != 0)  && (token.terminator != ';'))
@@ -1035,7 +1035,7 @@ void handle_asm_if(void) {
             error(message[ERROR_CONDITIONALEXPRESSION],0);
             return;
         }
-        value = getValue(token.start, true);
+        value = getExpressionValue(token.start, true);
 
         inConditionalSection = value ? CONDITIONSTATE_TRUE : CONDITIONSTATE_FALSE;
     }

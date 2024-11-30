@@ -230,6 +230,31 @@ uint8_t getOperandToken(streamtoken_t *token, char *src) {
     return length;
 }
 
+// Returns a bracketed token
+// Example '[token]' -> returns 'token'0
+// Assumes start on the '[' character
+// Ends the token string in the stream on the matching ']' character, by zeroing it
+uint8_t getBracketToken(streamtoken_t *token, char *src) {
+    uint8_t length = 0;
+    uint8_t opencount = 1;
+
+    token->start = src+1;
+    src++;
+    while(*src) {
+        if(*src == '[') opencount++;
+        if(*src == ']') opencount--;
+        if(opencount == 0) {
+            token->next = src+1;
+            *src = 0;
+            break;
+        }
+        src++;
+        length++;
+    }
+    if(opencount) return 0;
+    else return length;
+}
+
 uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
     uint8_t length = 0;
     tokenclass state;
@@ -469,7 +494,8 @@ enum getValueState {
 };
 
 // Gets the value from an expression, possible consisting of values, labels and operators
-int32_t getValue(char *str, bool req_firstpass) {
+int32_t getExpressionValue(char *str, bool req_firstpass) {
+    //char *str = *ptr;
     char buffer[256];
     char *bufptr;
     int32_t tmp = 0;
@@ -538,15 +564,26 @@ int32_t getValue(char *str, bool req_firstpass) {
                 break;
             case NUMBER:
                 bufptr = buffer;
-                if(*str == '\'') {
-                    uint8_t tmplength = copyLiteralToken(str, buffer);
-                    str += tmplength;
-                    tmp = resolveNumber(buffer, tmplength, req_firstpass);
-                }
-                else {
-                    while(*str && (!strchr("\t +-*/<>&|^~", *str))) *bufptr++ = *str++;
-                    *bufptr = 0; // terminate string in buffer
-                    tmp = resolveNumber(buffer, bufptr - buffer, req_firstpass);
+                switch(*str) {
+                    case '\'':
+                        uint8_t tmplength = copyLiteralToken(str, buffer);
+                        str += tmplength;
+                        tmp = resolveNumber(buffer, tmplength, req_firstpass);
+                        break;
+                    case '[':
+                        streamtoken_t token;
+                        if(getBracketToken(&token, str) == 0) {
+                            error("Bracket format error",0);
+                            return 0;
+                        }
+                        tmp = getExpressionValue(token.start, req_firstpass);
+                        str = token.next;
+                        break;
+                    default:
+                        while(*str && (!strchr("\t +-*/<>&|^~", *str))) *bufptr++ = *str++;
+                        *bufptr = 0; // terminate string in buffer
+                        tmp = resolveNumber(buffer, bufptr - buffer, req_firstpass);
+                        break;
                 }
                 
                 if(unaryoperator == '-') tmp = -tmp;
@@ -566,7 +603,7 @@ int32_t getValue(char *str, bool req_firstpass) {
                     case '/': total = total / tmp;  break;
                     default:
                         error(message[ERROR_OPERATOR],"%c",operator);
-                        return total;
+                        return 0;
                 }
                 // reset operators 
                 operator = 0;
@@ -577,15 +614,17 @@ int32_t getValue(char *str, bool req_firstpass) {
                 else state = DONE;
                 break;
             case DONE:
+                //*ptr = str;
                 return total;
-            default:
-                str++;
-                break;
         }
     }
     return total;
 }
-
+/*
+int32_t getValue(char *str, bool req_firstpass) {
+    return getRecursiveValue(&str, req_firstpass);
+}
+*/
 // efficient strcpy/strcat compound function
 uint8_t strcompound(char *dest, const char *src1, const char *src2) {
     uint8_t len = 0;

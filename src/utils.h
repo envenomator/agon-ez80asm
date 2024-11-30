@@ -41,10 +41,9 @@ void trimRight(char *str);
 
 void error(const char *msg, const char *contextformat, ...);
 void warning(const char *msg, const char *contextformat, ...);
-int32_t getValue(char *str, bool req_firstpass);
+int32_t getExpressionValue(char *str, bool req_firstpass);
 uint8_t getEscapedChar(char c);
 uint8_t getLiteralValue(char *string);
-uint8_t getOperatorToken(streamtoken_t *token, char *src);          // terminates on operator symbols like +-/%<<>>
 void    getLabelToken(streamtoken_t *token, char *src);                // terminates on ':' character
 uint8_t getMnemonicToken(streamtoken_t *token, char *src);          // terminated on spaces
 uint8_t getOperandToken(streamtoken_t *token, char *src);           // terminates on , or ;  transparent literals

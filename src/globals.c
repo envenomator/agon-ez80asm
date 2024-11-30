@@ -39,7 +39,7 @@ char *message[] = {
     "Invalid number format",
     "Positive number required",
     "Unknown label",
-    "Unknown label, invalid number",
+    "Unknown identifier",
     "Invalid label",
     "Missing operand",
     "Missing label or number",
