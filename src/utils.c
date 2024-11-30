@@ -509,10 +509,11 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
     operator = 0; // first implicit operator
     unaryoperator = 0;
 
+    while(isspace(*str)) str++; // eat all spaces
+    
     while(*str) {
         switch(state) {
             case START:
-                while(isspace(*str)) str++; // eat all spaces
                 if(strchr("+-*/<>&|^~", *str)) {
                     if((*str == '-') || (*str == '~') || (*str == '+')) state = UNARY;
                     else {
@@ -573,7 +574,7 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
                         break;
                     case '[':
                         if(getBracketToken(&token, str) == 0) {
-                            error("Bracket format error",0);
+                            error(message[ERROR_BRACKETFORMAT],0);
                             return 0;
                         }
                         tmp = getExpressionValue(token.start, req_firstpass);
@@ -614,17 +615,12 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
                 else state = DONE;
                 break;
             case DONE:
-                //*ptr = str;
                 return total;
         }
     }
     return total;
 }
-/*
-int32_t getValue(char *str, bool req_firstpass) {
-    return getRecursiveValue(&str, req_firstpass);
-}
-*/
+
 // efficient strcpy/strcat compound function
 uint8_t strcompound(char *dest, const char *src1, const char *src2) {
     uint8_t len = 0;

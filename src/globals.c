@@ -109,5 +109,6 @@ char *message[] = {
     "Error reading incbin file",
     "Error reading input file",
     "Error allocating memory",
-    "Ignoring unsupported initializer value"
+    "Ignoring unsupported initializer value",
+    "Bracket format error"
 };
