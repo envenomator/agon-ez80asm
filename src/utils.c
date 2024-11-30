@@ -495,7 +495,8 @@ enum getValueState {
 
 // Gets the value from an expression, possible consisting of values, labels and operators
 int32_t getExpressionValue(char *str, bool req_firstpass) {
-    //char *str = *ptr;
+    uint8_t tmplength;
+    streamtoken_t token;
     char buffer[256];
     char *bufptr;
     int32_t tmp = 0;
@@ -566,12 +567,11 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
                 bufptr = buffer;
                 switch(*str) {
                     case '\'':
-                        uint8_t tmplength = copyLiteralToken(str, buffer);
+                        tmplength = copyLiteralToken(str, buffer);
                         str += tmplength;
                         tmp = resolveNumber(buffer, tmplength, req_firstpass);
                         break;
                     case '[':
-                        streamtoken_t token;
                         if(getBracketToken(&token, str) == 0) {
                             error("Bracket format error",0);
                             return 0;
