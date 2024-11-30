@@ -455,7 +455,7 @@ int32_t resolveNumber(char *str, uint8_t length, bool req_firstpass) {
     return number;
 }
 
-// copy a variable-length literal from a string, ending with the non-escaped \' character
+// copy a variable-length literal from a literal string, starting with \', ending with the non-escaped \' character
 // Examples tokenized:
 // ''
 // ' '
@@ -463,12 +463,10 @@ int32_t resolveNumber(char *str, uint8_t length, bool req_firstpass) {
 // '\''
 // '   \'  ' -> this will copy, getLiteralValue will error out later
 // '       0 -> this will copy, getLiteralValue will error out later
-// 0         -> this will copy, getLiteralValue will error out later
 uint8_t copyLiteralToken(const char *from, char *to) {
     uint8_t length = 0;
     bool escaped = false;
 
-    while(isspace(*from)) from++; // eat all spaces
     if(*from == '\'') {
         while(*from) {
             *to++ = *from++;
@@ -490,38 +488,41 @@ enum getValueState {
     OP,
     UNARY,
     NUMBER,
-    DONE
 };
 
 // Gets the value from an expression, possible consisting of values, labels and operators
 int32_t getExpressionValue(char *str, bool req_firstpass) {
     uint8_t tmplength;
     streamtoken_t token;
-    char buffer[256];
+    char buffer[LINEMAX+1];
     char *bufptr;
+    char operator, unaryoperator;
     int32_t tmp = 0;
     int32_t total = 0;
-    enum getValueState state = START;
-    char operator, unaryoperator;
+    enum getValueState state;;
 
     if((pass == 1) && !req_firstpass) return 0;
 
+    while(isspace(*str)) str++; // eat all spaces
+
     operator = 0; // first implicit operator
     unaryoperator = 0;
+    state = START;
 
-    while(isspace(*str)) str++; // eat all spaces
-    
-    while(*str) {
+    while(true) {
         switch(state) {
-            case START:
-                if(strchr("+-*/<>&|^~", *str)) {
-                    if((*str == '-') || (*str == '~') || (*str == '+')) state = UNARY;
-                    else {
-                        error(message[ERROR_UNARYOPERATOR],0);
-                        return 0;
-                    }
+            case UNARY:
+                unaryoperator = *str++;
+                while(isspace(*str)) str++; // eat all spaces
+                if(*str == 0) {
+                    error(message[ERROR_MISSINGLABELORNUMBER],0);
+                    return 0;
                 }
-                else state = NUMBER;
+                if(strchr("+-*/<>&|^~", *str)) {
+                    error(message[ERROR_UNARYOPERATOR],0);
+                    return 0;
+                }
+                state = NUMBER;
                 break;
             case OP:
                 if(operator) { // check 'dual-character' operator
@@ -538,8 +539,7 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
                 }
 
                 unaryoperator = 0;
-                operator = *str;
-                str++;
+                operator = *str++;
                 while(isspace(*str)) str++; // eat all spaces
                 if(*str == 0) {
                     error(message[ERROR_MISSINGLABELORNUMBER],0);
@@ -550,20 +550,20 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
                     return 0;
                 }
                 state = START;
-                break;
-            case UNARY:
-                unaryoperator = *str++;
-                while(isspace(*str)) str++; // eat all spaces
-                if(*str == 0) {
-                    error(message[ERROR_MISSINGLABELORNUMBER],0);
-                    return 0;
-                }
+                // implicit fall-through for performance
+            case START:
                 if(strchr("+-*/<>&|^~", *str)) {
-                    error(message[ERROR_UNARYOPERATOR],0);
-                    return 0;
+                    if((*str == '-') || (*str == '~') || (*str == '+')) {
+                        state = UNARY;
+                        break;
+                    }
+                    else {
+                        error(message[ERROR_UNARYOPERATOR],0);
+                        return 0;
+                    }
                 }
-                state = NUMBER;
-                break;
+                else state = NUMBER;
+                // implicit fall-through for performance
             case NUMBER:
                 bufptr = buffer;
                 switch(*str) {
@@ -581,14 +581,16 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
                         str = token.next;
                         break;
                     default:
-                        while(*str && (!strchr("\t +-*/<>&|^~", *str))) *bufptr++ = *str++;
+                        while(!strchr("+-*/<>&|^~\t ", *str)) *bufptr++ = *str++;
                         *bufptr = 0; // terminate string in buffer
                         tmp = resolveNumber(buffer, bufptr - buffer, req_firstpass);
                         break;
                 }
                 
-                if(unaryoperator == '-') tmp = -tmp;
-                if(unaryoperator == '~') tmp = ~tmp;
+                if(unaryoperator) {
+                    if(unaryoperator == '-') tmp = -tmp;
+                    if(unaryoperator == '~') tmp = ~tmp;
+                }
 
                 switch(operator) {
                     case 0:
@@ -606,16 +608,14 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
                         error(message[ERROR_OPERATOR],"%c",operator);
                         return 0;
                 }
-                // reset operators 
+                // operation complete, reset operators 
                 operator = 0;
                 unaryoperator = 0;
 
                 while(isspace(*str)) str++; // eat all spaces
                 if(*str) state = OP;
-                else state = DONE;
+                else return total;
                 break;
-            case DONE:
-                return total;
         }
     }
     return total;
