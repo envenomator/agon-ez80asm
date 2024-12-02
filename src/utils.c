@@ -637,9 +637,10 @@ uint8_t strcompound(char *dest, const char *src1, const char *src2) {
     return len;
 }
 
-char * _nextline_ptr;
-
-uint16_t getnextline(char *dst) {
+// Get the next line from a buffer, pointed to by *ptr
+// The stringpointer *ptr will update after each line
+uint16_t getnextline(char **ptr, char *dst) {
+    char *_nextline_ptr = *ptr;
     uint16_t len = 0;
 
     while(*_nextline_ptr) {
@@ -650,9 +651,6 @@ uint16_t getnextline(char *dst) {
         }
     }
     *dst = 0;
+    *ptr = _nextline_ptr;
     return len;
-}
-
-void resetnextline(char *src) {
-    _nextline_ptr = src;
 }

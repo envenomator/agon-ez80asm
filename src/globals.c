@@ -14,6 +14,7 @@ unsigned int macrolinenumber;
 unsigned int pass;
 conditionalstate inConditionalSection;
 macro_t *currentExpandedMacro;
+uint8_t macrolevel;
 uint24_t address;
 uint16_t global_errors;
 bool adlmode;
@@ -95,6 +96,7 @@ char *message[] = {
     "No macro definitions allowed inside a macro",
     "Calling macro from a macro",
     "Macro body larger than 2KB",
+    "Recursive macro invocation detected",
     "Illegal escape sequence in literal",
     "Input line too long",
     "Missing conditional expression",

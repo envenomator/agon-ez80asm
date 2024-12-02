@@ -23,6 +23,7 @@ typedef uint32_t uint24_t;
 #define INSTRUCTION_HASHTABLESIZE   256 // Number of entries in the hashtable
 #define GLOBAL_LABEL_TABLE_SIZE     256
 #define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'
+#define MACRO_MAXLEVEL                8 // Maximum depth level of recursive macro calling
 #define LINEMAX                     256 // Maximum characters per line in input file
 #define FILENAMEMAXLENGTH            64
 #define FILES                         3 // Output files (binary / listing / anonymous labels)

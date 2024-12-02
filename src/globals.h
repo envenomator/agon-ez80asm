@@ -42,6 +42,7 @@ extern unsigned int macrolinenumber;
 extern unsigned int pass;
 extern conditionalstate inConditionalSection;
 extern macro_t *currentExpandedMacro;
+extern uint8_t macrolevel;
 extern uint24_t address;
 extern uint16_t global_errors;
 extern bool adlmode;
@@ -126,6 +127,7 @@ enum {
     ERROR_MACROINMACRO,
     ERROR_MACROCALLEDINMACRO,
     ERROR_MACROTOOLARGE,
+    ERROR_MACRORECURSION,
     ERROR_ILLEGAL_ESCAPELITERAL,
     ERROR_LINETOOLONG,
     ERROR_CONDITIONALEXPRESSION,

@@ -489,10 +489,6 @@ void parseLine(char *src) {
                         state = PS_DONE;
                         break;
                     case MACRO:
-                        if(currentExpandedMacro) {
-                            error(message[ERROR_MACROCALLEDINMACRO], 0);
-                            state = PS_ERROR;
-                        }
                         currentline.current_macro = currentline.current_instruction->macro;
                         currentline.current_instruction = NULL;
                         currentline.next = streamtoken.next;
@@ -1189,25 +1185,29 @@ void processInstructions(void){
 void processMacro(void) {
     streamtoken_t token;
     uint8_t argcount = 0, tokenlength;
-    macro_t *exp = currentline.current_macro;
+    macro_t *localexpandedmacro = currentline.current_macro;
     char macroline[LINEMAX+1];
     char errorline[LINEMAX+1];
+    char *macrolineptr;
+    unsigned int localmacrolinenumber;
     char substitutionlist[MACROMAXARGS][MACROARGSUBSTITUTIONLENGTH + 1]; // temporary storage for substitutions during expansion
     bool macro_invocation_warning = false;
+
+    macrolevel++;
 
     // Check for defined label
     if(currentline.label) definelabel(address);
 
     // set for additional line-based parsing/processing of the macro
-    currentExpandedMacro = currentline.current_macro;
+    currentExpandedMacro = localexpandedmacro;
 
     // get arguments
     while(currentline.next) {
         tokenlength = getDefineValueToken(&token, currentline.next);
         if(tokenlength) {
             argcount++;
-            if(argcount > exp->argcount) {
-                error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, exp->argcount);
+            if(argcount > localexpandedmacro->argcount) {
+                error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, localexpandedmacro->argcount);
                 return;
             }
             if(tokenlength > MACROARGSUBSTITUTIONLENGTH) {
@@ -1215,7 +1215,7 @@ void processMacro(void) {
                 return;
             }
             strcpy(substitutionlist[argcount-1], token.start);              // copy substitution argument
-            exp->substitutions[argcount-1] = substitutionlist[argcount-1];  // set pointer in macro structure for later processing
+            localexpandedmacro->substitutions[argcount-1] = substitutionlist[argcount-1];  // set pointer in macro structure for later processing
         }
         if(token.terminator == ',') currentline.next = token.next;
         else {
@@ -1223,21 +1223,39 @@ void processMacro(void) {
             currentline.next = NULL; 
         }
     }
-    if(argcount != exp->argcount) {
-        error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, exp->argcount);
+    if(argcount != localexpandedmacro->argcount) {
+        error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, localexpandedmacro->argcount);
         return;
     }
     // open macro storage
-    resetnextline(exp->body);
+    macrolineptr = localexpandedmacro->body;
 
     // process body
     macrolinenumber = 1;
-    while(getnextline(macroline)) {
+    while(getnextline(&macrolineptr, macroline)) {
         strcpy(errorline, macroline);
         if(pass == 2 && (consolelist_enabled || list_enabled)) listStartLine(macroline, macrolinenumber);
         parseLine(macroline);
-        processInstructions();
-        if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine();
+
+
+        if(!currentline.current_macro) {
+            processInstructions();
+            if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+        }
+        else {
+            if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+
+            if(macrolevel >= MACRO_MAXLEVEL) {
+                error(message[ERROR_MACRORECURSION],0);
+                return;
+            }
+            localmacrolinenumber = macrolinenumber;
+            processMacro();
+            // return to 'current' macro level content
+            currentExpandedMacro = localexpandedmacro;
+            macrolinenumber = localmacrolinenumber;
+        }
+
         macrolinenumber++;
         if(global_errors) {
             vdp_set_text_colour(DARK_YELLOW);
@@ -1257,6 +1275,8 @@ void processMacro(void) {
     // end processing
     currentExpandedMacro = NULL;
     if(macro_invocation_warning) issue_warning = true; // display invocation warning at upstream caller
+
+    macrolevel--;
 }
 
 // Initialize pass 1 / pass2 states for the assembler
@@ -1276,6 +1296,7 @@ void passInitialize(uint8_t passnumber) {
     }
     issue_warning = false;
     remaining_dsspaces = 0;
+    macrolevel = 0;
 }
 
 void initFileContentTable(void) {
