@@ -3,7 +3,7 @@
 
 // Temp macro buffers
 char _macrobuffer[MACRO_BUFFERSIZE + 1];
-char _macro_expansion_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
+char _macro_expansionline_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
 
 struct contentitem *filecontent[256]; // hash table with all file content items
 struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
@@ -499,10 +499,8 @@ void parseLine(char *src) {
             case PS_OP1:
                 argcount++;                
                 if(currentExpandedMacro) {
-                    oplength = macroExpandArg(_macro_expansion_buffer, streamtoken.start, currentExpandedMacro);
-                    if(oplength) {
-                        streamtoken.start = _macro_expansion_buffer;
-                    }
+                    macroExpandArg(_macro_expansionline_buffer, streamtoken.start, currentExpandedMacro);
+                    streamtoken.start = _macro_expansionline_buffer;
                 }
                 if(argcount == 1) {
                     parse_operand(streamtoken.start, oplength, &operand1);
@@ -579,9 +577,8 @@ void handle_asm_data(uint8_t wordtype) {
     while(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
             if(currentExpandedMacro) {
-                if(macroExpandArg(_macro_expansion_buffer, token.start, currentExpandedMacro)) {
-                    token.start = _macro_expansion_buffer;
-                }
+                macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
+                token.start = _macro_expansionline_buffer;
             }
 
             if((token.start[0] == '\"') && (wordtype != ASM_DB)) {
@@ -661,9 +658,8 @@ void handle_asm_adl(void) {
             return;
         }
         if(currentExpandedMacro) {
-            if(macroExpandArg(_macro_expansion_buffer, token.start, currentExpandedMacro)) {
-                token.start = _macro_expansion_buffer;
-            }
+            macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
+            token.start = _macro_expansionline_buffer;
         }
 
         if(fast_strcasecmp(token.start, "adl")) {
@@ -759,9 +755,8 @@ void handle_asm_incbin(void) {
 
     getDefineValueToken(&token, currentline.next);
     if(currentExpandedMacro) {
-        if(macroExpandArg(_macro_expansion_buffer, token.start, currentExpandedMacro)) {
-            token.start = _macro_expansion_buffer;
-        }
+        macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
+        token.start = _macro_expansionline_buffer;
     }
     if(token.start[0] != '\"') {
         error(message[ERROR_STRINGFORMAT],0);
@@ -815,9 +810,8 @@ void handle_asm_blk(uint8_t width) {
     }
 
     if(currentExpandedMacro) {
-        if(macroExpandArg(_macro_expansion_buffer, token.start, currentExpandedMacro)) {
-            token.start = _macro_expansion_buffer;
-        }
+        macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
+        token.start = _macro_expansionline_buffer;
     }
 
     num = getExpressionValue(token.start, true); // <= needs a number of items during pass 1, otherwise addresses will be off later on
@@ -829,9 +823,8 @@ void handle_asm_blk(uint8_t width) {
         }
 
         if(currentExpandedMacro) {
-            if(macroExpandArg(_macro_expansion_buffer, token.start, currentExpandedMacro)) {
-                token.start = _macro_expansion_buffer;
-            }
+            macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
+            token.start = _macro_expansionline_buffer;
         }
         val = getExpressionValue(token.start, false); // value not required in pass 1
     }
@@ -1197,6 +1190,14 @@ void processMacro(void) {
 
     // Check for defined label
     if(currentline.label) definelabel(address);
+
+    //printf("Processing MACRO name <%s>\r\n", localexpandedmacro->name);
+    
+    // potentially transform arguments first, when calling from within a macro
+    if(currentExpandedMacro) {
+        macroExpandArg(_macro_expansionline_buffer, currentline.next, currentExpandedMacro);
+        currentline.next = _macro_expansionline_buffer;
+    }
 
     // set for additional line-based parsing/processing of the macro
     currentExpandedMacro = localexpandedmacro;

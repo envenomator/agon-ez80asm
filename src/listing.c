@@ -80,10 +80,12 @@ void listPrintLine(void) {
             strcat(buffer, "*");
         }
         if(currentExpandedMacro) {
-            strcat(buffer, "M ");
+            char tmpbuffer[5];
+            snprintf(tmpbuffer, 5, "M%d ", macrolevel);
+            strcat(buffer, tmpbuffer);
         }
         else {
-            strcat(buffer, "  ");
+            strcat(buffer, "   ");
         }
         for(i = maxstackdepth - i;i > 0; i--) {
             strcat(buffer, " ");
