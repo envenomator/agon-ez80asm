@@ -1191,8 +1191,6 @@ void processMacro(void) {
     // Check for defined label
     if(currentline.label) definelabel(address);
 
-    //printf("Processing MACRO name <%s>\r\n", localexpandedmacro->name);
-    
     // potentially transform arguments first, when calling from within a macro
     if(currentExpandedMacro) {
         macroExpandArg(_macro_expansionline_buffer, currentline.next, currentExpandedMacro);
@@ -1244,20 +1242,30 @@ void processMacro(void) {
             if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
         }
         else {
-            if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
-
+            // CALL nested macro instruction
             if(macrolevel >= MACRO_MAXLEVEL) {
                 error(message[ERROR_MACROMAXLEVEL],0);
                 return;
             }
+            if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+
             localmacrolinenumber = macrolinenumber;
             processMacro();
             // return to 'current' macro level content
             currentExpandedMacro = localexpandedmacro;
             macrolinenumber = localmacrolinenumber;
+            // Issue upstream errors/warnings here, so user can trace back the caller
+            if(global_errors) {
+                vdp_set_text_colour(DARK_RED);
+                printf("Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
+            }
+            if(issue_warning) {
+                vdp_set_text_colour(DARK_YELLOW);
+                printf("Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
+                vdp_set_text_colour(BRIGHT_WHITE);
+            }
         }
 
-        macrolinenumber++;
         if(global_errors) {
             vdp_set_text_colour(DARK_YELLOW);
             trimRight(errorline);
@@ -1266,12 +1274,13 @@ void processMacro(void) {
             return;
         }
         if(issue_warning) {
-            macro_invocation_warning = true;
+            macro_invocation_warning = true; // flag to upstream caller that there was at least a single warning
             vdp_set_text_colour(DARK_YELLOW);
             printf("%s\r\n",errorline);
-            vdp_set_text_colour(BRIGHT_WHITE);        
-            issue_warning = false;
+            vdp_set_text_colour(BRIGHT_WHITE);
+            issue_warning = false; // disable further LOCAL warnings until they occur
         }
+        macrolinenumber++;
     }
     // end processing
     currentExpandedMacro = NULL;
