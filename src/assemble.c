@@ -2,7 +2,7 @@
 #include <time.h>
 
 // Temp macro buffers
-char _macrobuffer[MACRO_BUFFERSIZE + 1];
+char _macro_content_buffer[MACRO_BUFFERSIZE + 1];
 char _macro_expansionline_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
 
 struct contentitem *filecontent[256]; // hash table with all file content items
@@ -908,8 +908,8 @@ void handle_asm_definemacro(void) {
 
     definelabel(address);
 
-    _macrobuffer[0] = 0; // empty string
-    strend = _macrobuffer;
+    _macro_content_buffer[0] = 0; // empty string
+    strend = _macro_content_buffer;
 
     if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine(); // print out first line of macro definition
 
@@ -1005,7 +1005,7 @@ void handle_asm_definemacro(void) {
             error(message[ERROR_MACROMEMORYALLOCATION],0);
             return;
         }
-        setMacroBody(macro, _macrobuffer);
+        setMacroBody(macro, _macro_content_buffer);
     }
 }
 
