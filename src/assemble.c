@@ -1247,7 +1247,7 @@ void processMacro(void) {
             if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
 
             if(macrolevel >= MACRO_MAXLEVEL) {
-                error(message[ERROR_MACRORECURSION],0);
+                error(message[ERROR_MACROMAXLEVEL],0);
                 return;
             }
             localmacrolinenumber = macrolinenumber;

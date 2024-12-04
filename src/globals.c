@@ -96,7 +96,7 @@ char *message[] = {
     "No macro definitions allowed inside a macro",
     "Calling macro from a macro",
     "Macro body larger than 2KB",
-    "Recursive macro invocation detected",
+    "Maximum nested macro level reached",
     "Illegal escape sequence in literal",
     "Input line too long",
     "Missing conditional expression",
