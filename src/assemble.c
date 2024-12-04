@@ -1269,14 +1269,17 @@ void processMacro(void) {
         if(global_errors) {
             vdp_set_text_colour(DARK_YELLOW);
             trimRight(errorline);
-            printf("%s\r\n",errorline);
+            macroExpandArg(_macro_expansionline_buffer, errorline, localexpandedmacro);
+            printf("%s\r\n",_macro_expansionline_buffer);
             vdp_set_text_colour(BRIGHT_WHITE);
             return;
         }
         if(issue_warning) {
             macro_invocation_warning = true; // flag to upstream caller that there was at least a single warning
             vdp_set_text_colour(DARK_YELLOW);
-            printf("%s\r\n",errorline);
+            trimRight(errorline);
+            macroExpandArg(_macro_expansionline_buffer, errorline, localexpandedmacro);
+            printf("%s\r\n",_macro_expansionline_buffer);
             vdp_set_text_colour(BRIGHT_WHITE);
             issue_warning = false; // disable further LOCAL warnings until they occur
         }
