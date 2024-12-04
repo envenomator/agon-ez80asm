@@ -1244,7 +1244,7 @@ void processMacro(void) {
         else {
             // CALL nested macro instruction
             if(macrolevel >= MACRO_MAXLEVEL) {
-                error(message[ERROR_MACROMAXLEVEL],0);
+                error(message[ERROR_MACROMAXLEVEL],"%d",MACRO_MAXLEVEL);
                 return;
             }
             if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
@@ -1438,7 +1438,7 @@ struct contentitem *contentPop(void) {
 
 bool contentPush(struct contentitem *ci) {
     if(_contentstacklevel == FILESTACK_MAXFILES) {
-        error(message[ERROR_MAXINCLUDEFILES],0);
+        error(message[ERROR_MAXINCLUDEFILES], "%d", FILESTACK_MAXFILES);
         return false;
     }
     _contentstack[_contentstacklevel++] = ci;
