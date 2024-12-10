@@ -113,6 +113,7 @@ value2: .equ 10
 Local labels start with the '@' symbol, terminated by a colon (':') and define a temporary label between two global labels. As soon as a new global label starts, all local labels become out of scope and a new scoped local label space starts.
 
 - Local labels are case-sensitive.
+- Global labels have a maximum length of 32 characters
 - Up to version 1.3, 64 local labels are currently supported in each scope. Version 1.4+ allows an infinite number, limited by the amount of available memory
 
 Example usage of local labels:
