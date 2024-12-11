@@ -21,7 +21,7 @@ void printVersion(void) {
 
 void printHelp(void) {
     printf("Usage: ez80asm <filename> [output filename] [OPTION]\n\r\r\n");
-    printf("  -v\tList version information\r\n");
+    printf("  -v\tList version information only\r\n");
     printf("  -h\tList help information\r\n");
     printf("  -o\tOrg start address in hexadecimal format, default is %06X\r\n", START_ADDRESS);
     printf("  -b\tFillbyte in hexadecimal format, default is %02X\r\n", FILLBYTE);
