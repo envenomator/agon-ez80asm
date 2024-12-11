@@ -12,7 +12,7 @@ These versions require at least MOS 1.03.
 ## Usage
 
     ez80asm <filename> [output filename] [OPTION]
-    -v List version information
+    -v List version information only
     -h List help information
     -o Org start address in hexadecimal format, default is 40000
     -b Fillbyte in hexadecimal format, default is FF
