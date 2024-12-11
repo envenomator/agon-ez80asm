@@ -925,10 +925,7 @@ void handle_asm_definemacro(void) {
             listStartLine(src, ci->currentlinenumber);
             listEndLine();
         }
-        if((!isspace(src[0])) && (src[0] != '@') && (src[0] != ';')) {
-            error(message[ERROR_MACRO_NOGLOBALLABELS],0);
-            break;
-        }
+
         // skip leading space
         while(*src && (isspace(*src))) src++;
         if(fast_strncasecmp(src, "macro", 5) == 0) {
@@ -1187,6 +1184,7 @@ void processMacro(void) {
     bool macro_invocation_warning = false;
 
     macrolevel++;
+    macroExpandID++;
 
     // Check for defined label
     if(currentline.label) definelabel(address);
@@ -1310,6 +1308,7 @@ void passInitialize(uint8_t passnumber) {
     issue_warning = false;
     remaining_dsspaces = 0;
     macrolevel = 0;
+    macroExpandID = 0;
 }
 
 void initFileContentTable(void) {

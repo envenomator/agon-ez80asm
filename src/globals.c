@@ -92,6 +92,7 @@ char *message[] = {
     "Incorrect number of macro arguments",
     "Macro argument substitution length too long",
     "No global labels allowed in macro definition",
+    "No anonymous labels allowed in macro definition",
     "Error allocating memory for macro",
     "No macro definitions allowed inside a macro",
     "Calling macro from a macro",

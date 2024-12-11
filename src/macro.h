@@ -21,6 +21,7 @@ typedef struct {
 
 extern uint8_t macroCounter;
 extern uint24_t macromemsize;
+extern uint24_t macroExpandID;
 
 void      initMacros(void);
 macro_t * defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t startlinenumber);

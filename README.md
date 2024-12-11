@@ -345,11 +345,11 @@ Example macro definition without arguments:
         ld l,a
         endmacro    ; end of macro definition
 
-Global labels are not allowed in macro definitions, but local/anonymous labels are.
+Important notes:
+- Starting v1.12 only local labels are allowed in macro definitions; global labels were never allowed, while using anonymous labels could result in issues using earlier versions. Starting v1.12 local labels defined inside a macro will get an internal macro expansion 'scope' so the macro can be expanded multiple times without label collisions. This 'scope' will not be visible in the listing. Because of their locality, labels defined inside a macro cannot be used outside of the macro
+- Starting v1.12, macros can be called from within a macro, with a maximum 'nesting' level of 8 to avoid expansion recursion.
+- Macro definitions are not allowed inside a macro definition
 
-Nested macros are not currently supported:
-- macros cannot be called from within a macro.
-- no macro definitions inside a macro definition
 
 Example macro with arguments:
 

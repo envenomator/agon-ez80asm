@@ -63,16 +63,20 @@ void initAnonymousLabelTable(void) {
 
 label_t * findLocalLabel(char *key) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
+    char *scopename;
     struct contentitem *ci = currentContent();
 
     if(currentcontentitem->labelscope[0] == 0) {
-        // local to file label
-        strcompound(compoundname, ci->name, key);
+        scopename = ci->name; // local to file label
     }
     else {
-        // local to global label
-        strcompound(compoundname, ci->labelscope, key);
+        scopename = ci->labelscope; // local to global label
     }
+
+    if(currentExpandedMacro) {
+        snprintf(compoundname, (MAXNAMELENGTH*2)+1, "%X%s%s", macroExpandID, scopename, key);
+    }
+    else strcompound(compoundname, scopename, key);
     return findGlobalLabel(compoundname);
 }
 
@@ -157,17 +161,21 @@ bool insertLabel(char *labelname, uint8_t len, int24_t labelAddress, bool local)
 
 bool insertLocalLabel(char *labelname, int24_t labelAddress) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
+    char *scopename;
     uint8_t len;
     struct contentitem *ci = currentContent();
 
     if(currentcontentitem->labelscope[0] == 0) {
-        // local to file label
-        len = strcompound(compoundname, ci->name , labelname);
+        scopename = ci->name; // local to file label
     }
     else {
-        // local to global label
-        len = strcompound(compoundname, ci->labelscope, labelname);
+        scopename = ci->labelscope; // local to global label
     }
+    if(currentExpandedMacro) {
+        snprintf(compoundname, (MAXNAMELENGTH*2)+1, "%X%s%s", macroExpandID, scopename, labelname);
+        len = strlen(compoundname);
+    }
+    else len = strcompound(compoundname, scopename, labelname);
     return insertLabel(compoundname, len, labelAddress, true);
 }
 
@@ -225,6 +233,10 @@ void definelabel(int24_t num){
 
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
+                if(currentExpandedMacro) {
+                    error(message[ERROR_MACRO_NOANONYMOUSLABELS],0);
+                    return;
+                }
                 writeAnonymousLabel(num);
                 return;
             }
@@ -238,7 +250,10 @@ void definelabel(int24_t num){
             error(message[ERROR_INVALIDLABEL],"%s",currentline.label);
             return;
         }
-
+        if(currentExpandedMacro) {
+            error(message[ERROR_MACRO_NOGLOBALLABELS],0);
+            return;
+        }
         len = strlen(currentline.label);
         str2num(currentline.label, len); 
         if(!err_str2num) { // labels can't have a valid number format

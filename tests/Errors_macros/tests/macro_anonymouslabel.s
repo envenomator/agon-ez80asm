@@ -1,6 +1,6 @@
     macro test
     ld a,b
-label: db 5
+@@: db 5
     endmacro
 
     test

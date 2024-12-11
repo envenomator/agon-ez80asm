@@ -12,6 +12,7 @@
 #include "utils.h"
 #include "globals.h"
 #include "io.h"
+#include "macro.h"
 
 enum {
     LABEL_REGULAR,

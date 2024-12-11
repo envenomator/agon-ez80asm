@@ -9,6 +9,9 @@
 uint24_t macromemsize;
 uint8_t macroCounter;
 
+// internal tracking number per expansion. Starts at 0 and sequentially increases each expansion to create a macro expansion scope (for labels)
+uint24_t macroExpandID;
+
 void initMacros(void) {
     macromemsize = 0;
     macroCounter = 0;
