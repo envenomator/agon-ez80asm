@@ -1182,9 +1182,11 @@ void processMacro(void) {
     unsigned int localmacrolinenumber;
     char substitutionlist[MACROMAXARGS][MACROARGSUBSTITUTIONLENGTH + 1]; // temporary storage for substitutions during expansion
     bool macro_invocation_warning = false;
+    uint24_t localmacroExpandID;
 
     macrolevel++;
-    macroExpandID++;
+    localmacroExpandID = macroExpandID++;
+    localexpandedmacro->currentExpandID = localmacroExpandID;
 
     // Check for defined label
     if(currentline.label) definelabel(address);
@@ -1252,6 +1254,8 @@ void processMacro(void) {
             // return to 'current' macro level content
             currentExpandedMacro = localexpandedmacro;
             macrolinenumber = localmacrolinenumber;
+            localexpandedmacro->currentExpandID = localmacroExpandID;
+
             // Issue upstream errors/warnings here, so user can trace back the caller
             if(global_errors) {
                 vdp_set_text_colour(DARK_RED);

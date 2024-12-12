@@ -17,6 +17,7 @@ typedef struct {
     char**  arguments;
     char**  substitutions;
     void*   next;
+   uint24_t currentExpandID;
 } macro_t;
 
 extern uint8_t macroCounter;

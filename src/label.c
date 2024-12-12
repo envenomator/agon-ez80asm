@@ -74,7 +74,7 @@ label_t * findLocalLabel(char *key) {
     }
 
     if(currentExpandedMacro) {
-        snprintf(compoundname, (MAXNAMELENGTH*2)+1, "%X%s%s", macroExpandID, scopename, key);
+        snprintf(compoundname, (MAXNAMELENGTH*2)+1, "%X%s%s", currentExpandedMacro->currentExpandID, scopename, key);
     }
     else strcompound(compoundname, scopename, key);
     return findGlobalLabel(compoundname);
@@ -172,7 +172,7 @@ bool insertLocalLabel(char *labelname, int24_t labelAddress) {
         scopename = ci->labelscope; // local to global label
     }
     if(currentExpandedMacro) {
-        snprintf(compoundname, (MAXNAMELENGTH*2)+1, "%X%s%s", macroExpandID, scopename, labelname);
+        snprintf(compoundname, (MAXNAMELENGTH*2)+1, "%X%s%s", currentExpandedMacro->currentExpandID, scopename, labelname);
         len = strlen(compoundname);
     }
     else len = strcompound(compoundname, scopename, labelname);
