@@ -64,7 +64,7 @@ Global labels are reachable in the entire source file and cannot have the same n
 - Global labels have a maximum length of 32 characters
 - Numbers cannot be used as a label name
 - Register names can be used as a label name, however doing so is not recommended.
-- Global labels cannot be defined inside a macro
+- Global labels cannot be **defined** inside a macro, however global labels that are defined outside the macro, can be **referenced** inside a macro.
 
 ### EQU labels
 By using the EQU directive, global labels can be defined as a number constant instead of an address. These constants can be used in places where a number is expected in an operand. They can also be used with other directives; however the directive determines if such a constant can be defined before and/or after the directive itself. See the table below for additional details:
@@ -114,9 +114,10 @@ value2: .equ 10
 Local labels start with the '@' symbol, terminated by a colon (':') and define a temporary label between two global labels. As soon as a new global label starts, all local labels become out of scope and a new scoped local label space starts.
 
 - Local labels are case-sensitive.
-- Global labels have a maximum length of 32 characters
+- Global labels have a maximum length of 32 characters, including the '@' symbol
 - Up to version 1.3, 64 local labels are currently supported in each scope. Version 1.4+ allows an infinite number, limited by the amount of available memory
-- A local the only type of label that can be defined inside of a macro, which will then have a private/inside expansion 'scope' that is invisible from outside the macro
+- A local label is the only type of label that can be defined inside of a macro, which will then have a private internal per-expansion scope that is invisible from outside the macro
+- A local label defined **outside** a macro cannot be referenced from **inside** a macro.
 
 Example usage of local labels:
 
@@ -169,7 +170,7 @@ While this makes it possible to immediately reference them from outside of their
 Anonymous labels are labeled '@@', terminated by a colon (':') and define a temporary label. As soon as a new anonymous label is defined, the previous is no longer reachable.
 Code can use @f/@n or @b/@p, to get the label in the FORWARD/NEXT, or BACKWARD/PREVIOUS direction.
 
-Anonymous labels cannot be defined inside a macro.
+Anonymous labels cannot be **defined** inside a macro. To optimize for performance, **referencing** an **outside** anonymous label from inside a macro isn't prohibited. Be mindful using such references, because they might result in unexpected program behavior.
 
 Example usage of anonymous labels:
 
@@ -350,10 +351,9 @@ Example macro definition without arguments:
         endmacro    ; end of macro definition
 
 Important notes:
-- Starting v1.12 only local labels are allowed in macro definitions; global labels were never allowed, while using anonymous labels could result in issues using earlier versions. Starting v1.12 local labels defined inside a macro will get an internal macro expansion 'scope' so the macro can be expanded multiple times without label collisions. This 'scope' will not be visible in the listing. Because of their locality, labels defined inside a macro cannot be used outside of the macro
-- Starting v1.12, macros can be called from within a macro, with a maximum 'nesting' level of 8 to avoid expansion recursion.
+- Starting v1.12 only **local** labels are allowed in macro definitions; global labels were never allowed, while defining anonymous labels in a macro could result in issues using earlier versions. Starting v1.12 local labels defined inside a macro will get an internal macro expansion 'scope', so the macro can be expanded multiple times without label collisions. This 'scope' will not be visible in the listing. Because of their locality, labels defined inside a macro cannot be referenced to outside of the macro
+- Starting v1.12, macros can be called from within a macro, with a maximum 'nesting' level of 8 to block expansion recursion.
 - Macro definitions are not allowed inside a macro definition
-
 
 Example macro with arguments:
 
@@ -368,8 +368,8 @@ Example macro usage / expansion later in the code:
         ; will expand to add a, 10
         ;                add l, 15
 
-## Simple conditional assembly support
-The assembler supports simple conditional assembly using if/else/endif assembler directives. There is no support for nested conditions.
+## Basic conditional assembly support
+The assembler supports basic conditional assembly using if/else/endif assembler directives. There is no support for nested conditions.
 
 The 'if' directive assesses the value of the given value, usually a label. When this is non-zero, the lines following the directive are assembled up to the 'else' or 'endif' statement. If the value is zero, any lines after an appearing 'else' statement are assembled up to the 'endif' statement.
 
