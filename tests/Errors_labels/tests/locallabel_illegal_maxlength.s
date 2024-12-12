@@ -1,0 +1,2 @@
+;2345678901234567890123456789012345
+@locallabelwith32charactersisok22: ld a,b

@@ -1,0 +1,2 @@
+;2345678901234567890123456789012345
+labelswith32charactersareokforme1: ld a,b

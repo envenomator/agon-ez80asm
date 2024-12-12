@@ -231,6 +231,10 @@ void definelabel(int24_t num){
     if(pass == 1) {
         if(currentline.label == NULL) return;
 
+        if(strlen(currentline.label) > MAXNAMELENGTH) {
+            error(message[ERROR_LABELTOOLONG], "%s", currentline.label);
+            return;
+        }
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
                 if(currentExpandedMacro) {
