@@ -361,7 +361,6 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
 void parseLine(char *src) {
     uint8_t oplength = 0;
     uint8_t x;
-    bool done;
     bool asmcmd = false;
     uint8_t state;
     uint8_t argcount = 0;
@@ -373,8 +372,7 @@ void parseLine(char *src) {
     memset(&operand2, 0, (sizeof(operand_t) - sizeof(operand2.immediate_name) + 1));
 
     state = PS_START;
-    done = false;
-    while(!done) {
+    while(true) {
         switch(state) {
             case PS_START:
                 if((isspace(*src) == 0) && (*src) != '.') {
@@ -392,8 +390,7 @@ void parseLine(char *src) {
                             }
                         default: // intentional fall-through
                             error(message[ERROR_INVALIDLABEL],0);
-                            state = PS_ERROR;                        
-                            break;
+                            return;
                     }
                     break;
                 }
@@ -404,10 +401,8 @@ void parseLine(char *src) {
                     break;
                 }
                 else {
-                    if(streamtoken.terminator == 0) {
-                        state = PS_DONE;
-                        break;
-                    }
+                    if(streamtoken.terminator == 0) return;
+
                     if(streamtoken.terminator == ';') {
                         state = PS_COMMENT;
                         break;
@@ -420,10 +415,8 @@ void parseLine(char *src) {
                 x = getMnemonicToken(&streamtoken, streamtoken.next);
                 if(x) state = PS_COMMAND;
                 else {
-                    if(streamtoken.terminator == 0) {
-                        state = PS_DONE;
-                        break;
-                    }
+                    if(streamtoken.terminator == 0) return;
+
                     if(streamtoken.terminator == ';') {
                         state = PS_COMMENT;
                         currentline.next = streamtoken.next;
@@ -443,8 +436,7 @@ void parseLine(char *src) {
                 if(currentline.current_instruction == NULL) {
                     if(!asmcmd) {
                         error(message[ERROR_INVALIDMNEMONIC],"%s",currentline.mnemonic);
-                        state = PS_ERROR;
-                        break;
+                        return;
                     }
                     // Check for assembler command
                     currentline.mnemonic = streamtoken.start + 1;
@@ -452,8 +444,7 @@ void parseLine(char *src) {
                     if((currentline.current_instruction == NULL) ||
                        (currentline.current_instruction->type != ASSEMBLER)) {
                         error(message[ERROR_INVALIDMNEMONIC],"%s",currentline.mnemonic);
-                        state = PS_ERROR;
-                        break;
+                        return;
                     }
                     // Valid assembler command found (with a .)
                 }
@@ -466,33 +457,29 @@ void parseLine(char *src) {
                                 break;
                             case 0:
                                 currentline.next = NULL;
-                                state = PS_DONE;
-                                break;
+                                return;
                             default:
                                 if(streamtoken.next) {
                                     oplength = getOperandToken(&streamtoken, streamtoken.next);
                                     if(oplength) {
-                                        state = PS_OP1;
+                                        state = PS_OP;
                                         break;
                                     }
                                 }
-                                state = PS_DONE; // ignore any comments
-                                break;
+                                return; // ignore any comments
                         }
                         break;
                     case ASSEMBLER:
                         currentline.next = streamtoken.next;
-                        state = PS_DONE;
-                        break;
+                        return;
                     case MACRO:
                         currentline.current_macro = currentline.current_instruction->macro;
                         currentline.current_instruction = NULL;
                         currentline.next = streamtoken.next;
-                        state = PS_DONE;
-                        break;
+                        return;
                 }
                 break;
-            case PS_OP1:
+            case PS_OP:
                 argcount++;                
                 if(currentExpandedMacro) {
                     macroExpandArg(_macro_expansionline_buffer, streamtoken.start, currentExpandedMacro);
@@ -511,34 +498,23 @@ void parseLine(char *src) {
                         break;
                     case 0:
                         currentline.next = NULL;
-                        state = PS_DONE;
-                        break;
+                        return;
                     case ',':
                         if(argcount == 2) {
                             error(message[ERROR_TOOMANYARGUMENTS],0);
-                            state = PS_ERROR;
-                            break;
+                            return;
                         }
                         oplength = getOperandToken(&streamtoken, streamtoken.next);
                         if(oplength == 0) {
                             error(message[ERROR_MISSINGOPERAND],0);
-                            state = PS_ERROR;
-                            break;
+                            return;
                         }
                         break;
                 }
                 break;
             case PS_COMMENT:
                 currentline.comment = currentline.next;
-                state = PS_DONE;
-                break;
-            case PS_ERROR:
-                currentline.next = NULL;
-                state = PS_DONE;
-                break;
-            case PS_DONE:
-                done = true;
-                break;
+                return;
         }
     }
 }
