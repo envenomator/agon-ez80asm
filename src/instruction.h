@@ -211,7 +211,7 @@ typedef struct {
 } instruction_t;
 
 instruction_t * instruction_lookup(char *name);
-void init_instruction_table(void);
+void initInstructionTable(void);
 void emit_instruction(operandlist_t *list);
 uint8_t get_immediate_size(uint8_t suffix);
 

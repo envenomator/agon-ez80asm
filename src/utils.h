@@ -41,6 +41,8 @@ void trimRight(char *str);
 
 void error(const char *msg, const char *contextformat, ...);
 void warning(const char *msg, const char *contextformat, ...);
+void colorPrintf(int color, const char *msg, ...);
+
 int32_t getExpressionValue(char *str, bool req_firstpass);
 uint8_t getEscapedChar(char c);
 uint8_t getLiteralValue(char *string);

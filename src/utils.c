@@ -56,7 +56,14 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
 void displayerror(const char *msg, const char *context, uint8_t level) {
     struct contentitem *ci = currentContent();
 
-    if((global_errors == 1) || (level == LEVEL_WARNING)) {
+    if(level == LEVEL_WARNING) {
+        vdp_set_text_colour(DARK_YELLOW);
+    }
+    else {
+        vdp_set_text_colour(DARK_RED);
+    }
+
+    if((errorcount == 1) || (level == LEVEL_WARNING)) {
         if(ci) {
             if(currentExpandedMacro) {
                 printf("Macro [%s] in \"%s\" line %d - ",currentExpandedMacro->name, currentExpandedMacro->originfilename, currentExpandedMacro->originlinenumber+macrolinenumber);
@@ -89,11 +96,18 @@ void error(const char *msg, const char *contextformat, ...) {
     }
     else context[0] = 0;
 
-    vdp_set_text_colour(DARK_RED);
-    global_errors++;
+    errorcount++;
     errorreportlevel = currentStackLevel();
 
     displayerror(msg, context, LEVEL_ERROR);
+}
+
+void colorPrintf(int color, const char *msg, ...) {
+    vdp_set_text_colour(color);
+    va_list args;
+    va_start(args, msg);
+    vprintf(msg, args);
+    vdp_set_text_colour(BRIGHT_WHITE);
 }
 
 void warning(const char *msg, const char *contextformat, ...) {
@@ -107,7 +121,6 @@ void warning(const char *msg, const char *contextformat, ...) {
     }
     else context[0] = 0;
 
-    vdp_set_text_colour(DARK_YELLOW);
     issue_warning = true;
 
     displayerror(msg, context, LEVEL_WARNING);

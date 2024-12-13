@@ -44,7 +44,7 @@ extern conditionalstate inConditionalSection;
 extern macro_t *currentExpandedMacro;
 extern uint8_t macrolevel;
 extern uint24_t address;
-extern uint16_t global_errors;
+extern uint16_t errorcount;
 extern bool adlmode;
 extern tokenline_t currentline;
 extern bool list_enabled;
@@ -56,6 +56,7 @@ extern unsigned int labelcollisions;
 extern bool ignore_truncation_warnings;
 extern bool issue_warning;
 extern uint24_t remaining_dsspaces;
+extern bool exportsymbols, displaystatistics;
 
 // Global parsed results
 extern uint8_t suffix;      // per-instruction suffix code

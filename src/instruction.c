@@ -893,7 +893,7 @@ instruction_t * instruction_lookup(char *name) {
     }
 }
 
-void init_instruction_table(void) {
+void initInstructionTable(void) {
     uint16_t n;
     uint8_t index;
     instruction_t *try;

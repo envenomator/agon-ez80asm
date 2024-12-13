@@ -16,7 +16,7 @@ char buffer[(LINEMAX * 2) + 1];
 
 void listInit(void) {
     sprintf(buffer, "%s", _listHeader);
-    if(list_enabled) io_puts(FILE_LISTING, buffer);
+    if(list_enabled) ioPuts(FILE_LISTING, buffer);
     if(consolelist_enabled) printf("%s", _listHeader);
     _listLine[0] = 0;
 }
@@ -34,19 +34,19 @@ void listStartLine(char *line, unsigned int linenumber) {
 void listPrintDSLines(int number, int value) {
     while(number) {
         uint8_t i = 0;
-        if(list_enabled) io_puts(FILE_LISTING, _listDataHeader);
+        if(list_enabled) ioPuts(FILE_LISTING, _listDataHeader);
         if(consolelist_enabled) printf("%s",_listDataHeader);
 
         while(i < LISTING_OBJECTS_PER_LINE) {
             if(number) {
                 sprintf(buffer, "%02X ",value);
-                if(list_enabled) io_puts(FILE_LISTING, buffer);
+                if(list_enabled) ioPuts(FILE_LISTING, buffer);
                 if(consolelist_enabled) printf("%s",buffer);
                 number--;
             }
             i++;
         }
-        if(list_enabled) io_puts(FILE_LISTING, "\r\n");
+        if(list_enabled) ioPuts(FILE_LISTING, "\r\n");
         if(consolelist_enabled) printf("\r\n");
     }
 }
@@ -56,22 +56,22 @@ void listPrintLine(void) {
 
     if(_listLineNumber == 0) {
         sprintf(buffer, "%06X ",_listAddress);
-        if(list_enabled) io_puts(FILE_LISTING, buffer);
+        if(list_enabled) ioPuts(FILE_LISTING, buffer);
         if(consolelist_enabled) printf("%s",buffer);
     }
     else {
-        if(list_enabled) io_puts(FILE_LISTING, _listDataHeader);
+        if(list_enabled) ioPuts(FILE_LISTING, _listDataHeader);
         if(consolelist_enabled) printf("%s", _listDataHeader);
     }
     for(i = 0; i < _listLineObjectCount; i++) {
         sprintf(buffer, "%02X ",_listObjects[i]);
-        if(list_enabled) io_puts(FILE_LISTING, buffer);
+        if(list_enabled) ioPuts(FILE_LISTING, buffer);
         if(consolelist_enabled) printf("%s",buffer);
     }
     spaces = LISTING_OBJECTS_PER_LINE - _listLineObjectCount;
     for(i = 0; i < spaces; i++) {
         sprintf(buffer, "   ");
-        if(list_enabled) io_puts(FILE_LISTING, buffer);
+        if(list_enabled) ioPuts(FILE_LISTING, buffer);
         if(consolelist_enabled) printf("%s",buffer);
     }
     if(_listLineNumber == 0) {
@@ -90,14 +90,14 @@ void listPrintLine(void) {
         for(i = maxstackdepth - i;i > 0; i--) {
             strcat(buffer, " ");
         }
-        if(list_enabled) io_puts(FILE_LISTING, buffer);
+        if(list_enabled) ioPuts(FILE_LISTING, buffer);
         if(consolelist_enabled) printf("%s",buffer);
         sprintf(buffer, "%s", _listLine);
-        if(list_enabled) io_puts(FILE_LISTING, buffer);
+        if(list_enabled) ioPuts(FILE_LISTING, buffer);
         if(consolelist_enabled) printf("%s",buffer);
     }
 
-    if(list_enabled) io_puts(FILE_LISTING, "\r\n");
+    if(list_enabled) ioPuts(FILE_LISTING, "\r\n");
     if(consolelist_enabled) printf("\r\n");
 
     _listLineObjectCount = 0;

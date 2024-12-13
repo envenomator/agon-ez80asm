@@ -7,6 +7,9 @@ char filebasename[FILENAMEMAXLENGTH + 1];
 // Global variables
 char     filename[FILES][FILENAMEMAXLENGTH + 1];
 FILE*    filehandle[FILES];
+struct contentitem *filecontent[256]; // hash table with all file content items
+struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
+uint8_t _contentstacklevel;
 
 // Local variables
 char *   _bufferstart[FILES];          // statically set start of buffer to each file
@@ -22,7 +25,7 @@ char     _outputbuffer[FILE_BUFFERSIZE];
     }
 #endif // else use standard remove()
 
-FILE *io_openfile(char *name, char *mode) {
+FILE *ioOpenfile(char *name, char *mode) {
     FILE *fh = fopen(name, mode);
     if(!fh) {
         error("Error opening", "%s", name);
@@ -30,7 +33,7 @@ FILE *io_openfile(char *name, char *mode) {
     return fh;
 }
 
-uint24_t io_getfilesize(FILE *fh) {
+uint24_t ioGetfilesize(FILE *fh) {
     uint24_t filesize;
 
     #ifdef CEDEV
@@ -93,7 +96,7 @@ void _prepare_filenames(char *output_filename) {
 
     strcpy(filename[FILE_ANONYMOUS_LABELS], filebasename);
     strcpy(filename[FILE_LISTING], filebasename);
-    strcat(filename[FILE_ANONYMOUS_LABELS], ".anonlbls");
+    strcat(filename[FILE_ANONYMOUS_LABELS], ".lbl");
     strcat(filename[FILE_LISTING], ".lst");
 }
 
@@ -101,7 +104,7 @@ void _deleteFiles(void) {
     if(CLEANUPFILES) {
         remove(filename[FILE_ANONYMOUS_LABELS]);
     }
-    if(global_errors && CLEANUPFILES) remove(filename[FILE_OUTPUT]);
+    if(errorcount && CLEANUPFILES) remove(filename[FILE_OUTPUT]);
 }
 
 void _closeAllFiles(void) {
@@ -111,13 +114,24 @@ void _closeAllFiles(void) {
 }
 
 bool _openfiles(void) {
-    bool status = true;
-
-    status = status && _openFile(FILE_OUTPUT, "wb+");
-    status = status && _openFile(FILE_ANONYMOUS_LABELS, "wb+");
-    if(list_enabled) status = status && _openFile(FILE_LISTING, "w");
-    if(!status) _closeAllFiles();
-    return status;
+    if(!_openFile(FILE_OUTPUT, "wb+")) {
+        error("Error creating output file", 0);
+        _closeAllFiles();
+        return false;
+    }
+    if(!_openFile(FILE_ANONYMOUS_LABELS, "wb+")) {
+        error("Error creating anonymous labels file", 0);
+        _closeAllFiles();
+        return false;
+    }
+    if(list_enabled) {
+        if(!_openFile(FILE_LISTING, "w")) {
+            error("Error creating listing file", 0);
+            _closeAllFiles();
+            return false;
+        }
+    }
+    return true;
 }
 
 // Will be called for output files only
@@ -136,7 +150,7 @@ void _io_flushOutput(void) {
 }
 
 // Only called on output-mode files
-void io_putc(uint8_t fh, unsigned char c) {
+void ioPutc(uint8_t fh, unsigned char c) {
     if(_bufferstart[fh]) {
         // Buffered IO
         *(_filebuffer[fh]++) = c;
@@ -152,7 +166,7 @@ void io_outputc(unsigned char c) {
     if(_filebuffersize[FILE_OUTPUT] == FILE_BUFFERSIZE) _io_flush(FILE_OUTPUT);
 }
 
-void  io_write(uint8_t fh, char *s, uint16_t size) {
+void  ioWrite(uint8_t fh, char *s, uint16_t size) {
     if(_bufferstart[fh]) {
         // Buffered IO
         while(size--) {
@@ -164,26 +178,24 @@ void  io_write(uint8_t fh, char *s, uint16_t size) {
     else fwrite(s, 1, size, filehandle[fh]);
 }
 
-int io_puts(uint8_t fh, char *s) {
+int ioPuts(uint8_t fh, char *s) {
     int number = 0;
     while(*s) {
-        io_putc(fh, *s);
+        ioPutc(fh, *s);
         number++;
         s++;
     }
     return number;
 }
 
-bool io_init(char *input_filename, char *output_filename) {
-    sourcefilecount = 0;
-    binfilecount = 0;
+bool ioInit(char *input_filename, char *output_filename) {
     create_filebasename(input_filename);
     _prepare_filenames(output_filename);
     _initFileBuffers();
     return _openfiles();
 }
 
-void io_close(void) {
+void ioClose(void) {
     _io_flushOutput();
     _closeAllFiles();
     _deleteFiles();
@@ -286,4 +298,9 @@ void emit_immediate(operand_t *op, uint8_t suffix) {
     emit_8bit((op->immediate >> 8) & 0xFF);
     if(num == 2) validateRange16bit(op->immediate, op->immediate_name);
     if(num == 3) emit_8bit((op->immediate >> 16) & 0xFF);
+}
+
+void initFileContentTable(void) {
+    filecontentsize = 0;
+    memset(filecontent, 0, sizeof(filecontent));
 }

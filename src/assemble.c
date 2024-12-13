@@ -5,11 +5,7 @@
 char _macro_content_buffer[MACRO_BUFFERSIZE + 1];
 char _macro_expansionline_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
 
-struct contentitem *filecontent[256]; // hash table with all file content items
-struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
-uint8_t _contentstacklevel;
-
-bool processContent(char *filename);
+void processContent(char *filename);
 uint16_t getnextContentLine(struct contentitem *ci);
 uint16_t getnextContentMacroLine(char *dst, struct contentitem *ci);
 struct contentitem *findContent(char *filename);
@@ -736,7 +732,7 @@ void handle_asm_include(void) {
     }
     processContent(token.start+1);
 
-    if(pass == 1) sourcefilecount++;
+    sourcefilecount++;
 
     if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
 }
@@ -765,8 +761,7 @@ void handle_asm_incbin(void) {
     token.start[strlen(token.start)-1] = 0;
 
     // Prepare content
-    ci = findContent(token.start+1);
-    if(ci == NULL) {
+    if((ci = findContent(token.start+1)) == NULL) {
         if(pass == 1) {
             ci = insertContent(token.start+1);
             if(ci == NULL) return;
@@ -782,7 +777,7 @@ void handle_asm_incbin(void) {
             for(n = 0; n < ci->size; n++) emit_8bit(ci->buffer[n]);
         }
         else {
-            io_write(FILE_OUTPUT, ci->buffer, ci->size);
+            ioWrite(FILE_OUTPUT, ci->buffer, ci->size);
             address += ci->size;
         }
     }
@@ -1236,7 +1231,6 @@ void processMacro(void) {
         if(pass == 2 && (consolelist_enabled || list_enabled)) listStartLine(macroline, macrolinenumber);
         parseLine(macroline);
 
-
         if(!currentline.current_macro) {
             processInstructions();
             if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
@@ -1257,32 +1251,25 @@ void processMacro(void) {
             localexpandedmacro->currentExpandID = localmacroExpandID;
 
             // Issue upstream errors/warnings here, so user can trace back the caller
-            if(global_errors) {
-                vdp_set_text_colour(DARK_RED);
-                printf("Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
+            if(errorcount) {
+                colorPrintf(DARK_RED, "Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
             }
             if(issue_warning) {
-                vdp_set_text_colour(DARK_YELLOW);
-                printf("Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
-                vdp_set_text_colour(BRIGHT_WHITE);
+                colorPrintf(DARK_YELLOW, "Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
             }
         }
 
-        if(global_errors) {
-            vdp_set_text_colour(DARK_YELLOW);
+        if(errorcount) {
             trimRight(errorline);
             macroExpandArg(_macro_expansionline_buffer, errorline, localexpandedmacro);
-            printf("%s\r\n",_macro_expansionline_buffer);
-            vdp_set_text_colour(BRIGHT_WHITE);
+            colorPrintf(DARK_YELLOW, "%s\r\n",_macro_expansionline_buffer);
             return;
         }
         if(issue_warning) {
             macro_invocation_warning = true; // flag to upstream caller that there was at least a single warning
-            vdp_set_text_colour(DARK_YELLOW);
             trimRight(errorline);
             macroExpandArg(_macro_expansionline_buffer, errorline, localexpandedmacro);
-            printf("%s\r\n",_macro_expansionline_buffer);
-            vdp_set_text_colour(BRIGHT_WHITE);
+            colorPrintf(DARK_YELLOW, "%s\r\n",_macro_expansionline_buffer);
             issue_warning = false; // disable further LOCAL warnings until they occur
         }
         macrolinenumber++;
@@ -1302,22 +1289,15 @@ void passInitialize(uint8_t passnumber) {
     inConditionalSection = CONDITIONSTATE_NORMAL;
     initAnonymousLabelTable();
     _contentstacklevel = 0;
-    if(pass == 1) {
-        sourcefilecount = 1;
-        binfilecount = 0;
-    }
-    if(pass == 2) {
-        fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
-    }
+    sourcefilecount = 1;
+    binfilecount = 0;
+
+    if(pass == 2) fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
+
     issue_warning = false;
     remaining_dsspaces = 0;
     macrolevel = 0;
     macroExpandID = 0;
-}
-
-void initFileContentTable(void) {
-    filecontentsize = 0;
-    memset(filecontent, 0, sizeof(filecontent));
 }
 
 struct contentitem *insertContent(char *filename) {
@@ -1329,9 +1309,9 @@ struct contentitem *insertContent(char *filename) {
     if(ci == NULL) return NULL;
     ci->name = allocateString(filename);
     if(ci->name == NULL) return NULL;
-    ci->fh = io_openfile(filename, "rb");
+    ci->fh = ioOpenfile(filename, "rb");
     if(ci->fh == 0) return NULL;
-    ci->size = io_getfilesize(ci->fh);
+    ci->size = ioGetfilesize(ci->fh);
     ci->buffer = allocateMemory(ci->size+1);
     ci->readptr = ci->buffer;
     if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
@@ -1457,19 +1437,17 @@ struct contentitem *currentContent(void) {
     else return NULL;
 }
 
-bool processContent(char *filename) {
+void processContent(char *filename) {
     char line[LINEMAX+1];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
     char errorline[LINEMAX+1]; // Full integrity copy of each line
     struct contentitem *ci;
 
-    // Prepare content
-    ci = findContent(filename);
-    if(ci == NULL) {
+    if((ci = findContent(filename)) == NULL) {
         if(pass == 1) {
             ci = insertContent(filename);
-            if(ci == NULL) return false;
+            if(ci == NULL) return;
         }
-        else return false;
+        else return;
     }
 
     // Prepare processing
@@ -1478,9 +1456,9 @@ bool processContent(char *filename) {
     ci->currentline = line;
     ci->currenterrorline = errorline;
     ci->inConditionalSection = inConditionalSection;
-    if(!contentPush(ci)) return false;
-
+    if(!contentPush(ci)) return;
     inConditionalSection = CONDITIONSTATE_NORMAL;
+
     // Process
     while(getnextContentLine(ci)) {
         ci->currentlinenumber++;
@@ -1496,57 +1474,43 @@ bool processContent(char *filename) {
             if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
             processMacro();
             if(issue_warning) { // warnings from the expanded macro
-                vdp_set_text_colour(DARK_YELLOW);
-                printf("Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
-                printf("%s\r\n",errorline);
-                vdp_set_text_colour(BRIGHT_WHITE);
+                colorPrintf(DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n%s", filename, ci->currentlinenumber, errorline);
                 issue_warning = false;
             }
         }
-        if(global_errors) {
+        if(errorcount) {
             if(currentExpandedMacro) {
-                vdp_set_text_colour(DARK_RED);
-                printf("Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
                 currentExpandedMacro = NULL;
+                colorPrintf(DARK_RED, "Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
             }
             if(currentStackLevel() == errorreportlevel) {
-                vdp_set_text_colour(DARK_YELLOW);
-                printf("%s\r\n",errorline);
-                vdp_set_text_colour(BRIGHT_WHITE);
+                colorPrintf(DARK_YELLOW, "%s\r\n",errorline);
             }
             contentPop();
-            return false;
-        }
+            return;
+        }      
         if(issue_warning) { // local-level warnings
-            vdp_set_text_colour(DARK_YELLOW);
-            printf("%s\r\n",errorline);
-            vdp_set_text_colour(BRIGHT_WHITE);
+            colorPrintf(DARK_YELLOW, "%s",errorline);
             issue_warning = false;
         }
     }
     if(inConditionalSection != CONDITIONSTATE_NORMAL) {
         error(message[ERROR_MISSINGENDIF],0);
         contentPop();
-        return false;
+        return;
     }
     contentPop();
     strcpy(ci->labelscope, ""); // empty scope for next pass
 
-    return true;
+    return;
 }
 
-bool assemble(char *filename) {
-    global_errors = 0;
-    errorreportlevel = 0;
-
-    maxstackdepth = 0;
-    initFileContentTable();
-
+void assemble(char *filename) {
     // Pass 1
     printf("Pass 1...\r\n");
     passInitialize(1);
     processContent(filename);
-    if(global_errors) return false;
+    if(errorcount) return;
 
     // Pass 2
     printf("Pass 2...\r\n");
@@ -1554,7 +1518,5 @@ bool assemble(char *filename) {
     readAnonymousLabel();
     if(consolelist_enabled || list_enabled) listInit();
     processContent(filename);
-    if(global_errors) return false;
-
-    return true;
+    return;
 }

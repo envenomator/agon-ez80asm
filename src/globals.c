@@ -16,7 +16,7 @@ conditionalstate inConditionalSection;
 macro_t *currentExpandedMacro;
 uint8_t macrolevel;
 uint24_t address;
-uint16_t global_errors;
+uint16_t errorcount;
 bool adlmode;
 bool list_enabled;
 bool consolelist_enabled;
@@ -27,6 +27,7 @@ unsigned int labelcollisions;
 bool ignore_truncation_warnings;
 bool issue_warning;
 uint24_t remaining_dsspaces;
+bool exportsymbols, displaystatistics;
 
 tokenline_t currentline;
 
