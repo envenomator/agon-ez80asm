@@ -18,11 +18,8 @@ void initMacros(void) {
 }
 
 void setMacroBody(macro_t *macro, const char *body) {
-    macro->body = (char*)malloc(strlen(body)+1);
-    if(macro->body == NULL) {
-        error(message[ERROR_MACROMEMORYALLOCATION],0);
-        return;
-    }
+    macro->body = (char*)allocateMemory(strlen(body)+1);
+    if(macro->body == NULL) return;
     strcpy(macro->body, body);
 }
 
@@ -34,22 +31,22 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
     instruction_t *try, *macroinstruction;
 
     // allocate space in buffer for macro_t struct
-    tmp = (macro_t *)malloc(sizeof(macro_t));
+    tmp = (macro_t *)allocateMemory(sizeof(macro_t));
     macromemsize += sizeof(macro_t);
-    if(tmp == 0) return NULL;
+    if(tmp == NULL) return NULL;
 
-    macroinstruction = (instruction_t *)malloc(sizeof(instruction_t));
+    macroinstruction = (instruction_t *)allocateMemory(sizeof(instruction_t));
     macromemsize += sizeof(instruction_t);
-    if(macroinstruction == 0) return NULL;
+    if(macroinstruction == NULL) return NULL;
 
     // Link together
     macroinstruction->type = MACRO;
     macroinstruction->macro = tmp;
 
     len = (unsigned int)strlen(name)+1;
-    macroinstruction->name = (char *)malloc(len);
+    macroinstruction->name = (char *)allocateMemory(len);
     macromemsize += len;
-    if(macroinstruction->name == 0) return NULL;
+    if(macroinstruction->name == NULL) return NULL;
 
     tmp->name = macroinstruction->name;
     strcpy(macroinstruction->name, name);
@@ -60,10 +57,12 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
     tmp->substitutions = NULL;
     if(argcount == 0) tmp->arguments = NULL;
     else {
-        tmp->arguments = (char **)malloc(argcount * sizeof(char *)); // allocate array of char*
+        tmp->arguments = (char **)allocateMemory(argcount * sizeof(char *)); // allocate array of char*
         macromemsize += argcount * sizeof(char *);
-        tmp->substitutions = (char **)malloc(argcount * sizeof(char *));
+        if(tmp->arguments == NULL) return NULL;
+        tmp->substitutions = (char **)allocateMemory(argcount * sizeof(char *));
         macromemsize += argcount * sizeof(char *);
+        if(tmp->substitutions == NULL) return NULL;
         if((tmp->arguments == NULL) || (tmp->substitutions == NULL)) return NULL;
 
         char *argptr = arguments;
@@ -73,7 +72,7 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
                 error(message[ERROR_MACROARGLENGTH],0);
                 return NULL;
             }
-            ptr = (char*)malloc(len+1);
+            ptr = (char*)allocateMemory(len+1);
             macromemsize += len+1;
             if(ptr == NULL) return NULL;
 

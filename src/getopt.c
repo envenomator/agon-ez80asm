@@ -183,7 +183,7 @@ exchange (char **argv)
     {
       /* We must extend the array.  The user plays games with us and
 	 presents new arguments.  */
-      char *new_str = (char *) malloc (top + 1);
+      char *new_str = (char *) allocateMemory (top + 1);
       if (new_str == NULL)
 	nonoption_flags_len = nonoption_flags_max_len = 0;
       else

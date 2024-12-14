@@ -1289,6 +1289,7 @@ struct contentitem *insertContent(char *filename) {
     if(ci->fh == 0) return NULL;
     ci->size = ioGetfilesize(ci->fh);
     ci->buffer = allocateMemory(ci->size+1);
+    if(ci->buffer == NULL) return NULL;
     ci->readptr = ci->buffer;
     if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
         error(message[ERROR_READINGINPUT],0);
