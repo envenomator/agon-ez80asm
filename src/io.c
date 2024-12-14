@@ -5,17 +5,17 @@
 char filebasename[FILENAMEMAXLENGTH + 1];
 
 // Global variables
-char     filename[FILES][FILENAMEMAXLENGTH + 1];
-FILE*    filehandle[FILES];
+char     filename[OUTPUTFILES][FILENAMEMAXLENGTH + 1];
+FILE*    filehandle[OUTPUTFILES];
 struct contentitem *filecontent[256]; // hash table with all file content items
 struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
 uint8_t _contentstacklevel;
 
 // Local variables
-char *   _bufferstart[FILES];          // statically set start of buffer to each file
-char *   _filebuffer[FILES];            // actual moving pointers in buffer
-uint24_t _filebuffersize[FILES];        // current fill size of each buffer
-bool     _fileEOF[FILES];
+char *   _bufferstart[OUTPUTFILES];          // statically set start of buffer to each file
+char *   _filebuffer[OUTPUTFILES];            // actual moving pointers in buffer
+uint24_t _filebuffersize[OUTPUTFILES];        // current fill size of each buffer
+bool     _fileEOF[OUTPUTFILES];
 char     _outputbuffer[FILE_BUFFERSIZE];
 
 #ifdef CEDEV
@@ -58,10 +58,10 @@ uint24_t ioGetfilesize(FILE *fh) {
 void _initFileBuffers(void) {
     int n;
 
-    for(n = 0; n < FILES; n++) _bufferstart[n] = 0;
+    for(n = 0; n < OUTPUTFILES; n++) _bufferstart[n] = 0;
     _bufferstart[FILE_OUTPUT] = _outputbuffer;
 
-    for(n = 0; n < FILES; n++) {
+    for(n = 0; n < OUTPUTFILES; n++) {
         _filebuffer[n] = _bufferstart[n];
         _filebuffersize[n] = 0;
         _fileEOF[n] = false;
@@ -144,7 +144,7 @@ void _io_flush(uint8_t fh) {
 
 // Flush all output files
 void _io_flushOutput(void) {
-    for(int fh = 0; fh < FILES; fh++) {
+    for(int fh = 0; fh < OUTPUTFILES; fh++) {
         if(_bufferstart[fh]) _io_flush(fh);
     }
 }

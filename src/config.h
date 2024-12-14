@@ -26,7 +26,7 @@ typedef uint32_t uint24_t;
 #define MACRO_MAXLEVEL                8 // Maximum depth level of recursive macro calling
 #define LINEMAX                     256 // Maximum characters per line in input file
 #define FILENAMEMAXLENGTH            64
-#define FILES                         3 // Output files (binary / listing / anonymous labels)
+#define OUTPUTFILES                   3 // Output files (binary / listing / anonymous labels)
 #define FILE_BUFFERSIZE           32768 // For each specified output file (io.c)
 #define MACRO_BUFFERSIZE		   2048 // maximum macro (ascii text) body size
 #define LISTING_OBJECTS_PER_LINE      4 // Listing hex 'objects' between PC / Line number
