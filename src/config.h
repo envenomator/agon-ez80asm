@@ -32,9 +32,9 @@ typedef uint32_t uint24_t;
 #define MACRO_BUFFERSIZE		   2048 // maximum macro (ascii text) body size
 #define LISTING_OBJECTS_PER_LINE      4 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX               LINEMAX // Token maximum length
-#define MAXNAMELENGTH                32 // Maximum name length of labels
+#define MAXNAMELENGTH                64 // Maximum name length of labels
 #define MACROMAXARGS                  8 // Maximum arguments to a macro
-#define MACROARGLENGTH               32
+#define MACROARGLENGTH               64
 #define MACROARGSUBSTITUTIONLENGTH  FILENAMEMAXLENGTH+2 // Maximum length of macro argument, accounting for passing filename with double quotes
 #define MACROLINEMAX                MACROARGSUBSTITUTIONLENGTH * MACROMAXARGS + LINEMAX
 #define CLEANUPFILES               true
