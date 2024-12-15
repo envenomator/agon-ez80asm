@@ -42,18 +42,19 @@ void printHelp(void) {
     printf("  -d\tDirect listing to console\r\n");
     printf("  -c\tNo color codes in output\r\n");
     printf("  -x\tDisplay assembly statistics\r\n");
+    printf("  -m\tMinimum memory configuration\r\n");
     printf("\r\n");
 }
 
 void displayStatistics(void) {
-    printf("\r\nAssembly statistics\r\n======================\r\nLabel memory  : %d\r\nLabels        : %d\r\n\r\nMacro memory  : %d\r\nMacros        : %d\r\n\r\nInput buffers : %d\r\n---------------------\r\nTotal memory  : %d\r\n\r\nSources parsed: %d\r\nBinfiles read : %d\r\n\r\nOutput size   : %d\r\n", labelmemsize, getGlobalLabelCount(), macromemsize, macroCounter, filecontentsize, labelmemsize+macromemsize+filecontentsize, sourcefilecount, binfilecount, (address - start_address));
+    printf("\r\nAssembly statistics\r\n=============================\r\nLabel memory         : %6d\r\nLabels               : %6d\r\n\r\nMacro memory         : %6d\r\nMacros               : %6d\r\n\r\nInput buffers        : %6d\r\n-----------------------------\r\nTotal dynamic memory : %6d\r\n\r\nSources parsed       : %6d\r\nBinfiles read        : %6d\r\n\r\nOutput size          : %6d\r\n\r\n", labelmemsize, getGlobalLabelCount(), macromemsize, macroCounter, filecontentsize, labelmemsize+macromemsize+filecontentsize, sourcefilecount, binfilecount, (address - start_address));
 }
 
 void parseOptions(int argc, char *argv[]) {
     int opt;
     int filenamecount = 0;
 
-    while ((opt = getopt(argc, argv, "-:lidvhsxcb:a:o:")) != -1) {
+    while ((opt = getopt(argc, argv, "-:lidvhsxcmb:a:o:")) != -1) {
         switch(opt) {
             case 'a':
                 if((strlen(optarg) != 1) || 
@@ -76,6 +77,10 @@ void parseOptions(int argc, char *argv[]) {
                 break;
             case 'd':
                 consolelist_enabled = true;
+                break;
+            case 'm':
+                printf("Setting minimum memory configuration\r\n");
+                completefilebuffering = false;
                 break;
             case 'l':
                 list_enabled = true;
@@ -172,7 +177,7 @@ int main(int argc, char *argv[]) {
     exportsymbols = false;
     displaystatistics = false;
     coloroutput = true;
-    filesbuffered = true;
+    completefilebuffering = true;
     ignore_truncation_warnings = false;
 
     parseOptions(argc, argv);

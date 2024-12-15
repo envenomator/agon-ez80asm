@@ -6,8 +6,7 @@ char _macro_content_buffer[MACRO_BUFFERSIZE + 1];
 char _macro_expansionline_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
 
 void processContent(char *filename);
-uint16_t getnextContentLine(struct contentitem *ci);
-uint16_t getnextContentMacroLine(char *dst, struct contentitem *ci);
+uint16_t getnextContentLine(char *dst, struct contentitem *ci);
 struct contentitem *findContent(char *filename);
 struct contentitem *insertContent(char *filename);
 
@@ -746,15 +745,42 @@ void handle_asm_incbin(void) {
     }
 
     if(pass == 1) {
+        if(!completefilebuffering) {
+            ci->fh = ioOpenfile(ci->name, "rb");
+            if(ci->fh == 0) return;
+            ci->size = ioGetfilesize(ci->fh);
+            fclose(ci->fh);
+        }
         address += ci->size;
     }
     if(pass == 2) {
-        if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
-            for(n = 0; n < ci->size; n++) emit_8bit(ci->buffer[n]);
+        if(completefilebuffering) {
+            if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
+                for(n = 0; n < ci->size; n++) emit_8bit(ci->buffer[n]);
+            }
+            else {
+                ioWrite(FILE_OUTPUT, ci->buffer, ci->size);
+                address += ci->size;
+            }
         }
         else {
-            ioWrite(FILE_OUTPUT, ci->buffer, ci->size);
-            address += ci->size;
+            char buffer[INPUT_BUFFERSIZE];
+
+            ci->fh = ioOpenfile(ci->name, "rb");
+            if(ci->fh == 0) return;
+            while(true) {
+                ci->bytesinbuffer = fread(buffer, 1, INPUT_BUFFERSIZE, ci->fh);
+                if(ci->bytesinbuffer == 0) break;
+                if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
+                    for(n = 0; n < ci->bytesinbuffer; n++) emit_8bit(buffer[n]);
+                }
+                else {
+                    ioWrite(FILE_OUTPUT, buffer, ci->bytesinbuffer);
+                    address += ci->bytesinbuffer;
+                }
+            }
+            fclose(ci->fh);
+            ci->fh = NULL;
         }
     }
     binfilecount++;
@@ -888,7 +914,7 @@ void handle_asm_definemacro(void) {
 
     startlinenumber = ci->currentlinenumber;
     macrolength = 0;
-    while((linelength = getnextContentMacroLine(macroline, ci))) {
+    while((linelength = getnextContentLine(macroline, ci))) {
         ci->currentlinenumber++;
         char *src = macroline;
 
@@ -1285,26 +1311,27 @@ struct contentitem *insertContent(char *filename) {
     if(ci == NULL) return NULL;
     ci->name = allocateString(filename);
     if(ci->name == NULL) return NULL;
-    ci->fh = ioOpenfile(filename, "rb");
-    if(ci->fh == 0) return NULL;
-    ci->size = ioGetfilesize(ci->fh);
-    ci->buffer = allocateMemory(ci->size+1);
-    if(ci->buffer == NULL) return NULL;
-    ci->readptr = ci->buffer;
-    if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
-        error(message[ERROR_READINGINPUT],0);
-        return NULL;
+
+    if(completefilebuffering) {
+        ci->fh = ioOpenfile(filename, "rb");
+        if(ci->fh == 0) return NULL;
+        ci->size = ioGetfilesize(ci->fh);
+        ci->buffer = allocateMemory(ci->size+1);
+        if(ci->buffer == NULL) return NULL;
+        if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
+            error(message[ERROR_READINGINPUT],0);
+            return NULL;
+        }
+        ci->buffer[ci->size] = 0; // terminate stringbuffer
+        fclose(ci->fh);
     }
-    ci->buffer[ci->size] = 0; // terminate stringbuffer
-    ci->filebuffered = filesbuffered;
     strcpy(ci->labelscope, ""); // empty scope
     ci->next = NULL;
-    fclose(ci->fh);
 
     // Update statistics
     filecontentsize += sizeof(struct contentitem);
     filecontentsize += strlen(filename) + 1;
-    filecontentsize += ci->size + 1;
+    if(completefilebuffering) filecontentsize += ci->size + 1;
 
     // Placement
     index = hash256(filename);
@@ -1341,37 +1368,58 @@ struct contentitem *findContent(char *filename) {
         try = try->next;
     }
 }
-uint16_t getnextContentMacroLine(char *dst, struct contentitem *ci) {
-    uint16_t len = 0;
-    char *ptr = ci->readptr;
 
-    while(*ptr) {
-        *dst++ = *ptr;
-        len++;
-        if(*ptr++ == '\n') {
-            break;
+// Get line from contentitem, copy it to dst
+// If dst is NULL, copy it to ci->currentline and ci->currenterrorline
+uint16_t getnextContentLine(char *dst, struct contentitem *ci) {
+    uint16_t len = 0;
+    char *dst1, *dst2, *ptr = ci->readptr;
+
+    if(dst) {
+        dst1 = dst;
+        dst2 = dst; // dual copying during some macro content is faster than checking duality on every character in regular content
+    } else {
+        dst1 = ci->currentline;
+        dst2 = ci->currenterrorline;
+    }
+
+    if(completefilebuffering) {
+        while(*ptr) {
+            if((len++ == LINEMAX) && (*ptr != '\n')) {
+                error(message[ERROR_LINETOOLONG],0);
+                return 0;
+            }
+            *dst1++ = *ptr;
+            *dst2++ = *ptr;
+            if(*ptr++ == '\n') {
+                break;
+            }
         }
     }
-    ci->readptr = ptr;
-    *dst = 0;
-    return len;
-}
-
-uint16_t getnextContentLine(struct contentitem *ci) {
-    uint16_t len = 0;
-    char *dst1 = ci->currentline;
-    char *dst2 = ci->currenterrorline;
-    char *ptr = ci->readptr;
-
-    while(*ptr) {
-        if((len++ == LINEMAX) && (*ptr != '\n')) {
-            error(message[ERROR_LINETOOLONG],0);
-            return 0;
-        }
-        *dst1++ = *ptr;
-        *dst2++ = *ptr;
-        if(*ptr++ == '\n') {
-            break;
+    else {
+        bool done = false;        
+        while(!done) {
+            if(ci->bytesinbuffer == 0) { // fill buffer
+                ci->bytesinbuffer = fread(ci->buffer, 1, INPUT_BUFFERSIZE, ci->fh);
+                ci->readptr = ci->buffer;
+                if(ci->bytesinbuffer == 0) done = true;
+            }
+            else {
+                ptr = ci->readptr;
+                while(ci->bytesinbuffer) {
+                    if((len++ == LINEMAX) && (*ptr != '\n')) {
+                        error(message[ERROR_LINETOOLONG],0);
+                        return 0;
+                    }
+                    ci->bytesinbuffer--;
+                    *dst1++ = *ptr;
+                    *dst2++ = *ptr;
+                    if(*ptr++ == '\n') {
+                        done = true;
+                        break;
+                    }
+                }
+            }
         }
     }
     ci->readptr = ptr;
@@ -1414,6 +1462,21 @@ struct contentitem *currentContent(void) {
     else return NULL;
 }
 
+void prepareContentInput(struct contentitem *ci) {
+    ci->buffer = _contentstack_inputbuffer[_contentstacklevel];
+    ci->bytesinbuffer = 0;
+    ci->fh = ioOpenfile(ci->name, "rb");
+    if(ci->fh == 0) return;
+    ci->size = ioGetfilesize(ci->fh);
+}
+
+void closeContentInput(struct contentitem *ci) {
+    ci->buffer = NULL;
+    ci->bytesinbuffer = 0;
+    ci->size = 0;
+    fclose(ci->fh);
+}
+
 void processContent(char *filename) {
     char line[LINEMAX+1];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
     char errorline[LINEMAX+1]; // Full integrity copy of each line
@@ -1426,6 +1489,7 @@ void processContent(char *filename) {
         }
         else return;
     }
+    if(!completefilebuffering) prepareContentInput(ci);
 
     // Prepare processing
     ci->readptr = ci->buffer;
@@ -1435,9 +1499,8 @@ void processContent(char *filename) {
     ci->inConditionalSection = inConditionalSection;
     if(!contentPush(ci)) return;
     inConditionalSection = CONDITIONSTATE_NORMAL;
-
     // Process
-    while(getnextContentLine(ci)) {
+    while(getnextContentLine(NULL, ci)) {
         ci->currentlinenumber++;
         if((pass == 2) && (consolelist_enabled || list_enabled)) listStartLine(line, ci->currentlinenumber);
 
@@ -1476,6 +1539,7 @@ void processContent(char *filename) {
         contentPop();
         return;
     }
+    if(!completefilebuffering) closeContentInput(ci);
     contentPop();
     strcpy(ci->labelscope, ""); // empty scope for next pass
 
@@ -1487,6 +1551,7 @@ void assemble(char *filename) {
     printf("Pass 1...\r\n");
     passInitialize(1);
     processContent(filename);
+
     if(errorcount) return;
 
     // Pass 2

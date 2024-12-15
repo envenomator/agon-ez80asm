@@ -9,6 +9,7 @@ char     filename[OUTPUTFILES][FILENAMEMAXLENGTH + 1];
 FILE*    filehandle[OUTPUTFILES];
 struct contentitem *filecontent[256]; // hash table with all file content items
 struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
+char _contentstack_inputbuffer[FILESTACK_MAXFILES][INPUT_BUFFERSIZE];
 uint8_t _contentstacklevel;
 
 // Local variables
@@ -16,7 +17,7 @@ char *   _bufferstart[OUTPUTFILES];          // statically set start of buffer t
 char *   _filebuffer[OUTPUTFILES];            // actual moving pointers in buffer
 uint24_t _filebuffersize[OUTPUTFILES];        // current fill size of each buffer
 bool     _fileEOF[OUTPUTFILES];
-char     _outputbuffer[FILE_BUFFERSIZE];
+char     _outputbuffer[OUTPUT_BUFFERSIZE];
 
 #ifdef CEDEV
     // platform-specific for Agon CEDEV
@@ -40,14 +41,14 @@ uint24_t ioGetfilesize(FILE *fh) {
         // Use optimal assembly routine in moscalls.asm
         filesize = getfilesize(fh->fhandle);
     #else
-        char _buffer[FILE_BUFFERSIZE];
+        char _buffer[OUTPUT_BUFFERSIZE];
         uint24_t size;
         filesize = 0;
         while(1) {
             // Other non-agon compilers
-            size = (uint24_t) fread(_buffer, 1, FILE_BUFFERSIZE, fh);
+            size = (uint24_t) fread(_buffer, 1, OUTPUT_BUFFERSIZE, fh);
             filesize += size;
-            if(size < FILE_BUFFERSIZE) break;
+            if(size < OUTPUT_BUFFERSIZE) break;
         }
         fseek(fh, 0, SEEK_SET);
     #endif
@@ -155,7 +156,7 @@ void ioPutc(uint8_t fh, unsigned char c) {
         // Buffered IO
         *(_filebuffer[fh]++) = c;
         _filebuffersize[fh]++;
-        if(_filebuffersize[fh] == FILE_BUFFERSIZE) _io_flush(fh);
+        if(_filebuffersize[fh] == OUTPUT_BUFFERSIZE) _io_flush(fh);
     }
     else fputc(c, filehandle[fh]); // regular non-buffered IO
 }
@@ -163,7 +164,7 @@ void ioPutc(uint8_t fh, unsigned char c) {
 void io_outputc(unsigned char c) {
     *(_filebuffer[FILE_OUTPUT]++) = c;
     _filebuffersize[FILE_OUTPUT]++;
-    if(_filebuffersize[FILE_OUTPUT] == FILE_BUFFERSIZE) _io_flush(FILE_OUTPUT);
+    if(_filebuffersize[FILE_OUTPUT] == OUTPUT_BUFFERSIZE) _io_flush(FILE_OUTPUT);
 }
 
 void  ioWrite(uint8_t fh, char *s, uint16_t size) {
@@ -172,7 +173,7 @@ void  ioWrite(uint8_t fh, char *s, uint16_t size) {
         while(size--) {
             *(_filebuffer[fh]++) = *s++;
             _filebuffersize[fh]++;
-            if(_filebuffersize[fh] == FILE_BUFFERSIZE) _io_flush(fh);
+            if(_filebuffersize[fh] == OUTPUT_BUFFERSIZE) _io_flush(fh);
         }
     }
     else fwrite(s, 1, size, filehandle[fh]);

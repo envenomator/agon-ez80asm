@@ -21,6 +21,7 @@ extern char filename[OUTPUTFILES][FILENAMEMAXLENGTH + 1];    // 0 - binary outpu
 extern FILE* filehandle[OUTPUTFILES];
 extern struct contentitem *filecontent[256]; // hash table with all file content items
 extern struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
+extern char _contentstack_inputbuffer[FILESTACK_MAXFILES][INPUT_BUFFERSIZE];     // stack of miminum input buffers
 extern uint8_t _contentstacklevel;
 
 enum {

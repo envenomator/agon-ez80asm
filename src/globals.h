@@ -37,7 +37,7 @@ extern struct contentitem *currentcontentitem;
 extern uint16_t sourcefilecount;
 extern uint16_t binfilecount;
 extern uint24_t filecontentsize;
-extern bool filesbuffered;
+extern bool completefilebuffering;
 extern unsigned int macrolinenumber;
 extern unsigned int pass;
 extern conditionalstate inConditionalSection;

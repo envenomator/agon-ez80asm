@@ -27,11 +27,10 @@ typedef enum {
 
 struct contentitem {
     // Static items
-    char         *name;
-    unsigned int  size;
-    char         *buffer;
-    FILE         *fh;
-    bool          filebuffered;
+    char         *name;                         // name of the file
+    unsigned int  size;                         // size of the file
+    char         *buffer;                       // pointer to 1) full file content OR 2) partial content during minimal buffering
+    FILE         *fh;                           // filehandle
     void         *next;
     // Items changed during processing
     char         *readptr;
@@ -40,6 +39,7 @@ struct contentitem {
     char         *currenterrorline;
     char          labelscope[MAXNAMELENGTH+1];
     uint8_t       inConditionalSection;
+    unsigned int  bytesinbuffer;                // only used during minimal input buffering
 };
 
 extern uint24_t passmatchcounter;
