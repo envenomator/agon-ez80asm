@@ -95,7 +95,7 @@ char *message[] = {
     "Macro argument substitution length too long",
     "No global labels allowed in macro definition",
     "No anonymous labels allowed in macro definition",
-    "Error allocating memory for macro",
+    "Error allocating memory for macro; try the -m option",
     "No macro definitions allowed inside a macro",
     "Calling macro from a macro",
     "Macro body larger than 2KB",
@@ -113,7 +113,7 @@ char *message[] = {
     "Error resetting input file(s)\r\n",
     "Error reading incbin file",
     "Error reading input file",
-    "Error allocating memory",
+    "Error allocating memory; try the -m option",
     "Ignoring unsupported initializer value",
     "Bracket format error"
 };
