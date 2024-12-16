@@ -35,8 +35,6 @@ struct contentitem {
     // Items changed during processing
     char         *readptr;
     uint16_t      currentlinenumber;
-    char         *currentline;
-    char         *currenterrorline;
     char          labelscope[MAXNAMELENGTH+1];
     uint8_t       inConditionalSection;
     unsigned int  bytesinbuffer;                // only used during minimal input buffering

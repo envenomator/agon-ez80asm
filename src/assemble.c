@@ -6,7 +6,7 @@ char _macro_content_buffer[MACRO_BUFFERSIZE + 1];
 char _macro_expansionline_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
 
 void processContent(char *filename);
-uint16_t getnextContentLine(char *dst, struct contentitem *ci);
+uint16_t getnextContentLine(char *dst1, char *dst2, struct contentitem *ci);
 struct contentitem *findContent(char *filename);
 struct contentitem *insertContent(char *filename);
 
@@ -914,7 +914,7 @@ void handle_asm_definemacro(void) {
 
     startlinenumber = ci->currentlinenumber;
     macrolength = 0;
-    while((linelength = getnextContentLine(macroline, ci))) {
+    while((linelength = getnextContentLine(macroline, macroline, ci))) {
         ci->currentlinenumber++;
         char *src = macroline;
 
@@ -1370,18 +1370,10 @@ struct contentitem *findContent(char *filename) {
 }
 
 // Get line from contentitem, copy it to dst
-// If dst is NULL, copy it to ci->currentline and ci->currenterrorline
-uint16_t getnextContentLine(char *dst, struct contentitem *ci) {
+// If dst is NULL, copy it to dst1 and dst2
+uint16_t getnextContentLine(char *dst1, char *dst2, struct contentitem *ci) {
     uint16_t len = 0;
-    char *dst1, *dst2, *ptr = ci->readptr;
-
-    if(dst) {
-        dst1 = dst;
-        dst2 = dst; // dual copying during some macro content is faster than checking duality on every character in regular content
-    } else {
-        dst1 = ci->currentline;
-        dst2 = ci->currenterrorline;
-    }
+    char *ptr = ci->readptr;
 
     if(completefilebuffering) {
         while(*ptr) {
@@ -1494,13 +1486,11 @@ void processContent(char *filename) {
     // Prepare processing
     ci->readptr = ci->buffer;
     ci->currentlinenumber = 0;
-    ci->currentline = line;
-    ci->currenterrorline = errorline;
     ci->inConditionalSection = inConditionalSection;
     if(!contentPush(ci)) return;
     inConditionalSection = CONDITIONSTATE_NORMAL;
     // Process
-    while(getnextContentLine(NULL, ci)) {
+    while(getnextContentLine(line, errorline, ci)) {
         ci->currentlinenumber++;
         if((pass == 2) && (consolelist_enabled || list_enabled)) listStartLine(line, ci->currentlinenumber);
 
