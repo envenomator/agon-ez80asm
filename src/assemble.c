@@ -483,6 +483,7 @@ void parseLine(char *src) {
                 if(currentExpandedMacro) {
                     macroExpandArg(_macro_expansionline_buffer, streamtoken.start, currentExpandedMacro);
                     streamtoken.start = _macro_expansionline_buffer;
+                    oplength = strlen(streamtoken.start);
                 }
                 if(argcount == 1) {
                     parse_operand(streamtoken.start, oplength, &operand1);
