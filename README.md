@@ -354,6 +354,7 @@ Important notes:
 - Starting v1.12 only **local** labels are allowed in macro definitions; global labels were never allowed, while defining anonymous labels in a macro could result in issues using earlier versions. Starting v1.12 local labels defined inside a macro will get an internal macro expansion 'scope', so the macro can be expanded multiple times without label collisions. This 'scope' will not be visible in the listing. Because of their locality, labels defined inside a macro cannot be referenced to outside of the macro
 - Starting v1.12, macros can be called from within a macro, with a maximum 'nesting' level of 8 to block expansion recursion.
 - Macro definitions are not allowed inside a macro definition
+- Don't use instruction names (e.g. 'ld' or 'and'), nor other macro names as argument names. Starting v1.12 the assembler will throw an error.
 
 Example macro with arguments:
 
