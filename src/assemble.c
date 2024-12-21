@@ -474,7 +474,8 @@ void parseLine(char *src) {
                     case MACRO:
                         currentline.current_macro = currentline.current_instruction->macro;
                         currentline.current_instruction = NULL;
-                        currentline.next = streamtoken.next;
+                        if(streamtoken.terminator == ';') currentline.next = NULL;
+                        else currentline.next = streamtoken.next;
                         return;
                 }
                 break;
