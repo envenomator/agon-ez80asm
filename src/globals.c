@@ -18,6 +18,7 @@ uint8_t macrolevel;
 uint24_t address;
 uint16_t errorcount;
 bool adlmode;
+bool listing;                // list_enabled || consolelist_enabled
 bool list_enabled;
 bool consolelist_enabled;
 uint8_t fillbyte;

@@ -47,6 +47,7 @@ extern uint24_t address;
 extern uint16_t errorcount;
 extern bool adlmode;
 extern tokenline_t currentline;
+extern bool listing;                // list_enabled || consolelist_enabled
 extern bool list_enabled;
 extern bool consolelist_enabled;
 extern uint8_t fillbyte;

@@ -205,13 +205,13 @@ void ioClose(void) {
 void emit_8bit(uint8_t value) {
     if(pass == 2) {
         if(remaining_dsspaces) {
-            if(list_enabled || consolelist_enabled) listPrintDSLines(remaining_dsspaces, fillbyte);
+            if(listing) listPrintDSLines(remaining_dsspaces, fillbyte);
             while(remaining_dsspaces) {
                 io_outputc(fillbyte);
                 remaining_dsspaces--;
             }
         }
-        if(list_enabled || consolelist_enabled) listEmit8bit(value);
+        if(listing) listEmit8bit(value);
         io_outputc(value);
     }
     address++;

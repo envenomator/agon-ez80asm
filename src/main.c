@@ -172,6 +172,7 @@ int main(int argc, char *argv[]) {
     noaction = false;
     fillbyte = FILLBYTE;
     list_enabled = false;
+    consolelist_enabled = false;
     adlmode = ADLMODE_START;
     start_address = START_ADDRESS;
     exportsymbols = false;
@@ -200,6 +201,7 @@ int main(int argc, char *argv[]) {
     errorcount = 0;
     errorreportlevel = 0;
     maxstackdepth = 0;
+    listing = list_enabled || consolelist_enabled;
     
     // Assemble input to output
     begin = clock();

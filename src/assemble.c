@@ -699,7 +699,7 @@ void handle_asm_include(void) {
         error(message[ERROR_STRINGFORMAT],0);
         return;
     }
-    if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+    if((pass == 2) && (listing)) listEndLine();
 
     token.start[strlen(token.start)-1] = 0;
     if(strcmp(token.start+1, currentcontentitem->name) == 0) {
@@ -756,7 +756,7 @@ void handle_asm_incbin(void) {
     }
     if(pass == 2) {
         if(completefilebuffering) {
-            if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
+            if(listing) { // Output needs to pass to the listing through emit_8bit, performance-hit
                 for(n = 0; n < ci->size; n++) emit_8bit(ci->buffer[n]);
             }
             else {
@@ -772,7 +772,7 @@ void handle_asm_incbin(void) {
             while(true) {
                 ci->bytesinbuffer = fread(buffer, 1, INPUT_BUFFERSIZE, ci->fh);
                 if(ci->bytesinbuffer == 0) break;
-                if(list_enabled || consolelist_enabled) { // Output needs to pass to the listing through emit_8bit, performance-hit
+                if(listing) { // Output needs to pass to the listing through emit_8bit, performance-hit
                     for(n = 0; n < ci->bytesinbuffer; n++) emit_8bit(buffer[n]);
                 }
                 else {
@@ -909,7 +909,7 @@ void handle_asm_definemacro(void) {
     _macro_content_buffer[0] = 0; // empty string
     strend = _macro_content_buffer;
 
-    if(pass == 2 && (consolelist_enabled || list_enabled)) listEndLine(); // print out first line of macro definition
+    if(pass == 2 && (listing)) listEndLine(); // print out first line of macro definition
 
     ci = currentcontentitem;
 
@@ -919,7 +919,7 @@ void handle_asm_definemacro(void) {
         ci->currentlinenumber++;
         char *src = macroline;
 
-        if(pass == 2 && (consolelist_enabled || list_enabled)) {
+        if(pass == 2 && (listing)) {
             listStartLine(src, ci->currentlinenumber);
             listEndLine();
         }
@@ -1235,12 +1235,12 @@ void processMacro(void) {
     macrolinenumber = 1;
     while(getnextline(&macrolineptr, macroline)) {
         strcpy(errorline, macroline);
-        if(pass == 2 && (consolelist_enabled || list_enabled)) listStartLine(macroline, macrolinenumber);
+        if(pass == 2 && (listing)) listStartLine(macroline, macrolinenumber);
         parseLine(macroline);
 
         if(!currentline.current_macro) {
             processInstructions();
-            if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+            if((pass == 2) && (listing)) listEndLine();
         }
         else {
             // CALL nested macro instruction
@@ -1248,7 +1248,7 @@ void processMacro(void) {
                 error(message[ERROR_MACROMAXLEVEL],"%d",MACRO_MAXLEVEL);
                 return;
             }
-            if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+            if((pass == 2) && (listing)) listEndLine();
 
             localmacrolinenumber = macrolinenumber;
             processMacro();
@@ -1497,16 +1497,16 @@ void processContent(char *filename) {
     // Process
     while(getnextContentLine(line, errorline, ci)) {
         ci->currentlinenumber++;
-        if((pass == 2) && (consolelist_enabled || list_enabled)) listStartLine(line, ci->currentlinenumber);
+        if((pass == 2) && (listing)) listStartLine(line, ci->currentlinenumber);
 
         parseLine(line);
 
         if(!currentline.current_macro) {
             processInstructions();
-            if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+            if((pass == 2) && (listing)) listEndLine();
         }
         else {
-            if((pass == 2) && (consolelist_enabled || list_enabled)) listEndLine();
+            if((pass == 2) && (listing)) listEndLine();
             processMacro();
             if(issue_warning) { // warnings from the expanded macro
                 colorPrintf(DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n%s", filename, ci->currentlinenumber, errorline);
@@ -1553,7 +1553,7 @@ void assemble(char *filename) {
     printf("Pass 2...\r\n");
     passInitialize(2);
     readAnonymousLabel();
-    if(consolelist_enabled || list_enabled) listInit();
+    if(listing) listInit();
     processContent(filename);
     return;
 }
