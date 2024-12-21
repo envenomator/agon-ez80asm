@@ -47,7 +47,15 @@ void printHelp(void) {
 }
 
 void displayStatistics(void) {
-    printf("\r\nAssembly statistics\r\n=============================\r\nLabel memory         : %6d\r\nLabels               : %6d\r\n\r\nMacro memory         : %6d\r\nMacros               : %6d\r\n\r\nInput buffers        : %6d\r\n-----------------------------\r\nTotal dynamic memory : %6d\r\n\r\nSources parsed       : %6d\r\nBinfiles read        : %6d\r\n\r\nOutput size          : %6d\r\n\r\n", labelmemsize, getGlobalLabelCount(), macromemsize, macroCounter, filecontentsize, labelmemsize+macromemsize+filecontentsize, sourcefilecount, binfilecount, (address - start_address));
+    int outputsize;
+
+    FILE *fh = ioOpenfile(filename[FILE_OUTPUT], "rb");
+    if(fh == 0) outputsize = 0;
+    else {
+        outputsize = ioGetfilesize(fh);
+        fclose(fh);
+    }
+    printf("\r\nAssembly statistics\r\n=============================\r\nLabel memory         : %6d\r\nLabels               : %6d\r\n\r\nMacro memory         : %6d\r\nMacros               : %6d\r\n\r\nInput buffers        : %6d\r\n-----------------------------\r\nTotal dynamic memory : %6d\r\n\r\nSources parsed       : %6d\r\nBinfiles read        : %6d\r\n\r\nOutput size          : %6d\r\n\r\n", labelmemsize, getGlobalLabelCount(), macromemsize, macroCounter, filecontentsize, labelmemsize+macromemsize+filecontentsize, sourcefilecount, binfilecount, outputsize);
 }
 
 void parseOptions(int argc, char *argv[]) {
