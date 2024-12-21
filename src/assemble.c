@@ -885,9 +885,9 @@ uint24_t delta;
 
     if(address & (operand1.immediate -1)) base += alignment;
     delta = base - address;
-    while(delta--) emit_8bit(fillbyte);
-
+    remaining_dsspaces += delta;
     address = base;
+
     definelabel(address); // set address to current line
 }
 
