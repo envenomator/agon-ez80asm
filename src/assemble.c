@@ -978,6 +978,10 @@ void handle_asm_definemacro(void) {
                         error(message[ERROR_MACROARGLENGTH], "%s", token.start);
                         return;
                     }
+                    if(instruction_lookup(token.start)) {
+                        error(message[ERROR_MACROARGNAME],"%s",token.start);
+                        return;
+                    }
                     strcpy(arglist[argcount], token.start);
                     argcount++;
                 }

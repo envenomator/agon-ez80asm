@@ -90,6 +90,7 @@ char *message[] = {
     "Invalid macro name",
     "Macro name too long",
     "Macro argument too long",
+    "Invalid argument name",
     "Maximum number of macro arguments reached",
     "Incorrect number of macro arguments",
     "Macro argument substitution length too long",
