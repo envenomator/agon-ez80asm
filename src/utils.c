@@ -321,15 +321,14 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
                 break;
             case TOKEN_LITERAL:
                 switch(*src) {
-                    case '\\':
-                        escaped = !escaped;
-                        break;
                     case '\'':
-                        if(!escaped) state = TOKEN_REGULAR;
-                        escaped = false;
+                        if(*(src+1) == '\'') {
+                            src++;
+                            length++;
+                        }
+                        state = TOKEN_REGULAR;
                         break;
                     default:
-                        escaped = false;
                         break;
                 }
                 break;
@@ -418,12 +417,13 @@ uint8_t getEscapedChar(char c) {
 
 // Get the ascii value from a single 'x' token.
 uint8_t getLiteralValue(char *string) {
+
     uint8_t len = strlen(string);
     if((len == 3) && (string[2] == '\'')) {
         return string[1];
     }
 
-    if((len == 4) && (string[3] == '\'')) {
+    if((len == 4) && (string[1] == '\\') && (string[3] == '\'')) {
         uint8_t c = getEscapedChar(string[2]);
         if(c == 0xff) {
             error(message[ERROR_ILLEGAL_ESCAPELITERAL],0);
@@ -468,32 +468,50 @@ int32_t resolveNumber(char *str, uint8_t length, bool req_firstpass) {
     return number;
 }
 
-// copy a variable-length literal from a literal string, starting with \', ending with the non-escaped \' character
-// Examples tokenized:
-// ''
-// ' '
-// '\n'
-// '\''
-// '   \'  ' -> this will copy, getLiteralValue will error out later
-// '       0 -> this will copy, getLiteralValue will error out later
+// copy a literal token from a string to a destination string
+// with up to 4 characters, according to the literal specification
+// 'x'  - value of character x
+// '\'  - value of '\' character, this is a special
+// '\x' - value of escaped x character
+// '\'' - value of ' character, this is a special
+//
+// no spaces are allowed in the literal
+//
+// partial literal characters in the correct position are copied, with a shorter
+// destination string length
 uint8_t copyLiteralToken(const char *from, char *to) {
-    uint8_t length = 0;
-    bool escaped = false;
+    uint8_t len, n;
 
-    if(*from == '\'') {
-        while(*from) {
-            *to++ = *from++;
-            length++;
-            if(*from == '\\') escaped = !escaped;
-            if(!escaped && (*from == '\'')) {
-                length++;
-                break;
+    if(from == 0) len = 0;
+    else {
+        if(from[1] == 0) len = 1;
+        else {
+            if(from[1] == '\\') { // escaped
+                if(from[2] == 0) len = 2; // error - just two characters
+                else {
+                    if(from[2] == '\'') {
+                        if(from[3] == '\'') len = 4; // special 4 '\''
+                        else len = 3;
+                        // combining two cases
+                        // if(from[3] == 0) len = 3; // error
+                        // else len = 3; // '\'
+                    } 
+                    else {
+                        if(from[3] == 0) len = 3;
+                        else len = 4; // '\x'
+                    }
+                }
+            }
+            else {
+                if(from[2] == 0) len = 2; // error - just two characters
+                else len = 3; // regular 'x'
             }
         }
-        *to++ = *from;
     }
+    n = len;
+    while(n--) *to++ = *from++;
     *to = 0;
-    return length;
+    return len;
 }
 
 enum getValueState {
@@ -626,6 +644,7 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
                 unaryoperator = 0;
 
                 while(isspace(*str)) str++; // eat all spaces
+
                 if(*str) state = OP;
                 else return total;
                 break;
