@@ -320,16 +320,12 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
                 }
                 break;
             case TOKEN_LITERAL:
-                switch(*src) {
-                    case '\'':
-                        if(*(src+1) == '\'') {
-                            src++;
-                            length++;
-                        }
-                        state = TOKEN_REGULAR;
-                        break;
-                    default:
-                        break;
+                if(*src == '\'') {
+                    if(*(src+1) == '\'') {
+			            src++;
+                    	length++;
+		            }
+        		    state = TOKEN_REGULAR;
                 }
                 break;
             case TOKEN_BRACKET:
