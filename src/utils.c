@@ -211,7 +211,7 @@ char * _findLiteralTokenEnd(char *src) {
 // returns the number of Operator characters found, or 0 if none
 uint8_t getOperandToken(streamtoken_t *token, char *src) {
     uint8_t length = 0;
-    bool escaped = false;
+    bool inliteral = false;
 
     // skip leading space
     while(*src && (isspace(*src))) src++;
@@ -223,8 +223,17 @@ uint8_t getOperandToken(streamtoken_t *token, char *src) {
 
     // hunt for end-character (0 , or ; in normal non-literal mode)
     while(*src) {
-        if(*src == '\'') escaped = !escaped;
-        if(!escaped && ((*src == ',') || (*src == ';'))) break;
+        if(*src == '\'') {
+            if(inliteral) {
+                if(*(src+1) == '\'') {
+                    src++;
+                    length++;
+                }
+                inliteral = false;
+            } 
+            else inliteral = true;
+        }
+        if(!inliteral && ((*src == ',') || (*src == ';'))) break;
         src++;
         length++;
     }
@@ -640,7 +649,6 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
                 unaryoperator = 0;
 
                 while(isspace(*str)) str++; // eat all spaces
-
                 if(*str) state = OP;
                 else return total;
                 break;
