@@ -1181,6 +1181,7 @@ void processMacro(void) {
     macro_t *localexpandedmacro = currentline.current_macro;
     char macroline[LINEMAX+1];
     char errorline[LINEMAX+1];
+    char listbuffer[LINEMAX+1] = {"Args: "};
     char *macrolineptr;
     unsigned int localmacrolinenumber;
     char substitutionlist[MACROMAXARGS][MACROARGSUBSTITUTIONLENGTH + 1]; // temporary storage for substitutions during expansion
@@ -1218,6 +1219,7 @@ void processMacro(void) {
             }
             strcpy(substitutionlist[argcount-1], token.start);              // copy substitution argument
             localexpandedmacro->substitutions[argcount-1] = substitutionlist[argcount-1];  // set pointer in macro structure for later processing
+            if((pass == 2) && listing) sprintf(listbuffer + strlen(listbuffer), "%s=%s ", localexpandedmacro->arguments[argcount-1], token.start);
         }
         if(token.terminator == ',') currentline.next = token.next;
         else {
@@ -1231,6 +1233,9 @@ void processMacro(void) {
     }
     // open macro storage
     macrolineptr = localexpandedmacro->body;
+
+    // List out argument substitution
+    if((pass == 2) && listing) listPrintComment(listbuffer);
 
     // process body
     macrolinenumber = 1;

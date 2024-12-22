@@ -104,6 +104,12 @@ void listPrintLine(void) {
     _listLineNumber++;
 }
 
+void listPrintComment(const char *src) {
+        sprintf(buffer, "                       M%d %s\r\n", macrolevel, src);
+        if(list_enabled) ioPuts(FILE_LISTING, buffer);
+        if(consolelist_enabled) printf("%s",buffer);
+}
+
 void listEndLine(void) {
     if(_listLineNumber == 0) listPrintLine(); // unfinished first line
     if((_listLineNumber) && (_listLineObjectCount)) listPrintLine(); // unfinished last line
