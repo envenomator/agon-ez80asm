@@ -209,6 +209,7 @@ int main(int argc, char *argv[]) {
     errorcount = 0;
     errorreportlevel = 0;
     maxstackdepth = 0;
+    macroexpansions = 0;
     listing = list_enabled || consolelist_enabled;
     
     // Assemble input to output

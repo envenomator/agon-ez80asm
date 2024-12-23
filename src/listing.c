@@ -79,14 +79,16 @@ void listPrintLine(void) {
         for(i = 1; i < currentStackLevel(); i++) {
             strcat(buffer, "*");
         }
-        if(currentExpandedMacro) {
-            char tmpbuffer[5];
-            snprintf(tmpbuffer, 5, "M%d ", macrolevel);
-            strcat(buffer, tmpbuffer);
+        if(macroexpansions) {
+            if(currentExpandedMacro) {
+                char tmpbuffer[5];
+                snprintf(tmpbuffer, 5, "M%d ", macrolevel);
+                strcat(buffer, tmpbuffer);
+            }
+            else strcat(buffer, "   ");
         }
-        else {
-            strcat(buffer, "   ");
-        }
+        else strcat(buffer, " "); // single space between line# and input line, if no macros expanded
+
         for(i = maxstackdepth - i;i > 0; i--) {
             strcat(buffer, " ");
         }

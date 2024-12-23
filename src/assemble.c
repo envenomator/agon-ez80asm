@@ -1189,6 +1189,7 @@ void processMacro(void) {
     uint24_t localmacroExpandID;
 
     macrolevel++;
+    if(pass == 1) macroexpansions++;
     localmacroExpandID = macroExpandID++;
     localexpandedmacro->currentExpandID = localmacroExpandID;
 
@@ -1235,6 +1236,7 @@ void processMacro(void) {
     macrolineptr = localexpandedmacro->body;
 
     // List out argument substitution
+    if(listing && argcount == 0) sprintf(listbuffer + strlen(listbuffer), "none");
     if((pass == 2) && listing) listPrintComment(listbuffer);
 
     // process body

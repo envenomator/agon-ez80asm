@@ -43,6 +43,7 @@ extern unsigned int pass;
 extern conditionalstate inConditionalSection;
 extern macro_t *currentExpandedMacro;
 extern uint8_t macrolevel;
+extern uint16_t macroexpansions;
 extern uint24_t address;
 extern uint16_t errorcount;
 extern bool adlmode;

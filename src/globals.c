@@ -15,6 +15,7 @@ unsigned int pass;
 conditionalstate inConditionalSection;
 macro_t *currentExpandedMacro;
 uint8_t macrolevel;
+uint16_t macroexpansions;
 uint24_t address;
 uint16_t errorcount;
 bool adlmode;
