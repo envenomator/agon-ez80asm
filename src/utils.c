@@ -444,11 +444,11 @@ uint8_t getLiteralValue(const char *string) {
 // Resolves a number from a string in this order:
 // 1) Check if a label exists with this name
 // 2) If not, try converting it to a number with str2num
-int32_t resolveNumber(char *str, uint8_t length, bool req_firstpass) {
+int32_t resolveNumber(char *str, uint8_t length, requiredResult_t requiredPass) {
     int32_t number;
     label_t *lbl = findLabel(str);
 
-    if((pass == STARTPASS) && !req_firstpass) return 0;
+    if((pass == STARTPASS) && (requiredPass == REQUIRED_LASTPASS)) return 0;
 
     if(lbl) number = lbl->address;
     else {
@@ -458,7 +458,7 @@ int32_t resolveNumber(char *str, uint8_t length, bool req_firstpass) {
             if(err_str2num) {
                 if(pass == STARTPASS) {
                     // Yet unknown label, number incorrect
-                    // We only get here if req_firstpass is true, so error
+                    // We only get here if requiredResultFirstpass is true, so error
                     error(message[ERROR_INVALIDNUMBER],"%s", str);
                     return 0;
                 }
@@ -527,7 +527,7 @@ enum getValueState {
 };
 
 // Gets the value from an expression, possible consisting of values, labels and operators
-int32_t getExpressionValue(char *str, bool req_firstpass) {
+int32_t getExpressionValue(char *str, requiredResult_t requiredPass) {
     uint8_t tmplength;
     streamtoken_t token;
     char buffer[LINEMAX+1];
@@ -537,7 +537,7 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
     int32_t total = 0;
     enum getValueState state;;
 
-    if((pass == STARTPASS) && !req_firstpass) return 0;
+    if((pass == STARTPASS) && (requiredPass == REQUIRED_LASTPASS)) return 0;
 
     while(isspace(*str)) str++; // eat all spaces
 
@@ -606,20 +606,20 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
                     case '\'':
                         tmplength = copyLiteralToken(str, buffer);
                         str += tmplength;
-                        tmp = resolveNumber(buffer, tmplength, req_firstpass);
+                        tmp = resolveNumber(buffer, tmplength, requiredPass);
                         break;
                     case '[':
                         if(getBracketToken(&token, str) == 0) {
                             error(message[ERROR_BRACKETFORMAT],0);
                             return 0;
                         }
-                        tmp = getExpressionValue(token.start, req_firstpass);
+                        tmp = getExpressionValue(token.start, requiredPass);
                         str = token.next;
                         break;
                     default:
                         while(!strchr("+-*/<>&|^~\t ", *str)) *bufptr++ = *str++;
                         *bufptr = 0; // terminate string in buffer
-                        tmp = resolveNumber(buffer, bufptr - buffer, req_firstpass);
+                        tmp = resolveNumber(buffer, bufptr - buffer, requiredPass);
                         break;
                 }
                 

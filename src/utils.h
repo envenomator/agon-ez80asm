@@ -1,6 +1,12 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+// requiredResult
+typedef enum {
+    REQUIRED_FIRSTPASS,
+    REQUIRED_LASTPASS
+} requiredResult_t;
+
 #include "config.h"
 #include <ctype.h>
 // DEFAULT COLOR INDEXES
@@ -43,7 +49,7 @@ void error(const char *msg, const char *contextformat, ...);
 void warning(const char *msg, const char *contextformat, ...);
 void colorPrintf(int color, const char *msg, ...);
 
-int32_t getExpressionValue(char *str, bool req_firstpass);
+int32_t getExpressionValue(char *str, requiredResult_t requiredPass);
 uint8_t getEscapedChar(char c);
 uint8_t getLiteralValue(const char *string);
 void    getLabelToken(streamtoken_t *token, char *src);                // terminates on ':' character

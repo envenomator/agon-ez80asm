@@ -189,8 +189,8 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IX;
                             operand->displacement_provided = true;
-                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getExpressionValue(ptr, false);
-                            else operand->displacement = (int16_t) getExpressionValue(ptr, false);
+                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getExpressionValue(ptr, REQUIRED_LASTPASS);
+                            else operand->displacement = (int16_t) getExpressionValue(ptr, REQUIRED_LASTPASS);
                             return;
                             break;
                         default:
@@ -223,8 +223,8 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
                         case '-':
                             operand->reg = R_IY;
                             operand->displacement_provided = true;
-                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getExpressionValue(ptr, false);
-                            else operand->displacement = (int16_t) getExpressionValue(ptr, false);
+                            if(*(ptr-1) == '-') operand->displacement = -1 * (int16_t) getExpressionValue(ptr, REQUIRED_LASTPASS);
+                            else operand->displacement = (int16_t) getExpressionValue(ptr, REQUIRED_LASTPASS);
                             return;
                             break;
                         default:
@@ -350,7 +350,7 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
             string++;
         }
         strcpy(operand->immediate_name, string);
-        operand->immediate = getExpressionValue(string, false);
+        operand->immediate = getExpressionValue(string, REQUIRED_LASTPASS);
         operand->immediate_provided = true;
         operand->addressmode |= IMM;
     }
@@ -527,7 +527,7 @@ void parse_asm_single_immediate(void) {
 
     if(currentline.next) {
         if(getOperandToken(&token, currentline.next)) {
-            operand1.immediate = getExpressionValue(token.start, true);
+            operand1.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
             operand1.immediate_provided = true;
             strcpy(operand1.immediate_name, token.start);
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
@@ -566,24 +566,24 @@ void handle_asm_data(uint8_t wordtype) {
                             emit_quotedstring(token.start);
                             break;
                         default:
-                            value = getExpressionValue(token.start, false); // not needed in pass 1
+                            value = getExpressionValue(token.start, REQUIRED_LASTPASS); // not needed in pass 1
                             if(pass == ENDPASS) validateRange8bit(value, token.start);
                             emit_8bit(value);
                             break;
                     }
                     break;
                 case ASM_DW:
-                    value = getExpressionValue(token.start, false);
+                    value = getExpressionValue(token.start, REQUIRED_LASTPASS);
                     if(pass == ENDPASS) validateRange16bit(value, token.start);
                     emit_16bit(value);
                     break;
                 case ASM_DW24:
-                    value = getExpressionValue(token.start, false);
+                    value = getExpressionValue(token.start, REQUIRED_LASTPASS);
                     if(pass == ENDPASS) validateRange24bit(value, token.start);
                     emit_24bit(value);
                     break;
                 case ASM_DW32:
-                    value = getExpressionValue(token.start, false);
+                    value = getExpressionValue(token.start, REQUIRED_LASTPASS);
                     emit_32bit(value);
                     break;
                 default:
@@ -612,7 +612,7 @@ void handle_asm_equ(void) {
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
-            if(currentline.label) definelabel(getExpressionValue(token.start, true)); // needs to be defined in pass 1
+            if(currentline.label) definelabel(getExpressionValue(token.start, REQUIRED_FIRSTPASS)); // needs to be defined in pass 1
             else error(message[ERROR_MISSINGLABEL],0);
         }
         else error(message[ERROR_MISSINGOPERAND],0);
@@ -641,7 +641,7 @@ void handle_asm_adl(void) {
         }
         if(token.terminator == '=') {
             if(getDefineValueToken(&token, token.next)) {
-                operand2.immediate = getExpressionValue(token.start, true); // needs to be defined in pass 1
+                operand2.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS); // needs to be defined in pass 1
                 operand2.immediate_provided = true;
                 strcpy(operand2.immediate_name, token.start);
             }
@@ -813,7 +813,7 @@ void handle_asm_blk(uint8_t width) {
         token.start = _macro_expansionline_buffer;
     }
 
-    num = getExpressionValue(token.start, true); // <= needs a number of items during pass 1, otherwise addresses will be off later on
+    num = getExpressionValue(token.start, REQUIRED_FIRSTPASS); // <= needs a number of items during pass 1, otherwise addresses will be off later on
 
     if(token.terminator == ',') {
         if(getDefineValueToken(&token, token.next) == 0) {
@@ -825,7 +825,7 @@ void handle_asm_blk(uint8_t width) {
             macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
             token.start = _macro_expansionline_buffer;
         }
-        val = getExpressionValue(token.start, false); // value not required in pass 1
+        val = getExpressionValue(token.start, REQUIRED_LASTPASS); // value not required in pass 1
     }
     else { // no value given
         if((token.terminator != 0)  && (token.terminator != ';'))
@@ -1024,7 +1024,7 @@ void handle_asm_if(void) {
             error(message[ERROR_CONDITIONALEXPRESSION],0);
             return;
         }
-        value = getExpressionValue(token.start, true);
+        value = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
 
         inConditionalSection = value ? CONDITIONSTATE_TRUE : CONDITIONSTATE_FALSE;
     }
