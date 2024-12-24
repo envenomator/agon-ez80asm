@@ -81,8 +81,8 @@ void listPrintLine(void) {
         }
         if(macroexpansions) {
             if(currentExpandedMacro) {
-                char tmpbuffer[5];
-                snprintf(tmpbuffer, 5, "M%d ", macrolevel);
+                char tmpbuffer[6];
+                snprintf(tmpbuffer, 6, "M%d ", macrolevel);
                 strcat(buffer, tmpbuffer);
             }
             else strcat(buffer, "   ");
