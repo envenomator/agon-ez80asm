@@ -1,20 +1,7 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include "config.h"
-#include "typedefs.h"
-#include "label.h"
-#include "hash.h"
-#include "str2num.h"
-#include "utils.h"
-#include "globals.h"
-#include "io.h"
-#include "macro.h"
+#include "defines.h"
 
 label_t *findLabel(const char *name);
 void initGlobalLabelTable(void);

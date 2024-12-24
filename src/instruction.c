@@ -1,8 +1,19 @@
-#include "instruction.h"
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include "config.h"
+#include "defines.h"
+#include "hash.h"
+#include "utils.h"
+#include "macro.h"
 #include "moscalls.h"
 #include "globals.h"
 #include "label.h"
 #include "io.h"
+#include "instruction.h"
 
 // instruction hash table
 instruction_t *instruction_table[INSTRUCTION_HASHTABLESIZE];

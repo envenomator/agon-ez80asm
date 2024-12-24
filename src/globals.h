@@ -1,15 +1,10 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <stdio.h>
-#include <stdint.h>
 #include <stdbool.h>
-#include <time.h>
+#include <stdint.h>
 #include "config.h"
-#include "typedefs.h"
-#include "instruction.h"
-#include "macro.h"
-#include "assemble.h"
+#include "defines.h"
 
 // Global variables
 extern uint8_t errorreportlevel;

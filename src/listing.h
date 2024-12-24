@@ -1,15 +1,7 @@
 #ifndef LISTING_H
 #define LISTING_H
 
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-#include "config.h"
-#include "typedefs.h"
-#include "listing.h"
-#include "globals.h"
-#include "utils.h"
-#include "io.h"
+#include "defines.h"
 
 void listInit(void);
 void listStartLine(const char *line, unsigned int linenumber);

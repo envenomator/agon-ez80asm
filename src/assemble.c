@@ -1,5 +1,18 @@
-#include "assemble.h"
-#include <time.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include "config.h"
+#include "defines.h"
+#include "globals.h"
+#include "instruction.h"
+#include "utils.h"
+#include "label.h"
+#include "listing.h"
+#include "macro.h"
+#include "io.h"
+#include "moscalls.h"
+#include "hash.h"
 
 // Temp macro buffers
 char _macro_content_buffer[MACRO_BUFFERSIZE + 1];

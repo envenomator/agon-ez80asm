@@ -1,4 +1,5 @@
-#include "console.h"
+#include <stdio.h>
+#include "globals.h"
 
 #ifndef CEDEV
 

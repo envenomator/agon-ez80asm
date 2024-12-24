@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdint.h>
 #include <stdarg.h>
+#include "defines.h"
 #include "globals.h"
 #include "console.h"
 #include "utils.h"
@@ -11,7 +13,6 @@
 #include "instruction.h"
 #include "io.h"
 #include "assemble.h"
-
 
 // memory allocate size bytes, raise error if not available
 void *allocateMemory(size_t size) {
@@ -54,7 +55,7 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
     }
 }
 
-void displayerror(const char *msg, const char *context, uint8_t level) {
+void displayerror(const char *msg, const char *context, errorlevel_t level) {
     struct contentitem *ci = currentContent();
 
     if(level == LEVEL_WARNING) {

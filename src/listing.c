@@ -1,4 +1,12 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+#include "config.h"
+#include "defines.h"
 #include "listing.h"
+#include "globals.h"
+#include "utils.h"
+#include "io.h"
 #include "assemble.h"
 
 // Local variables

@@ -1,9 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <ctype.h>
 #include "config.h"
-#include "typedefs.h"
+#include "defines.h"
 
 void remove_ext (char* myStr, char extSep, char pathSep);
 void trimRight(char *str);

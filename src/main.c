@@ -4,9 +4,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <time.h>
+#include "config.h"
+#include "defines.h"
 #include "console.h"
 #include "getopt.h"
-#include "config.h"
 #include "globals.h"
 #include "utils.h"
 #include "assemble.h"
@@ -14,12 +15,7 @@
 #include "macro.h"
 #include "io.h"
 #include "str2num.h"
-
-#ifdef UNIX
-#define EXIT_ERROR EXIT_FAILURE
-#else
-#define EXIT_ERROR 0
-#endif
+#include "instruction.h"
 
 char inputfilename[FILENAMEMAXLENGTH + 1];
 char outputfilename[FILENAMEMAXLENGTH + 1];

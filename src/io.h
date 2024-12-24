@@ -1,18 +1,8 @@
 #ifndef IO_H
 #define IO_H
 
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include "config.h"
-#include "typedefs.h"
-#include "globals.h"
-#include "listing.h"
-#include "macro.h"
-#include "utils.h"
-#include "moscalls.h"
+#include "defines.h"
 
 // Global variables
 extern char filebasename[FILENAMEMAXLENGTH + 1];

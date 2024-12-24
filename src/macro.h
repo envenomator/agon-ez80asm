@@ -1,13 +1,7 @@
 #ifndef MACRO_H
 #define MACRO_H
 
-#include <string.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include "config.h"
-#include "typedefs.h"
-#include "utils.h"
+#include "defines.h"
 
 extern uint8_t macroCounter;
 extern uint24_t macromemsize;

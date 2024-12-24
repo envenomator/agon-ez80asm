@@ -1,3 +1,12 @@
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include "config.h"
+#include "defines.h"
+#include "utils.h"
 #include "macro.h"
 #include "globals.h"
 #include "hash.h"

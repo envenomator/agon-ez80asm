@@ -1,12 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#ifndef CEDEV
-#include <stdint.h>
-typedef int32_t int24_t;
-typedef uint32_t uint24_t;
-#endif
-
 #ifdef _MSC_VER
 #define strncasecmp _strnicmp
 #define strcasecmp _stricmp

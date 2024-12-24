@@ -1,4 +1,18 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include "config.h"
+#include "defines.h"
 #include "label.h"
+#include "hash.h"
+#include "str2num.h"
+#include "utils.h"
+#include "globals.h"
+#include "io.h"
+#include "macro.h"
 #include "assemble.h"
 
 // Total allocated memory for labels
