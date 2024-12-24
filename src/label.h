@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "config.h"
+#include "typedefs.h"
 #include "label.h"
 #include "hash.h"
 #include "str2num.h"
@@ -13,24 +15,6 @@
 #include "globals.h"
 #include "io.h"
 #include "macro.h"
-
-enum {
-    LABEL_REGULAR,
-    LABEL_MACRO
-};
-
-typedef struct {
-    char *name;
-    bool  local;
-    void *next;
-    uint24_t address;
-} label_t;
-
-typedef struct {
-    uint8_t scope;
-    bool defined;
-    uint24_t address;
-} anonymouslabel_t;
 
 label_t *findLabel(const char *name);
 void initGlobalLabelTable(void);

@@ -6,19 +6,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "config.h"
+#include "typedefs.h"
 #include "utils.h"
-
-typedef struct {
-    char*   name;
-    char*   originfilename;
-   uint24_t originlinenumber;
-    char*   body;
-    uint8_t argcount;
-    char**  arguments;
-    char**  substitutions;
-    void*   next;
-   uint24_t currentExpandID;
-} macro_t;
 
 extern uint8_t macroCounter;
 extern uint24_t macromemsize;

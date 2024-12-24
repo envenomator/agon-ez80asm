@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "config.h"
+#include "typedefs.h"
 
 // Transforms a binary/hexadecimal/decimal string to an int24_t number
 // option to NOT halt on errors, but just set the err_str2num status - just check if something is a valid number

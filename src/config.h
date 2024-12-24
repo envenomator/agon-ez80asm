@@ -37,6 +37,7 @@ typedef uint32_t uint24_t;
 #define MAXNAMELENGTH                64 // Maximum name length of labels
 #define MACROMAXARGS                  8 // Maximum arguments to a macro
 #define MACROARGLENGTH               64
+#define MAX_MNEMONIC_SIZE            32
 #define MACROARGSUBSTITUTIONLENGTH  FILENAMEMAXLENGTH+2 // Maximum length of macro argument, accounting for passing filename with double quotes
 #define MACROLINEMAX                MACROARGSUBSTITUTIONLENGTH * MACROMAXARGS + LINEMAX
 #define CLEANUPFILES               true

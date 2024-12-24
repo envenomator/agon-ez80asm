@@ -2,6 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdint.h>
+#include <stdarg.h>
 #include "globals.h"
 #include "console.h"
 #include "utils.h"
@@ -10,7 +11,7 @@
 #include "instruction.h"
 #include "io.h"
 #include "assemble.h"
-#include <stdarg.h>
+
 
 // memory allocate size bytes, raise error if not available
 void *allocateMemory(size_t size) {
@@ -133,13 +134,6 @@ void trimRight(char *str) {
     str++;
     *str = 0;
 }
-
-typedef enum {
-    TOKEN_REGULAR,
-    TOKEN_STRING,
-    TOKEN_LITERAL,
-    TOKEN_BRACKET
-} tokenclass;
 
 void getLabelToken(streamtoken_t *token, char *src) {
     token->start = src; // no need to remove leading spaces
@@ -279,7 +273,7 @@ uint8_t getBracketToken(streamtoken_t *token, char *src) {
 
 uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
     uint8_t length = 0;
-    tokenclass state;
+    tokenclass_t state;
     bool escaped = false;
     bool terminated;
 
@@ -519,13 +513,6 @@ uint8_t copyLiteralToken(const char *from, char *to) {
     return len;
 }
 
-enum getValueState {
-    START,
-    OP,
-    UNARY,
-    NUMBER,
-};
-
 // Gets the value from an expression, possible consisting of values, labels and operators
 int32_t getExpressionValue(char *str, requiredResult_t requiredPass) {
     uint8_t tmplength;
@@ -535,7 +522,7 @@ int32_t getExpressionValue(char *str, requiredResult_t requiredPass) {
     char operator, unaryoperator;
     int32_t tmp = 0;
     int32_t total = 0;
-    enum getValueState state;;
+    getValueState_t state;;
 
     if((pass == STARTPASS) && (requiredPass == REQUIRED_LASTPASS)) return 0;
 

@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include "config.h"
+#include "typedefs.h"
 #include "listing.h"
 #include "globals.h"
 #include "utils.h"

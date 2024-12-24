@@ -7,11 +7,11 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "config.h"
+#include "typedefs.h"
 #include "hash.h"
 #include "utils.h"
 #include "macro.h"
-
-#define MAX_MNEMONIC_SIZE         32
 
 // Individual registers - 24-bit bitfield
 #define R_NONE  0x000000
@@ -109,106 +109,6 @@
 #define CODE_LIS    0x49
 #define CODE_SIL    0x52
 #define CODE_LIL    0x5B
-
-typedef struct {
-    uint24_t            reg;
-    uint8_t             reg_index;
-    bool                indirect;
-    bool                cc;
-    uint8_t             cc_index;
-    int16_t             displacement;           // larger, so we can check range
-    bool                displacement_provided;
-    bool                immediate_provided;
-    int32_t             immediate;
-    uint8_t             addressmode;
-    char                immediate_name[LINEMAX+1];
-    // No new members after previous array: the array isn't FULLY cleared every init of operand_t, only the first byte is set to 0
-} operand_t;
-
-typedef struct {
-    char                name[MAX_MNEMONIC_SIZE];
-    uint24_t            reg;
-    uint8_t             reg_index;
-    bool                cc;
-    uint8_t             cc_index;
-} regcc_t;
-
-typedef struct {
-    uint8_t suffix;
-    uint8_t prefix1;
-    uint8_t prefix2;
-    uint8_t opcode;
-} opcodesequence_t;
-
-enum {
-    TRANSFORM_NONE,
-    TRANSFORM_X,
-    TRANSFORM_Y,
-    TRANSFORM_Z,
-    TRANSFORM_P,
-    TRANSFORM_Q,
-    TRANSFORM_DDFD,
-    TRANSFORM_CC,
-    TRANSFORM_IR0,
-    TRANSFORM_IR3,
-    TRANSFORM_SELECT,
-    TRANSFORM_N,            // only used by RST
-    TRANSFORM_BIT,          // only used by RES/SET
-    TRANSFORM_REL,          // only used by JR/DJNZ
-};
-
-typedef struct {
-    uint24_t              regsetA;            // one or more registers that need to match this operand
-    uint8_t               conditionsA;        // specific addressing conditions that need to match this operand
-    uint24_t              regsetB;
-    uint8_t               conditionsB;
-    uint8_t               transformA;         // Do we transform acc to operandA
-    uint8_t               transformB;         //  "        "       " "  operandB
-    uint8_t               flags;
-    uint8_t               prefix;             // base prefix1, or 0 if none to output
-    uint8_t               opcode;             // base opcode, may be transformed by A/B, according to opcodetransformtype
-} operandlist_t;
-
-enum {
-    EZ80,
-    ASSEMBLER,
-    MACRO
-};
-
-enum {
-    ASM_ALIGN,
-    ASM_ADL,
-    ASM_ORG,
-    ASM_DB,
-    ASM_DS,
-    ASM_DW,
-    ASM_DW24,
-    ASM_DW32,
-    ASM_ASCIZ,
-    ASM_EQU,
-    ASM_INCLUDE,
-    ASM_BLKB,
-    ASM_BLKW,
-    ASM_BLKP,
-    ASM_BLKL,
-    ASM_MACRO_START,
-    ASM_MACRO_END,
-    ASM_INCBIN,
-    ASM_FILLBYTE,
-    ASM_IF,
-    ASM_ELSE,
-    ASM_ENDIF
-};
-
-typedef struct {
-    char       *name;
-    uint8_t     type;                       // EZ80 / Assembler / MACRO
-    uint8_t     asmtype;                    // assembler subcommand
-    uint8_t     listnumber;                 // number of items to iterate over in the list
-    operandlist_t *list;
-    macro_t    *macro;
-    void       *next;
-} instruction_t;
 
 instruction_t * instruction_lookup(const char *name);
 void initInstructionTable(void);

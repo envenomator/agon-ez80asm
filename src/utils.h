@@ -1,46 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-// requiredResult
-typedef enum {
-    REQUIRED_FIRSTPASS,
-    REQUIRED_LASTPASS
-} requiredResult_t;
-
-#include "config.h"
 #include <ctype.h>
-// DEFAULT COLOR INDEXES
-enum {
-    DARK_BLACK = 0,
-    DARK_RED,
-    DARK_GREEN,
-    DARK_YELLOW,
-    DARK_BLUE,
-    DARK_MAGENTA,
-    DARK_CYAN,
-    DARK_WHITE,
-    BRIGHT_BLACK,
-    BRIGHT_RED,
-    BRIGHT_GREEN,
-    BRIGHT_YELLOW,
-    BRIGHT_BLUE,
-    BRIGHT_MAGENTA,
-    BRIGHT_CYAN,
-    BRIGHT_WHITE
-};
-
-// ERROR LEVELS
-enum {
-    LEVEL_ERROR,
-    LEVEL_WARNING
-};
-
-// Token type that points to the (changed) underlying data string
-typedef struct {
-    char    *start;
-    char    *next;
-    char    terminator;
-} streamtoken_t;
+#include "config.h"
+#include "typedefs.h"
 
 void remove_ext (char* myStr, char extSep, char pathSep);
 void trimRight(char *str);

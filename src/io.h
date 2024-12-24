@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "config.h"
+#include "typedefs.h"
 #include "globals.h"
 #include "listing.h"
 #include "macro.h"
@@ -23,12 +24,6 @@ extern struct contentitem *filecontent[256]; // hash table with all file content
 extern struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
 extern char _contentstack_inputbuffer[FILESTACK_MAXFILES][INPUT_BUFFERSIZE];     // stack of miminum input buffers
 extern uint8_t _contentstacklevel;
-
-enum {
-    FILE_OUTPUT,
-    FILE_ANONYMOUS_LABELS,
-    FILE_LISTING,
-};
 
 FILE *ioOpenfile(const char *name, const char *mode);
 uint24_t ioGetfilesize(FILE *fh);

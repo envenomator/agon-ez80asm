@@ -5,14 +5,14 @@
  */
 uint8_t errorreportlevel;
 uint8_t maxstackdepth;
-struct contentitem *currentcontentitem;
+contentitem_t *currentcontentitem;
 uint16_t sourcefilecount;
 uint16_t binfilecount;
 uint24_t filecontentsize;
 bool completefilebuffering;
 unsigned int macrolinenumber;
 unsigned int pass;
-conditionalstate inConditionalSection;
+conditionalstate_t inConditionalSection;
 macro_t *currentExpandedMacro;
 uint8_t macrolevel;
 uint16_t macroexpansions;
