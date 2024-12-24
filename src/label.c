@@ -228,7 +228,7 @@ void advanceAnonymousLabel(void) {
 void definelabel(int24_t num){
     uint8_t len;
 
-    if(pass == 1) {
+    if(pass == STARTPASS) {
         if(currentline.label == NULL) return;
 
         if(strlen(currentline.label) > MAXNAMELENGTH) {

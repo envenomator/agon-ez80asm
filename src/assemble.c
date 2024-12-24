@@ -567,19 +567,19 @@ void handle_asm_data(uint8_t wordtype) {
                             break;
                         default:
                             value = getExpressionValue(token.start, false); // not needed in pass 1
-                            if(pass == 2) validateRange8bit(value, token.start);
+                            if(pass == ENDPASS) validateRange8bit(value, token.start);
                             emit_8bit(value);
                             break;
                     }
                     break;
                 case ASM_DW:
                     value = getExpressionValue(token.start, false);
-                    if(pass == 2) validateRange16bit(value, token.start);
+                    if(pass == ENDPASS) validateRange16bit(value, token.start);
                     emit_16bit(value);
                     break;
                 case ASM_DW24:
                     value = getExpressionValue(token.start, false);
-                    if(pass == 2) validateRange24bit(value, token.start);
+                    if(pass == ENDPASS) validateRange24bit(value, token.start);
                     emit_24bit(value);
                     break;
                 case ASM_DW32:
@@ -700,7 +700,7 @@ void handle_asm_include(void) {
         error(message[ERROR_STRINGFORMAT],0);
         return;
     }
-    if((pass == 2) && (listing)) listEndLine();
+    if((pass == ENDPASS) && (listing)) listEndLine();
 
     token.start[strlen(token.start)-1] = 0;
     if(strcmp(token.start+1, currentcontentitem->name) == 0) {
@@ -739,14 +739,14 @@ void handle_asm_incbin(void) {
 
     // Prepare content
     if((ci = findContent(token.start+1)) == NULL) {
-        if(pass == 1) {
+        if(pass == STARTPASS) {
             ci = insertContent(token.start+1);
             if(ci == NULL) return;
         }
         else return;
     }
 
-    if(pass == 1) {
+    if(pass == STARTPASS) {
         if(!completefilebuffering) {
             ci->fh = ioOpenfile(ci->name, "rb");
             if(ci->fh == 0) return;
@@ -755,7 +755,7 @@ void handle_asm_incbin(void) {
         }
         address += ci->size;
     }
-    if(pass == 2) {
+    if(pass == ENDPASS) {
         if(completefilebuffering) {
             if(listing) { // Output needs to pass to the listing through emit_8bit, performance-hit
                 for(n = 0; n < ci->size; n++) emit_8bit(ci->buffer[n]);
@@ -841,17 +841,17 @@ void handle_asm_blk(uint8_t width) {
                 if(val != fillbyte) warning(message[WARNING_UNSUPPORTED_INITIALIZER],"%s",token.start);
                 break;
             case 1:
-                if(pass == 2) validateRange8bit(val, token.start);
+                if(pass == ENDPASS) validateRange8bit(val, token.start);
                 emit_8bit(val);
                 num -= 1;
                 break;
             case 2:
-                if(pass == 2) validateRange16bit(val, token.start);
+                if(pass == ENDPASS) validateRange16bit(val, token.start);
                 emit_16bit(val);
                 num -= 1;
                 break;
             case 3:
-                if(pass == 2) validateRange24bit(val, token.start);
+                if(pass == ENDPASS) validateRange24bit(val, token.start);
                 emit_24bit(val);
                 num -= 1;
                 break;
@@ -910,7 +910,7 @@ void handle_asm_definemacro(void) {
     _macro_content_buffer[0] = 0; // empty string
     strend = _macro_content_buffer;
 
-    if(pass == 2 && (listing)) listEndLine(); // print out first line of macro definition
+    if(pass == ENDPASS && (listing)) listEndLine(); // print out first line of macro definition
 
     ci = currentcontentitem;
 
@@ -920,7 +920,7 @@ void handle_asm_definemacro(void) {
         ci->currentlinenumber++;
         char *src = macroline;
 
-        if(pass == 2 && (listing)) {
+        if(pass == ENDPASS && (listing)) {
             listStartLine(src, ci->currentlinenumber);
             listEndLine();
         }
@@ -939,7 +939,7 @@ void handle_asm_definemacro(void) {
             }
         }
         // concatenate to buffer end
-        if(pass == 1) {
+        if(pass == STARTPASS) {
             if((macrolength + linelength) > MACRO_BUFFERSIZE) {
                 error(message[ERROR_MACROTOOLARGE],0);
                 return;
@@ -959,7 +959,7 @@ void handle_asm_definemacro(void) {
 
     // Only define macros in pass 1
     // parse arguments into array
-    if(pass == 1) {
+    if(pass == STARTPASS) {
         if(!currentline.next) {
             error(message[ERROR_MACRONAME],0);
             return;
@@ -1189,7 +1189,7 @@ void processMacro(void) {
     uint24_t localmacroExpandID;
 
     macrolevel++;
-    if(pass == 1) macroexpansions++;
+    if(pass == STARTPASS) macroexpansions++;
     localmacroExpandID = macroExpandID++;
     localexpandedmacro->currentExpandID = localmacroExpandID;
 
@@ -1220,7 +1220,7 @@ void processMacro(void) {
             }
             strcpy(substitutionlist[argcount-1], token.start);              // copy substitution argument
             localexpandedmacro->substitutions[argcount-1] = substitutionlist[argcount-1];  // set pointer in macro structure for later processing
-            if((pass == 2) && listing) sprintf(listbuffer + strlen(listbuffer), "%s=%s ", localexpandedmacro->arguments[argcount-1], token.start);
+            if((pass == ENDPASS) && listing) sprintf(listbuffer + strlen(listbuffer), "%s=%s ", localexpandedmacro->arguments[argcount-1], token.start);
         }
         if(token.terminator == ',') currentline.next = token.next;
         else {
@@ -1237,18 +1237,18 @@ void processMacro(void) {
 
     // List out argument substitution
     if(listing && argcount == 0) sprintf(listbuffer + strlen(listbuffer), "none");
-    if((pass == 2) && listing) listPrintComment(listbuffer);
+    if((pass == ENDPASS) && listing) listPrintComment(listbuffer);
 
     // process body
     macrolinenumber = 1;
     while(getnextline(&macrolineptr, macroline)) {
         strcpy(errorline, macroline);
-        if(pass == 2 && (listing)) listStartLine(macroline, macrolinenumber);
+        if(pass == ENDPASS && (listing)) listStartLine(macroline, macrolinenumber);
         parseLine(macroline);
 
         if(!currentline.current_macro) {
             processInstructions();
-            if((pass == 2) && (listing)) listEndLine();
+            if((pass == ENDPASS) && (listing)) listEndLine();
         }
         else {
             // CALL nested macro instruction
@@ -1256,7 +1256,7 @@ void processMacro(void) {
                 error(message[ERROR_MACROMAXLEVEL],"%d",MACRO_MAXLEVEL);
                 return;
             }
-            if((pass == 2) && (listing)) listEndLine();
+            if((pass == ENDPASS) && (listing)) listEndLine();
 
             localmacrolinenumber = macrolinenumber;
             processMacro();
@@ -1294,25 +1294,6 @@ void processMacro(void) {
     if(macro_invocation_warning) issue_warning = true; // display invocation warning at upstream caller
 
     macrolevel--;
-}
-
-// Initialize pass 1 / pass2 states for the assembler
-void passInitialize(uint8_t passnumber) {
-    pass = passnumber;
-    address = start_address;
-    currentExpandedMacro = NULL;
-    inConditionalSection = CONDITIONSTATE_NORMAL;
-    initAnonymousLabelTable();
-    _contentstacklevel = 0;
-    sourcefilecount = 1;
-    binfilecount = 0;
-
-    if(pass == 2) fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
-
-    issue_warning = false;
-    remaining_dsspaces = 0;
-    macrolevel = 0;
-    macroExpandID = 0;
 }
 
 struct contentitem *insertContent(char *filename) {
@@ -1488,7 +1469,7 @@ void processContent(char *filename) {
     struct contentitem *ci;
 
     if((ci = findContent(filename)) == NULL) {
-        if(pass == 1) {
+        if(pass == STARTPASS) {
             ci = insertContent(filename);
             if(ci == NULL) return;
         }
@@ -1505,16 +1486,16 @@ void processContent(char *filename) {
     // Process
     while(getnextContentLine(line, errorline, ci)) {
         ci->currentlinenumber++;
-        if((pass == 2) && (listing)) listStartLine(line, ci->currentlinenumber);
+        if((pass == ENDPASS) && (listing)) listStartLine(line, ci->currentlinenumber);
 
         parseLine(line);
 
         if(!currentline.current_macro) {
             processInstructions();
-            if((pass == 2) && (listing)) listEndLine();
+            if((pass == ENDPASS) && (listing)) listEndLine();
         }
         else {
-            if((pass == 2) && (listing)) listEndLine();
+            if((pass == ENDPASS) && (listing)) listEndLine();
             processMacro();
             if(issue_warning) { // warnings from the expanded macro
                 colorPrintf(DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n%s", filename, ci->currentlinenumber, errorline);
@@ -1549,19 +1530,35 @@ void processContent(char *filename) {
     return;
 }
 
+// Initialize pass 1 / pass2 states for the assembler
+void passInitialize(uint8_t passnumber) {
+    pass = passnumber;
+    address = start_address;
+    currentExpandedMacro = NULL;
+    inConditionalSection = CONDITIONSTATE_NORMAL;
+    initAnonymousLabelTable();
+    _contentstacklevel = 0;
+    sourcefilecount = 1;
+    binfilecount = 0;
+
+    if(pass == ENDPASS) fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
+
+    issue_warning = false;
+    remaining_dsspaces = 0;
+    macrolevel = 0;
+    macroExpandID = 0;
+}
+
 void assemble(char *filename) {
-    // Pass 1
-    printf("Pass 1...\r\n");
-    passInitialize(1);
-    processContent(filename);
 
-    if(errorcount) return;
-
-    // Pass 2
-    printf("Pass 2...\r\n");
-    passInitialize(2);
-    readAnonymousLabel();
-    if(listing) listInit();
-    processContent(filename);
-    return;
+    for(uint8_t p = STARTPASS; p <= ENDPASS; p++) {
+        printf("Pass %d...\r\n", p);
+        passInitialize(p);
+        if(p == ENDPASS) {
+            readAnonymousLabel();
+            listInit();
+        }
+        processContent(filename);
+        if(errorcount) return;
+    }
 }

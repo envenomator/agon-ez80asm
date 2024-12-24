@@ -93,7 +93,7 @@ void transform_instruction(operand_t *op, uint8_t type) {
             op->immediate_provided = false; // no separate output for this transform
             break;
         case TRANSFORM_REL:
-            if(pass == 2) {
+            if(pass == ENDPASS) {
                 // label still potentially unknown in pass 1, so output the existing '0' in pass 1
                 rel = op->immediate - address - 2;
                 if((rel > 127) || (rel < -128)) {

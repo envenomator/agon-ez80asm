@@ -448,7 +448,7 @@ int32_t resolveNumber(char *str, uint8_t length, bool req_firstpass) {
     int32_t number;
     label_t *lbl = findLabel(str);
 
-    if((pass == 1) && !req_firstpass) return 0;
+    if((pass == STARTPASS) && !req_firstpass) return 0;
 
     if(lbl) number = lbl->address;
     else {
@@ -456,7 +456,7 @@ int32_t resolveNumber(char *str, uint8_t length, bool req_firstpass) {
         else {
             number = str2num(str, length?length:strlen(str));
             if(err_str2num) {
-                if(pass == 1) {
+                if(pass == STARTPASS) {
                     // Yet unknown label, number incorrect
                     // We only get here if req_firstpass is true, so error
                     error(message[ERROR_INVALIDNUMBER],"%s", str);
@@ -537,7 +537,7 @@ int32_t getExpressionValue(char *str, bool req_firstpass) {
     int32_t total = 0;
     enum getValueState state;;
 
-    if((pass == 1) && !req_firstpass) return 0;
+    if((pass == STARTPASS) && !req_firstpass) return 0;
 
     while(isspace(*str)) str++; // eat all spaces
 

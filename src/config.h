@@ -20,6 +20,8 @@ typedef uint32_t uint24_t;
 #define ADLMODE_START              true
 #define START_ADDRESS           0x40000 // Agon default load address
 #define FILLBYTE                   0xFF // Same as ZDS
+#define STARTPASS                     1
+#define ENDPASS                       2
 #define INSTRUCTION_HASHTABLESIZE   256 // Number of entries in the hashtable
 #define GLOBAL_LABEL_TABLE_SIZE     256
 #define FILESTACK_MAXFILES            4 // Maximum simultaneous include 'depth'

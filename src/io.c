@@ -203,7 +203,7 @@ void ioClose(void) {
 }
 
 void emit_8bit(uint8_t value) {
-    if(pass == 2) {
+    if(pass == ENDPASS) {
         if(remaining_dsspaces) {
             if(listing) listPrintDSLines(remaining_dsspaces, fillbyte);
             while(remaining_dsspaces) {
