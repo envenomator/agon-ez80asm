@@ -80,7 +80,7 @@ label_t * findLocalLabel(char *key) {
     return findGlobalLabel(compoundname);
 }
 
-void writeAnonymousLabel(int24_t labelAddress) {
+void writeAnonymousLabel(uint24_t labelAddress) {
     uint8_t scope;
 
     scope = currentStackLevel();
@@ -90,7 +90,7 @@ void writeAnonymousLabel(int24_t labelAddress) {
 }
 
 void readAnonymousLabel(void) {
-    int24_t labelAddress;
+    uint24_t labelAddress;
     uint8_t scope;
 
     if(fread((char*)&labelAddress, sizeof(labelAddress), 1, filehandle[FILE_ANONYMOUS_LABELS])) {
@@ -112,7 +112,7 @@ void readAnonymousLabel(void) {
     }
 }
 
-bool insertLabel(char *labelname, uint8_t len, int24_t labelAddress, bool local){
+bool insertLabel(char *labelname, uint8_t len, uint24_t labelAddress, bool local){
     uint8_t index;
     label_t *tmp,*try;
 
@@ -159,7 +159,7 @@ bool insertLabel(char *labelname, uint8_t len, int24_t labelAddress, bool local)
     }
 }
 
-bool insertLocalLabel(char *labelname, int24_t labelAddress) {
+bool insertLocalLabel(char *labelname, uint24_t labelAddress) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
     char *scopename;
     uint8_t len;
@@ -225,7 +225,7 @@ void advanceAnonymousLabel(void) {
     }
 }
 
-void definelabel(int24_t num){
+void definelabel(uint24_t num){
     uint8_t len;
 
     if(pass == STARTPASS) {

@@ -23,25 +23,25 @@ typedef struct {
     char *name;
     bool  local;
     void *next;
-    int24_t address;
+    uint24_t address;
 } label_t;
 
 typedef struct {
     uint8_t scope;
     bool defined;
-    int24_t address;
+    uint24_t address;
 } anonymouslabel_t;
 
 label_t *findLabel(char *name);
 void initGlobalLabelTable(void);
 void initAnonymousLabelTable(void);
-void writeAnonymousLabel(int24_t address);
+void writeAnonymousLabel(uint24_t address);
 void readAnonymousLabel(void);
 label_t * findGlobalLabel(char *name);
 uint16_t getGlobalLabelCount(void);
 void saveGlobalLabelTable(void);
 void advanceAnonymousLabel(void);
-void definelabel(int24_t num);
+void definelabel(uint24_t num);
 
 extern uint24_t labelmemsize;
 
