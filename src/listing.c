@@ -21,7 +21,7 @@ void listInit(void) {
     _listLine[0] = 0;
 }
 
-void listStartLine(char *line, unsigned int linenumber) {    
+void listStartLine(const char *line, unsigned int linenumber) {    
     strcpy(_listLine, line);
     trimRight(_listLine);
     _listAddress = address;

@@ -45,14 +45,14 @@ void colorPrintf(int color, const char *msg, ...);
 
 int32_t getExpressionValue(char *str, bool req_firstpass);
 uint8_t getEscapedChar(char c);
-uint8_t getLiteralValue(char *string);
+uint8_t getLiteralValue(const char *string);
 void    getLabelToken(streamtoken_t *token, char *src);                // terminates on ':' character
 uint8_t getMnemonicToken(streamtoken_t *token, char *src);          // terminated on spaces
 uint8_t getOperandToken(streamtoken_t *token, char *src);           // terminates on , or ;  transparent literals
 uint8_t getDefineValueToken(streamtoken_t *token, char *src);       // terminates on all operator symbols, ',' and ';' transparent literals and strings
 
 uint16_t getnextline(char **ptr, char *dst);
-char *  allocateString(char *name);
+char *  allocateString(const char *name);
 void *  allocateMemory(size_t size);
 
 uint8_t strcompound(char *dest, const char *src1, const char *src2);

@@ -210,9 +210,9 @@ typedef struct {
     void       *next;
 } instruction_t;
 
-instruction_t * instruction_lookup(char *name);
+instruction_t * instruction_lookup(const char *name);
 void initInstructionTable(void);
-void emit_instruction(operandlist_t *list);
+void emit_instruction(const operandlist_t *list);
 uint8_t get_immediate_size(uint8_t suffix);
 
 extern instruction_t *instruction_table[INSTRUCTION_HASHTABLESIZE];

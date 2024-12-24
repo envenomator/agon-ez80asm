@@ -32,12 +32,12 @@ typedef struct {
     uint24_t address;
 } anonymouslabel_t;
 
-label_t *findLabel(char *name);
+label_t *findLabel(const char *name);
 void initGlobalLabelTable(void);
 void initAnonymousLabelTable(void);
 void writeAnonymousLabel(uint24_t address);
 void readAnonymousLabel(void);
-label_t * findGlobalLabel(char *name);
+label_t * findGlobalLabel(const char *name);
 uint16_t getGlobalLabelCount(void);
 void saveGlobalLabelTable(void);
 void advanceAnonymousLabel(void);

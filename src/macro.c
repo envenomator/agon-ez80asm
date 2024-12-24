@@ -23,7 +23,7 @@ void setMacroBody(macro_t *macro, const char *body) {
     strcpy(macro->body, body);
 }
 
-macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t startlinenumber) {
+macro_t *defineMacro(const char *name, uint8_t argcount, const char *arguments, uint16_t startlinenumber) {
     unsigned int len, i;
     uint8_t index;
     char *ptr;
@@ -65,7 +65,7 @@ macro_t *defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t sta
         if(tmp->substitutions == NULL) return NULL;
         if((tmp->arguments == NULL) || (tmp->substitutions == NULL)) return NULL;
 
-        char *argptr = arguments;
+        const char *argptr = arguments;
         for(i = 0; i < argcount; i++, argptr += MACROARGLENGTH+1) {
             len = (unsigned int)strlen(argptr);
             if(len > MACROARGLENGTH) {
@@ -160,7 +160,7 @@ void replaceArgument(char *target, const char *argument, const char *substitutio
     if(bufferdirty) strcpy(target, buffer);
 }
 
-uint8_t macroExpandArg(char *dst, char *src, macro_t *m) {
+uint8_t macroExpandArg(char *dst, const char *src, const macro_t *m) {
     strcpy(dst, src);
     for(uint8_t i = 0; i < m->argcount; i++) {
         replaceArgument(dst, m->arguments[i], m->substitutions[i]);

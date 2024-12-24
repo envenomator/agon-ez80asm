@@ -5,7 +5,7 @@ bool err_str2num;
 
 // transform a binary string to a uint32_t number
 // string must end with 0 and contain only valid characters (0..1)
-int32_t str2bin(char *string) {
+int32_t str2bin(const char *string) {
     int32_t result = 0;
     uint8_t x = 0;
 
@@ -20,7 +20,7 @@ int32_t str2bin(char *string) {
 
 // transform a hex string to a int32_t number
 // string must end with 0 and contain only valid characters (0..9,a..f,A..F)
-int32_t str2hex(char *string) {
+int32_t str2hex(const char *string) {
     int32_t result = 0;
     char c;
     uint8_t x = 0;
@@ -41,7 +41,7 @@ int32_t str2hex(char *string) {
 
 // transform a hex string to a int32_t number
 // string must end with 0 and contain only valid characters (0..9)
-int32_t str2dec(char *string) {
+int32_t str2dec(const char *string) {
     int32_t result = 0;
     uint8_t x = 0;
 
@@ -60,7 +60,7 @@ int32_t str2dec(char *string) {
 // HEX:     0x..., ...h, $..., capital letters allowed
 // DECIMAL ...
 // Returns current program counter with just '$'
-int32_t str2num(char *string, uint8_t length) {
+int32_t str2num(const char *string, uint8_t length) {
     char buffer[TOKEN_MAX+1];
     char lastchar;
     int32_t result = 0;

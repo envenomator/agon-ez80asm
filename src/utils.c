@@ -22,7 +22,7 @@ void *allocateMemory(size_t size) {
 }
 
 // memory allocate a string, copy content and return pointer, or NULL if no memory
-char *allocateString(char *name) {
+char *allocateString(const char *name) {
     char *ptr = (char *)allocateMemory(strlen(name) + 1);
     if(ptr) {
         strcpy(ptr, name);
@@ -421,7 +421,7 @@ uint8_t getEscapedChar(char c) {
 }
 
 // Get the ascii value from a single 'x' token.
-uint8_t getLiteralValue(char *string) {
+uint8_t getLiteralValue(const char *string) {
 
     uint8_t len = strlen(string);
     if((len == 3) && (string[2] == '\'')) {

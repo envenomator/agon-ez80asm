@@ -25,7 +25,7 @@ extern uint24_t macromemsize;
 extern uint24_t macroExpandID;
 
 void      initMacros(void);
-macro_t * defineMacro(char *name, uint8_t argcount, char *arguments, uint16_t startlinenumber);
+macro_t * defineMacro(const char *name, uint8_t argcount, const char *arguments, uint16_t startlinenumber);
 void      setMacroBody(macro_t *macro, const char *body);
-uint8_t   macroExpandArg(char *dst, char *src, macro_t *m);
+uint8_t   macroExpandArg(char *dst, const char *src, const macro_t *m);
 #endif // MACRO_H

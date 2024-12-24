@@ -30,21 +30,21 @@ enum {
     FILE_LISTING,
 };
 
-FILE *ioOpenfile(char *name, char *mode);
+FILE *ioOpenfile(const char *name, const char *mode);
 uint24_t ioGetfilesize(FILE *fh);
 void ioOutputc(unsigned char c);
-void ioWrite(uint8_t fh, char *s, uint16_t size);
-bool ioInit(char *input_filename, char *output_filename); // init - called once at start
+void ioWrite(uint8_t fh, const char *s, uint16_t size);
+bool ioInit(const char *input_filename, const char *output_filename); // init - called once at start
 void ioClose(void);                                // close everything at end, do cleanup
 void ioPutc(uint8_t fh, unsigned char c);          // buffered write of a single byte / fallback
-int  ioPuts(uint8_t fh, char *s);                  // buffered write of a string / fallback
+int  ioPuts(uint8_t fh, const char *s);                  // buffered write of a string / fallback
 void emit_8bit(uint8_t value);
 void emit_16bit(uint16_t value);
 void emit_24bit(uint24_t value);
 void emit_32bit(uint32_t value);
-void emit_quotedstring(char *str);
+void emit_quotedstring(const char *str);
 void emit_adlsuffix_code(uint8_t suffix);
-void emit_immediate(operand_t *op, uint8_t suffix);
+void emit_immediate(const operand_t *op, uint8_t suffix);
 void initFileContentTable(void);
 
 #endif // IO_H

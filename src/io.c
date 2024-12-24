@@ -26,7 +26,7 @@ char     _outputbuffer[OUTPUT_BUFFERSIZE];
     }
 #endif // else use standard remove()
 
-FILE *ioOpenfile(char *name, char *mode) {
+FILE *ioOpenfile(const char *name, const char *mode) {
     FILE *fh = fopen(name, mode);
     if(!fh) {
         error("Error opening", "%s", name);
@@ -70,14 +70,14 @@ void _initFileBuffers(void) {
 }
 
 // opens a file a places the result at the file pointer
-bool _openFile(uint8_t filenumber, char* mode) {
+bool _openFile(uint8_t filenumber, const char* mode) {
     FILE* file = fopen(filename[filenumber], mode);
     filehandle[filenumber] = file;
     if(file) return true;
     else return false;
 }
 
-void create_filebasename(char *input_filename) {
+void create_filebasename(const char *input_filename) {
     strcpy(filebasename, input_filename);
     remove_ext(filebasename, '.', '/');
 }
@@ -85,7 +85,7 @@ void create_filebasename(char *input_filename) {
 // Prepare filenames according to input filename
 // If output_filename is given, adopt that, 
 // otherwise append base inputfilename + .bin
-void _prepare_filenames(char *output_filename) {
+void _prepare_filenames(const char *output_filename) {
     // prepare filenames
     if((output_filename == NULL) || (strlen(output_filename) == 0)) {
         strcpy(filename[FILE_OUTPUT], filebasename);
@@ -167,7 +167,7 @@ void io_outputc(unsigned char c) {
     if(_filebuffersize[FILE_OUTPUT] == OUTPUT_BUFFERSIZE) _io_flush(FILE_OUTPUT);
 }
 
-void  ioWrite(uint8_t fh, char *s, uint16_t size) {
+void  ioWrite(uint8_t fh, const char *s, uint16_t size) {
     if(_bufferstart[fh]) {
         // Buffered IO
         while(size--) {
@@ -179,7 +179,7 @@ void  ioWrite(uint8_t fh, char *s, uint16_t size) {
     else fwrite(s, 1, size, filehandle[fh]);
 }
 
-int ioPuts(uint8_t fh, char *s) {
+int ioPuts(uint8_t fh, const char *s) {
     int number = 0;
     while(*s) {
         ioPutc(fh, *s);
@@ -189,7 +189,7 @@ int ioPuts(uint8_t fh, char *s) {
     return number;
 }
 
-bool ioInit(char *input_filename, char *output_filename) {
+bool ioInit(const char *input_filename, const char *output_filename) {
     create_filebasename(input_filename);
     _prepare_filenames(output_filename);
     _initFileBuffers();
@@ -259,7 +259,7 @@ void emit_adlsuffix_code(uint8_t suffix) {
 
 // emits a string surrounded by literal string quotes, as the token gets in from a file
 // Only called when the first character is a double quote
-void emit_quotedstring(char *str) {
+void emit_quotedstring(const char *str) {
     bool escaped = false;
     uint8_t escaped_char;
 
@@ -291,7 +291,7 @@ void emit_quotedstring(char *str) {
 
 // Emit a 16 or 24 bit immediate number, according to
 // given suffix bit, or in lack of it, the current ADL mode
-void emit_immediate(operand_t *op, uint8_t suffix) {
+void emit_immediate(const operand_t *op, uint8_t suffix) {
     uint8_t num;
 
     num = get_immediate_size(suffix);

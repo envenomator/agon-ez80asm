@@ -25,7 +25,7 @@ uint8_t get_ddfd_prefix(uint24_t reg) {
     return 0;
 }
 
-void prefix_ddfd_suffix(operandlist_t *op) {
+void prefix_ddfd_suffix(const operandlist_t *op) {
     uint8_t prefix1, prefix2;
 
     if(!(op->flags & F_DDFDOK)) return;
@@ -169,7 +169,7 @@ uint8_t getADLsuffix(void) {
     return 0;
 }
 
-void emit_instruction(operandlist_t *list) {
+void emit_instruction(const operandlist_t *list) {
     bool ddbeforeopcode; // determine position of displacement byte in case of DDCBdd/DDFDdd
     
     // Transform necessary prefix/opcode in output, according to given list and operands
@@ -878,7 +878,7 @@ instruction_t instructions[] = {
     {"xor",      EZ80, 0, sizeof(operands_xor)/sizeof(operandlist_t), operands_xor,NULL,NULL}
 };
 
-instruction_t * instruction_lookup(char *name) {
+instruction_t * instruction_lookup(const char *name) {
     uint8_t index;
     instruction_t *try;
 

@@ -5,10 +5,10 @@
 char _macro_content_buffer[MACRO_BUFFERSIZE + 1];
 char _macro_expansionline_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
 
-void processContent(char *filename);
+void processContent(const char *filename);
 uint16_t getnextContentLine(char *dst1, char *dst2, struct contentitem *ci);
-struct contentitem *findContent(char *filename);
-struct contentitem *insertContent(char *filename);
+struct contentitem *findContent(const char *filename);
+struct contentitem *insertContent(const char *filename);
 
 // Parse a command-token string to currentline.mnemonic & currentline.suffix
 void parse_command(char *src) {
@@ -1296,7 +1296,7 @@ void processMacro(void) {
     macrolevel--;
 }
 
-struct contentitem *insertContent(char *filename) {
+struct contentitem *insertContent(const char *filename) {
     struct contentitem *ci, *try;
     uint8_t index;
 
@@ -1348,7 +1348,7 @@ struct contentitem *insertContent(char *filename) {
     }
 }
 
-struct contentitem *findContent(char *filename) {
+struct contentitem *findContent(const char *filename) {
     uint8_t index;
     struct contentitem *try;
 
@@ -1463,7 +1463,7 @@ void closeContentInput(struct contentitem *ci) {
     fclose(ci->fh);
 }
 
-void processContent(char *filename) {
+void processContent(const char *filename) {
     char line[LINEMAX+1];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
     char errorline[LINEMAX+1]; // Full integrity copy of each line
     struct contentitem *ci;
@@ -1536,28 +1536,27 @@ void passInitialize(uint8_t passnumber) {
     address = start_address;
     currentExpandedMacro = NULL;
     inConditionalSection = CONDITIONSTATE_NORMAL;
-    initAnonymousLabelTable();
     _contentstacklevel = 0;
     sourcefilecount = 1;
     binfilecount = 0;
-
-    if(pass == ENDPASS) fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
-
     issue_warning = false;
     remaining_dsspaces = 0;
     macrolevel = 0;
     macroExpandID = 0;
+
+    initAnonymousLabelTable();
+        if(pass == ENDPASS) {
+        fseek(filehandle[FILE_ANONYMOUS_LABELS], 0, 0);
+        readAnonymousLabel();
+        listInit();
+    }
 }
 
-void assemble(char *filename) {
+void assemble(const char *filename) {
 
     for(uint8_t p = STARTPASS; p <= ENDPASS; p++) {
         printf("Pass %d...\r\n", p);
         passInitialize(p);
-        if(p == ENDPASS) {
-            readAnonymousLabel();
-            listInit();
-        }
         processContent(filename);
         if(errorcount) return;
     }

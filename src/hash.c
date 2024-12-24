@@ -37,7 +37,7 @@ uint16_t hash(char *key) {
     return h;
 }
 */
-uint8_t hash256(char *key) {
+uint8_t hash256(const char *key) {
     uint8_t h = 0;
     
     if (*key == 0) return 0;
@@ -48,7 +48,7 @@ uint8_t hash256(char *key) {
     return h;
 }
 
-uint8_t lowercaseHash256(char *key) {
+uint8_t lowercaseHash256(const char *key) {
     uint8_t h = 0;
     
     if (*key == 0) return 0;

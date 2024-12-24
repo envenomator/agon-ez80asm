@@ -61,7 +61,7 @@ void initAnonymousLabelTable(void) {
     an_return.name = NULL;
 }
 
-label_t * findLocalLabel(char *key) {
+label_t * findLocalLabel(const char *key) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
     char *scopename;
     struct contentitem *ci = currentContent();
@@ -112,7 +112,7 @@ void readAnonymousLabel(void) {
     }
 }
 
-bool insertLabel(char *labelname, uint8_t len, uint24_t labelAddress, bool local){
+bool insertLabel(const char *labelname, uint8_t len, uint24_t labelAddress, bool local){
     uint8_t index;
     label_t *tmp,*try;
 
@@ -159,7 +159,7 @@ bool insertLabel(char *labelname, uint8_t len, uint24_t labelAddress, bool local
     }
 }
 
-bool insertLocalLabel(char *labelname, uint24_t labelAddress) {
+bool insertLocalLabel(const char *labelname, uint24_t labelAddress) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
     char *scopename;
     uint8_t len;
@@ -179,7 +179,7 @@ bool insertLocalLabel(char *labelname, uint24_t labelAddress) {
     return insertLabel(compoundname, len, labelAddress, true);
 }
 
-label_t *findGlobalLabel(char *name){
+label_t *findGlobalLabel(const char *name){
     uint8_t index;
     label_t *try;
 
@@ -194,7 +194,7 @@ label_t *findGlobalLabel(char *name){
     }
 }
 
-label_t *findLabel(char *name) {
+label_t *findLabel(const char *name) {
     if(name[0] == '@') {
         if(((tolower(name[1]) == 'f') || (tolower(name[1]) == 'n')) && name[2] == 0) {
             if(an_next.defined && an_next.scope == currentStackLevel()) {
