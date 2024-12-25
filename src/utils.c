@@ -519,7 +519,7 @@ int32_t getExpressionValue(char *str, requiredResult_t requiredPass) {
     uint8_t tmplength;
     streamtoken_t token;
     char buffer[LINEMAX+1];
-    char *bufptr;
+    char *bufptr, *errptr;
     char operator, unaryoperator;
     int32_t tmp = 0;
     int32_t total = 0;
@@ -528,6 +528,7 @@ int32_t getExpressionValue(char *str, requiredResult_t requiredPass) {
     if((pass == STARTPASS) && (requiredPass == REQUIRED_LASTPASS)) return 0;
 
     while(isspace(*str)) str++; // eat all spaces
+    errptr = str;
 
     operator = 0; // first implicit operator
     unaryoperator = 0;
@@ -539,7 +540,7 @@ int32_t getExpressionValue(char *str, requiredResult_t requiredPass) {
                 unaryoperator = *str++;
                 while(isspace(*str)) str++; // eat all spaces
                 if(*str == 0) {
-                    error(message[ERROR_MISSINGLABELORNUMBER],0);
+                    error(message[ERROR_MISSINGLABELORNUMBER],"%s",errptr);
                     return 0;
                 }
                 if(strchr("+-*/<>&|^~", *str)) {
@@ -549,11 +550,6 @@ int32_t getExpressionValue(char *str, requiredResult_t requiredPass) {
                 state = NUMBER;
                 break;
             case OP:
-                if(operator) { // check 'dual-character' operator
-                    error(message[ERROR_MISSINGLABELORNUMBER],0);
-                    return 0;
-                }
-
                 if((*str == '<') || (*str == '>')) {                
                     if(*(str+1) != *str) {
                         error(message[ERROR_OPERATOR], 0);
@@ -566,7 +562,7 @@ int32_t getExpressionValue(char *str, requiredResult_t requiredPass) {
                 operator = *str++;
                 while(isspace(*str)) str++; // eat all spaces
                 if(*str == 0) {
-                    error(message[ERROR_MISSINGLABELORNUMBER],0);
+                    error(message[ERROR_MISSINGLABELORNUMBER],"%s",errptr);
                     return 0;
                 }
                 if(strchr("*/<>&|^", *str)) { // illegal unary
