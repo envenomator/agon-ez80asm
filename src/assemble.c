@@ -605,6 +605,10 @@ void handle_asm_data(uint8_t wordtype) {
             }
             expectarg = false;
         }
+        else {
+            expectarg = true;
+            break;
+        }
         if(token.terminator == ',') {
             currentline.next = token.next;
             expectarg = true;
