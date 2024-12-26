@@ -209,24 +209,24 @@ label_t *findGlobalLabel(const char *name){
 }
 
 label_t *findLabel(const char *name) {
-    if(name[0] == '@') {
-        if(((tolower(name[1]) == 'f') || (tolower(name[1]) == 'n')) && name[2] == 0) {
-            if(an_next.defined && an_next.scope == currentStackLevel()) {
-                an_return.address = an_next.address;
-                return &an_return;
-            }
-            else return NULL;
-        }
-        if(((tolower(name[1]) == 'b') || (tolower(name[1]) == 'p')) && name[2] == 0) {
-            if(an_prev.defined && an_prev.scope == currentStackLevel()) {
-                an_return.address = an_prev.address;
-                return &an_return;
-            }
-            else return NULL;
-        }
-        return findLocalLabel(name);
+    if(name[0] != '@') {
+        return findGlobalLabel(name);
     }
-    else return findGlobalLabel(name);
+    if(((tolower(name[1]) == 'f') || (tolower(name[1]) == 'n')) && name[2] == 0) {
+        if(an_next.defined && an_next.scope == currentStackLevel()) {
+            an_return.address = an_next.address;
+            return &an_return;
+        }
+        else return NULL;
+    }
+    if(((tolower(name[1]) == 'b') || (tolower(name[1]) == 'p')) && name[2] == 0) {
+        if(an_prev.defined && an_prev.scope == currentStackLevel()) {
+            an_return.address = an_prev.address;
+            return &an_return;
+        }
+        else return NULL;
+    }
+    return findLocalLabel(name);
 }
 
 void advanceAnonymousLabel(void) {

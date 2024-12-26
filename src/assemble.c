@@ -538,16 +538,19 @@ void parseLine(char *src) {
 void parse_asm_single_immediate(void) {
     streamtoken_t token;
 
-    if(currentline.next) {
-        if(getOperandToken(&token, currentline.next)) {
-            operand1.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
-            operand1.immediate_provided = true;
-            strcpy(operand1.immediate_name, token.start);
-            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
-        }
-        else error(message[ERROR_MISSINGARGUMENT],0);
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
     }
-    else error(message[ERROR_MISSINGARGUMENT],0);
+    if(!getOperandToken(&token, currentline.next)) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+
+    operand1.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
+    operand1.immediate_provided = true;
+    strcpy(operand1.immediate_name, token.start);
+    if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
 }
 
 // Emits list data for the DB/DW/DW24/DW32 etc directives
@@ -626,15 +629,24 @@ void handle_asm_equ(void) {
 
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
-    if(currentline.next) {
-        if(getDefineValueToken(&token, currentline.next)) {
-            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
-            if(currentline.label) definelabel(getExpressionValue(token.start, REQUIRED_FIRSTPASS)); // needs to be defined in pass 1
-            else error(message[ERROR_MISSINGLABEL],0);
-        }
-        else error(message[ERROR_MISSINGARGUMENT],0);
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
     }
-    else error(message[ERROR_MISSINGARGUMENT],0);
+    if(!currentline.label) {
+        error(message[ERROR_MISSINGLABEL],0);
+        return;
+    }
+    if(!getDefineValueToken(&token, currentline.next)) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+    if((token.terminator != 0) && (token.terminator != ';')) {
+        error(message[ERROR_TOOMANYARGUMENTS],0);
+        return;
+    }
+
+    definelabel(getExpressionValue(token.start, REQUIRED_FIRSTPASS)); // needs to be defined in pass 1
 }
 
 void handle_asm_adl(void) {
@@ -642,35 +654,38 @@ void handle_asm_adl(void) {
 
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
-    if(currentline.next) {
-        if(getDefineValueToken(&token, currentline.next) == 0) {
-            error(message[ERROR_MISSINGARGUMENT],0);
-            return;
-        }
-        if(currentExpandedMacro) {
-            macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
-            token.start = _macro_expansionline_buffer;
-        }
-
-        if(fast_strcasecmp(token.start, "adl")) {
-            error(message[ERROR_INVALIDOPERAND],0);
-            return;
-        }
-        if(token.terminator == '=') {
-            if(getDefineValueToken(&token, token.next)) {
-                operand2.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS); // needs to be defined in pass 1
-                operand2.immediate_provided = true;
-                strcpy(operand2.immediate_name, token.start);
-            }
-            else error(message[ERROR_MISSINGARGUMENT],0);
-        }        
-        else error(message[ERROR_MISSINGARGUMENT],0);
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
     }
-    else error(message[ERROR_MISSINGARGUMENT],0);
+    if(getDefineValueToken(&token, currentline.next) == 0) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+    if(currentExpandedMacro) {
+        macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
+        token.start = _macro_expansionline_buffer;
+    }
 
+    if(fast_strcasecmp(token.start, "adl")) {
+        error(message[ERROR_INVALIDOPERAND],0);
+        return;
+    }
+    if(token.terminator != '=') {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+    if(!getDefineValueToken(&token, token.next)) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+    operand2.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS); // needs to be defined in pass 1
+    operand2.immediate_provided = true;
+    strcpy(operand2.immediate_name, token.start);
 
     if((operand2.immediate != 0) && (operand2.immediate != 1)) {
         error(message[ERROR_INVALID_ADLMODE],"%s", operand2.immediate_name);
+        return;
     }
 
     adlmode = operand2.immediate;
@@ -854,8 +869,10 @@ void handle_asm_blk(uint8_t width) {
         val = getExpressionValue(token.start, REQUIRED_LASTPASS); // value not required in pass 1
     }
     else { // no value given
-        if((token.terminator != 0)  && (token.terminator != ';'))
+        if((token.terminator != 0)  && (token.terminator != ';')) {
             error(message[ERROR_LISTFORMAT],0);
+            return;
+        }
         val = fillbyte;
     }
     while(num) {
@@ -1044,17 +1061,16 @@ void handle_asm_if(void) {
         error(message[ERROR_NESTEDCONDITIONALS],0);
         return;
     }
-
-    if(currentline.next) {
-        if(getDefineValueToken(&token, currentline.next) == 0) {
-            error(message[ERROR_CONDITIONALEXPRESSION],0);
-            return;
-        }
-        value = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
-
-        inConditionalSection = value ? CONDITIONSTATE_TRUE : CONDITIONSTATE_FALSE;
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
     }
-    else error(message[ERROR_MISSINGARGUMENT],0);
+    if(getDefineValueToken(&token, currentline.next) == 0) {
+        error(message[ERROR_CONDITIONALEXPRESSION],0);
+        return;
+    }
+    value = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
+    inConditionalSection = value ? CONDITIONSTATE_TRUE : CONDITIONSTATE_FALSE;
 }
 
 void handle_asm_else(void) {
@@ -1160,45 +1176,50 @@ void handle_assembler_command(void) {
     return;
 }
 
-// Process the instructions found at each line, after parsing them
-void processInstructions(void){
+void handle_ez80_command(void) {
     operandlist_t *list;
     uint8_t listitem;
     bool match;
     bool condmatch;
     bool regamatch, regbmatch;
 
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
+
+    // process this mnemonic by applying the instruction list as a filter to the operand-set
+    list = currentline.current_instruction->list;
+    match = false;
+    for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
+        regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
+        regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
+
+        condmatch = ((list->conditionsA & MODECHECK) == operand1.addressmode) && ((list->conditionsB & MODECHECK) == operand2.addressmode);
+        if(list->flags & F_CCOK) {
+            condmatch |= operand1.cc;
+            regamatch = true;
+        }
+        if(regamatch && regbmatch && condmatch) {
+            match = true;
+            emit_instruction(list);
+            break;
+        }
+        list++;
+    }
+    if(!match) error(message[ERROR_OPERANDSNOTMATCHING],0);
+}
+
+// Process the instructions found at each line, after parsing them
+void processInstructions(void){
+
     if((currentline.mnemonic == NULL) && (inConditionalSection != CONDITIONSTATE_FALSE)) definelabel(address);
 
-    if(currentline.current_instruction) {
-        if(currentline.current_instruction->type == EZ80) {
-            if(inConditionalSection != CONDITIONSTATE_FALSE) {
-                // process this mnemonic by applying the instruction list as a filter to the operand-set
-                list = currentline.current_instruction->list;
-                match = false;
-                for(listitem = 0; listitem < currentline.current_instruction->listnumber; listitem++) {
-                    regamatch = (list->regsetA & operand1.reg) || !(list->regsetA | operand1.reg);
-                    regbmatch = (list->regsetB & operand2.reg) || !(list->regsetB | operand2.reg);
+    if(!currentline.current_instruction) return;
 
-                    condmatch = ((list->conditionsA & MODECHECK) == operand1.addressmode) && ((list->conditionsB & MODECHECK) == operand2.addressmode);
-                    if(list->flags & F_CCOK) {
-                        condmatch |= operand1.cc;
-                        regamatch = true;
-                    }
-                    if(regamatch && regbmatch && condmatch) {
-                        match = true;
-                        emit_instruction(list);
-                        break;
-                    }
-                    list++;
-                }
-                if(!match) error(message[ERROR_OPERANDSNOTMATCHING],0);
-                return;
-            }
-        }
-        else handle_assembler_command();
+    if(currentline.current_instruction->type == EZ80) {
+        handle_ez80_command();
     }
-    return;
+    else {
+        handle_assembler_command();
+    }
 }
 
 void processMacro(void) {
@@ -1446,14 +1467,13 @@ uint8_t currentStackLevel(void) {
 
 struct contentitem *contentPop(void) {
     struct contentitem *ci;
-    if(_contentstacklevel) {
-        ci = _contentstack[--_contentstacklevel];
-        if(_contentstacklevel) currentcontentitem = _contentstack[_contentstacklevel - 1];
-        else currentcontentitem = NULL;
-        inConditionalSection = ci->inConditionalSection;
-        return ci;
-    }
-    else return NULL;
+    if(!_contentstacklevel) return NULL;
+
+    ci = _contentstack[--_contentstacklevel];
+    if(_contentstacklevel) currentcontentitem = _contentstack[_contentstacklevel - 1];
+    else currentcontentitem = NULL;
+    inConditionalSection = ci->inConditionalSection;
+    return ci;
 }
 
 bool contentPush(struct contentitem *ci) {
@@ -1468,10 +1488,9 @@ bool contentPush(struct contentitem *ci) {
 }
 
 struct contentitem *currentContent(void) {
-    if(_contentstacklevel) {
-        return _contentstack[_contentstacklevel-1];
-    }
-    else return NULL;
+    if(!_contentstacklevel) return NULL;
+
+    return _contentstack[_contentstacklevel-1];
 }
 
 void prepareContentInput(struct contentitem *ci) {
