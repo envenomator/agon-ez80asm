@@ -6,4 +6,4 @@ I would like to acknowledge and express my gratitude to
 - bgates747 for his work to convert Dean Belfield's files to ez80asm format
 
 ### LICENSE
-Please find the original [LICENSE](tests/license.txt) for these files.
+Please find the original [LICENSE](tests/licence.txt) for these files.
