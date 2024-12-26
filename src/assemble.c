@@ -545,9 +545,9 @@ void parse_asm_single_immediate(void) {
             strcpy(operand1.immediate_name, token.start);
             if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
         }
-        else error(message[ERROR_MISSINGOPERAND],0);
+        else error(message[ERROR_MISSINGARGUMENT],0);
     }
-    else error(message[ERROR_MISSINGOPERAND],0);
+    else error(message[ERROR_MISSINGARGUMENT],0);
 }
 
 // Emits list data for the DB/DW/DW24/DW32 etc directives
@@ -618,7 +618,7 @@ void handle_asm_data(uint8_t wordtype) {
             currentline.next = NULL;
         }
     }
-    if(expectarg) error(message[ERROR_MISSINGOPERAND],0);
+    if(expectarg) error(message[ERROR_MISSINGARGUMENT],0);
 }
 
 void handle_asm_equ(void) {
@@ -632,9 +632,9 @@ void handle_asm_equ(void) {
             if(currentline.label) definelabel(getExpressionValue(token.start, REQUIRED_FIRSTPASS)); // needs to be defined in pass 1
             else error(message[ERROR_MISSINGLABEL],0);
         }
-        else error(message[ERROR_MISSINGOPERAND],0);
+        else error(message[ERROR_MISSINGARGUMENT],0);
     }
-    else error(message[ERROR_MISSINGOPERAND],0);
+    else error(message[ERROR_MISSINGARGUMENT],0);
 }
 
 void handle_asm_adl(void) {
@@ -644,7 +644,7 @@ void handle_asm_adl(void) {
 
     if(currentline.next) {
         if(getDefineValueToken(&token, currentline.next) == 0) {
-            error(message[ERROR_MISSINGOPERAND],0);
+            error(message[ERROR_MISSINGARGUMENT],0);
             return;
         }
         if(currentExpandedMacro) {
@@ -662,11 +662,11 @@ void handle_asm_adl(void) {
                 operand2.immediate_provided = true;
                 strcpy(operand2.immediate_name, token.start);
             }
-            else error(message[ERROR_MISSINGOPERAND],0);
+            else error(message[ERROR_MISSINGARGUMENT],0);
         }        
-        else error(message[ERROR_MISSINGOPERAND],0);
+        else error(message[ERROR_MISSINGARGUMENT],0);
     }
-    else error(message[ERROR_MISSINGOPERAND],0);
+    else error(message[ERROR_MISSINGARGUMENT],0);
 
 
     if((operand2.immediate != 0) && (operand2.immediate != 1)) {
@@ -825,12 +825,12 @@ void handle_asm_blk(uint8_t width) {
     definelabel(address);
 
     if(!currentline.next) {
-        error(message[ERROR_MISSINGOPERAND],0);
+        error(message[ERROR_MISSINGARGUMENT],0);
         return;
     }
 
     if(getDefineValueToken(&token, currentline.next) == 0) {
-        error(message[ERROR_MISSINGOPERAND],0); // we need at least one value
+        error(message[ERROR_MISSINGARGUMENT],0); // we need at least one value
         return;
     }
 
@@ -843,7 +843,7 @@ void handle_asm_blk(uint8_t width) {
 
     if(token.terminator == ',') {
         if(getDefineValueToken(&token, token.next) == 0) {
-            error(message[ERROR_MISSINGOPERAND],0);
+            error(message[ERROR_MISSINGARGUMENT],0);
             return;
         }
 
@@ -1054,7 +1054,7 @@ void handle_asm_if(void) {
 
         inConditionalSection = value ? CONDITIONSTATE_TRUE : CONDITIONSTATE_FALSE;
     }
-    else error(message[ERROR_MISSINGOPERAND],0);
+    else error(message[ERROR_MISSINGARGUMENT],0);
 }
 
 void handle_asm_else(void) {
