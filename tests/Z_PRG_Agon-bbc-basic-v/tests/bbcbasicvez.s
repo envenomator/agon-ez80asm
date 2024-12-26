@@ -1,0 +1,20 @@
+        .ASSUME ADL = 0	
+        .ORG 0x0000
+
+        include "mos_api.inc"
+        include "equs.inc"
+        include "macros.inc"
+        include "agon_init.inc"
+        include "agon_graphics.inc"
+        include "agon_gpio.inc"
+        include "agon_interrupt.inc"
+        include "agon_misc.inc"
+        include "agon_os.inc"
+        include "agon_sound.inc"
+        include "acorn.inc"
+        include "asmb.inc"
+        include "eval.inc"
+        include "exec.inc"
+        include "main.inc"
+        include "math.inc"
+        include "data.inc"
