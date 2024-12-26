@@ -50,6 +50,7 @@ char *message[] = {
     "Invalid label",
     "Label too long",
     "Missing operand",
+    "Missing argument",
     "Missing label or number",
     "Invalid mnemonic",
     "Invalid operand",

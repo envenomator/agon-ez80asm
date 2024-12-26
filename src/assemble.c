@@ -709,10 +709,15 @@ void handle_asm_include(void) {
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
     
     if(!currentline.next) {
-        error(message[ERROR_MISSINGOPERAND],0);
+        error(message[ERROR_MISSINGARGUMENT],0);
         return;
     }
-    getDefineValueToken(&token, currentline.next);
+
+    if(getDefineValueToken(&token, currentline.next) == 0) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+
     if(token.start[0] != '\"') {
         error(message[ERROR_STRINGFORMAT],0);
         return;
@@ -739,11 +744,15 @@ void handle_asm_incbin(void) {
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     if(!currentline.next) {
-        error(message[ERROR_MISSINGOPERAND],0);
+        error(message[ERROR_MISSINGARGUMENT],0);
         return;
     }
 
-    getDefineValueToken(&token, currentline.next);
+    if(getDefineValueToken(&token, currentline.next) == 0) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+
     if(currentExpandedMacro) {
         macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
         token.start = _macro_expansionline_buffer;
