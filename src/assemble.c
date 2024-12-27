@@ -1011,6 +1011,10 @@ void handle_asm_definemacro(void) {
             error(message[ERROR_MACRONAME],0);
             return;
         }
+        if(findLabel(token.start)) {
+            error(message[ERROR_MACRONAMEEQUALSLABELNAME],"%s",token.start);
+            return;
+        }
         currentline.mnemonic = token.start;
 
         currentline.next = token.next;
