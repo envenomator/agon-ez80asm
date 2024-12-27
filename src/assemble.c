@@ -1091,12 +1091,19 @@ void processInstructions(void){
     return;
 }
 
+// Reread the last read line as errorline, trim, expand and display to the user as warning text
+void displayPreviousMacroLine(macro_t *macro, char *errorline, char *lastmacrolineptr) {
+    getnextMacroLine(&lastmacrolineptr, errorline);
+    trimRight(errorline);
+    macroExpandArg(_macro_expansionline_buffer, errorline, macro);
+    colorPrintf(DARK_YELLOW, "%s\r\n",_macro_expansionline_buffer);
+}
+
 void processMacro(void) {
     macro_t *localexpandedmacro = currentline.current_macro;
     char macroline[LINEMAX+1];
-    char errorline[LINEMAX+1];
     char substitutionlist[MACROMAXARGS][MACROARGSUBSTITUTIONLENGTH + 1]; // temporary storage for substitutions during expansion <- needs to remain here for recursive macro processing
-    char *macrolineptr;
+    char *macrolineptr, *lastmacrolineptr;
     unsigned int localmacrolinenumber;
     bool macro_invocation_warning = false;
     uint24_t localmacroExpandID;
@@ -1124,10 +1131,8 @@ void processMacro(void) {
 
     // process body
     macrolinenumber = 1;
-    localexpandedmacro->lastreadlength = 0;
-
-    while(getnextMacroLine(localexpandedmacro, &macrolineptr, macroline)) {
-        strcpy(errorline, macroline);
+    lastmacrolineptr = macrolineptr;
+    while(getnextMacroLine(&macrolineptr, macroline)) {
         if(pass == ENDPASS && (listing)) listStartLine(macroline, macrolinenumber);
         parseLine(macroline);
 
@@ -1158,21 +1163,17 @@ void processMacro(void) {
                 colorPrintf(DARK_YELLOW, "Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
             }
         }
-
         if(errorcount) {
-            trimRight(errorline);
-            macroExpandArg(_macro_expansionline_buffer, errorline, localexpandedmacro);
-            colorPrintf(DARK_YELLOW, "%s\r\n",_macro_expansionline_buffer);
+            displayPreviousMacroLine(localexpandedmacro, macroline, lastmacrolineptr);
             return;
         }
         if(issue_warning) {
             macro_invocation_warning = true; // flag to upstream caller that there was at least a single warning
-            trimRight(errorline);
-            macroExpandArg(_macro_expansionline_buffer, errorline, localexpandedmacro);
-            colorPrintf(DARK_YELLOW, "%s\r\n",_macro_expansionline_buffer);
+            displayPreviousMacroLine(localexpandedmacro, macroline, lastmacrolineptr);
             issue_warning = false; // disable further LOCAL warnings until they occur
         }
         macrolinenumber++;
+        lastmacrolineptr = macrolineptr;
     }
     // end processing
     currentExpandedMacro = NULL;
