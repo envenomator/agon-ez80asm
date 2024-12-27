@@ -923,6 +923,7 @@ void handle_asm_definemacro(void) {
     char *macrobuffer = NULL;
     char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
     char *macroname;
+    uint16_t originlinenumber = currentcontentitem->currentlinenumber;
 
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
@@ -933,7 +934,7 @@ void handle_asm_definemacro(void) {
     if(pass == STARTPASS) {
         if(!macrobuffer) return;
         if(!parseMacroDefinition(currentline.next, &macroname, &argcount, (char *)arglist)) return;
-        if(!storeMacro(macroname, macrobuffer, argcount, (char *)arglist, currentcontentitem->currentlinenumber)) {
+        if(!storeMacro(macroname, macrobuffer, argcount, (char *)arglist, originlinenumber)) {
             error(message[ERROR_MACROMEMORYALLOCATION],0);
             return;
         }
@@ -1123,6 +1124,8 @@ void processMacro(void) {
     bool macro_invocation_warning = false;
     uint24_t localmacroExpandID;
 
+    if((pass == ENDPASS) && (listing)) listEndLine();
+
     // Set counters and local expansion scope
     macrolevel++;
     if(pass == STARTPASS) macroexpansions++;
@@ -1151,42 +1154,33 @@ void processMacro(void) {
         if(pass == ENDPASS && (listing)) listStartLine(macroline, macrolinenumber);
         parseLine(macroline);
 
-        if(!currentline.current_macro) {
-            processInstructions();
-            if((pass == ENDPASS) && (listing)) listEndLine();
-        }
+        if(!currentline.current_macro) processInstructions();
         else {
             // CALL nested macro instruction
             if(macrolevel >= MACRO_MAXLEVEL) {
                 error(message[ERROR_MACROMAXLEVEL],"%d",MACRO_MAXLEVEL);
                 return;
             }
-            if((pass == ENDPASS) && (listing)) listEndLine();
-
             localmacrolinenumber = macrolinenumber;
             processMacro();
+            if(errorcount || issue_warning) { // Issue upstream errors/warnings here, so user can trace back the caller
+                colorPrintf(errorcount?DARK_RED:DARK_YELLOW, "Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
+            }
             // return to 'current' macro level content
             currentExpandedMacro = localexpandedmacro;
             macrolinenumber = localmacrolinenumber;
             localexpandedmacro->currentExpandID = localmacroExpandID;
-
-            // Issue upstream errors/warnings here, so user can trace back the caller
-            if(errorcount) {
-                colorPrintf(DARK_RED, "Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
-            }
+        }
+        if(errorcount || issue_warning) {
+            displayPreviousMacroLine(localexpandedmacro, macroline, lastmacrolineptr);
             if(issue_warning) {
-                colorPrintf(DARK_YELLOW, "Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
+                macro_invocation_warning = true; // flag to upstream caller that there was at least a single warning
+                issue_warning = false; // disable further LOCAL warnings until they occur
             }
+            if(errorcount) return;
         }
-        if(errorcount) {
-            displayPreviousMacroLine(localexpandedmacro, macroline, lastmacrolineptr);
-            return;
-        }
-        if(issue_warning) {
-            macro_invocation_warning = true; // flag to upstream caller that there was at least a single warning
-            displayPreviousMacroLine(localexpandedmacro, macroline, lastmacrolineptr);
-            issue_warning = false; // disable further LOCAL warnings until they occur
-        }
+
+        if((pass == ENDPASS) && (listing)) listEndLine();
         macrolinenumber++;
         lastmacrolineptr = macrolineptr;
     }
@@ -1314,12 +1308,8 @@ void processContent(const char *filename) {
 
         parseLine(line);
 
-        if(!currentline.current_macro) {
-            processInstructions();
-            if((pass == ENDPASS) && (listing)) listEndLine();
-        }
+        if(!currentline.current_macro) processInstructions();
         else {
-            if((pass == ENDPASS) && (listing)) listEndLine();
             processMacro();
             if(issue_warning) { // warnings from the expanded macro
                 getlastContentLine(line, currentcontentitem);
@@ -1344,6 +1334,7 @@ void processContent(const char *filename) {
             colorPrintf(DARK_YELLOW, "%s",line);
             issue_warning = false;
         }
+        if((pass == ENDPASS) && (listing)) listEndLine();
     }
     if(inConditionalSection != CONDITIONSTATE_NORMAL) {
         error(message[ERROR_MISSINGENDIF],0);
