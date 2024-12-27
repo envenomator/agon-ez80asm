@@ -917,24 +917,12 @@ uint24_t delta;
 }
 
 void handle_asm_definemacro(void) {
-    uint8_t argcount;
-    char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
-    char *macroname;
-
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     definelabel(address);
+    if(!readMacroBody(currentcontentitem)) return;
 
-    if(!readMacroBody2Buffer()) return;
-
-    if(pass == STARTPASS) {
-        if(!parseMacroInvocation(currentline.next, &macroname, &argcount, (char *)arglist)) return;
-
-        if(!defineMacro(macroname, argcount, (char *)arglist, currentcontentitem->currentlinenumber)) {
-            error(message[ERROR_MACROMEMORYALLOCATION],0);
-            return;
-        }
-    }
+    if(pass == STARTPASS) defineMacro(currentline.next, currentcontentitem);
 }
 
 void handle_asm_if(void) {

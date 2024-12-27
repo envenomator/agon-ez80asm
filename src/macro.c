@@ -31,7 +31,7 @@ void initMacros(void) {
 }
 
 // define macro from temporary buffer
-macro_t *defineMacro(const char *name, uint8_t argcount, const char *arguments, uint16_t startlinenumber) {
+macro_t *recordMacro(const char *name, uint8_t argcount, const char *arguments, uint16_t startlinenumber) {
     unsigned int len, i;
     uint8_t index;
     char *ptr;
@@ -182,8 +182,7 @@ uint8_t macroExpandArg(char *dst, const char *src, const macro_t *m) {
 }
 
 // read to temporary macro buffer
-bool readMacroBody2Buffer(void) {
-    struct contentitem *ci;
+bool readMacroBody(struct contentitem *ci) {
     char *strend;
     bool foundend = false;
     char macroline[LINEMAX+1];
@@ -194,8 +193,6 @@ bool readMacroBody2Buffer(void) {
 
     if(pass == ENDPASS && (listing)) listEndLine(); // print out first line of macro definition
 
-    ci = currentcontentitem;
-    //startlinenumber = ci->currentlinenumber;
     macrolength = 0;
     while((linelength = getnextContentLine(macroline, macroline, ci))) {
         ci->currentlinenumber++;
@@ -278,6 +275,20 @@ bool parseMacroInvocation(char *str, char **name, uint8_t *argcount, char *argli
                 currentline.next = NULL; 
             }
         }
+    }
+    return true;
+}
+
+bool defineMacro(char *invocation, struct contentitem *ci) {
+    uint8_t argcount;
+    char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
+    char *macroname;
+
+    if(!parseMacroInvocation(invocation, &macroname, &argcount, (char *)arglist)) return false;
+
+    if(!recordMacro(macroname, argcount, (char *)arglist, ci->currentlinenumber)) {
+        error(message[ERROR_MACROMEMORYALLOCATION],0);
+        return false;
     }
     return true;
 }
