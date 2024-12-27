@@ -675,53 +675,90 @@ uint16_t getnextline(char **ptr, char *dst) {
     return len;
 }
 
-// Get line from contentitem, copy it to dst
-// If dst is NULL, copy it to dst1 and dst2
-uint16_t getnextContentLine(char *dst1, char *dst2, struct contentitem *ci) {
+uint16_t _readFullBufferedLine(char *dst1, struct contentitem *ci) {
     uint16_t len = 0;
     char *ptr = ci->readptr;
 
-    if(completefilebuffering) {
-        while(*ptr) {
-            if((len++ == LINEMAX) && (*ptr != '\n')) {
-                error(message[ERROR_LINETOOLONG],0);
-                return 0;
-            }
-            *dst1++ = *ptr;
-            *dst2++ = *ptr;
-            if(*ptr++ == '\n') {
-                break;
-            }
+    while(*ptr) {
+        if((len++ == LINEMAX) && (*ptr != '\n')) {
+            error(message[ERROR_LINETOOLONG],0);
+            return 0;
+        }
+        *dst1++ = *ptr;
+        if(*ptr++ == '\n') {
+            break;
         }
     }
-    else {
-        bool done = false;        
-        while(!done) {
-            if(ci->bytesinbuffer == 0) { // fill buffer
-                ci->bytesinbuffer = fread(ci->buffer, 1, INPUT_BUFFERSIZE, ci->fh);
-                ci->readptr = ci->buffer;
-                if(ci->bytesinbuffer == 0) done = true;
-            }
-            else {
-                ptr = ci->readptr;
-                while(ci->bytesinbuffer) {
-                    if((len++ == LINEMAX) && (*ptr != '\n')) {
-                        error(message[ERROR_LINETOOLONG],0);
-                        return 0;
-                    }
-                    ci->bytesinbuffer--;
-                    *dst1++ = *ptr;
-                    *dst2++ = *ptr;
-                    if(*ptr++ == '\n') {
-                        done = true;
-                        break;
-                    }
+    ci->readptr = ptr;
+    ci->filepos += len;
+    ci->lastreadlength = len;
+    *dst1 = 0;
+    return len;
+}
+
+// Used with '-m' minimum buffered configuration
+// Reads content into the ci->buffer, gets a LINE from it and returns it's length
+uint16_t _readMinimumBufferedLine(char *dst, struct contentitem *ci) {
+    uint16_t len = 0;
+    char *ptr = ci->readptr;
+    bool done = false;        
+
+    while(!done) {
+        if(ci->bytesinbuffer == 0) { // fill buffer
+            ci->bytesinbuffer = fread(ci->buffer, 1, INPUT_BUFFERSIZE, ci->fh);
+            ci->readptr = ci->buffer;
+            ptr = ci->buffer;
+            if(ci->bytesinbuffer == 0) done = true;
+        }
+        else {
+            ptr = ci->readptr;
+            while(ci->bytesinbuffer) {
+                if((len++ == LINEMAX) && (*ptr != '\n')) {
+                    error(message[ERROR_LINETOOLONG],0);
+                    return 0;
+                }
+                ci->bytesinbuffer--;
+                *dst++ = *ptr;
+                if(*ptr++ == '\n') {
+                    done = true;
+                    break;
                 }
             }
         }
     }
+    *dst = 0;
     ci->readptr = ptr;
-    *dst1 = 0;
-    *dst2 = 0;
+    ci->filepos += len;
+    ci->lastreadlength = len;
     return len;
+}
+
+uint16_t getlastContentLine(char *dst, struct contentitem *ci) {
+    uint16_t len = ci->lastreadlength;
+    char *ptr = ci->readptr;
+
+    if(completefilebuffering) {
+        ptr -= len;
+        while(len--) *dst++ = *ptr++;
+        *dst = 0;
+        ci->readptr = ptr;
+    }
+    else {
+        ci->bytesinbuffer = 0; // reset buffer
+        ci->filepos -= ci->lastreadlength;
+        fseek(ci->fh, SEEK_SET, ci->filepos);
+        _readMinimumBufferedLine(dst, ci);
+    }
+    return ci->lastreadlength;
+}
+
+// Get line from contentitem, copy it to dst
+uint16_t getnextContentLine(char *dst, struct contentitem *ci) {
+
+    if(completefilebuffering) {
+        return _readFullBufferedLine(dst, ci);
+    }
+    else {
+        return _readMinimumBufferedLine(dst, ci);
+    }
 }

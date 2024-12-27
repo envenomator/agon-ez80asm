@@ -195,7 +195,7 @@ bool readMacroBody(struct contentitem *ci) {
     if(pass == ENDPASS && (listing)) listEndLine(); // print out first line of macro definition
 
     macrolength = 0;
-    while((linelength = getnextContentLine(macroline, macroline, ci))) {
+    while((linelength = getnextContentLine(macroline, ci))) {
         ci->currentlinenumber++;
         char *src = macroline;
 

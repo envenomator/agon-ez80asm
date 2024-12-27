@@ -123,6 +123,8 @@ typedef struct contentitem {
     void*           next;
     // Items changed during processing
     char*           readptr;
+    uint24_t        filepos;                      // The current VIRTUAL position in a buffered file to read from. Needed for fseek purposes        
+    uint16_t        lastreadlength;
     uint16_t        currentlinenumber;
     char            labelscope[MAXNAMELENGTH+1];
     uint8_t         inConditionalSection;

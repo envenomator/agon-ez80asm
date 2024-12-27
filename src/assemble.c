@@ -1311,12 +1311,17 @@ void processContent(const char *filename) {
 
     // Prepare processing
     ci->readptr = ci->buffer;
+    ci->lastreadlength = 0;
+    ci->filepos = 0;
     ci->currentlinenumber = 0;
     ci->inConditionalSection = inConditionalSection;
     if(!contentPush(ci)) return;
     inConditionalSection = CONDITIONSTATE_NORMAL;
     // Process
-    while(getnextContentLine(line, errorline, ci)) {
+    while(getnextContentLine(line, ci)) {
+        //DEBUG
+        strcpy(errorline,"");
+        //DEBUG
         ci->currentlinenumber++;
         if((pass == ENDPASS) && (listing)) listStartLine(line, ci->currentlinenumber);
 
@@ -1330,11 +1335,13 @@ void processContent(const char *filename) {
             if((pass == ENDPASS) && (listing)) listEndLine();
             processMacro();
             if(issue_warning) { // warnings from the expanded macro
+                getlastContentLine(errorline, currentcontentitem);
                 colorPrintf(DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n%s", filename, ci->currentlinenumber, errorline);
                 issue_warning = false;
             }
         }
         if(errorcount) {
+            getlastContentLine(errorline, currentcontentitem);
             if(currentExpandedMacro) {
                 currentExpandedMacro = NULL;
                 colorPrintf(DARK_RED, "Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
@@ -1346,6 +1353,7 @@ void processContent(const char *filename) {
             return;
         }      
         if(issue_warning) { // local-level warnings
+            getlastContentLine(errorline, currentcontentitem);
             colorPrintf(DARK_YELLOW, "%s",errorline);
             issue_warning = false;
         }
