@@ -945,17 +945,17 @@ void handle_asm_if(void) {
         error(message[ERROR_NESTEDCONDITIONALS],0);
         return;
     }
-
-    if(currentline.next) {
-        if(getDefineValueToken(&token, currentline.next) == 0) {
-            error(message[ERROR_CONDITIONALEXPRESSION],0);
-            return;
-        }
-        value = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
-
-        inConditionalSection = value ? CONDITIONSTATE_TRUE : CONDITIONSTATE_FALSE;
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
     }
-    else error(message[ERROR_MISSINGARGUMENT],0);
+    if(getDefineValueToken(&token, currentline.next) == 0) {
+        error(message[ERROR_CONDITIONALEXPRESSION],0);
+        return;
+    }
+
+    value = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
+    inConditionalSection = value ? CONDITIONSTATE_TRUE : CONDITIONSTATE_FALSE;
 }
 
 void handle_asm_else(void) {
