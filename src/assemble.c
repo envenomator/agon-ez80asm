@@ -15,11 +15,9 @@
 #include "hash.h"
 
 // Temp macro buffers
-char _macro_content_buffer[MACRO_BUFFERSIZE + 1];
 char _macro_expansionline_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
 
 void processContent(const char *filename);
-uint16_t getnextContentLine(char *dst1, char *dst2, struct contentitem *ci);
 struct contentitem *findContent(const char *filename);
 struct contentitem *insertContent(const char *filename);
 
@@ -919,123 +917,23 @@ uint24_t delta;
 }
 
 void handle_asm_definemacro(void) {
-    streamtoken_t token;
-    struct contentitem *ci;
-    uint8_t argcount = 0;
+    uint8_t argcount;
     char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
-    char macroline[LINEMAX+1];
-    char *strend;
-    bool foundend = false;
-    macro_t *macro;
-    uint16_t startlinenumber,linelength,macrolength;
+    char *macroname;
 
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
     definelabel(address);
 
-    _macro_content_buffer[0] = 0; // empty string
-    strend = _macro_content_buffer;
+    if(!readMacroBody2Buffer()) return;
 
-    if(pass == ENDPASS && (listing)) listEndLine(); // print out first line of macro definition
-
-    ci = currentcontentitem;
-
-    startlinenumber = ci->currentlinenumber;
-    macrolength = 0;
-    while((linelength = getnextContentLine(macroline, macroline, ci))) {
-        ci->currentlinenumber++;
-        char *src = macroline;
-
-        if(pass == ENDPASS && (listing)) {
-            listStartLine(src, ci->currentlinenumber);
-            listEndLine();
-        }
-
-        // skip leading space
-        while(*src && (isspace(*src))) src++;
-        if(fast_strncasecmp(src, "macro", 5) == 0) {
-            error(message[ERROR_MACROINMACRO],0);
-            break;
-        }
-        uint8_t skipdot = (*src == '.')?1:0;
-        if(fast_strncasecmp(src+skipdot, "endmacro", 8) == 0) { 
-            if(isspace(src[8+skipdot]) || (src[8+skipdot] == 0) || (src[8+skipdot] == ';')) {
-                foundend = true;
-                break;
-            }
-        }
-        // concatenate to buffer end
-        if(pass == STARTPASS) {
-            if((macrolength + linelength) > MACRO_BUFFERSIZE) {
-                error(message[ERROR_MACROTOOLARGE],0);
-                return;
-            }
-            char *tmp = macroline;
-            while(*tmp) {
-                *strend++ = *tmp++;
-                macrolength++;
-            }
-            *strend = 0;
-        }
-    }
-    if(!foundend) {
-        error(message[ERROR_MACROUNFINISHED],0);
-        return;
-    }
-
-    // Only define macros in pass 1
-    // parse arguments into array
     if(pass == STARTPASS) {
-        if(!currentline.next) {
-            error(message[ERROR_MACRONAME],0);
-            return;
-        }
-        if(getMnemonicToken(&token, currentline.next) == 0) { // terminate on space
-            error(message[ERROR_MACRONAME],0);
-            return;
-        }
-        if(findLabel(token.start)) {
-            error(message[ERROR_MACRONAMEEQUALSLABELNAME],"%s",token.start);
-            return;
-        }
-        currentline.mnemonic = token.start;
+        if(!parseMacroInvocation(currentline.next, &macroname, &argcount, (char *)arglist)) return;
 
-        currentline.next = token.next;
-        if((token.terminator == ' ') || (token.terminator == '\t')) {
-            while(currentline.next) {
-                if(argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT],"%s", token.start);
-                if(getDefineValueToken(&token, currentline.next)) {
-                    if(strlen(token.start) > MACROARGLENGTH) {
-                        error(message[ERROR_MACROARGLENGTH], "%s", token.start);
-                        return;
-                    }
-                    if(instruction_lookup(token.start)) {
-                        error(message[ERROR_MACROARGNAME],"%s",token.start);
-                        return;
-                    }
-                    strcpy(arglist[argcount], token.start);
-                    argcount++;
-                }
-                if(token.terminator == ',') currentline.next = token.next;
-                else {
-                    if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT],0);
-                    currentline.next = NULL; 
-                }
-            }
-        }
-        // Parsing done, check isolated macro name length
-        if(strlen(currentline.mnemonic) > MAXNAMELENGTH) {
-            error(message[ERROR_MACRONAMELENGTH], "%s", currentline.mnemonic);
-            return;
-        }
-
-        // record the macro to memory
-        macro = defineMacro(currentline.mnemonic, argcount, (char *)arglist, startlinenumber);
-        if(!macro) {
+        if(!defineMacro(macroname, argcount, (char *)arglist, currentcontentitem->currentlinenumber)) {
             error(message[ERROR_MACROMEMORYALLOCATION],0);
             return;
         }
-        setMacroBody(macro, _macro_content_buffer);
     }
 }
 
@@ -1391,57 +1289,6 @@ struct contentitem *findContent(const char *filename) {
         if(strcmp(try->name, filename) == 0) return try;
         try = try->next;
     }
-}
-
-// Get line from contentitem, copy it to dst
-// If dst is NULL, copy it to dst1 and dst2
-uint16_t getnextContentLine(char *dst1, char *dst2, struct contentitem *ci) {
-    uint16_t len = 0;
-    char *ptr = ci->readptr;
-
-    if(completefilebuffering) {
-        while(*ptr) {
-            if((len++ == LINEMAX) && (*ptr != '\n')) {
-                error(message[ERROR_LINETOOLONG],0);
-                return 0;
-            }
-            *dst1++ = *ptr;
-            *dst2++ = *ptr;
-            if(*ptr++ == '\n') {
-                break;
-            }
-        }
-    }
-    else {
-        bool done = false;        
-        while(!done) {
-            if(ci->bytesinbuffer == 0) { // fill buffer
-                ci->bytesinbuffer = fread(ci->buffer, 1, INPUT_BUFFERSIZE, ci->fh);
-                ci->readptr = ci->buffer;
-                if(ci->bytesinbuffer == 0) done = true;
-            }
-            else {
-                ptr = ci->readptr;
-                while(ci->bytesinbuffer) {
-                    if((len++ == LINEMAX) && (*ptr != '\n')) {
-                        error(message[ERROR_LINETOOLONG],0);
-                        return 0;
-                    }
-                    ci->bytesinbuffer--;
-                    *dst1++ = *ptr;
-                    *dst2++ = *ptr;
-                    if(*ptr++ == '\n') {
-                        done = true;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    ci->readptr = ptr;
-    *dst1 = 0;
-    *dst2 = 0;
-    return len;
 }
 
 uint8_t currentStackLevel(void) {

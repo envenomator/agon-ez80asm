@@ -18,6 +18,7 @@ void    getLabelToken(streamtoken_t *token, char *src);                // termin
 uint8_t getMnemonicToken(streamtoken_t *token, char *src);          // terminated on spaces
 uint8_t getOperandToken(streamtoken_t *token, char *src);           // terminates on , or ;  transparent literals
 uint8_t getDefineValueToken(streamtoken_t *token, char *src);       // terminates on all operator symbols, ',' and ';' transparent literals and strings
+uint16_t            getnextContentLine(char *dst1, char *dst2, struct contentitem *ci);
 
 uint16_t getnextline(char **ptr, char *dst);
 char *  allocateString(const char *name);

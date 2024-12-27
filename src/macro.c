@@ -13,10 +13,14 @@
 #include "config.h"
 #include "instruction.h"
 #include "moscalls.h"
+#include "listing.h"
 
 // Total allocated memory for macros
 uint24_t macromemsize;
 uint8_t macroCounter;
+
+// Temp recording buffer
+char _macro_content_buffer[MACRO_BUFFERSIZE + 1];
 
 // internal tracking number per expansion. Starts at 0 and sequentially increases each expansion to create a macro expansion scope (for labels)
 uint24_t macroExpandID;
@@ -26,12 +30,7 @@ void initMacros(void) {
     macroCounter = 0;
 }
 
-void setMacroBody(macro_t *macro, const char *body) {
-    macro->body = (char*)allocateMemory(strlen(body)+1);
-    if(macro->body == NULL) return;
-    strcpy(macro->body, body);
-}
-
+// define macro from temporary buffer
 macro_t *defineMacro(const char *name, uint8_t argcount, const char *arguments, uint16_t startlinenumber) {
     unsigned int len, i;
     uint8_t index;
@@ -60,6 +59,11 @@ macro_t *defineMacro(const char *name, uint8_t argcount, const char *arguments, 
     tmp->name = macroinstruction->name;
     strcpy(macroinstruction->name, name);
     macroinstruction->next = NULL;
+
+    // allocate space for the body and copy
+    tmp->body = (char*)allocateMemory(strlen(_macro_content_buffer)+1);
+    if(tmp->body == NULL) return NULL;
+    strcpy(tmp->body, _macro_content_buffer);
 
     // Set up macro specific content
     tmp->argcount = argcount;
@@ -175,4 +179,105 @@ uint8_t macroExpandArg(char *dst, const char *src, const macro_t *m) {
         replaceArgument(dst, m->arguments[i], m->substitutions[i]);
     }
     return strlen(dst);
+}
+
+// read to temporary macro buffer
+bool readMacroBody2Buffer(void) {
+    struct contentitem *ci;
+    char *strend;
+    bool foundend = false;
+    char macroline[LINEMAX+1];
+    uint16_t linelength,macrolength;
+
+    _macro_content_buffer[0] = 0; // empty string
+    strend = _macro_content_buffer;
+
+    if(pass == ENDPASS && (listing)) listEndLine(); // print out first line of macro definition
+
+    ci = currentcontentitem;
+    //startlinenumber = ci->currentlinenumber;
+    macrolength = 0;
+    while((linelength = getnextContentLine(macroline, macroline, ci))) {
+        ci->currentlinenumber++;
+        char *src = macroline;
+
+        if(pass == ENDPASS && (listing)) {
+            listStartLine(src, ci->currentlinenumber);
+            listEndLine();
+        }
+
+        // skip leading space
+        while(*src && (isspace(*src))) src++;
+        if(fast_strncasecmp(src, "macro", 5) == 0) {
+            error(message[ERROR_MACROINMACRO],0);
+            return false;
+        }
+        uint8_t skipdot = (*src == '.')?1:0;
+        if(fast_strncasecmp(src+skipdot, "endmacro", 8) == 0) { 
+            if(isspace(src[8+skipdot]) || (src[8+skipdot] == 0) || (src[8+skipdot] == ';')) {
+                foundend = true;
+                break;
+            }
+        }
+        // concatenate to buffer end
+        if(pass == STARTPASS) {
+            if((macrolength + linelength) > MACRO_BUFFERSIZE) {
+                error(message[ERROR_MACROTOOLARGE],0);
+                return false;
+            }
+            char *tmp = macroline;
+            while(*tmp) {
+                *strend++ = *tmp++;
+                macrolength++;
+            }
+            *strend = 0;
+        }
+    }
+    if(!foundend) {
+        error(message[ERROR_MACROUNFINISHED],0);
+        return false;
+    }
+    return true;
+}
+
+bool parseMacroInvocation(char *str, char **name, uint8_t *argcount, char *arglist) {
+    streamtoken_t token;
+
+    if(!str || *str == 0 || getMnemonicToken(&token, str) == 0) {
+        error(message[ERROR_MACRONAME],0);
+        return false;
+    }
+    if(strlen(token.start) > MAXNAMELENGTH) {
+        error(message[ERROR_MACRONAMELENGTH], "%s", token.start);
+        return false;
+    }
+    *name = token.start;
+    *argcount = 0;
+
+    // parse arguments into 2D array
+    currentline.next = token.next;
+    if((token.terminator == ' ') || (token.terminator == '\t')) {
+        while(currentline.next) {
+            if(*argcount == MACROMAXARGS) error(message[ERROR_MACROARGCOUNT],"%s", token.start);
+            if(getDefineValueToken(&token, currentline.next)) {
+                if(strlen(token.start) > MACROARGLENGTH) {
+                    error(message[ERROR_MACROARGLENGTH], "%s", token.start);
+                    return false;
+                }
+                if(instruction_lookup(token.start)) {
+                    error(message[ERROR_MACROARGNAME],"%s",token.start);
+                    return false;
+                }
+                strcpy(arglist, token.start);
+                (*argcount)++;
+                arglist += MACROARGLENGTH+1;
+            }
+            if(token.terminator == ',') currentline.next = token.next;
+            else {
+                if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT],0);
+                currentline.next = NULL; 
+            }
+        }
+    }
+    return true;
 }

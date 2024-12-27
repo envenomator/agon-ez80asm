@@ -674,3 +674,54 @@ uint16_t getnextline(char **ptr, char *dst) {
     *ptr = _nextline_ptr;
     return len;
 }
+
+// Get line from contentitem, copy it to dst
+// If dst is NULL, copy it to dst1 and dst2
+uint16_t getnextContentLine(char *dst1, char *dst2, struct contentitem *ci) {
+    uint16_t len = 0;
+    char *ptr = ci->readptr;
+
+    if(completefilebuffering) {
+        while(*ptr) {
+            if((len++ == LINEMAX) && (*ptr != '\n')) {
+                error(message[ERROR_LINETOOLONG],0);
+                return 0;
+            }
+            *dst1++ = *ptr;
+            *dst2++ = *ptr;
+            if(*ptr++ == '\n') {
+                break;
+            }
+        }
+    }
+    else {
+        bool done = false;        
+        while(!done) {
+            if(ci->bytesinbuffer == 0) { // fill buffer
+                ci->bytesinbuffer = fread(ci->buffer, 1, INPUT_BUFFERSIZE, ci->fh);
+                ci->readptr = ci->buffer;
+                if(ci->bytesinbuffer == 0) done = true;
+            }
+            else {
+                ptr = ci->readptr;
+                while(ci->bytesinbuffer) {
+                    if((len++ == LINEMAX) && (*ptr != '\n')) {
+                        error(message[ERROR_LINETOOLONG],0);
+                        return 0;
+                    }
+                    ci->bytesinbuffer--;
+                    *dst1++ = *ptr;
+                    *dst2++ = *ptr;
+                    if(*ptr++ == '\n') {
+                        done = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    ci->readptr = ptr;
+    *dst1 = 0;
+    *dst2 = 0;
+    return len;
+}
