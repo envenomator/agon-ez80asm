@@ -717,23 +717,22 @@ void handle_asm_include(void) {
         error(message[ERROR_MISSINGARGUMENT],0);
         return;
     }
-
+    if((token.terminator != 0) && (token.terminator != ';')) {
+        error(message[ERROR_TOOMANYARGUMENTS],0);
+        return;
+    }
     if(token.start[0] != '\"') {
         error(message[ERROR_STRINGFORMAT],0);
         return;
     }
-    if((listing) && (pass == ENDPASS)) listEndLine();
-
     token.start[strlen(token.start)-1] = 0;
     if(strcmp(token.start+1, currentcontentitem->name) == 0) {
         error(message[ERROR_RECURSIVEINCLUDE],0);
         return;
     }
+    if((listing) && (pass == ENDPASS)) listEndLine();
     processContent(token.start+1);
-
     sourcefilecount++;
-
-    if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
 }
 
 void handle_asm_incbin(void) {
