@@ -722,7 +722,7 @@ void handle_asm_include(void) {
         error(message[ERROR_STRINGFORMAT],0);
         return;
     }
-    if((pass == ENDPASS) && (listing)) listEndLine();
+    if((listing) && (pass == ENDPASS)) listEndLine();
 
     token.start[strlen(token.start)-1] = 0;
     if(strcmp(token.start+1, currentcontentitem->name) == 0) {
@@ -1117,7 +1117,7 @@ void processMacro(void) {
     uint24_t localmacroExpandID;
     bool processednestedmacro = false;
 
-    if((pass == ENDPASS) && (listing)) listEndLine();
+    if((listing) && (pass == ENDPASS)) listEndLine();
 
     // Set counters and local expansion scope
     macrolevel++;
@@ -1178,7 +1178,7 @@ void processMacro(void) {
             if(errorcount) return;
         }
 
-        if((pass == ENDPASS) && (listing)) listEndLine();
+        if((listing) && (pass == ENDPASS)) listEndLine();
         macrolinenumber++;
         lastmacrolineptr = macrolineptr;
     }
@@ -1303,7 +1303,7 @@ void processContent(const char *filename) {
     // Process
     while(getnextContentLine(line, ci)) {
         ci->currentlinenumber++;
-        if((pass == ENDPASS) && (listing)) listStartLine(line, ci->currentlinenumber);
+        if((listing) && (pass == ENDPASS)) listStartLine(line, ci->currentlinenumber);
 
         parseLine(line);
 
@@ -1326,7 +1326,7 @@ void processContent(const char *filename) {
                 return;
             }
         }
-        if((pass == ENDPASS) && (listing)) listEndLine();
+        if((listing) && (pass == ENDPASS)) listEndLine();
     }
     if(inConditionalSection != CONDITIONSTATE_NORMAL) {
         error(message[ERROR_MISSINGENDIF],0);
