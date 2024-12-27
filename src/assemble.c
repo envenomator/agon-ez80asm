@@ -1092,68 +1092,35 @@ void processInstructions(void){
 }
 
 void processMacro(void) {
-    streamtoken_t token;
-    uint8_t argcount = 0, tokenlength;
     macro_t *localexpandedmacro = currentline.current_macro;
     char macroline[LINEMAX+1];
     char errorline[LINEMAX+1];
-    char listbuffer[LINEMAX+1] = {"Args: "};
+    char substitutionlist[MACROMAXARGS][MACROARGSUBSTITUTIONLENGTH + 1]; // temporary storage for substitutions during expansion <- needs to remain here for recursive macro processing
     char *macrolineptr;
     unsigned int localmacrolinenumber;
-    char substitutionlist[MACROMAXARGS][MACROARGSUBSTITUTIONLENGTH + 1]; // temporary storage for substitutions during expansion
     bool macro_invocation_warning = false;
     uint24_t localmacroExpandID;
 
+    // Set counters and local expansion scope
     macrolevel++;
     if(pass == STARTPASS) macroexpansions++;
     localmacroExpandID = macroExpandID++;
     localexpandedmacro->currentExpandID = localmacroExpandID;
 
     // Check for defined label
-    if(currentline.label) definelabel(address);
+    definelabel(address);
 
     // potentially transform arguments first, when calling from within a macro
     if(currentExpandedMacro) {
         macroExpandArg(_macro_expansionline_buffer, currentline.next, currentExpandedMacro);
         currentline.next = _macro_expansionline_buffer;
     }
-
-    // set for additional line-based parsing/processing of the macro
     currentExpandedMacro = localexpandedmacro;
 
-    // get arguments
-    while(currentline.next) {
-        tokenlength = getDefineValueToken(&token, currentline.next);
-        if(tokenlength) {
-            argcount++;
-            if(argcount > localexpandedmacro->argcount) {
-                error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, localexpandedmacro->argcount);
-                return;
-            }
-            if(tokenlength > MACROARGSUBSTITUTIONLENGTH) {
-                error(message[ERROR_MACROARGSUBSTLENGTH],"%s",token.start);
-                return;
-            }
-            strcpy(substitutionlist[argcount-1], token.start);              // copy substitution argument
-            localexpandedmacro->substitutions[argcount-1] = substitutionlist[argcount-1];  // set pointer in macro structure for later processing
-            if((pass == ENDPASS) && listing) sprintf(listbuffer + strlen(listbuffer), "%s=%s ", localexpandedmacro->arguments[argcount-1], token.start);
-        }
-        if(token.terminator == ',') currentline.next = token.next;
-        else {
-            if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT],0);
-            currentline.next = NULL; 
-        }
-    }
-    if(argcount != localexpandedmacro->argcount) {
-        error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, localexpandedmacro->argcount);
-        return;
-    }
+    if(!(parseMacroArguments(localexpandedmacro, currentline.next, substitutionlist))) return;
+
     // open macro storage
     macrolineptr = localexpandedmacro->body;
-
-    // List out argument substitution
-    if(listing && argcount == 0) sprintf(listbuffer + strlen(listbuffer), "none");
-    if((pass == ENDPASS) && listing) listPrintComment(listbuffer);
 
     // process body
     macrolinenumber = 1;

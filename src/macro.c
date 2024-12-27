@@ -237,7 +237,7 @@ bool readMacroBody(struct contentitem *ci) {
     return true;
 }
 
-bool parseMacroInvocation(char *str, char **name, uint8_t *argcount, char *arglist) {
+bool parseMacroDefinition(char *str, char **name, uint8_t *argcount, char *arglist) {
     streamtoken_t token;
 
     if(!str || *str == 0 || getMnemonicToken(&token, str) == 0) {
@@ -279,16 +279,54 @@ bool parseMacroInvocation(char *str, char **name, uint8_t *argcount, char *argli
     return true;
 }
 
-bool defineMacro(char *invocation, struct contentitem *ci) {
+bool defineMacro(char *definition, struct contentitem *ci) {
     uint8_t argcount;
     char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
     char *macroname;
 
-    if(!parseMacroInvocation(invocation, &macroname, &argcount, (char *)arglist)) return false;
+    if(!parseMacroDefinition(definition, &macroname, &argcount, (char *)arglist)) return false;
 
     if(!recordMacro(macroname, argcount, (char *)arglist, ci->currentlinenumber)) {
         error(message[ERROR_MACROMEMORYALLOCATION],0);
         return false;
     }
+    return true;
+}
+
+
+bool parseMacroArguments(macro_t *macro, char *invocation, char (*substitutionlist)[MACROARGSUBSTITUTIONLENGTH + 1]) {
+    streamtoken_t token;
+    uint8_t argcount = 0, tokenlength;
+    char listbuffer[LINEMAX+1] = {"Args: "};
+
+    while(invocation) {
+        tokenlength = getDefineValueToken(&token, invocation);
+        if(tokenlength) {
+            argcount++;
+            if(argcount > macro->argcount) {
+                error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, macro->argcount);
+                return false;
+            }
+            if(tokenlength > MACROARGSUBSTITUTIONLENGTH) {
+                error(message[ERROR_MACROARGSUBSTLENGTH],"%s",token.start);
+                return false;
+            }
+            strcpy(substitutionlist[argcount-1], token.start);              // copy substitution argument
+            macro->substitutions[argcount-1] = substitutionlist[argcount-1];  // set pointer in macro structure for later processing
+            if((pass == ENDPASS) && listing) sprintf(listbuffer + strlen(listbuffer), "%s=%s ", macro->arguments[argcount-1], token.start);
+        }
+        if(token.terminator == ',') invocation = token.next;
+        else {
+            if((token.terminator != 0) &&(token.terminator != ';')) error(message[ERROR_LISTFORMAT],0);
+            invocation = NULL; 
+        }
+    }
+    if(argcount != macro->argcount) {
+        error(message[ERROR_MACROINCORRECTARG],"%d provided, %d expected", argcount, macro->argcount);
+        return false;
+    }
+    // List out argument substitution
+    if(listing && argcount == 0) sprintf(listbuffer + strlen(listbuffer), "none");
+    if((pass == ENDPASS) && listing) listPrintComment(listbuffer);
     return true;
 }
