@@ -14,6 +14,7 @@
 #include "instruction.h"
 #include "moscalls.h"
 #include "listing.h"
+#include "str2num.h"
 
 // Total allocated memory for macros
 uint24_t macromemsize;
@@ -262,6 +263,10 @@ bool parseMacroDefinition(char *str, char **name, uint8_t *argcount, char *argli
                     return false;
                 }
                 if(instruction_lookup(token.start)) {
+                    error(message[ERROR_MACROARGNAME],"%s",token.start);
+                    return false;
+                }
+                if(isvalidNumber(token.start)) {
                     error(message[ERROR_MACROARGNAME],"%s",token.start);
                     return false;
                 }

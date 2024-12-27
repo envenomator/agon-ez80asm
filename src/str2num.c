@@ -123,3 +123,9 @@ int32_t str2num(const char *string, uint8_t length) {
     result = str2dec(string);
     return result;
 }
+
+bool isvalidNumber(const char *string) {
+    str2num(string, strlen(string));
+    return !err_str2num;
+}
+
