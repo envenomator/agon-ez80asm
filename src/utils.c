@@ -657,9 +657,13 @@ uint8_t strcompound(char *dest, const char *src1, const char *src2) {
     return len;
 }
 
+uint16_t getlastMacroLine(macro_t *macro, char **ptr, char *dst) {
+    
+}
+
 // Get the next line from a buffer, pointed to by *ptr
 // The stringpointer *ptr will update after each line
-uint16_t getnextline(char **ptr, char *dst) {
+uint16_t getnextMacroLine(macro_t *macro, char **ptr, char *dst) {
     char *_nextline_ptr = *ptr;
     uint16_t len = 0;
 
@@ -672,6 +676,7 @@ uint16_t getnextline(char **ptr, char *dst) {
     }
     *dst = 0;
     *ptr = _nextline_ptr;
+    macro->lastreadlength = len;
     return len;
 }
 

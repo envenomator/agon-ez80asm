@@ -183,6 +183,7 @@ typedef struct {
     char**          substitutions;
     void*           next;
    uint24_t         currentExpandID;
+   uint16_t         lastreadlength;
 } macro_t;
 
 typedef struct {

@@ -21,7 +21,7 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src);       // terminate
 uint16_t getnextContentLine(char *dst1, struct contentitem *ci);
 uint16_t getlastContentLine(char *dst1, struct contentitem *ci);
 
-uint16_t getnextline(char **ptr, char *dst);
+uint16_t getnextMacroLine(macro_t *macro, char **ptr, char *dst);
 char *  allocateString(const char *name);
 void *  allocateMemory(size_t size);
 

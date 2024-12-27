@@ -1124,7 +1124,9 @@ void processMacro(void) {
 
     // process body
     macrolinenumber = 1;
-    while(getnextline(&macrolineptr, macroline)) {
+    localexpandedmacro->lastreadlength = 0;
+
+    while(getnextMacroLine(localexpandedmacro, &macrolineptr, macroline)) {
         strcpy(errorline, macroline);
         if(pass == ENDPASS && (listing)) listStartLine(macroline, macrolinenumber);
         parseLine(macroline);
@@ -1319,9 +1321,6 @@ void processContent(const char *filename) {
     inConditionalSection = CONDITIONSTATE_NORMAL;
     // Process
     while(getnextContentLine(line, ci)) {
-        //DEBUG
-        strcpy(errorline,"");
-        //DEBUG
         ci->currentlinenumber++;
         if((pass == ENDPASS) && (listing)) listStartLine(line, ci->currentlinenumber);
 
