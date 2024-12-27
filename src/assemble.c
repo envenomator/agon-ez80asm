@@ -624,15 +624,24 @@ void handle_asm_equ(void) {
 
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
-    if(currentline.next) {
-        if(getDefineValueToken(&token, currentline.next)) {
-            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
-            if(currentline.label) definelabel(getExpressionValue(token.start, REQUIRED_FIRSTPASS)); // needs to be defined in pass 1
-            else error(message[ERROR_MISSINGLABEL],0);
-        }
-        else error(message[ERROR_MISSINGARGUMENT],0);
+    if(!currentline.label) {
+        error(message[ERROR_MISSINGLABEL],0);
+        return;
     }
-    else error(message[ERROR_MISSINGARGUMENT],0);
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+    if(!getDefineValueToken(&token, currentline.next)) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+    if((token.terminator != 0) && (token.terminator != ';')) {
+        error(message[ERROR_TOOMANYARGUMENTS],0);
+        return;
+    }
+
+    definelabel(getExpressionValue(token.start, REQUIRED_FIRSTPASS)); // needs to be defined in pass 1
 }
 
 void handle_asm_adl(void) {
