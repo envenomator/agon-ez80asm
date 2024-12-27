@@ -355,6 +355,7 @@ Important notes:
 - Starting v1.12, macros can be called from within a macro, with a maximum 'nesting' level of 8 to block expansion recursion.
 - Macro definitions are not allowed inside a macro definition
 - Don't use instruction names (e.g. 'ld' or 'and'), nor other macro names as argument names. Starting v1.12 the assembler will throw an error.
+- While accepted by the assembler; avoid defining macros with the same name as a label. This can lead to confusion between calling a label and invoking a macro in your code.
 
 Example macro with arguments:
 

@@ -94,7 +94,6 @@ char *message[] = {
     "Unfinished macro definition",
     "Macro start definition not found",
     "Invalid macro name",
-    "Macro name equals label name",
     "Macro name too long",
     "Macro argument too long",
     "Invalid argument name",

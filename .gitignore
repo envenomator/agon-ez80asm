@@ -58,6 +58,9 @@ src/.vs/
 *Browse.VC.db
 *.suo
 
+# VScode
+.vscode/
+
 # Test output
 test.output
 asm.output
