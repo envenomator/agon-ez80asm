@@ -649,35 +649,37 @@ void handle_asm_adl(void) {
 
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
-    if(currentline.next) {
-        if(getDefineValueToken(&token, currentline.next) == 0) {
-            error(message[ERROR_MISSINGARGUMENT],0);
-            return;
-        }
-        if(currentExpandedMacro) {
-            macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
-            token.start = _macro_expansionline_buffer;
-        }
-
-        if(fast_strcasecmp(token.start, "adl")) {
-            error(message[ERROR_INVALIDOPERAND],0);
-            return;
-        }
-        if(token.terminator == '=') {
-            if(getDefineValueToken(&token, token.next)) {
-                operand2.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS); // needs to be defined in pass 1
-                operand2.immediate_provided = true;
-                strcpy(operand2.immediate_name, token.start);
-            }
-            else error(message[ERROR_MISSINGARGUMENT],0);
-        }        
-        else error(message[ERROR_MISSINGARGUMENT],0);
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
     }
-    else error(message[ERROR_MISSINGARGUMENT],0);
-
+    if(getDefineValueToken(&token, currentline.next) == 0) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+    if(currentExpandedMacro) {
+        macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
+        token.start = _macro_expansionline_buffer;
+    }
+    if(fast_strcasecmp(token.start, "adl")) {
+        error(message[ERROR_INVALIDOPERAND],0);
+        return;
+    }
+    if(token.terminator != '=') {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+    if(!getDefineValueToken(&token, token.next)) {
+            error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+    operand2.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS); // needs to be defined in pass 1
+    operand2.immediate_provided = true;
+    strcpy(operand2.immediate_name, token.start);
 
     if((operand2.immediate != 0) && (operand2.immediate != 1)) {
         error(message[ERROR_INVALID_ADLMODE],"%s", operand2.immediate_name);
+        return;
     }
 
     adlmode = operand2.immediate;
