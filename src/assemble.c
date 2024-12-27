@@ -1107,14 +1107,6 @@ void processInstructions(void){
     return;
 }
 
-// Reread the last read line as errorline, trim, expand and display to the user as warning text
-void displayPreviousMacroLine(macro_t *macro, char *errorline, char *lastmacrolineptr) {
-    getnextMacroLine(&lastmacrolineptr, errorline);
-    trimRight(errorline);
-    macroExpandArg(_macro_expansionline_buffer, errorline, macro);
-    colorPrintf(DARK_YELLOW, "%s\r\n",_macro_expansionline_buffer);
-}
-
 void processMacro(void) {
     macro_t *localexpandedmacro = currentline.current_macro;
     char macroline[LINEMAX+1];
@@ -1123,6 +1115,7 @@ void processMacro(void) {
     unsigned int localmacrolinenumber;
     bool macro_invocation_warning = false;
     uint24_t localmacroExpandID;
+    bool processednestedmacro = false;
 
     if((pass == ENDPASS) && (listing)) listEndLine();
 
@@ -1163,16 +1156,21 @@ void processMacro(void) {
             }
             localmacrolinenumber = macrolinenumber;
             processMacro();
-            if(errorcount || issue_warning) { // Issue upstream errors/warnings here, so user can trace back the caller
-                colorPrintf(errorcount?DARK_RED:DARK_YELLOW, "Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
-            }
+            processednestedmacro = true;
             // return to 'current' macro level content
             currentExpandedMacro = localexpandedmacro;
             macrolinenumber = localmacrolinenumber;
             localexpandedmacro->currentExpandID = localmacroExpandID;
         }
         if(errorcount || issue_warning) {
-            displayPreviousMacroLine(localexpandedmacro, macroline, lastmacrolineptr);
+            if(processednestedmacro) {
+                colorPrintf(errorcount?DARK_RED:DARK_YELLOW, "Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
+                processednestedmacro = false;
+            }
+            getnextMacroLine(&lastmacrolineptr, macroline);
+            trimRight(macroline);
+            macroExpandArg(_macro_expansionline_buffer, macroline, localexpandedmacro);
+            colorPrintf(DARK_YELLOW, "%s\r\n",_macro_expansionline_buffer);
             if(issue_warning) {
                 macro_invocation_warning = true; // flag to upstream caller that there was at least a single warning
                 issue_warning = false; // disable further LOCAL warnings until they occur
@@ -1290,6 +1288,7 @@ struct contentitem *currentContent(void) {
 void processContent(const char *filename) {
     char line[LINEMAX+1];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
     struct contentitem *ci;
+    bool processedmacro = false;
 
     if((ci = findContent(filename)) == NULL) {
         if(pass == STARTPASS) {
@@ -1311,41 +1310,33 @@ void processContent(const char *filename) {
         if(!currentline.current_macro) processInstructions();
         else {
             processMacro();
-            if(issue_warning) { // warnings from the expanded macro
-                getlastContentLine(line, currentcontentitem);
-                colorPrintf(DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n%s", filename, ci->currentlinenumber, line);
-                issue_warning = false;
-            }
+            processedmacro = true;
         }
-        if(errorcount) {
+        if(errorcount || issue_warning) {
             getlastContentLine(line, currentcontentitem);
-            if(currentExpandedMacro) {
-                currentExpandedMacro = NULL;
-                colorPrintf(DARK_RED, "Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
+            if(processedmacro) {
+                colorPrintf(errorcount?DARK_RED:DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
+                processedmacro = false;
             }
-            if(currentStackLevel() == errorreportlevel) {
-                colorPrintf(DARK_YELLOW, "%s\r\n",line);
-            }
-            contentPop();
-            return;
-        }      
-        if(issue_warning) { // local-level warnings
-            getlastContentLine(line, currentcontentitem);
-            colorPrintf(DARK_YELLOW, "%s",line);
+            if(issue_warning || (currentStackLevel() == errorreportlevel)) colorPrintf(DARK_YELLOW, "%s", line);            
             issue_warning = false;
+            if(errorcount) {
+                closeContentInput(ci);
+                contentPop();
+                return;
+            }
         }
         if((pass == ENDPASS) && (listing)) listEndLine();
     }
     if(inConditionalSection != CONDITIONSTATE_NORMAL) {
         error(message[ERROR_MISSINGENDIF],0);
+        closeContentInput(ci);
         contentPop();
         return;
     }
     closeContentInput(ci);    
     contentPop();
     strcpy(ci->labelscope, ""); // empty scope for next pass
-
-    return;
 }
 
 // Initialize pass 1 / pass2 states for the assembler
