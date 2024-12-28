@@ -746,7 +746,7 @@ uint16_t getlastContentLine(char *dst, struct contentitem *ci) {
     else {
         ci->bytesinbuffer = 0; // reset buffer
         ci->filepos -= ci->lastreadlength;
-        fseek(ci->fh, SEEK_SET, ci->filepos);
+        fseek(ci->fh, ci->filepos, SEEK_SET);
         _readMinimumBufferedLine(dst, ci);
     }
     return ci->lastreadlength;
