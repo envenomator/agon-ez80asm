@@ -108,6 +108,12 @@ typedef uint32_t uint24_t;
 #define S_S1L0          S_SIL | S_LIS
 #define S_LILLIS        S_LIL | S_LIS
 
+// CPU bitfield codes
+#define CPU_Z80             0x01
+#define Z180            0x02
+#define Z280            0x03
+#define CPU_EZ80            0x04
+
 // actual codes to emit when permitted
 #define CODE_SIS    0x40
 #define CODE_LIS    0x49
@@ -169,6 +175,7 @@ typedef struct {
     uint8_t         transformA;         // Do we transform acc to operandA
     uint8_t         transformB;         //  "        "       " "  operandB
     uint8_t         flags;
+    uint8_t         cpu;
     uint8_t         prefix;             // base prefix1, or 0 if none to output
     uint8_t         opcode;             // base opcode, may be transformed by A/B, according to opcodetransformtype
 } operandlist_t;
