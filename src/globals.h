@@ -44,6 +44,9 @@ extern operand_t operand1;
 extern operand_t operand2;
 extern opcodesequence_t output;
 
+// CPU name strings
+extern char *cpuname[];
+
 // Error messages
 extern char *message[];
 

@@ -42,6 +42,8 @@ operand_t operand1;
 operand_t operand2;
 opcodesequence_t output;
 
+char *cpuname[] = {"Z80", "Z180", "Z280", "EZ80", "ERROR"};
+
 char *message[] = {
     "Missing opening bracket in operand",
     "Missing closing bracket in operand",
@@ -125,5 +127,6 @@ char *message[] = {
     "Ignoring unsupported initializer value",
     "Bracket format error",
     "File I/O error",
-    "Illegal instruction for CPU type"
+    "Illegal instruction for CPU type",
+    "No ADL mode for CPU type"
 };
