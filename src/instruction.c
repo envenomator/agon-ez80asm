@@ -246,7 +246,7 @@ void emit_instruction(const operandlist_t *list) {
 
 operandlist_t operands_adc[] = {
    {    R_A,               NOREQ,   R_HL,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x8E},
-   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_EZ80,0x00,0x8C},
+   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x8C},
    {    R_A,               NOREQ, RS_IXY,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_Z80,0x00,0x8E},
    {    R_A,               NOREQ,RS_NONE,           IMM|IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xCE},
    {    R_A,               NOREQ,   RS_R,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_Z,                F_NONE,BIT_Z80,0x00,0x88},
@@ -266,7 +266,7 @@ operandlist_t operands_add[] = {
    {    R_A,               NOREQ,   RS_R,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_Z,                F_NONE,BIT_Z80,0x00,0x80},
    {    R_A,               NOREQ,   R_HL,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x86},
 // end optimized set
-   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_EZ80,0x00,0x84},
+   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x84},
    {    R_A,               NOREQ, RS_IXY,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_Z80,0x00,0x86},
    {    R_A,               NOREQ,RS_NONE,           IMM|IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xC6},
 // same set, without A register
@@ -285,13 +285,13 @@ operandlist_t operands_and[] = {
    {RS_NONE,           IMM|IMM_N,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xE6},
 // end optimized set
    {    R_A,               NOREQ,   R_HL,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0xA6},
-   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_EZ80,0x00,0xA4},
+   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0xA4},
    {    R_A,               NOREQ, RS_IXY,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_Z80,0x00,0xA6},
    {    R_A,               NOREQ,RS_NONE,           IMM|IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xE6},
    {    R_A,               NOREQ,   RS_R,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_Z,                F_NONE,BIT_Z80,0x00,0xA0},
 // same set, without A register
    {   R_HL,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0xA6},
-   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_EZ80,0x00,0xA4},
+   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0xA4},
    { RS_IXY,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPA|F_DDFDOK|S_ANY,BIT_Z80,0x00,0xA6},
 };
 operandlist_t operands_bit[] = {
@@ -315,10 +315,10 @@ operandlist_t operands_cp[]= {
    {    R_A,               NOREQ,   RS_R,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_Z,                F_NONE,BIT_Z80,0x00,0xB8},
    {    R_A,               NOREQ,   R_HL,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0xBE},
 // end optimized set
-   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_EZ80,0x00,0xBC},
+   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0xBC},
    {    R_A,               NOREQ, RS_IXY,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_Z80,0x00,0xBE},
 // same set, without A register
-   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_EZ80,0x00,0xBC},
+   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0xBC},
    { RS_IXY,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPA|F_DDFDOK|S_ANY,BIT_Z80,0x00,0xBE},
 };
 operandlist_t operands_cpd[]= {
@@ -345,7 +345,7 @@ operandlist_t operands_dec[]= {
    {   RS_R,               NOREQ,RS_NONE,               NOREQ,     TRANSFORM_Y,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0x05},
 // end optimized set
    {   R_HL,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x35},
-   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR3,TRANSFORM_NONE,              F_DDFDOK,BIT_EZ80,0x00,0x25},
+   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR3,TRANSFORM_NONE,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x25},
    { RS_IXY,               NOREQ,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,        F_DDFDOK|S_ANY,BIT_Z80,0x00,0x2B},
    { RS_IXY,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPA|F_DDFDOK|S_ANY,BIT_Z80,0x00,0x35},
    {   R_SP,               NOREQ,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x3B},
@@ -378,6 +378,7 @@ operandlist_t operands_im[]= {
 };
 operandlist_t operands_in[]= {
    {    R_A,               NOREQ,RS_NONE,  INDIRECT|IMM|IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xDB},
+   {    R_C,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_U80,0xED,0x70},
    {   RS_R,               NOREQ,   R_BC,            INDIRECT,     TRANSFORM_Y,TRANSFORM_NONE,                F_NONE,BIT_Z80,0xED,0x40},
    {   RS_R,               NOREQ,    R_C,            INDIRECT,     TRANSFORM_Y,TRANSFORM_NONE,                F_NONE,BIT_Z80,0xED,0x40},
 };
@@ -391,7 +392,7 @@ operandlist_t operands_inc[]= {
    { RS_IXY,               NOREQ,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,        F_DDFDOK|S_ANY,BIT_Z80,0x00,0x23},
    {   R_HL,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x34},
 // end optimized set
-   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR3,TRANSFORM_NONE,              F_DDFDOK,BIT_EZ80,0x00,0x24},
+   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR3,TRANSFORM_NONE,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x24},
    { RS_IXY,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPA|F_DDFDOK|S_ANY,BIT_Z80,0x00,0x34},
    {   R_SP,               NOREQ,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x33},
 };
@@ -477,9 +478,9 @@ operandlist_t operands_ld[] = {
    {   R_HL,            INDIRECT,  RS_RR,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_P,                 S_ANY,BIT_EZ80,0xED,0x0F},
    {    R_I,               NOREQ,   R_HL,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_EZ80,0xED,0xC7},
    {    R_I,               NOREQ,    R_A,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0xED,0x47},
-   {  RS_IR,               NOREQ,  RS_IR,               NOREQ,   TRANSFORM_IR3, TRANSFORM_IR0,              F_DDFDOK,BIT_EZ80,0x00,0x64},
-   {  RS_IR,               NOREQ,RS_NONE,           IMM|IMM_N,   TRANSFORM_IR3,TRANSFORM_NONE,              F_DDFDOK,BIT_EZ80,0x00,0x26},
-   {  RS_IR,               NOREQ,  RS_AE,               NOREQ,   TRANSFORM_IR3,   TRANSFORM_Z,              F_DDFDOK,BIT_EZ80,0x00,0x60},
+   {  RS_IR,               NOREQ,  RS_IR,               NOREQ,   TRANSFORM_IR3, TRANSFORM_IR0,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x64},
+   {  RS_IR,               NOREQ,RS_NONE,           IMM|IMM_N,   TRANSFORM_IR3,TRANSFORM_NONE,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x26},
+   {  RS_IR,               NOREQ,  RS_AE,               NOREQ,   TRANSFORM_IR3,   TRANSFORM_Z,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x60},
    {   R_IX,               NOREQ,   R_HL,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_EZ80,0xED,0x37},
    {   R_IY,               NOREQ,   R_HL,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_EZ80,0xED,0x31},
    {   R_IX,               NOREQ,   R_IX,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_EZ80,0x00,0x37},
@@ -498,7 +499,7 @@ operandlist_t operands_ld[] = {
    {RS_NONE,INDIRECT|IMM|IMM_MMN,   R_SP,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0xED,0x73},
    {    R_R,               NOREQ,    R_A,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0xED,0x4F},
    {   RS_R,               NOREQ,   R_HL,            INDIRECT,     TRANSFORM_Y,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x46},
-   {  RS_AE,               NOREQ,  RS_IR,               NOREQ,     TRANSFORM_Y, TRANSFORM_IR0,              F_DDFDOK,BIT_EZ80,0x00,0x44},
+   {  RS_AE,               NOREQ,  RS_IR,               NOREQ,     TRANSFORM_Y, TRANSFORM_IR0,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x44},
    {   RS_R,               NOREQ, RS_IXY,            INDIRECT,     TRANSFORM_Y,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_Z80,0x00,0x46},
    {  RS_RR,               NOREQ, RS_IXY,            INDIRECT,     TRANSFORM_P,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_EZ80,0x00,0x07},
    {  RS_RR,               NOREQ,RS_NONE,INDIRECT|IMM|IMM_MMN,     TRANSFORM_P,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0xED,0x4B},
@@ -546,13 +547,13 @@ operandlist_t operands_or[] = {
    {RS_NONE,           IMM|IMM_N,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xF6},
 // end optimized set
    {    R_A,               NOREQ,   R_HL,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0xB6},
-   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_EZ80,0x00,0xB4},
+   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0xB4},
    {    R_A,               NOREQ, RS_IXY,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_Z80,0x00,0xB6},
    {    R_A,               NOREQ,RS_NONE,           IMM|IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xF6},
    {    R_A,               NOREQ,   RS_R,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_Z,                F_NONE,BIT_Z80,0x00,0xB0},
 // same set, without A register
    {   R_HL,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0xB6},
-   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_EZ80,0x00,0xB4},
+   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0xB4},
    { RS_IXY,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPA|F_DDFDOK|S_ANY,BIT_Z80,0x00,0xB6},
 };
 operandlist_t operands_otd2r[] = {
@@ -587,6 +588,7 @@ operandlist_t operands_otirx[] = {
 };
 operandlist_t operands_out[] = {
    {   R_BC,            INDIRECT,   RS_R,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_Y,                F_NONE,BIT_Z80,0xED,0x41},
+   {    R_C,            INDIRECT,RS_NONE,                 IMM,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_U80,0xED,0x71},
    {    R_C,            INDIRECT,   RS_R,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_Y,                F_NONE,BIT_Z80,0xED,0x41},
    {RS_NONE,  INDIRECT|IMM|IMM_N,    R_A,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xD3},
 };
@@ -680,13 +682,13 @@ operandlist_t operands_rst[] = {
 };
 operandlist_t operands_sbc[] = {
    {    R_A,               NOREQ,   R_HL,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x9E},
-   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_EZ80,0x00,0x9C},
+   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x9C},
    {    R_A,               NOREQ, RS_IXY,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_Z80,0x00,0x9E},
    {    R_A,               NOREQ,RS_NONE,           IMM|IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xDE},
    {    R_A,               NOREQ,   RS_R,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_Z,                F_NONE,BIT_Z80,0x00,0x98},
 // same set, without A register
    {   R_HL,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x9E},
-   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_EZ80,0x00,0x9C},
+   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x9C},
    { RS_IXY,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPA|F_DDFDOK|S_ANY,BIT_Z80,0x00,0x9E},
    {RS_NONE,           IMM|IMM_N,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xDE},
    {   RS_R,               NOREQ,RS_NONE,               NOREQ,     TRANSFORM_Z,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0x98},
@@ -706,6 +708,10 @@ operandlist_t operands_sla[] = {
    {   R_HL,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0xCB,0x26},
    { RS_IXY,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPA|F_DDFDOK|S_ANY,BIT_Z80,0xCB,0x26},
    {   RS_R,               NOREQ,RS_NONE,               NOREQ,     TRANSFORM_Z,TRANSFORM_NONE,                F_NONE,BIT_Z80,0xCB,0x20},
+};
+operandlist_t operands_sll[] = {
+   {   RS_R,               NOREQ,RS_NONE,               NOREQ,     TRANSFORM_Z,TRANSFORM_NONE,                F_NONE,BIT_U80,0xCB,0x30},
+   {   R_HL,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0xCB,0x36},
 };
 operandlist_t operands_slp[] = {
    {RS_NONE,               NOREQ,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z180|BIT_EZ80,0xED,0x76},
@@ -728,12 +734,12 @@ operandlist_t operands_sub[] = {
    {   R_HL,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x96},
 // end optimized set
    {    R_A,               NOREQ,   R_HL,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0x96},
-   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_EZ80,0x00,0x94},
+   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x94},
    {    R_A,               NOREQ, RS_IXY,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_Z80,0x00,0x96},
    {    R_A,               NOREQ,RS_NONE,           IMM|IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xD6},
    {    R_A,               NOREQ,   RS_R,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_Z,                F_NONE,BIT_Z80,0x00,0x90},
 // same set, without A register
-   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_EZ80,0x00,0x94},
+   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0x94},
    { RS_IXY,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPA|F_DDFDOK|S_ANY,BIT_Z80,0x00,0x96},
    {RS_NONE,           IMM|IMM_N,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xD6},
    {   RS_R,               NOREQ,RS_NONE,               NOREQ,     TRANSFORM_Z,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0x90},
@@ -757,12 +763,12 @@ operandlist_t operands_xor[] = {
    {   R_HL,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0xAE},
 // end optimized set
    {    R_A,               NOREQ,   R_HL,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0x00,0xAE},
-   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_EZ80,0x00,0xAC},
+   {    R_A,               NOREQ,  RS_IR,               NOREQ,  TRANSFORM_NONE, TRANSFORM_IR0,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0xAC},
    {    R_A,               NOREQ, RS_IXY,            INDIRECT,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPB|F_DDFDOK|S_ANY,BIT_Z80,0x00,0xAE},
    {    R_A,               NOREQ,RS_NONE,           IMM|IMM_N,  TRANSFORM_NONE,TRANSFORM_NONE,                F_NONE,BIT_Z80,0x00,0xEE},
    {    R_A,               NOREQ,   RS_R,               NOREQ,  TRANSFORM_NONE,   TRANSFORM_Z,                F_NONE,BIT_Z80,0x00,0xA8},
 // same set, without A register
-   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_EZ80,0x00,0xAC},
+   {  RS_IR,               NOREQ,RS_NONE,               NOREQ,   TRANSFORM_IR0,TRANSFORM_NONE,              F_DDFDOK,BIT_U80|BIT_EZ80,0x00,0xAC},
    { RS_IXY,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,F_DISPA|F_DDFDOK|S_ANY,BIT_Z80,0x00,0xAE},
 };
 
@@ -885,6 +891,7 @@ instruction_t instructions[] = {
     {"scf",      EZ80, 0, sizeof(operands_scf)/sizeof(operandlist_t), operands_scf,NULL,NULL},
     {"set",      EZ80, 0, sizeof(operands_set)/sizeof(operandlist_t), operands_set,NULL,NULL},
     {"sla",      EZ80, 0, sizeof(operands_sla)/sizeof(operandlist_t), operands_sla,NULL,NULL},
+    {"sll",      EZ80, 0, sizeof(operands_sll)/sizeof(operandlist_t), operands_sll,NULL,NULL},
     {"slp",      EZ80, 0, sizeof(operands_slp)/sizeof(operandlist_t), operands_slp,NULL,NULL},
     {"sra",      EZ80, 0, sizeof(operands_sra)/sizeof(operandlist_t), operands_sra,NULL,NULL},
     {"srl",      EZ80, 0, sizeof(operands_srl)/sizeof(operandlist_t), operands_srl,NULL,NULL},
