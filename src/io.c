@@ -53,19 +53,9 @@ uint24_t ioGetfilesize(FILE *fh) {
         // Use optimal assembly routine in moscalls.asm
         filesize = getfilesize(fh->fhandle);
     #else
-        char _buffer[OUTPUT_BUFFERSIZE];
-        uint24_t size;
-        filesize = 0;
-        while(1) {
-            // Other non-agon compilers
-            size = (uint24_t) fread(_buffer, 1, OUTPUT_BUFFERSIZE, fh);
-            filesize += size;
-            if(size < OUTPUT_BUFFERSIZE) break;
-        }
-        if(fseek(fh, 0, SEEK_SET)) {
-            error(message[ERROR_FILEIO],0);
-            return 0;
-        }
+        fseek(fh, 0, SEEK_END);
+        filesize = ftell(fh);
+        fseek(fh, 0, SEEK_SET);
     #endif
 
     return filesize;
