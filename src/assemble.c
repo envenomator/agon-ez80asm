@@ -465,7 +465,7 @@ void parseLine(char *src) {
                 switch(currentline.current_instruction->type) {
                     case EZ80:
                         if(currentline.next) {
-                            oplength = getOperandToken(&streamtoken, streamtoken.next);
+                            oplength = getOperandToken(&streamtoken, currentline.next);
                             if(oplength) {
                                 state = PS_OP;
                                 break;
