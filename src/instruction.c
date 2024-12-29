@@ -628,28 +628,28 @@ operandlist_t operands_res[] = {
 };
 // res0 - res7 are only used for 3-operand undocumented Z80 instructions
 operandlist_t operands_res0[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0x80},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0x80},
 };
 operandlist_t operands_res1[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0x88},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0x88},
 };
 operandlist_t operands_res2[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0x90},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0x90},
 };
 operandlist_t operands_res3[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0x98},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0x98},
 };
 operandlist_t operands_res4[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xA0},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xA0},
 };
 operandlist_t operands_res5[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xA8},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xA8},
 };
 operandlist_t operands_res6[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xB0},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xB0},
 };
 operandlist_t operands_res7[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xB8},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xB8},
 };
 operandlist_t operands_ret[] = {
    {RS_NONE,               NOREQ,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,              S_LILLIS,BIT_Z80,0x00,0xC9},
@@ -735,28 +735,28 @@ operandlist_t operands_set[] = {
 };
 // set0 - set7 are only used for 3-operand undocumented Z80 instructions
 operandlist_t operands_set0[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xC0},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xC0},
 };
 operandlist_t operands_set1[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xC8},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xC8},
 };
 operandlist_t operands_set2[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xD0},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xD0},
 };
 operandlist_t operands_set3[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xD8},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xD8},
 };
 operandlist_t operands_set4[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xE0},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xE0},
 };
 operandlist_t operands_set5[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xE8},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xE8},
 };
 operandlist_t operands_set6[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xF0},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xF0},
 };
 operandlist_t operands_set7[] = {
-   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,F_DISPA|F_DDFDOK|S_ANY,BIT_U80,0xCB,0xF8},
+   { RS_IXY,            INDIRECT,   RS_R,               NOREQ,     TRANSFORM_Z,   TRANSFORM_Z,      F_DISPA|F_DDFDOK,BIT_U80,0xCB,0xF8},
 };
 operandlist_t operands_sla[] = {
    {   R_HL,            INDIRECT,RS_NONE,               NOREQ,  TRANSFORM_NONE,TRANSFORM_NONE,                 S_ANY,BIT_Z80,0xCB,0x26},
