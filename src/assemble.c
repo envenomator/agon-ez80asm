@@ -717,6 +717,10 @@ void handle_asm_adl(void) {
         error(message[ERROR_INVALIDOPERAND],0);
         return;
     }
+    if(!(cputype & BIT_EZ80)) {
+       errorCPUtype(ERROR_INVALID_CPU_MODE);
+       return;
+    }
     if(token.terminator != '=') {
         error(message[ERROR_MISSINGARGUMENT],0);
         return;
@@ -732,10 +736,6 @@ void handle_asm_adl(void) {
     if((operand2.immediate != 0) && (operand2.immediate != 1)) {
         error(message[ERROR_INVALID_ADLMODE],"%s", operand2.immediate_name);
         return;
-    }
-    if((operand2.immediate == 1) && !(cputype & BIT_EZ80)) {
-       errorCPUtype(ERROR_INVALID_CPU_MODE);
-       return;
     }
 
     adlmode = operand2.immediate;
