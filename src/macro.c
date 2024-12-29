@@ -15,13 +15,14 @@
 #include "moscalls.h"
 #include "listing.h"
 #include "str2num.h"
+#include "io.h"
 
 // Total allocated memory for macros
 uint24_t macromemsize;
 uint8_t macroCounter;
 
 // Temp recording buffer
-char _macro_content_buffer[MACRO_BUFFERSIZE + 1];
+char * _macro_content_buffer;
 
 // internal tracking number per expansion. Starts at 0 and sequentially increases each expansion to create a macro expansion scope (for labels)
 uint24_t macroExpandID;
@@ -61,10 +62,7 @@ macro_t *recordMacro(const char *name, uint8_t argcount, const char *arguments, 
     strcpy(macroinstruction->name, name);
     macroinstruction->next = NULL;
 
-    // allocate space for the body and copy
-    tmp->body = (char*)allocateMemory(strlen(_macro_content_buffer)+1);
-    if(tmp->body == NULL) return NULL;
-    strcpy(tmp->body, _macro_content_buffer);
+    tmp->body = _macro_content_buffer;
 
     // Set up macro specific content
     tmp->argcount = argcount;
@@ -184,56 +182,65 @@ uint8_t macroExpandArg(char *dst, const char *src, const macro_t *m) {
 
 // read to temporary macro buffer
 bool readMacroBody(struct contentitem *ci) {
-    char *strend;
+    char *bufptr;
     bool foundend = false;
     char macroline[LINEMAX+1];
     uint16_t linelength,macrolength;
-
-    _macro_content_buffer[0] = 0; // empty string
-    strend = _macro_content_buffer;
+    uint24_t filestartpos = ci->filepos;
+    uint16_t linestoread = 0;
+    char *tmp;
 
     if(pass == ENDPASS && (listing)) listEndLine(); // print out first line of macro definition
 
+    // Parse macro body and find length first
+    foundend = false;
     macrolength = 0;
     while((linelength = getnextContentLine(macroline, ci))) {
         ci->currentlinenumber++;
-        char *src = macroline;
+        tmp = macroline;
 
         if(pass == ENDPASS && (listing)) {
-            listStartLine(src, ci->currentlinenumber);
+            listStartLine(tmp, ci->currentlinenumber);
             listEndLine();
         }
 
         // skip leading space
-        while(*src && (isspace(*src))) src++;
-        if(fast_strncasecmp(src, "macro", 5) == 0) {
+        while(*tmp && (isspace(*tmp))) tmp++;
+        if(fast_strncasecmp(tmp, "macro", 5) == 0) {
             error(message[ERROR_MACROINMACRO],0);
             return false;
         }
-        uint8_t skipdot = (*src == '.')?1:0;
-        if(fast_strncasecmp(src+skipdot, "endmacro", 8) == 0) { 
-            if(isspace(src[8+skipdot]) || (src[8+skipdot] == 0) || (src[8+skipdot] == ';')) {
+        uint8_t skipdot = (*tmp == '.')?1:0;
+        if(fast_strncasecmp(tmp+skipdot, "endmacro", 8) == 0) { 
+            if(isspace(tmp[8+skipdot]) || (tmp[8+skipdot] == 0) || (tmp[8+skipdot] == ';')) {
                 foundend = true;
                 break;
             }
         }
-        // concatenate to buffer end
-        if(pass == STARTPASS) {
-            if((macrolength + linelength) > MACRO_BUFFERSIZE) {
-                error(message[ERROR_MACROTOOLARGE],0);
-                return false;
-            }
-            char *tmp = macroline;
-            while(*tmp) {
-                *strend++ = *tmp++;
-                macrolength++;
-            }
-            *strend = 0;
-        }
+        macrolength += linelength + 1;
+        linestoread++;
     }
     if(!foundend) {
         error(message[ERROR_MACROUNFINISHED],0);
         return false;
+    }
+
+    if(pass == STARTPASS) {
+        // allocate memory for macro body
+        _macro_content_buffer = allocateMemory(macrolength);
+        if(!_macro_content_buffer) return false;
+        bufptr = _macro_content_buffer;
+
+        // rewind file input
+        seekContentInput(ci, filestartpos);
+        // Read macro lines to buffer
+        for(uint16_t n = 0; n < linestoread; n++) {
+            getnextContentLine(macroline, ci);
+            tmp = macroline;
+            while(*tmp) *bufptr++ = *tmp++;
+            *bufptr = 0;
+        }
+        getnextContentLine(macroline, ci); // read endmacro line      
     }
     return true;
 }

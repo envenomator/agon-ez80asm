@@ -25,7 +25,6 @@
 #define OUTPUTFILES                   3 // Output files (binary / listing / anonymous labels)
 #define OUTPUT_BUFFERSIZE         32768 // For each specified output file (io.c)
 #define INPUT_BUFFERSIZE           1024 // For minimally buffered input files
-#define MACRO_BUFFERSIZE		   2048 // maximum macro (ascii text) body size
 #define LISTING_OBJECTS_PER_LINE      4 // Listing hex 'objects' between PC / Line number
 #define TOKEN_MAX               LINEMAX // Token maximum length
 #define MAXNAMELENGTH                64 // Maximum name length of labels
