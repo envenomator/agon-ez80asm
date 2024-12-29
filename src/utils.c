@@ -164,7 +164,7 @@ uint8_t getMnemonicToken(streamtoken_t *token, char *src) {
     }
     token->terminator = *src;
     if(*src) token->next = src+1;
-    else token->next = NULL;
+    else token->next = src;
 
     *src = 0; // terminate stream
     return length;
@@ -236,7 +236,7 @@ uint8_t getOperandToken(streamtoken_t *token, char *src) {
 
     token->terminator = *src;
     if(*src) token->next = src+1;
-    else token->next = NULL;
+    else token->next = src;
 
     if(length) {
         *src-- = 0; // terminate early and revert one character
@@ -347,7 +347,7 @@ uint8_t getDefineValueToken(streamtoken_t *token, char *src) {
 
     token->terminator = *src;
     if(*src) token->next = src+1;
-    else token->next = NULL;
+    else token->next = src;
 
     if(length) {
         *src-- = 0; // terminate early and revert one character

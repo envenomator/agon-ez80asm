@@ -536,16 +536,16 @@ void parseLine(char *src) {
 void parse_asm_single_immediate(void) {
     streamtoken_t token;
 
-    if(currentline.next) {
-        if(getOperandToken(&token, currentline.next)) {
-            operand1.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
-            operand1.immediate_provided = true;
-            strcpy(operand1.immediate_name, token.start);
-            if((token.terminator != 0) && (token.terminator != ';')) error(message[ERROR_TOOMANYARGUMENTS],0);
-        }
-        else error(message[ERROR_MISSINGARGUMENT],0);
+    if(getOperandToken(&token, currentline.next) == 0) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
     }
-    else error(message[ERROR_MISSINGARGUMENT],0);
+    operand1.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
+    operand1.immediate_provided = true;
+    strcpy(operand1.immediate_name, token.start);
+    if((token.terminator != 0) && (token.terminator != ';')) {
+        error(message[ERROR_TOOMANYARGUMENTS],0);
+    }
 }
 
 // Emits list data for the DB/DW/DW24/DW32 etc directives
