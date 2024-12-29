@@ -13,6 +13,7 @@
 #include "io.h"
 #include "moscalls.h"
 #include "hash.h"
+#include "str2num.h"
 #include "assemble.h"
 
 // linebuffer for replacement arguments during macro expansion
@@ -541,7 +542,7 @@ void parseLine(char *src) {
                 }
                 break;
             case PS_OP:
-                argcount++;                
+                argcount++;   
                 if(currentExpandedMacro) {
                     macroExpandArg(macro_expansionbuffer, streamtoken.start, currentExpandedMacro);
                     streamtoken.start = macro_expansionbuffer;
@@ -563,8 +564,29 @@ void parseLine(char *src) {
                         return;
                     case ',':
                         if(argcount == 2) {
-                            error(message[ERROR_TOOMANYARGUMENTS],0);
-                            return;
+                            if((fast_strcasecmp(currentline.mnemonic, "res") == 0) || (fast_strcasecmp(currentline.mnemonic, "set") == 0)) {
+                                uint8_t bitnumber = str2num(operand1.immediate_name, strlen(operand1.immediate_name));
+                                // Handle 3rd operand in undocumented Z80 instructions RES0-7/SET0-7
+                                if((!operand1.immediate_provided) || (bitnumber > 7)){
+                                    error(message[ERROR_INVALIDBITNUMBER],"%s",operand1.immediate_name);
+                                    return;
+                                }
+                                operand1 = operand2; // switch operands
+                                memset(&operand2, 0, (sizeof(operand_t) - sizeof(operand2.immediate_name) + 1));
+                                argcount--;
+                                // now map to the intended instruction
+                                char tmpmnemonicname[MAX_MNEMONIC_SIZE];
+                                sprintf(tmpmnemonicname, "%s%d", currentline.mnemonic, bitnumber);
+                                currentline.current_instruction = instruction_lookup(tmpmnemonicname);
+                                if(!currentline.current_instruction) {
+                                    error("Internal error",0);
+                                    return;
+                                }
+                            }
+                            else {
+                                error(message[ERROR_TOOMANYARGUMENTS],0);
+                                return;
+                            }
                         }
                         oplength = getOperandToken(&streamtoken, streamtoken.next);
                         if(oplength == 0) {
