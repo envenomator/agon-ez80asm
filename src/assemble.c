@@ -1295,7 +1295,6 @@ struct contentitem *currentContent(void) {
 
 void processContent(const char *filename) {
     char line[LINEMAX+1];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
-    char errorline[LINEMAX+1]; // Full integrity copy of each line
     struct contentitem *ci;
 
     if((ci = findContent(filename)) == NULL) {
@@ -1323,26 +1322,26 @@ void processContent(const char *filename) {
             if((pass == ENDPASS) && (listing)) listEndLine();
             processMacro();
             if(issue_warning) { // warnings from the expanded macro
-                getlastContentLine(errorline, currentcontentitem);
-                colorPrintf(DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n%s", filename, ci->currentlinenumber, errorline);
+                getlastContentLine(line, currentcontentitem);
+                colorPrintf(DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n%s", filename, ci->currentlinenumber, line);
                 issue_warning = false;
             }
         }
         if(errorcount) {
-            getlastContentLine(errorline, currentcontentitem);
+            getlastContentLine(line, currentcontentitem);
             if(currentExpandedMacro) {
                 currentExpandedMacro = NULL;
                 colorPrintf(DARK_RED, "Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
             }
             if(currentStackLevel() == errorreportlevel) {
-                colorPrintf(DARK_YELLOW, "%s\r\n",errorline);
+                colorPrintf(DARK_YELLOW, "%s\r\n",line);
             }
             contentPop();
             return;
         }      
         if(issue_warning) { // local-level warnings
-            getlastContentLine(errorline, currentcontentitem);
-            colorPrintf(DARK_YELLOW, "%s",errorline);
+            getlastContentLine(line, currentcontentitem);
+            colorPrintf(DARK_YELLOW, "%s",line);
             issue_warning = false;
         }
     }
