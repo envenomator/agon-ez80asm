@@ -189,7 +189,9 @@ void emit_instruction(const operandlist_t *list) {
     output.prefix2 = list->prefix;
     output.opcode = list->opcode;
 
-    if(output.suffix & !(cputype & BIT_EZ80)) {
+   printf("DEBUG - suffix %x\r\n", output.suffix);
+   printf("DEBUG - cputype %x\r\n", cputype);
+    if(output.suffix && !(cputype & BIT_EZ80)) {
        errorCPUtype();
        return;
     }
