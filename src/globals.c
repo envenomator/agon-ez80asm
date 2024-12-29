@@ -6,6 +6,7 @@
 /*
  * Global variables
  */
+uint8_t cputype;
 uint8_t contentlevel;
 uint8_t errorreportlevel;
 uint8_t maxstackdepth;
@@ -123,5 +124,6 @@ char *message[] = {
     "Error allocating memory; try the -m option",
     "Ignoring unsupported initializer value",
     "Bracket format error",
-    "File I/O error"
+    "File I/O error",
+    "Illegal instruction for CPU type"
 };

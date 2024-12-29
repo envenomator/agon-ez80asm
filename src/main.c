@@ -206,6 +206,7 @@ int main(int argc, char *argv[]) {
     errorreportlevel = 0;
     maxstackdepth = 0;
     macroexpansions = 0;
+    cputype = CPU_EZ80;
     listing = list_enabled || consolelist_enabled;
     
     // Assemble input to output

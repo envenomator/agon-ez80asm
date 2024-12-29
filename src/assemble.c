@@ -1001,6 +1001,32 @@ void handle_asm_definemacro(void) {
     }
 }
 
+void handle_asm_cpu(void) {
+    streamtoken_t token;
+
+    if(inConditionalSection == CONDITIONSTATE_FALSE) return;
+
+    definelabel(address);
+
+    if(!currentline.next || (getOperandToken(&token, currentline.next) == 0)) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return;
+    }
+
+    if(fast_strcasecmp(token.start, "Z80") == 0) {
+        cputype = CPU_Z80;
+        adlmode = 0;
+        return;
+    }
+    if(fast_strcasecmp(token.start, "EZ80") == 0) {
+        cputype = CPU_EZ80;
+        adlmode = 1;
+        return;
+    }
+
+    error("Unknown CPU type", "%s", token.start);
+}
+
 void handle_asm_if(void) {
     streamtoken_t token;
     int24_t value;
@@ -1108,6 +1134,9 @@ void handle_assembler_command(void) {
         case(ASM_FILLBYTE):
             handle_asm_fillbyte();
             break;
+        case(ASM_CPU):
+            handle_asm_cpu();
+            break;
         case(ASM_IF):
             handle_asm_if();
             break;
@@ -1153,6 +1182,10 @@ void processInstructions(void){
                     }
                     if(regamatch && regbmatch && condmatch) {
                         match = true;
+                        if(!(cputype & list->cpu)) {
+                            errorCPUtype();;
+                            break;
+                        }
                         emit_instruction(list);
                         break;
                     }

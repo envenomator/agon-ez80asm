@@ -719,3 +719,18 @@ uint16_t getlastContentLine(char *dst, contentitem_t *ci) {
     seekContentInput(ci, ci->filepos - ci->lastreadlength); // rewind
     return getnextContentLine(dst, ci);
 }
+
+void errorCPUtype(void) {
+    char *cpuname[] = {"Z80", "EZ80"};
+    uint8_t cpuindex;
+
+    switch(cputype) {
+        case CPU_Z80:
+            cpuindex = 0;
+            break;
+        case CPU_EZ80:
+            cpuindex = 1;
+            break;
+    }
+    error(message[ERROR_INVALID_CPU_INSTRUCTION], "%s", cpuname[cpuindex]);
+}

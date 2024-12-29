@@ -109,10 +109,15 @@ typedef uint32_t uint24_t;
 #define S_LILLIS        S_LIL | S_LIS
 
 // CPU bitfield codes
-#define CPU_Z80             0x01
-#define Z180            0x02
-#define Z280            0x03
-#define CPU_EZ80            0x04
+#define BIT_Z80             0x01
+#define BIT_U80             0x02
+#define BIT_Z180            0x04
+#define BIT_Z280            0x08
+#define BIT_EZ80            0x10
+
+// CPU Types - used as option variable / mask
+#define CPU_Z80             BIT_Z80
+#define CPU_EZ80            BIT_Z80 | BIT_EZ80
 
 // actual codes to emit when permitted
 #define CODE_SIS    0x40
@@ -293,6 +298,7 @@ typedef enum {
     ASM_MACRO_END,
     ASM_INCBIN,
     ASM_FILLBYTE,
+    ASM_CPU,
     ASM_IF,
     ASM_ELSE,
     ASM_ENDIF
@@ -433,7 +439,8 @@ typedef enum {
     ERROR_MEMORY,
     WARNING_UNSUPPORTED_INITIALIZER,
     ERROR_BRACKETFORMAT,
-    ERROR_FILEIO
+    ERROR_FILEIO,
+    ERROR_INVALID_CPU_INSTRUCTION
 } errormessage_t;
 
 #endif

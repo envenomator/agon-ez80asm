@@ -36,5 +36,7 @@ void     colorPrintf(int color, const char *msg, ...);
 int32_t  getExpressionValue(char *str, requiredResult_t requiredPass);
 uint8_t  getEscapedChar(char c);
 uint8_t  getLiteralValue(const char *string);
+void     errorCPUtype(void);
+
 #endif // UTILS_H
 
