@@ -1295,18 +1295,27 @@ struct contentitem *currentContent(void) {
 }
 
 void prepareContentInput(struct contentitem *ci) {
-    ci->buffer = _contentstack_inputbuffer[_contentstacklevel];
-    ci->bytesinbuffer = 0;
-    ci->fh = ioOpenfile(ci->name, "rb");
-    if(ci->fh == 0) return;
-    ci->size = ioGetfilesize(ci->fh);
+    if(!completefilebuffering) {
+        ci->buffer = _contentstack_inputbuffer[_contentstacklevel];
+        ci->bytesinbuffer = 0;
+        ci->fh = ioOpenfile(ci->name, "rb");
+        if(ci->fh == 0) return;
+        ci->size = ioGetfilesize(ci->fh);
+    }
+    ci->currentlinenumber = 0;
+    ci->inConditionalSection = inConditionalSection;
+    ci->readptr = ci->buffer;
+    ci->lastreadlength = 0;
+    ci->filepos = 0;
 }
 
 void closeContentInput(struct contentitem *ci) {
-    ci->buffer = NULL;
-    ci->bytesinbuffer = 0;
-    ci->size = 0;
-    fclose(ci->fh);
+    if(!completefilebuffering) {    
+        ci->buffer = NULL;
+        ci->bytesinbuffer = 0;
+        ci->size = 0;
+        fclose(ci->fh);
+    }
 }
 
 void processContent(const char *filename) {
@@ -1321,14 +1330,7 @@ void processContent(const char *filename) {
         }
         else return;
     }
-    if(!completefilebuffering) prepareContentInput(ci);
-
-    // Prepare processing
-    ci->readptr = ci->buffer;
-    ci->lastreadlength = 0;
-    ci->filepos = 0;
-    ci->currentlinenumber = 0;
-    ci->inConditionalSection = inConditionalSection;
+    prepareContentInput(ci);
     if(!contentPush(ci)) return;
     inConditionalSection = CONDITIONSTATE_NORMAL;
     // Process
@@ -1374,7 +1376,7 @@ void processContent(const char *filename) {
         contentPop();
         return;
     }
-    if(!completefilebuffering) closeContentInput(ci);
+    closeContentInput(ci);    
     contentPop();
     strcpy(ci->labelscope, ""); // empty scope for next pass
 
