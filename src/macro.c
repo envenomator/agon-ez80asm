@@ -38,12 +38,10 @@ macro_t *storeMacro(const char *name, char *buffer, uint8_t argcount, const char
     instruction_t *try, *macroinstruction;
 
     // allocate space in buffer for macro_t struct
-    tmp = (macro_t *)allocateMemory(sizeof(macro_t));
-    macromemsize += sizeof(macro_t);
+    tmp = (macro_t *)allocateMemory(sizeof(macro_t), &macromemsize);
     if(tmp == NULL) return NULL;
 
-    macroinstruction = (instruction_t *)allocateMemory(sizeof(instruction_t));
-    macromemsize += sizeof(instruction_t);
+    macroinstruction = (instruction_t *)allocateMemory(sizeof(instruction_t), &macromemsize);
     if(macroinstruction == NULL) return NULL;
 
     // Link together
@@ -51,8 +49,7 @@ macro_t *storeMacro(const char *name, char *buffer, uint8_t argcount, const char
     macroinstruction->macro = tmp;
 
     len = (unsigned int)strlen(name)+1;
-    macroinstruction->name = (char *)allocateMemory(len);
-    macromemsize += len;
+    macroinstruction->name = (char *)allocateMemory(len, &macromemsize);
     if(macroinstruction->name == NULL) return NULL;
 
     tmp->name = macroinstruction->name;
@@ -66,11 +63,9 @@ macro_t *storeMacro(const char *name, char *buffer, uint8_t argcount, const char
     tmp->substitutions = NULL;
     if(argcount == 0) tmp->arguments = NULL;
     else {
-        tmp->arguments = (char **)allocateMemory(argcount * sizeof(char *)); // allocate array of char*
-        macromemsize += argcount * sizeof(char *);
+        tmp->arguments = (char **)allocateMemory(argcount * sizeof(char *), &macromemsize); // allocate array of char*
         if(tmp->arguments == NULL) return NULL;
-        tmp->substitutions = (char **)allocateMemory(argcount * sizeof(char *));
-        macromemsize += argcount * sizeof(char *);
+        tmp->substitutions = (char **)allocateMemory(argcount * sizeof(char *), &macromemsize);
         if(tmp->substitutions == NULL) return NULL;
         if((tmp->arguments == NULL) || (tmp->substitutions == NULL)) return NULL;
 
@@ -81,7 +76,7 @@ macro_t *storeMacro(const char *name, char *buffer, uint8_t argcount, const char
                 error(message[ERROR_MACROARGLENGTH],0);
                 return NULL;
             }
-            ptr = (char*)allocateMemory(len+1);
+            ptr = (char*)allocateMemory(len+1, &macromemsize);
             macromemsize += len+1;
             if(ptr == NULL) return NULL;
 
@@ -224,9 +219,8 @@ char * readMacroBody(struct contentitem *ci) {
 
     if(pass == STARTPASS) {
         // allocate memory for macro body
-        buffer = allocateMemory(macrolength);
+        buffer = allocateMemory(macrolength, &macromemsize);
         if(!buffer) return false;
-        macromemsize += macrolength;
         bufptr = buffer;
 
         // rewind file input

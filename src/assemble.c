@@ -1211,16 +1211,16 @@ struct contentitem *insertContent(const char *filename) {
     uint8_t index;
 
     // Allocate memory and fill out ci content
-    ci = allocateMemory(sizeof(struct contentitem));
+    ci = allocateMemory(sizeof(struct contentitem), &filecontentsize);
     if(ci == NULL) return NULL;
-    ci->name = allocateString(filename);
+    ci->name = allocateString(filename, &filecontentsize);
     if(ci->name == NULL) return NULL;
 
     if(completefilebuffering) {
         ci->fh = ioOpenfile(filename, "rb");
         if(ci->fh == 0) return NULL;
         ci->size = ioGetfilesize(ci->fh);
-        ci->buffer = allocateMemory(ci->size+1);
+        ci->buffer = allocateMemory(ci->size+1, &filecontentsize);
         if(ci->buffer == NULL) return NULL;
         if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
             error(message[ERROR_READINGINPUT],0);
@@ -1231,11 +1231,6 @@ struct contentitem *insertContent(const char *filename) {
     }
     strcpy(ci->labelscope, ""); // empty scope
     ci->next = NULL;
-
-    // Update statistics
-    filecontentsize += sizeof(struct contentitem);
-    filecontentsize += strlen(filename) + 1;
-    if(completefilebuffering) filecontentsize += ci->size + 1;
 
     // Placement
     index = hash256(filename);

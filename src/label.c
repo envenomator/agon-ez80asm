@@ -131,13 +131,11 @@ bool insertLabel(const char *labelname, uint8_t len, uint24_t labelAddress, bool
     label_t *tmp,*try;
 
     // allocate space in buffer for label_t struct
-    tmp = (label_t *)allocateMemory(sizeof(label_t));
-    labelmemsize += sizeof(label_t);
+    tmp = (label_t *)allocateMemory(sizeof(label_t), &labelmemsize);
     if(tmp == NULL) return false;
 
     // allocate space in buffer for string and store it to buffer
-    tmp->name = (char*)allocateMemory(len+1);
-    labelmemsize += (uint24_t)len +1;
+    tmp->name = (char*)allocateMemory(len+1, &labelmemsize);
     if(tmp->name == NULL) return false;
 
     strcpy(tmp->name, labelname);

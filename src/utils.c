@@ -15,17 +15,18 @@
 #include "assemble.h"
 
 // memory allocate size bytes, raise error if not available
-void *allocateMemory(size_t size) {
+void *allocateMemory(size_t size, uint24_t *bytecounter) {
     void *ptr = malloc(size);
     if(ptr == NULL) {
         error(message[ERROR_MEMORY],0);
     }
+    *bytecounter += size;
     return ptr;
 }
 
 // memory allocate a string, copy content and return pointer, or NULL if no memory
-char *allocateString(const char *name) {
-    char *ptr = (char *)allocateMemory(strlen(name) + 1);
+char *allocateString(const char *name, uint24_t *bytecounter) {
+    char *ptr = (char *)allocateMemory(strlen(name) + 1, bytecounter);
     if(ptr) {
         strcpy(ptr, name);
     }

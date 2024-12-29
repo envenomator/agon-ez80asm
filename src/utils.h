@@ -22,8 +22,8 @@ uint16_t getnextContentLine(char *dst1, struct contentitem *ci);
 uint16_t getlastContentLine(char *dst1, struct contentitem *ci);
 
 uint16_t getnextMacroLine(char **ptr, char *dst);
-char *  allocateString(const char *name);
-void *  allocateMemory(size_t size);
+char *  allocateString(const char *name, uint24_t *bytecounter);
+void *  allocateMemory(size_t size, uint24_t *bytecounter);
 
 uint8_t strcompound(char *dest, const char *src1, const char *src2);
 void validateRange8bit(int32_t value, const char *name);
