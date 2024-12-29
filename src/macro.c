@@ -21,9 +21,6 @@
 uint24_t macromemsize;
 uint8_t macroCounter;
 
-// Temp recording buffer
-char * _macro_content_buffer;
-
 // internal tracking number per expansion. Starts at 0 and sequentially increases each expansion to create a macro expansion scope (for labels)
 uint24_t macroExpandID;
 
@@ -32,8 +29,8 @@ void initMacros(void) {
     macroCounter = 0;
 }
 
-// define macro from temporary buffer
-macro_t *recordMacro(const char *name, uint8_t argcount, const char *arguments, uint16_t startlinenumber) {
+// store macro from temporary buffer
+macro_t *storeMacro(const char *name, char *buffer, uint8_t argcount, const char *arguments, uint16_t startlinenumber) {
     unsigned int len, i;
     uint8_t index;
     char *ptr;
@@ -62,7 +59,7 @@ macro_t *recordMacro(const char *name, uint8_t argcount, const char *arguments, 
     strcpy(macroinstruction->name, name);
     macroinstruction->next = NULL;
 
-    tmp->body = _macro_content_buffer;
+    tmp->body = buffer;
 
     // Set up macro specific content
     tmp->argcount = argcount;
@@ -181,8 +178,8 @@ uint8_t macroExpandArg(char *dst, const char *src, const macro_t *m) {
 }
 
 // read to temporary macro buffer
-bool readMacroBody(struct contentitem *ci) {
-    char *bufptr;
+char * readMacroBody(struct contentitem *ci) {
+    char *buffer = NULL, *bufptr;
     bool foundend = false;
     char macroline[LINEMAX+1];
     uint16_t linelength,macrolength;
@@ -208,7 +205,7 @@ bool readMacroBody(struct contentitem *ci) {
         while(*tmp && (isspace(*tmp))) tmp++;
         if(fast_strncasecmp(tmp, "macro", 5) == 0) {
             error(message[ERROR_MACROINMACRO],0);
-            return false;
+            return NULL;
         }
         uint8_t skipdot = (*tmp == '.')?1:0;
         if(fast_strncasecmp(tmp+skipdot, "endmacro", 8) == 0) { 
@@ -222,14 +219,15 @@ bool readMacroBody(struct contentitem *ci) {
     }
     if(!foundend) {
         error(message[ERROR_MACROUNFINISHED],0);
-        return false;
+        return NULL;
     }
 
     if(pass == STARTPASS) {
         // allocate memory for macro body
-        _macro_content_buffer = allocateMemory(macrolength);
-        if(!_macro_content_buffer) return false;
-        bufptr = _macro_content_buffer;
+        buffer = allocateMemory(macrolength);
+        if(!buffer) return false;
+        macromemsize += macrolength;
+        bufptr = buffer;
 
         // rewind file input
         seekContentInput(ci, filestartpos);
@@ -242,7 +240,7 @@ bool readMacroBody(struct contentitem *ci) {
         }
         getnextContentLine(macroline, ci); // read endmacro line      
     }
-    return true;
+    return buffer;
 }
 
 bool parseMacroDefinition(char *str, char **name, uint8_t *argcount, char *arglist) {
@@ -290,21 +288,6 @@ bool parseMacroDefinition(char *str, char **name, uint8_t *argcount, char *argli
     }
     return true;
 }
-
-bool defineMacro(char *definition, struct contentitem *ci) {
-    uint8_t argcount;
-    char arglist[MACROMAXARGS][MACROARGLENGTH + 1];
-    char *macroname;
-
-    if(!parseMacroDefinition(definition, &macroname, &argcount, (char *)arglist)) return false;
-
-    if(!recordMacro(macroname, argcount, (char *)arglist, ci->currentlinenumber)) {
-        error(message[ERROR_MACROMEMORYALLOCATION],0);
-        return false;
-    }
-    return true;
-}
-
 
 bool parseMacroArguments(macro_t *macro, char *invocation, char (*substitutionlist)[MACROARGSUBSTITUTIONLENGTH + 1]) {
     streamtoken_t token;
