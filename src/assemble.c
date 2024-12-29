@@ -458,35 +458,26 @@ void parseLine(char *src) {
                     }
                     // Valid assembler command found (with a .)
                 }
+                if((streamtoken.terminator == ';') || (streamtoken.terminator == 0)) 
+                    currentline.next = NULL;
+                else currentline.next = streamtoken.next;
+
                 switch(currentline.current_instruction->type) {
                     case EZ80:
-                        switch(streamtoken.terminator) {
-                            case ';':
-                                state = PS_COMMENT;
-                                currentline.next = streamtoken.next;
+                        if(currentline.next) {
+                            oplength = getOperandToken(&streamtoken, streamtoken.next);
+                            if(oplength) {
+                                state = PS_OP;
                                 break;
-                            case 0:
-                                currentline.next = NULL;
-                                return;
-                            default:
-                                if(streamtoken.next) {
-                                    oplength = getOperandToken(&streamtoken, streamtoken.next);
-                                    if(oplength) {
-                                        state = PS_OP;
-                                        break;
-                                    }
-                                }
-                                return; // ignore any comments
+                            }
                         }
+                        return; // ignore any comments
                         break;
                     case ASSEMBLER:
-                        currentline.next = streamtoken.next;
                         return;
                     case MACRO:
                         currentline.current_macro = currentline.current_instruction->macro;
                         currentline.current_instruction = NULL;
-                        if(streamtoken.terminator == ';') currentline.next = NULL;
-                        else currentline.next = streamtoken.next;
                         return;
                 }
                 break;
@@ -536,7 +527,7 @@ void parseLine(char *src) {
 void parse_asm_single_immediate(void) {
     streamtoken_t token;
 
-    if(getOperandToken(&token, currentline.next) == 0) {
+    if(!currentline.next || (getOperandToken(&token, currentline.next) == 0)) {
         error(message[ERROR_MISSINGARGUMENT],0);
         return;
     }
