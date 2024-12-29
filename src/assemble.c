@@ -1012,12 +1012,21 @@ void handle_asm_cpu(void) {
         error(message[ERROR_MISSINGARGUMENT],0);
         return;
     }
-
     if(fast_strcasecmp(token.start, "Z80") == 0) {
         cputype = CPU_Z80;
         adlmode = 0;
         return;
     }
+    if(fast_strcasecmp(token.start, "Z180") == 0) {
+        cputype = CPU_Z180;
+        adlmode = 0;
+        return;
+    }
+    //if(fast_strcasecmp(token.start, "Z280") == 0) {
+    //    cputype = CPU_Z280;
+    //    adlmode = 0;
+    //    return;
+    //}
     if(fast_strcasecmp(token.start, "EZ80") == 0) {
         cputype = CPU_EZ80;
         adlmode = 1;

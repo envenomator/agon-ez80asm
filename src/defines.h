@@ -117,6 +117,8 @@ typedef uint32_t uint24_t;
 
 // CPU Types - used as option variable / mask
 #define CPU_Z80             BIT_Z80
+#define CPU_Z180            BIT_Z80 | BIT_Z180
+#define CPU_Z280            BIT_Z80 | BIT_Z280
 #define CPU_EZ80            BIT_Z80 | BIT_EZ80
 
 // actual codes to emit when permitted

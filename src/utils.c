@@ -721,15 +721,21 @@ uint16_t getlastContentLine(char *dst, contentitem_t *ci) {
 }
 
 void errorCPUtype(void) {
-    char *cpuname[] = {"Z80", "EZ80"};
+    char *cpuname[] = {"Z80", "Z180", "Z280", "EZ80"};
     uint8_t cpuindex;
 
     switch(cputype) {
         case CPU_Z80:
             cpuindex = 0;
             break;
-        case CPU_EZ80:
+        case CPU_Z180:
             cpuindex = 1;
+            break;
+        case CPU_Z280:
+            cpuindex = 2;
+            break;
+        case CPU_EZ80:
+            cpuindex = 3;
             break;
     }
     error(message[ERROR_INVALID_CPU_INSTRUCTION], "%s", cpuname[cpuindex]);
