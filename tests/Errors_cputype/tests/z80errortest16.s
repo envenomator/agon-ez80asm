@@ -1,3 +1,3 @@
 ;Testing EZ80 instruction in Z80 mode
 .cpu Z80
-    LD D,IXL
+    OUT0 (0),H

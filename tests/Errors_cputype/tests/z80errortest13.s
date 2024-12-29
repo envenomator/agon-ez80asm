@@ -1,3 +1,3 @@
 ;Testing EZ80 instruction in Z80 mode
 .cpu Z80
-    OR A,IXH
+    IN0 H,(0)

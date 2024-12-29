@@ -1,3 +1,3 @@
 ;Testing EZ80 instruction in Z80 mode
 .cpu Z80
-    SUB A,IXL
+    LEA DE ,IX+1

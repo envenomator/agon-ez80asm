@@ -1,3 +1,3 @@
 ;Testing EZ80 instruction in Z80 mode
 .cpu Z80
-    PEA IX+1
+    LD BC, (IY+1)

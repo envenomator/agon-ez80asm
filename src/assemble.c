@@ -435,6 +435,7 @@ void parseLine(char *src) {
     uint8_t state;
     uint8_t argcount = 0;
     streamtoken_t streamtoken;
+    bool unknown3rdoperand = true;
 
     // default current line items
     memset(&currentline, 0, sizeof(currentline));
@@ -564,24 +565,25 @@ void parseLine(char *src) {
                         return;
                     case ',':
                         if(argcount == 2) {
-                            if((fast_strcasecmp(currentline.mnemonic, "res") == 0) || (fast_strcasecmp(currentline.mnemonic, "set") == 0)) {
-                                uint8_t bitnumber = str2num(operand1.immediate_name, strlen(operand1.immediate_name));
+                            if(unknown3rdoperand && ((fast_strcasecmp(currentline.mnemonic, "res") == 0) || (fast_strcasecmp(currentline.mnemonic, "set") == 0))) {
+                                uint8_t bitnumber = str2num(operand1.immediate_name, strlen(operand1.immediate_name)); // cannot rely on first-pass information which returns 0
                                 // Handle 3rd operand in undocumented Z80 instructions RES0-7/SET0-7
                                 if((!operand1.immediate_provided) || (bitnumber > 7)){
                                     error(message[ERROR_INVALIDBITNUMBER],"%s",operand1.immediate_name);
                                     return;
                                 }
+                                // now map to the intended undocumented instruction - SET -> SET0-7 or RES -> RES0-7
+                                char tmpmnemonicname[MAX_MNEMONIC_SIZE];
+                                snprintf(tmpmnemonicname, MAX_MNEMONIC_SIZE, "%s%d", currentline.mnemonic, bitnumber);
+                                currentline.current_instruction = instruction_lookup(tmpmnemonicname);
+                                if(!currentline.current_instruction) {
+                                    error(message[ERROR_INTERNAL],0);
+                                    return;
+                                }
+                                unknown3rdoperand = false; // any next operand should throw an error
                                 operand1 = operand2; // switch operands
                                 memset(&operand2, 0, (sizeof(operand_t) - sizeof(operand2.immediate_name) + 1));
                                 argcount--;
-                                // now map to the intended instruction
-                                char tmpmnemonicname[MAX_MNEMONIC_SIZE];
-                                sprintf(tmpmnemonicname, "%s%d", currentline.mnemonic, bitnumber);
-                                currentline.current_instruction = instruction_lookup(tmpmnemonicname);
-                                if(!currentline.current_instruction) {
-                                    error("Internal error",0);
-                                    return;
-                                }
                             }
                             else {
                                 error(message[ERROR_TOOMANYARGUMENTS],0);
