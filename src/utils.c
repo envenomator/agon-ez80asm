@@ -733,25 +733,6 @@ uint16_t _readMinimumBufferedLine(char *dst, struct contentitem *ci) {
     return len;
 }
 
-uint16_t getlastContentLine(char *dst, struct contentitem *ci) {
-    uint16_t len = ci->lastreadlength;
-    char *ptr = ci->readptr;
-
-    if(completefilebuffering) {
-        ptr -= len;
-        while(len--) *dst++ = *ptr++;
-        *dst = 0;
-        ci->readptr = ptr;
-    }
-    else {
-        ci->bytesinbuffer = 0; // reset buffer
-        ci->filepos -= ci->lastreadlength;
-        fseek(ci->fh, ci->filepos, SEEK_SET);
-        _readMinimumBufferedLine(dst, ci);
-    }
-    return ci->lastreadlength;
-}
-
 // Get line from contentitem, copy it to dst
 uint16_t getnextContentLine(char *dst, struct contentitem *ci) {
 
@@ -761,4 +742,9 @@ uint16_t getnextContentLine(char *dst, struct contentitem *ci) {
     else {
         return _readMinimumBufferedLine(dst, ci);
     }
+}
+
+uint16_t getlastContentLine(char *dst, struct contentitem *ci) {
+    seekContentInput(ci, ci->filepos - ci->lastreadlength); // rewind
+    return getnextContentLine(dst, ci);
 }

@@ -62,7 +62,10 @@ uint24_t ioGetfilesize(FILE *fh) {
             filesize += size;
             if(size < OUTPUT_BUFFERSIZE) break;
         }
-        fseek(fh, 0, SEEK_SET);
+        if(fseek(fh, 0, SEEK_SET)) {
+            error(message[ERROR_FILEIO],0);
+            return 0;
+        }
     #endif
 
     return filesize;
@@ -316,4 +319,47 @@ void emit_immediate(const operand_t *op, uint8_t suffix) {
 void initFileContentTable(void) {
     filecontentsize = 0;
     memset(filecontent, 0, sizeof(filecontent));
+}
+
+// sets read position in input stream
+// Will be called after 'prepareContentInput', before 'closeContentInput'
+void seekContentInput(struct contentitem *ci, uint24_t position) {
+    ci->filepos = position;
+
+    if(completefilebuffering) {
+        ci->readptr = ci->buffer + position;
+    }
+    else {
+        ci->bytesinbuffer = 0; // reset buffer
+        if(fseek(ci->fh, position, SEEK_SET)) {
+            error(message[ERROR_FILEIO],"%s",ci->name);
+            return;
+        }
+    }
+}
+
+void openContentInput(struct contentitem *ci) {
+    if(!completefilebuffering) {
+        ci->buffer = _contentstack_inputbuffer[_contentstacklevel];
+        ci->bytesinbuffer = 0;
+        ci->fh = ioOpenfile(ci->name, "rb");
+        if(ci->fh == 0) return;
+        ci->size = ioGetfilesize(ci->fh);
+    }
+    ci->currentlinenumber = 0;
+    ci->inConditionalSection = inConditionalSection;
+    ci->readptr = ci->buffer;
+    ci->lastreadlength = 0;
+    ci->filepos = 0;
+}
+
+void closeContentInput(struct contentitem *ci) {
+    if(!completefilebuffering) {    
+        ci->buffer = NULL;
+        ci->bytesinbuffer = 0;
+        ci->size = 0;
+        fclose(ci->fh);
+    }
+    ci->filepos = 0;
+    ci->readptr = NULL;
 }

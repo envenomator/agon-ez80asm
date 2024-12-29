@@ -122,5 +122,6 @@ char *message[] = {
     "Error reading input file",
     "Error allocating memory; try the -m option",
     "Ignoring unsupported initializer value",
-    "Bracket format error"
+    "Bracket format error",
+    "File I/O error"
 };

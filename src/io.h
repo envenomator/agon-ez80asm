@@ -32,4 +32,8 @@ void emit_adlsuffix_code(uint8_t suffix);
 void emit_immediate(const operand_t *op, uint8_t suffix);
 void initFileContentTable(void);
 
+void openContentInput(struct contentitem *ci);
+void closeContentInput(struct contentitem *ci);
+void seekContentInput(struct contentitem *ci, uint24_t position); // position relative to start of input
+
 #endif // IO_H

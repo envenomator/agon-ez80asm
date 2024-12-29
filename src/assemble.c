@@ -1294,30 +1294,6 @@ struct contentitem *currentContent(void) {
     else return NULL;
 }
 
-void prepareContentInput(struct contentitem *ci) {
-    if(!completefilebuffering) {
-        ci->buffer = _contentstack_inputbuffer[_contentstacklevel];
-        ci->bytesinbuffer = 0;
-        ci->fh = ioOpenfile(ci->name, "rb");
-        if(ci->fh == 0) return;
-        ci->size = ioGetfilesize(ci->fh);
-    }
-    ci->currentlinenumber = 0;
-    ci->inConditionalSection = inConditionalSection;
-    ci->readptr = ci->buffer;
-    ci->lastreadlength = 0;
-    ci->filepos = 0;
-}
-
-void closeContentInput(struct contentitem *ci) {
-    if(!completefilebuffering) {    
-        ci->buffer = NULL;
-        ci->bytesinbuffer = 0;
-        ci->size = 0;
-        fclose(ci->fh);
-    }
-}
-
 void processContent(const char *filename) {
     char line[LINEMAX+1];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
     char errorline[LINEMAX+1]; // Full integrity copy of each line
@@ -1330,7 +1306,7 @@ void processContent(const char *filename) {
         }
         else return;
     }
-    prepareContentInput(ci);
+    openContentInput(ci);
     if(!contentPush(ci)) return;
     inConditionalSection = CONDITIONSTATE_NORMAL;
     // Process
