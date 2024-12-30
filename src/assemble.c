@@ -1401,10 +1401,6 @@ void processContent(const char *filename) {
         error(message[ERROR_MISSINGENDIF],0);
         return;
     }
-    if(relocate) {
-        error(message[ERROR_MISSINGENDRELOCATE],0);
-        return;
-    }
     closeContentInput(ci, callerci);
     decreasecontentlevel();
     strcpy(ci->labelscope, ""); // empty scope for next pass
