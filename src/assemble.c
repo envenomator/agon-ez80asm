@@ -582,8 +582,16 @@ void parseLine(char *src) {
 // services several assembler directives
 bool parse_asm_single_immediate(void) {
     streamtoken_t token;
-    
-    if(!currentline.next || (getOperandToken(&token, currentline.next) == 0)) {
+
+    if(!currentline.next) {
+        error(message[ERROR_MISSINGARGUMENT],0);
+        return false;
+    }
+    if(currentExpandedMacro) {
+        macroExpandArg(macro_expansionbuffer, currentline.next, currentExpandedMacro);
+        currentline.next = macro_expansionbuffer;
+    }
+    if(getOperandToken(&token, currentline.next) == 0) {
         error(message[ERROR_MISSINGARGUMENT],0);
         return false;
     }
