@@ -122,9 +122,8 @@ macro_t *storeMacro(const char *name, char *buffer, uint8_t argcount, const char
 // - word
 // - wOrD8
 // - arg1
-void replaceArgument(char *target, const char *argument, const char *substitution)
-{
-    char buffer[MACROARGSUBSTITUTIONLENGTH + 1] = { 0 };
+void replaceArgument(char *target, const char *argument, const char *substitution) {
+    char buffer[(2*LINEMAX) + 1];
     bool bufferdirty = false;
     char *insert_point = &buffer[0];
     const char *tmp = target;
@@ -136,7 +135,7 @@ void replaceArgument(char *target, const char *argument, const char *substitutio
 
         // walked past last occurrence of argument; copy remaining part
         if (p == NULL) {
-            strcpy(insert_point, tmp);
+            if(bufferdirty) strcpy(insert_point, tmp);
             break;
         }
 
@@ -164,12 +163,11 @@ void replaceArgument(char *target, const char *argument, const char *substitutio
     if(bufferdirty) strcpy(target, buffer);
 }
 
-uint8_t macroExpandArg(char *dst, const char *src, const macro_t *m) {
+void macroExpandArg(char *dst, const char *src, const macro_t *m) {
     strcpy(dst, src);
     for(uint8_t i = 0; i < m->argcount; i++) {
         replaceArgument(dst, m->arguments[i], m->substitutions[i]);
     }
-    return strlen(dst);
 }
 
 // read to temporary macro buffer
