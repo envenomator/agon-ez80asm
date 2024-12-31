@@ -524,19 +524,21 @@ void parseLine(char *src) {
 
 // Parse an immediate value from currentline.next
 // services several assembler directives
-void parse_asm_single_immediate(void) {
+bool parse_asm_single_immediate(void) {
     streamtoken_t token;
 
     if(!currentline.next || (getOperandToken(&token, currentline.next) == 0)) {
         error(message[ERROR_MISSINGARGUMENT],0);
-        return;
+        return false;
     }
     operand1.immediate = getExpressionValue(token.start, REQUIRED_FIRSTPASS);
     operand1.immediate_provided = true;
     strcpy(operand1.immediate_name, token.start);
     if((token.terminator != 0) && (token.terminator != ';')) {
         error(message[ERROR_TOOMANYARGUMENTS],0);
+        return false;
     }
+    return true;
 }
 
 // Emits list data for the DB/DW/DW24/DW32 etc directives
@@ -681,7 +683,7 @@ void handle_asm_org(void) {
     
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
-    parse_asm_single_immediate(); // get address from next token
+    if(!parse_asm_single_immediate()) return; // get address from next token
     // address needs to be given in pass 1
     newaddress = operand1.immediate;
     if((adlmode == 0) && (newaddress > 0xffff)) {
@@ -895,7 +897,7 @@ uint24_t delta;
 
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
-    parse_asm_single_immediate();
+    if(!parse_asm_single_immediate()) return;
     if(operand1.immediate <= 0) {
         error(message[ERROR_ZEROORNEGATIVE],"%s",operand1.immediate_name);
         return;
@@ -983,7 +985,7 @@ void handle_asm_fillbyte(void) {
 
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
-    parse_asm_single_immediate(); // get fillbyte from next token
+    if(!parse_asm_single_immediate()) return; // get fillbyte from next token
     if((!ignore_truncation_warnings) && ((operand1.immediate < -128) || (operand1.immediate > 255))) {
         warning(message[WARNING_TRUNCATED_8BIT],"%s",operand1.immediate_name);
     }
