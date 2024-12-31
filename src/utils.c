@@ -170,39 +170,6 @@ uint8_t getMnemonicToken(streamtoken_t *token, char *src) {
     return length;
 }
 
-// point to one position after regular token, or to '0' in string
-char * _findRegularTokenEnd(char *src) {
-    while(*src) {
-        if((*src == ';') || (*src == ',')) break;
-        src++;
-    }
-    return src;
-}
-
-// point to one position after string token, or to '0' in the string
-char * _findStringTokenEnd(char *src) {
-    bool escaped = false;
-    while(*src) {
-        if(*src == '\\') escaped = !escaped;
-        if((*src == '\"') && !escaped) break;
-        src++;
-    }
-    if(*src) return src;
-    else return src+1;
-}
-// point to one position after literal token, or to '0' in the string
-char * _findLiteralTokenEnd(char *src) {
-    bool escaped = false;
-    while(*src) {
-        if(*src == '\'') escaped = !escaped;
-        if((*src == '\'') && !escaped) break;        
-        src++;
-    }
-    if(*src) return src;
-    else return src+1;
-}
-
-
 // fill the streamtoken_t object, parse it as an operand
 // returns the number of Operator characters found, or 0 if none
 uint8_t getOperandToken(streamtoken_t *token, char *src) {
