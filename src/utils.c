@@ -57,7 +57,7 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
 }
 
 void displayerror(const char *msg, const char *context, errorlevel_t level) {
-    struct contentitem *ci = currentcontentitem;
+    contentitem_t *ci = currentcontentitem;
 
     if(level == LEVEL_WARNING) {
         vdp_set_text_colour(DARK_YELLOW);
@@ -670,7 +670,7 @@ uint16_t getnextMacroLine(char **ptr, char *dst) {
     return len;
 }
 
-uint16_t _readFullBufferedLine(char *dst1, struct contentitem *ci) {
+uint16_t _readFullBufferedLine(char *dst1, contentitem_t *ci) {
     uint16_t len = 0;
     char *ptr = ci->readptr;
 
@@ -693,7 +693,7 @@ uint16_t _readFullBufferedLine(char *dst1, struct contentitem *ci) {
 
 // Used with '-m' minimum buffered configuration
 // Reads content into the ci->buffer, gets a LINE from it and returns it's length
-uint16_t _readMinimumBufferedLine(char *dst, struct contentitem *ci) {
+uint16_t _readMinimumBufferedLine(char *dst, contentitem_t *ci) {
     uint16_t len = 0;
     char *ptr = ci->readptr;
     bool done = false;        
@@ -729,7 +729,7 @@ uint16_t _readMinimumBufferedLine(char *dst, struct contentitem *ci) {
 }
 
 // Get line from contentitem, copy it to dst
-uint16_t getnextContentLine(char *dst, struct contentitem *ci) {
+uint16_t getnextContentLine(char *dst, contentitem_t *ci) {
 
     if(completefilebuffering) {
         return _readFullBufferedLine(dst, ci);
@@ -739,7 +739,7 @@ uint16_t getnextContentLine(char *dst, struct contentitem *ci) {
     }
 }
 
-uint16_t getlastContentLine(char *dst, struct contentitem *ci) {
+uint16_t getlastContentLine(char *dst, contentitem_t *ci) {
     seekContentInput(ci, ci->filepos - ci->lastreadlength); // rewind
     return getnextContentLine(dst, ci);
 }

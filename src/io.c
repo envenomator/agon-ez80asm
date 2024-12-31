@@ -19,7 +19,7 @@ char filebasename[FILENAMEMAXLENGTH + 1];
 // Global variables
 char     filename[OUTPUTFILES][FILENAMEMAXLENGTH + 1];
 FILE*    filehandle[OUTPUTFILES];
-struct contentitem *filecontent[256]; // hash table with all file content items
+contentitem_t *filecontent[256]; // hash table with all file content items
 
 // Local variables
 char *   _bufferstart[OUTPUTFILES];          // statically set start of buffer to each file
@@ -310,7 +310,7 @@ void initFileContentTable(void) {
 
 // sets read position in input stream
 // Will be called after 'prepareContentInput', before 'closeContentInput'
-void seekContentInput(struct contentitem *ci, uint24_t position) {
+void seekContentInput(contentitem_t *ci, uint24_t position) {
     ci->filepos = position;
 
     if(completefilebuffering) {
@@ -325,7 +325,7 @@ void seekContentInput(struct contentitem *ci, uint24_t position) {
     }
 }
 
-void openContentInput(struct contentitem *ci, char *buffer) {
+void openContentInput(contentitem_t *ci, char *buffer) {
     if(!completefilebuffering) {
         ci->buffer = buffer;
         ci->bytesinbuffer = 0;
@@ -343,7 +343,7 @@ void openContentInput(struct contentitem *ci, char *buffer) {
     inConditionalSection = CONDITIONSTATE_NORMAL;
 }
 
-void closeContentInput(struct contentitem *ci, struct contentitem *callerci) {
+void closeContentInput(contentitem_t *ci, contentitem_t *callerci) {
     if(!completefilebuffering) {    
         ci->buffer = NULL;
         ci->bytesinbuffer = 0;

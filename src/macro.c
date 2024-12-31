@@ -171,7 +171,7 @@ void macroExpandArg(char *dst, const char *src, const macro_t *m) {
 }
 
 // read to temporary macro buffer
-char * readMacroBody(struct contentitem *ci) {
+char * readMacroBody(contentitem_t *ci) {
     char *buffer = NULL, *bufptr;
     bool foundend = false;
     char macroline[LINEMAX+1];

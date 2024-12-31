@@ -10,7 +10,7 @@ extern bool list_enabled;
 extern bool consolelist_enabled;
 extern char filename[OUTPUTFILES][FILENAMEMAXLENGTH + 1];    // 0 - binary output, 3 - anonymous labels, 4 - listing
 extern FILE* filehandle[OUTPUTFILES];
-extern struct contentitem *filecontent[256]; // hash table with all file content items
+extern contentitem_t *filecontent[256]; // hash table with all file content items
 
 FILE *ioOpenfile(const char *name, const char *mode);
 uint24_t ioGetfilesize(FILE *fh);
@@ -29,8 +29,8 @@ void emit_adlsuffix_code(uint8_t suffix);
 void emit_immediate(const operand_t *op, uint8_t suffix);
 void initFileContentTable(void);
 
-void openContentInput(struct contentitem *ci, char *buffer);
-void closeContentInput(struct contentitem *ci, struct contentitem *callerci);
-void seekContentInput(struct contentitem *ci, uint24_t position); // position relative to start of input
+void openContentInput(contentitem_t *ci, char *buffer);
+void closeContentInput(contentitem_t *ci, contentitem_t *callerci);
+void seekContentInput(contentitem_t *ci, uint24_t position); // position relative to start of input
 
 #endif // IO_H

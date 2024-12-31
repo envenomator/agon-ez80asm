@@ -78,7 +78,7 @@ void initAnonymousLabelTable(void) {
 label_t * findLocalLabel(const char *key) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
     char *scopename;
-    struct contentitem *ci = currentcontentitem;
+    contentitem_t *ci = currentcontentitem;
 
     if(currentcontentitem->labelscope[0] == 0) {
         scopename = ci->name; // local to file label
@@ -175,7 +175,7 @@ bool insertLocalLabel(const char *labelname, uint24_t labelAddress) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
     char *scopename;
     uint8_t len;
-    struct contentitem *ci = currentcontentitem;
+    contentitem_t *ci = currentcontentitem;
 
     if(currentcontentitem->labelscope[0] == 0) {
         scopename = ci->name; // local to file label

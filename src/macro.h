@@ -8,7 +8,7 @@ extern uint24_t macromemsize;
 extern uint24_t macroExpandID;
 
 void      initMacros(void);
-char *    readMacroBody(struct contentitem *ci);
+char *    readMacroBody(contentitem_t *ci);
 macro_t * storeMacro(const char *name, char *buffer, uint8_t argcount, const char *arguments, uint16_t startlinenumber);
 void      macroExpandArg(char *dst, const char *src, const macro_t *m);
 bool      parseMacroDefinition(char *str, char **name, uint8_t *argcount, char *arglist);

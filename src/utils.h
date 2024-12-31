@@ -19,8 +19,8 @@ uint8_t  getMnemonicToken(streamtoken_t *token, char *src);
 uint8_t  getOperandToken(streamtoken_t *token, char *src);
 uint8_t  getDefineValueToken(streamtoken_t *token, char *src);
 
-uint16_t getnextContentLine(char *dst1, struct contentitem *ci);
-uint16_t getlastContentLine(char *dst1, struct contentitem *ci);
+uint16_t getnextContentLine(char *dst1, contentitem_t *ci);
+uint16_t getlastContentLine(char *dst1, contentitem_t *ci);
 uint16_t getnextMacroLine(char **ptr, char *dst);
 char *   allocateString(const char *name, uint24_t *bytecounter);
 void *   allocateMemory(size_t size, uint24_t *bytecounter);

@@ -18,8 +18,8 @@
 char _macro_expansionline_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
 
 void processContent(const char *filename);
-struct contentitem *findContent(const char *filename);
-struct contentitem *insertContent(const char *filename);
+contentitem_t *findContent(const char *filename);
+contentitem_t *insertContent(const char *filename);
 
 // Parse a command-token string to currentline.mnemonic & currentline.suffix
 void parse_command(char *src) {
@@ -737,7 +737,7 @@ void handle_asm_include(void) {
 
 void handle_asm_incbin(void) {
     streamtoken_t token;
-    struct contentitem *ci;
+    contentitem_t *ci;
     uint24_t n;
 
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
@@ -1188,12 +1188,12 @@ void processMacro(void) {
     macrolevel--;
 }
 
-struct contentitem *insertContent(const char *filename) {
-    struct contentitem *ci, *try;
+contentitem_t *insertContent(const char *filename) {
+    contentitem_t *ci, *try;
     uint8_t index;
 
     // Allocate memory and fill out ci content
-    ci = allocateMemory(sizeof(struct contentitem), &filecontentsize);
+    ci = allocateMemory(sizeof(contentitem_t), &filecontentsize);
     if(ci == NULL) return NULL;
     ci->name = allocateString(filename, &filecontentsize);
     if(ci->name == NULL) return NULL;
@@ -1235,9 +1235,9 @@ struct contentitem *insertContent(const char *filename) {
     }
 }
 
-struct contentitem *findContent(const char *filename) {
+contentitem_t *findContent(const char *filename) {
     uint8_t index;
-    struct contentitem *try;
+    contentitem_t *try;
 
     index = hash256(filename);
     try = filecontent[index];
@@ -1266,9 +1266,9 @@ void decreasecontentlevel(void) {
 void processContent(const char *filename) {
     char line[LINEMAX+1];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
     char iobuffer[INPUT_BUFFERSIZE];
-    struct contentitem *ci;
+    contentitem_t *ci;
     bool processedmacro = false;
-    struct contentitem *callerci = currentcontentitem;
+    contentitem_t *callerci = currentcontentitem;
 
     if(!increasecontentlevel()) return;
     
