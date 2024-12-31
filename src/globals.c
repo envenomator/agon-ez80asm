@@ -6,6 +6,7 @@
 /*
  * Global variables
  */
+uint8_t contentlevel;
 uint8_t errorreportlevel;
 uint8_t maxstackdepth;
 contentitem_t *currentcontentitem;

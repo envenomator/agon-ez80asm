@@ -84,7 +84,7 @@ void listPrintLine(void) {
     }
     if(_listLineNumber == 0) {
         sprintf(buffer, "%04d", currentExpandedMacro?macrolinenumber:_listSourceLineNumber);
-        for(i = 1; i < currentStackLevel(); i++) {
+        for(i = 1; i < contentlevel; i++) {
             strcat(buffer, "*");
         }
         if(macroexpansions) {

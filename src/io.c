@@ -20,9 +20,6 @@ char filebasename[FILENAMEMAXLENGTH + 1];
 char     filename[OUTPUTFILES][FILENAMEMAXLENGTH + 1];
 FILE*    filehandle[OUTPUTFILES];
 struct contentitem *filecontent[256]; // hash table with all file content items
-struct contentitem *_contentstack[FILESTACK_MAXFILES];  // stacked content
-char _contentstack_inputbuffer[FILESTACK_MAXFILES][INPUT_BUFFERSIZE];
-uint8_t _contentstacklevel;
 
 // Local variables
 char *   _bufferstart[OUTPUTFILES];          // statically set start of buffer to each file
@@ -328,9 +325,9 @@ void seekContentInput(struct contentitem *ci, uint24_t position) {
     }
 }
 
-void openContentInput(struct contentitem *ci) {
+void openContentInput(struct contentitem *ci, char *buffer) {
     if(!completefilebuffering) {
-        ci->buffer = _contentstack_inputbuffer[_contentstacklevel];
+        ci->buffer = buffer;
         ci->bytesinbuffer = 0;
         ci->fh = ioOpenfile(ci->name, "rb");
         if(ci->fh == 0) return;
@@ -341,9 +338,12 @@ void openContentInput(struct contentitem *ci) {
     ci->readptr = ci->buffer;
     ci->lastreadlength = 0;
     ci->filepos = 0;
+
+    currentcontentitem = ci;
+    inConditionalSection = CONDITIONSTATE_NORMAL;
 }
 
-void closeContentInput(struct contentitem *ci) {
+void closeContentInput(struct contentitem *ci, struct contentitem *callerci) {
     if(!completefilebuffering) {    
         ci->buffer = NULL;
         ci->bytesinbuffer = 0;
@@ -352,4 +352,7 @@ void closeContentInput(struct contentitem *ci) {
     }
     ci->filepos = 0;
     ci->readptr = NULL;
+
+    currentcontentitem = callerci;
+    inConditionalSection = ci->inConditionalSection;
 }

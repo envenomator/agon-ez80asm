@@ -1,0 +1,82 @@
+src/utils.c:                printf("File \"%s\" line %d - ", ci->name, ci->currentlinenumber);
+src/utils.c:    char *ptr = ci->readptr;
+src/utils.c:    ci->readptr = ptr;
+src/utils.c:    ci->filepos += len;
+src/utils.c:    ci->lastreadlength = len;
+src/utils.c:// Reads content into the ci->buffer, gets a LINE from it and returns it's length
+src/utils.c:    char *ptr = ci->readptr;
+src/utils.c:        if(ci->bytesinbuffer == 0) { // fill buffer
+src/utils.c:            ci->bytesinbuffer = fread(ci->buffer, 1, INPUT_BUFFERSIZE, ci->fh);
+src/utils.c:            ci->readptr = ci->buffer;
+src/utils.c:            ptr = ci->buffer;
+src/utils.c:            if(ci->bytesinbuffer == 0) done = true;
+src/utils.c:            ptr = ci->readptr;
+src/utils.c:            while(ci->bytesinbuffer) {
+src/utils.c:                ci->bytesinbuffer--;
+src/utils.c:    ci->readptr = ptr;
+src/utils.c:    ci->filepos += len;
+src/utils.c:    ci->lastreadlength = len;
+src/utils.c:    seekContentInput(ci, ci->filepos - ci->lastreadlength); // rewind
+src/macro.c:    uint24_t filestartpos = ci->filepos;
+src/macro.c:        ci->currentlinenumber++;
+src/macro.c:            listStartLine(tmp, ci->currentlinenumber);
+src/io.c:    ci->filepos = position;
+src/io.c:        ci->readptr = ci->buffer + position;
+src/io.c:        ci->bytesinbuffer = 0; // reset buffer
+src/io.c:        if(fseek(ci->fh, position, SEEK_SET)) {
+src/io.c:            error(message[ERROR_FILEIO],"%s",ci->name);
+src/io.c:        ci->buffer = buffer;
+src/io.c:        ci->bytesinbuffer = 0;
+src/io.c:        ci->fh = ioOpenfile(ci->name, "rb");
+src/io.c:        if(ci->fh == 0) return;
+src/io.c:        ci->size = ioGetfilesize(ci->fh);
+src/io.c:    ci->currentlinenumber = 0;
+src/io.c:    ci->inConditionalSection = inConditionalSection;
+src/io.c:    ci->readptr = ci->buffer;
+src/io.c:    ci->lastreadlength = 0;
+src/io.c:    ci->filepos = 0;
+src/io.c:        ci->buffer = NULL;
+src/io.c:        ci->bytesinbuffer = 0;
+src/io.c:        ci->size = 0;
+src/io.c:        fclose(ci->fh);
+src/io.c:    ci->filepos = 0;
+src/io.c:    ci->readptr = NULL;
+src/label.c:        scopename = ci->name; // local to file label
+src/label.c:        scopename = ci->labelscope; // local to global label
+src/label.c:        scopename = ci->name; // local to file label
+src/label.c:        scopename = ci->labelscope; // local to global label
+src/assemble.c:            ci->fh = ioOpenfile(ci->name, "rb");
+src/assemble.c:            if(ci->fh == 0) return;
+src/assemble.c:            ci->size = ioGetfilesize(ci->fh);
+src/assemble.c:            fclose(ci->fh);
+src/assemble.c:        address += ci->size;
+src/assemble.c:                for(n = 0; n < ci->size; n++) emit_8bit(ci->buffer[n]);
+src/assemble.c:                ioWrite(FILE_OUTPUT, ci->buffer, ci->size);
+src/assemble.c:                address += ci->size;
+src/assemble.c:            ci->fh = ioOpenfile(ci->name, "rb");
+src/assemble.c:            if(ci->fh == 0) return;
+src/assemble.c:                ci->bytesinbuffer = fread(buffer, 1, INPUT_BUFFERSIZE, ci->fh);
+src/assemble.c:                if(ci->bytesinbuffer == 0) break;
+src/assemble.c:                    for(n = 0; n < ci->bytesinbuffer; n++) emit_8bit(buffer[n]);
+src/assemble.c:                    ioWrite(FILE_OUTPUT, buffer, ci->bytesinbuffer);
+src/assemble.c:                    address += ci->bytesinbuffer;
+src/assemble.c:            fclose(ci->fh);
+src/assemble.c:            ci->fh = NULL;
+src/assemble.c:    ci->name = allocateString(filename, &filecontentsize);
+src/assemble.c:    if(ci->name == NULL) return NULL;
+src/assemble.c:        ci->fh = ioOpenfile(filename, "rb");
+src/assemble.c:        if(ci->fh == 0) return NULL;
+src/assemble.c:        ci->size = ioGetfilesize(ci->fh);
+src/assemble.c:        ci->buffer = allocateMemory(ci->size+1, &filecontentsize);
+src/assemble.c:        if(ci->buffer == NULL) return NULL;
+src/assemble.c:        if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
+src/assemble.c:        ci->buffer[ci->size] = 0; // terminate stringbuffer
+src/assemble.c:        fclose(ci->fh);
+src/assemble.c:    strcpy(ci->labelscope, ""); // empty scope
+src/assemble.c:    ci->next = NULL;
+src/assemble.c:        inConditionalSection = ci->inConditionalSection;
+src/assemble.c:        ci->currentlinenumber++;
+src/assemble.c:        if((listing) && (pass == ENDPASS)) listStartLine(line, ci->currentlinenumber);
+src/assemble.c:                colorPrintf(errorcount?DARK_RED:DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
+src/assemble.c:    inConditionalSection = ci->inConditionalSection;
+src/assemble.c:    strcpy(ci->labelscope, ""); // empty scope for next pass

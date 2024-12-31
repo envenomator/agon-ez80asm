@@ -1250,45 +1250,28 @@ struct contentitem *findContent(const char *filename) {
     }
 }
 
-uint8_t currentStackLevel(void) {
-    return _contentstacklevel;
-}
-
-struct contentitem *contentPop(void) {
-    struct contentitem *ci;
-    if(_contentstacklevel) {
-        ci = _contentstack[--_contentstacklevel];
-        if(_contentstacklevel) currentcontentitem = _contentstack[_contentstacklevel - 1];
-        else currentcontentitem = NULL;
-        inConditionalSection = ci->inConditionalSection;
-        return ci;
-    }
-    else return NULL;
-}
-
-bool contentPush(struct contentitem *ci) {
-    if(_contentstacklevel == FILESTACK_MAXFILES) {
-        error(message[ERROR_MAXINCLUDEFILES], "%d", FILESTACK_MAXFILES);
+bool increasecontentlevel(void) {
+    if(++contentlevel == MAXPROCESSDEPTH) {
+        error(message[ERROR_MAXINCLUDEFILES], "%d", MAXPROCESSDEPTH);
         return false;
     }
-    _contentstack[_contentstacklevel++] = ci;
-    if(_contentstacklevel > maxstackdepth) maxstackdepth = _contentstacklevel;
-    currentcontentitem = ci;
+    if(contentlevel > maxstackdepth) maxstackdepth = contentlevel;
     return true;
 }
 
-struct contentitem *currentContent(void) {
-    if(_contentstacklevel) {
-        return _contentstack[_contentstacklevel-1];
-    }
-    else return NULL;
+void decreasecontentlevel(void) {
+    contentlevel--;
 }
 
 void processContent(const char *filename) {
     char line[LINEMAX+1];      // Temp line buffer, will be deconstructed during streamtoken_t parsing
+    char iobuffer[INPUT_BUFFERSIZE];
     struct contentitem *ci;
     bool processedmacro = false;
+    struct contentitem *callerci = currentcontentitem;
 
+    if(!increasecontentlevel()) return;
+    
     if((ci = findContent(filename)) == NULL) {
         if(pass == STARTPASS) {
             ci = insertContent(filename);
@@ -1296,9 +1279,7 @@ void processContent(const char *filename) {
         }
         else return;
     }
-    openContentInput(ci);
-    if(!contentPush(ci)) return;
-    inConditionalSection = CONDITIONSTATE_NORMAL;
+    openContentInput(ci, iobuffer);
     // Process
     while(getnextContentLine(line, ci)) {
         ci->currentlinenumber++;
@@ -1312,16 +1293,16 @@ void processContent(const char *filename) {
             processedmacro = true;
         }
         if(errorcount || issue_warning) {
-            getlastContentLine(line, currentcontentitem);
+            getlastContentLine(line, ci);
             if(processedmacro) {
                 colorPrintf(errorcount?DARK_RED:DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
                 processedmacro = false;
             }
-            if(issue_warning || (currentStackLevel() == errorreportlevel)) colorPrintf(DARK_YELLOW, "%s", line);            
+            if(issue_warning || (contentlevel == errorreportlevel)) colorPrintf(DARK_YELLOW, "%s", line);            
             issue_warning = false;
             if(errorcount) {
-                closeContentInput(ci);
-                contentPop();
+                closeContentInput(ci, callerci);
+                decreasecontentlevel();
                 return;
             }
         }
@@ -1329,12 +1310,12 @@ void processContent(const char *filename) {
     }
     if(inConditionalSection != CONDITIONSTATE_NORMAL) {
         error(message[ERROR_MISSINGENDIF],0);
-        closeContentInput(ci);
-        contentPop();
+        closeContentInput(ci, callerci);
+        decreasecontentlevel();
         return;
     }
-    closeContentInput(ci);    
-    contentPop();
+    closeContentInput(ci, callerci);
+    decreasecontentlevel();
     strcpy(ci->labelscope, ""); // empty scope for next pass
 }
 
@@ -1344,13 +1325,14 @@ void passInitialize(uint8_t passnumber) {
     address = start_address;
     currentExpandedMacro = NULL;
     inConditionalSection = CONDITIONSTATE_NORMAL;
-    _contentstacklevel = 0;
+    contentlevel = 0;
     sourcefilecount = 1;
     binfilecount = 0;
     issue_warning = false;
     remaining_dsspaces = 0;
     macrolevel = 0;
     macroExpandID = 0;
+    currentcontentitem = NULL;
 
     initAnonymousLabelTable();
         if(pass == ENDPASS) {

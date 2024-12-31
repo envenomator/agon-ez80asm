@@ -7,6 +7,7 @@
 #include "defines.h"
 
 // Global variables
+extern uint8_t contentlevel;
 extern uint8_t errorreportlevel;
 extern uint8_t maxstackdepth;
 extern contentitem_t *currentcontentitem;

@@ -78,7 +78,7 @@ void initAnonymousLabelTable(void) {
 label_t * findLocalLabel(const char *key) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
     char *scopename;
-    struct contentitem *ci = currentContent();
+    struct contentitem *ci = currentcontentitem;
 
     if(currentcontentitem->labelscope[0] == 0) {
         scopename = ci->name; // local to file label
@@ -97,7 +97,7 @@ label_t * findLocalLabel(const char *key) {
 void writeAnonymousLabel(uint24_t labelAddress) {
     uint8_t scope;
 
-    scope = currentStackLevel();
+    scope = contentlevel;
     fwrite((char*)&labelAddress, sizeof(labelAddress), 1, filehandle[FILE_ANONYMOUS_LABELS]);
     fwrite((char*)&scope, sizeof(scope), 1, filehandle[FILE_ANONYMOUS_LABELS]);
     fflush(filehandle[FILE_ANONYMOUS_LABELS]);
@@ -175,7 +175,7 @@ bool insertLocalLabel(const char *labelname, uint24_t labelAddress) {
     char compoundname[(MAXNAMELENGTH * 2)+1];
     char *scopename;
     uint8_t len;
-    struct contentitem *ci = currentContent();
+    struct contentitem *ci = currentcontentitem;
 
     if(currentcontentitem->labelscope[0] == 0) {
         scopename = ci->name; // local to file label
@@ -209,14 +209,14 @@ label_t *findGlobalLabel(const char *name){
 label_t *findLabel(const char *name) {
     if(name[0] == '@') {
         if(((tolower(name[1]) == 'f') || (tolower(name[1]) == 'n')) && name[2] == 0) {
-            if(an_next.defined && an_next.scope == currentStackLevel()) {
+            if(an_next.defined && an_next.scope == contentlevel) {
                 an_return.address = an_next.address;
                 return &an_return;
             }
             else return NULL;
         }
         if(((tolower(name[1]) == 'b') || (tolower(name[1]) == 'p')) && name[2] == 0) {
-            if(an_prev.defined && an_prev.scope == currentStackLevel()) {
+            if(an_prev.defined && an_prev.scope == contentlevel) {
                 an_return.address = an_prev.address;
                 return &an_return;
             }

@@ -57,7 +57,7 @@ void remove_ext (char* myStr, char extSep, char pathSep) {
 }
 
 void displayerror(const char *msg, const char *context, errorlevel_t level) {
-    struct contentitem *ci = currentContent();
+    struct contentitem *ci = currentcontentitem;
 
     if(level == LEVEL_WARNING) {
         vdp_set_text_colour(DARK_YELLOW);
@@ -100,7 +100,7 @@ void error(const char *msg, const char *contextformat, ...) {
     else context[0] = 0;
 
     errorcount++;
-    errorreportlevel = currentStackLevel();
+    errorreportlevel = contentlevel;
 
     displayerror(msg, context, LEVEL_ERROR);
 }
