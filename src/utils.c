@@ -558,9 +558,12 @@ int32_t getExpressionValue(char *str, requiredResult_t requiredPass) {
                     }
                     str++; // advance the double operator
                 }
-
                 unaryoperator = 0;
                 operator = *str++;
+                if(strchr("+-*/<>&|^", operator) == 0) { // illegal operator
+                    error(message[ERROR_OPERATOR], "%c", operator);
+                    return 0;
+                }
                 while(isspace(*str)) str++; // eat all spaces
                 if(*str == 0) {
                     error(message[ERROR_MISSINGLABELORNUMBER],"%s",errptr);
