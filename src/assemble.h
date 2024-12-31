@@ -5,4 +5,6 @@
 #include "defines.h"
 
 void assemble(const char *filename);
+void processContent(const char *filename);
+
 #endif // ASSEMBLE_H

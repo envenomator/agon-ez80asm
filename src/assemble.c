@@ -13,13 +13,72 @@
 #include "io.h"
 #include "moscalls.h"
 #include "hash.h"
+#include "assemble.h"
 
-// Temp macro buffers
-char _macro_expansionline_buffer[MACROLINEMAX + 1];// replacement buffer for values during macro expansion
+// linebuffer for replacement arguments during macro expansion
+char macro_expansionbuffer[MACROLINEMAX + 1];
 
-void processContent(const char *filename);
-contentitem_t *findContent(const char *filename);
-contentitem_t *insertContent(const char *filename);
+contentitem_t *findContent(const char *filename) {
+    uint8_t index;
+    contentitem_t *try;
+
+    index = hash256(filename);
+    try = filecontent[index];
+
+    while(true)
+    {
+        if(try == NULL) return NULL;
+        if(strcmp(try->name, filename) == 0) return try;
+        try = try->next;
+    }
+}
+
+contentitem_t *insertContent(const char *filename) {
+    contentitem_t *ci, *try;
+    uint8_t index;
+
+    // Allocate memory and fill out ci content
+    ci = allocateMemory(sizeof(contentitem_t), &filecontentsize);
+    if(ci == NULL) return NULL;
+    ci->name = allocateString(filename, &filecontentsize);
+    if(ci->name == NULL) return NULL;
+
+    if(completefilebuffering) {
+        ci->fh = ioOpenfile(filename, "rb");
+        if(ci->fh == 0) return NULL;
+        ci->size = ioGetfilesize(ci->fh);
+        ci->buffer = allocateMemory(ci->size+1, &filecontentsize);
+        if(ci->buffer == NULL) return NULL;
+        if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
+            error(message[ERROR_READINGINPUT],0);
+            return NULL;
+        }
+        ci->buffer[ci->size] = 0; // terminate stringbuffer
+        fclose(ci->fh);
+    }
+    strcpy(ci->labelscope, ""); // empty scope
+    ci->next = NULL;
+
+    // Placement
+    index = hash256(filename);
+    try = filecontent[index];
+    // First item on index
+    if(try == NULL) {
+        filecontent[index] = ci;
+        return ci;
+    }
+
+    // Collision on index, place at end of linked list. Items are always unique
+    while(true) {
+        if(try->next) {
+            try = try->next;
+        }
+        else {
+            try->next = ci;
+            return ci;
+        }
+    }
+}
 
 // Parse a command-token string to currentline.mnemonic & currentline.suffix
 void parse_command(char *src) {
@@ -484,8 +543,8 @@ void parseLine(char *src) {
             case PS_OP:
                 argcount++;                
                 if(currentExpandedMacro) {
-                    macroExpandArg(_macro_expansionline_buffer, streamtoken.start, currentExpandedMacro);
-                    streamtoken.start = _macro_expansionline_buffer;
+                    macroExpandArg(macro_expansionbuffer, streamtoken.start, currentExpandedMacro);
+                    streamtoken.start = macro_expansionbuffer;
                     oplength = strlen(streamtoken.start);
                 }
                 if(argcount == 1) {
@@ -554,8 +613,8 @@ void handle_asm_data(uint8_t wordtype) {
     while(currentline.next) {
         if(getDefineValueToken(&token, currentline.next)) {
             if(currentExpandedMacro) {
-                macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
-                token.start = _macro_expansionline_buffer;
+                macroExpandArg(macro_expansionbuffer, token.start, currentExpandedMacro);
+                token.start = macro_expansionbuffer;
             }
 
             if((token.start[0] == '\"') && (wordtype != ASM_DB)) {
@@ -651,8 +710,8 @@ void handle_asm_adl(void) {
         return;
     }
     if(currentExpandedMacro) {
-        macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
-        token.start = _macro_expansionline_buffer;
+        macroExpandArg(macro_expansionbuffer, token.start, currentExpandedMacro);
+        token.start = macro_expansionbuffer;
     }
     if(fast_strcasecmp(token.start, "adl")) {
         error(message[ERROR_INVALIDOPERAND],0);
@@ -755,8 +814,8 @@ void handle_asm_incbin(void) {
     }
 
     if(currentExpandedMacro) {
-        macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
-        token.start = _macro_expansionline_buffer;
+        macroExpandArg(macro_expansionbuffer, token.start, currentExpandedMacro);
+        token.start = macro_expansionbuffer;
     }
     if(token.start[0] != '\"') {
         error(message[ERROR_STRINGFORMAT],0);
@@ -836,8 +895,8 @@ void handle_asm_blk(uint8_t width) {
     }
 
     if(currentExpandedMacro) {
-        macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
-        token.start = _macro_expansionline_buffer;
+        macroExpandArg(macro_expansionbuffer, token.start, currentExpandedMacro);
+        token.start = macro_expansionbuffer;
     }
 
     num = getExpressionValue(token.start, REQUIRED_FIRSTPASS); // <= needs a number of items during pass 1, otherwise addresses will be off later on
@@ -849,8 +908,8 @@ void handle_asm_blk(uint8_t width) {
         }
 
         if(currentExpandedMacro) {
-            macroExpandArg(_macro_expansionline_buffer, token.start, currentExpandedMacro);
-            token.start = _macro_expansionline_buffer;
+            macroExpandArg(macro_expansionbuffer, token.start, currentExpandedMacro);
+            token.start = macro_expansionbuffer;
         }
         val = getExpressionValue(token.start, REQUIRED_LASTPASS); // value not required in pass 1
     }
@@ -1131,8 +1190,8 @@ void processMacro(void) {
 
     // potentially transform arguments first, when calling from within a macro
     if(currentExpandedMacro) {
-        macroExpandArg(_macro_expansionline_buffer, currentline.next, currentExpandedMacro);
-        currentline.next = _macro_expansionline_buffer;
+        macroExpandArg(macro_expansionbuffer, currentline.next, currentExpandedMacro);
+        currentline.next = macro_expansionbuffer;
     }
     currentExpandedMacro = localexpandedmacro;
 
@@ -1170,8 +1229,8 @@ void processMacro(void) {
             }
             getnextMacroLine(&lastmacrolineptr, macroline);
             trimRight(macroline);
-            macroExpandArg(_macro_expansionline_buffer, macroline, localexpandedmacro);
-            colorPrintf(DARK_YELLOW, "%s\r\n",_macro_expansionline_buffer);
+            macroExpandArg(macro_expansionbuffer, macroline, localexpandedmacro);
+            colorPrintf(DARK_YELLOW, "%s\r\n",macro_expansionbuffer);
             if(issue_warning) {
                 macro_invocation_warning = true; // flag to upstream caller that there was at least a single warning
                 issue_warning = false; // disable further LOCAL warnings until they occur
@@ -1188,68 +1247,6 @@ void processMacro(void) {
     if(macro_invocation_warning) issue_warning = true; // display invocation warning at upstream caller
 
     macrolevel--;
-}
-
-contentitem_t *insertContent(const char *filename) {
-    contentitem_t *ci, *try;
-    uint8_t index;
-
-    // Allocate memory and fill out ci content
-    ci = allocateMemory(sizeof(contentitem_t), &filecontentsize);
-    if(ci == NULL) return NULL;
-    ci->name = allocateString(filename, &filecontentsize);
-    if(ci->name == NULL) return NULL;
-
-    if(completefilebuffering) {
-        ci->fh = ioOpenfile(filename, "rb");
-        if(ci->fh == 0) return NULL;
-        ci->size = ioGetfilesize(ci->fh);
-        ci->buffer = allocateMemory(ci->size+1, &filecontentsize);
-        if(ci->buffer == NULL) return NULL;
-        if(fread(ci->buffer, 1, ci->size, ci->fh) != ci->size) {
-            error(message[ERROR_READINGINPUT],0);
-            return NULL;
-        }
-        ci->buffer[ci->size] = 0; // terminate stringbuffer
-        fclose(ci->fh);
-    }
-    strcpy(ci->labelscope, ""); // empty scope
-    ci->next = NULL;
-
-    // Placement
-    index = hash256(filename);
-    try = filecontent[index];
-    // First item on index
-    if(try == NULL) {
-        filecontent[index] = ci;
-        return ci;
-    }
-
-    // Collision on index, place at end of linked list. Items are always unique
-    while(true) {
-        if(try->next) {
-            try = try->next;
-        }
-        else {
-            try->next = ci;
-            return ci;
-        }
-    }
-}
-
-contentitem_t *findContent(const char *filename) {
-    uint8_t index;
-    contentitem_t *try;
-
-    index = hash256(filename);
-    try = filecontent[index];
-
-    while(true)
-    {
-        if(try == NULL) return NULL;
-        if(strcmp(try->name, filename) == 0) return try;
-        try = try->next;
-    }
 }
 
 bool increasecontentlevel(void) {
