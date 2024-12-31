@@ -526,6 +526,15 @@ int32_t getExpressionValue(char *str, requiredResult_t requiredPass) {
     unaryoperator = 0;
     state = START;
 
+/*  State machine
+ *
+ *  [START] -num-> [NUMBER] - string ends -> [return total]
+ *   ^    |          ^   |
+ *   |  op\          |   |
+ *   |     ---> [UNARY]  |
+ *   \                   /
+ *    --------<- [OP] <--
+ */
     while(true) {
         switch(state) {
             case UNARY:
