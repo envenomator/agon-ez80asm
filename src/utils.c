@@ -452,17 +452,8 @@ int32_t resolveNumber(char *str, uint8_t length, requiredResult_t requiredPass) 
         else {
             number = str2num(str, length?length:strlen(str));
             if(err_str2num) {
-                if(pass == STARTPASS) {
-                    // Yet unknown label, number incorrect
-                    // We only get here if requiredResultFirstpass is true, so error
-                    error(message[ERROR_INVALIDNUMBER],"%s", str);
-                    return 0;
-                }
-                else {
-                    // Unknown label and number incorrect
-                    error(message[ERROR_INVALIDLABELORNUMBER], "%s", str);                            
-                    return 0;
-                }
+                error(message[ERROR_IDENTIFIER], "%s", str);                            
+                return 0;
             }
         }
     }
