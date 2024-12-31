@@ -14,7 +14,6 @@ extern contentitem_t *filecontent[256]; // hash table with all file content item
 
 FILE *ioOpenfile(const char *name, const char *mode);
 uint24_t ioGetfilesize(FILE *fh);
-void ioOutputc(unsigned char c);
 void ioWrite(uint8_t fh, const char *s, uint16_t size);
 bool ioInit(const char *input_filename, const char *output_filename); // init - called once at start
 void ioClose(void);                                // close everything at end, do cleanup
