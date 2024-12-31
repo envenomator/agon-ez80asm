@@ -15,7 +15,7 @@ for FILE in *; do
     if [ -f "$FILE" ]; then
         if [ "$FILE" == "${FILE%.*}.s" ]; then
             test_number=$((test_number+1))
-            ../$ASMBIN $FILE -c -b FF >> ${FILE%.*}.asm.output
+            ../$ASMBIN $FILE $@ -c -b FF >> ${FILE%.*}.asm.output
             if [ $? -eq 1 ]; then 
                 echo "$FILE ASM ERROR"
             else

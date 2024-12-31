@@ -19,7 +19,7 @@ if [ -f "bin/ez80asm" ]; then
             printf $FORMAT $FILE
             if [ -f "test.sh" ]; then
                 test_number=0
-                ./test.sh > ./test.output
+                ./test.sh $@ > ./test.output
                 testresult=$?
                 if [ $testresult -eq 1 ]; then
                     echo -e " ${RED}FAIL${NOCOLOR}"
