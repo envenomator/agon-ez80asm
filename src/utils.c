@@ -138,10 +138,13 @@ void trimRight(char *str) {
 }
 
 void getLabelToken(streamtoken_t *token, char *src) {
+
+    while(*src && (isspace(*src))) src++;
     token->start = src; // no need to remove leading spaces
-    while(*src && (*src != ':') && (*src != ';')) src++;
+    while(*src && (*src != ':') && (*src != ';') && !isspace(*src)) src++;
     token->terminator = *src;
-    token->next = src+1;
+    if(*src) token->next = src+1;
+    else token->next = src;
     *src = 0;
 
     return;

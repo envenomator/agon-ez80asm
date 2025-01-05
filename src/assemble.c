@@ -446,38 +446,20 @@ void parseLine(char *src) {
     while(true) {
         switch(state) {
             case PS_START:
-                if((isspace(*src) == 0) && (*src) != '.') {
-                    // LABEL or COMMENT
-                    getLabelToken(&streamtoken, src);
-                    switch(streamtoken.terminator) {
-                        case ':':
-                            state = PS_LABEL;
-                            break;
-                        case ';':
-                            if(strlen(streamtoken.start) == 0) {
-                                currentline.next = streamtoken.next;
-                                state = PS_COMMENT;
-                                break;
-                            }
-                        default: // intentional fall-through
-                            error(message[ERROR_INVALIDLABEL],0);
-                            return;
-                    }
-                    break;
-                }
-                // COMMAND or COMMENT
-                x = getMnemonicToken(&streamtoken, src);
-                if(x) {
-                    state = PS_COMMAND;
-                    break;
-                }
-                else {
-                    if(streamtoken.terminator == 0) return;
-
-                    if(streamtoken.terminator == ';') {
+                getLabelToken(&streamtoken, src);
+                switch(streamtoken.terminator) {
+                    case 0:
                         state = PS_COMMENT;
                         break;
-                    }
+                    case ':':
+                        state = PS_LABEL;
+                        break;
+                    case ';':
+                        state = PS_COMMENT;
+                        break;                    
+                    default:
+                        state = PS_COMMAND;
+                        break;
                 }
                 break;
             case PS_LABEL:
@@ -496,6 +478,7 @@ void parseLine(char *src) {
                 }
                 break;
             case PS_COMMAND:
+                //printf("DEBUG - PS_COMMAND <%s>\r\n", streamtoken.start);
                 if(streamtoken.start[0] == '.') {
                     // should be an assembler command
                     asmcmd = true;
