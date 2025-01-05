@@ -451,22 +451,22 @@ void parseLine(char *src) {
                         break;
                     }
                     state = PS_COMMAND;
+                    break;
                 }
-                else state = PS_COMMENT;
+                state = PS_COMMENT;
                 break;
             case PS_LABEL:
                 currentline.label = streamtoken.start;
                 advanceAnonymousLabel();
-                if(getMnemonicToken(&streamtoken, streamtoken.next)) state = PS_COMMAND;                
-                else {
-                    if(streamtoken.terminator == 0) return;
-
-                    if(streamtoken.terminator == ';') {
-                        state = PS_COMMENT;
-                        currentline.next = streamtoken.next;
+                if(getMnemonicToken(&streamtoken, streamtoken.next)) {
+                    if(streamtoken.terminator == ':') {
+                        error(message[ERROR_SYNTAX],0);
                         break;
                     }
+                    state = PS_COMMAND;                
+                    break;
                 }
+                state = PS_COMMENT;
                 break;
             case PS_COMMAND:
                 if(streamtoken.start[0] == '.') {

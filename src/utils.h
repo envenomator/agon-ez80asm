@@ -14,7 +14,6 @@
  *   getDefineValueToken() - ;/,/=/0    - Yes                 - Yes
  * 
  */
-void     getLabelToken(streamtoken_t *token, char *src);
 uint8_t  getMnemonicToken(streamtoken_t *token, char *src);
 uint8_t  getOperandToken(streamtoken_t *token, char *src);
 uint8_t  getDefineValueToken(streamtoken_t *token, char *src);

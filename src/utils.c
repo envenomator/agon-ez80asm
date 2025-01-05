@@ -137,18 +137,6 @@ void trimRight(char *str) {
     *str = 0;
 }
 
-void getLabelToken(streamtoken_t *token, char *src) {
-
-    while(*src && (isspace(*src))) src++;
-    token->start = src; // no need to remove leading spaces
-    while(*src && (*src != ':') && (*src != ';') && !isspace(*src)) src++;
-    token->terminator = *src;
-    if(*src) token->next = src+1;
-    else token->next = src;
-    *src = 0;
-
-    return;
-}
 // fill the streamtoken_t object, according to the stream
 // returns the number of Mnemonic characters found, or 0 if none
 uint8_t getMnemonicToken(streamtoken_t *token, char *src) {

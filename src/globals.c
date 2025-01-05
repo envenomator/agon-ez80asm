@@ -128,5 +128,6 @@ char *message[] = {
     "Bracket format error",
     "File I/O error",
     "Illegal instruction for CPU type",
-    "No ADL mode for CPU type"
+    "No ADL mode for CPU type",
+    "Syntax error"
 };
