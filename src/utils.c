@@ -161,7 +161,7 @@ uint8_t getMnemonicToken(streamtoken_t *token, char *src) {
         return 0;
     }
     token->start = src;
-    while(!isspace(*src) && (*src != ';') && *src) {
+    while(!isspace(*src) && (*src != ';') && (*src != ':') && *src) {
         length++;
         src++;
     }

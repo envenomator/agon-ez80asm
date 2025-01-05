@@ -446,27 +446,22 @@ void parseLine(char *src) {
     while(true) {
         switch(state) {
             case PS_START:
-                getLabelToken(&streamtoken, src);
-                switch(streamtoken.terminator) {
-                    case 0:
-                        state = PS_COMMENT;
-                        break;
-                    case ':':
-                        state = PS_LABEL;
-                        break;
-                    case ';':
-                        state = PS_COMMENT;
-                        break;                    
-                    default:
-                        state = PS_COMMAND;
-                        break;
+                if((x = getMnemonicToken(&streamtoken, src))) {
+                    switch(streamtoken.terminator) {
+                        case ':':
+                            state = PS_LABEL;
+                            break;
+                        default:
+                            if(x) state = PS_COMMAND;
+                            else state = PS_LABEL;
+                    }
                 }
+                else state = PS_COMMENT;
                 break;
             case PS_LABEL:
                 currentline.label = streamtoken.start;
                 advanceAnonymousLabel();
-                x = getMnemonicToken(&streamtoken, streamtoken.next);
-                if(x) state = PS_COMMAND;
+                if(getMnemonicToken(&streamtoken, streamtoken.next)) state = PS_COMMAND;                
                 else {
                     if(streamtoken.terminator == 0) return;
 
@@ -478,7 +473,6 @@ void parseLine(char *src) {
                 }
                 break;
             case PS_COMMAND:
-                //printf("DEBUG - PS_COMMAND <%s>\r\n", streamtoken.start);
                 if(streamtoken.start[0] == '.') {
                     // should be an assembler command
                     asmcmd = true;
@@ -592,7 +586,7 @@ void parseLine(char *src) {
 // services several assembler directives
 bool parse_asm_single_immediate(void) {
     streamtoken_t token;
-
+    
     if(!currentline.next || (getOperandToken(&token, currentline.next) == 0)) {
         error(message[ERROR_MISSINGARGUMENT],0);
         return false;
