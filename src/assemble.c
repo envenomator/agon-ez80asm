@@ -430,7 +430,6 @@ void parse_operand(char *string, uint8_t len, operand_t *operand) {
 // FSM to parse each line into separate components, store in gbl currentline variable
 void parseLine(char *src) {
     uint8_t oplength = 0;
-    uint8_t x;
     bool asmcmd = false;
     uint8_t state;
     uint8_t argcount = 0;
@@ -446,15 +445,12 @@ void parseLine(char *src) {
     while(true) {
         switch(state) {
             case PS_START:
-                if((x = getMnemonicToken(&streamtoken, src))) {
-                    switch(streamtoken.terminator) {
-                        case ':':
-                            state = PS_LABEL;
-                            break;
-                        default:
-                            if(x) state = PS_COMMAND;
-                            else state = PS_LABEL;
+                if(getMnemonicToken(&streamtoken, src)) {
+                    if(streamtoken.terminator == ':') {
+                        state = PS_LABEL;
+                        break;
                     }
+                    state = PS_COMMAND;
                 }
                 else state = PS_COMMENT;
                 break;
