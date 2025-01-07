@@ -74,8 +74,10 @@ int32_t str2num(const char *string, uint8_t length) {
     err_str2num = false;
 
     if(*string == '$') {
-        if(*(string+1) == 0) return address;
-
+        if(*(string+1) == 0) {
+            if(relocate) return (relocateBaseAddress + (address - relocateOutputBaseAddress));
+            else return address;
+        }
         result = str2hex(string+1);
         return result;
     }

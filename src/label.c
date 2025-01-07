@@ -247,6 +247,9 @@ void definelabel(uint24_t num){
             error(message[ERROR_LABELTOOLONG], "%s", currentline.label);
             return;
         }
+
+        if(relocate) num = relocateBaseAddress + (num - relocateOutputBaseAddress);
+        
         if(currentline.label[0] == '@') {
             if(currentline.label[1] == '@') {
                 if(currentExpandedMacro) {

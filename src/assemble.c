@@ -670,6 +670,7 @@ void handle_asm_data(uint8_t wordtype) {
 
 void handle_asm_equ(void) {
     streamtoken_t token;
+    int32_t value;
 
     if(inConditionalSection == CONDITIONSTATE_FALSE) return;
 
@@ -690,7 +691,11 @@ void handle_asm_equ(void) {
         return;
     }
 
-    definelabel(getExpressionValue(token.start, REQUIRED_FIRSTPASS)); // needs to be defined in pass 1
+    value = getExpressionValue(token.start, REQUIRED_FIRSTPASS); // might return the value for $, a potentially relocated address
+    bool tmprelocate = relocate;
+    relocate = false;
+    definelabel(value); // define the value, not the relocated address
+    relocate = tmprelocate;
 }
 
 void handle_asm_adl(void) {
@@ -1087,6 +1092,34 @@ void handle_asm_fillbyte(void) {
     fillbyte = operand1.immediate;
 }
 
+void handle_asm_relocate(void) {
+
+    if(relocate) {
+        error(message[ERROR_NESTEDRELOCATE],0);
+        return;
+    }
+    if(!parse_asm_single_immediate()) return;
+
+    if((operand1.immediate < 0) || (operand1.immediate > 0xFFFFFF)) {
+        error(message[ERROR_ADDRESSRANGE24BIT], 0);
+        return;
+    }
+    relocate = true;
+    relocateOutputBaseAddress = address;
+    relocateBaseAddress = operand1.immediate;
+}
+
+void handle_asm_endrelocate(void) {
+
+    if(!relocate) {
+        error(message[ERROR_MISSINGRELOCATE], 0);
+        return;
+    }
+    relocate = false;
+    relocateOutputBaseAddress = 0;
+    relocateBaseAddress = 0;
+}
+
 void handle_assembler_command(void) {
     switch(currentline.current_instruction->asmtype) {
         case(ASM_ADL):
@@ -1146,6 +1179,12 @@ void handle_assembler_command(void) {
             break;
         case(ASM_CPU):
             handle_asm_cpu();
+            break;
+        case(ASM_RELOCATE):
+            handle_asm_relocate();
+            break;
+        case(ASM_ENDRELOCATE):
+            handle_asm_endrelocate();
             break;
         case(ASM_IF):
             handle_asm_if();
@@ -1374,6 +1413,9 @@ void passInitialize(uint8_t passnumber) {
     remaining_dsspaces = 0;
     macrolevel = 0;
     macroExpandID = 0;
+    relocate = false;
+    relocateOutputBaseAddress = 0;
+    relocateBaseAddress = 0;
     currentcontentitem = NULL;
 
     initAnonymousLabelTable();

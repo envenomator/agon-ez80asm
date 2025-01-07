@@ -6,6 +6,9 @@
 /*
  * Global variables
  */
+bool relocate;
+uint24_t relocateBaseAddress;
+uint24_t relocateOutputBaseAddress;
 uint8_t cputype;
 uint8_t contentlevel;
 uint8_t errorreportlevel;
@@ -71,6 +74,7 @@ char *message[] = {
     "Invalid assembler command",
     "New address lower than current PC address",
     "Address outside 16-bit range",
+    "Address outside 24-bit range",
     "String format error",
     "Relative jump too large",
     "Invalid bit number (0-7)",
@@ -129,5 +133,7 @@ char *message[] = {
     "File I/O error",
     "Illegal instruction for CPU type",
     "No ADL mode for CPU type",
+    "Nested relocate not allowed",
+    "Missing RELOCATE directive",
     "Syntax error"
 };

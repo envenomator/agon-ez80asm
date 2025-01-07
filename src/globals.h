@@ -7,6 +7,9 @@
 #include "defines.h"
 
 // Global variables
+extern bool relocate;
+extern uint24_t relocateBaseAddress;
+extern uint24_t relocateOutputBaseAddress;
 extern uint8_t cputype;
 extern uint8_t contentlevel;
 extern uint8_t errorreportlevel;
