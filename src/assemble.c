@@ -1391,8 +1391,10 @@ void processContent(const char *filename) {
     }
     if(inConditionalSection != CONDITIONSTATE_NORMAL) {
         error(message[ERROR_MISSINGENDIF],0);
-        closeContentInput(ci, callerci);
-        decreasecontentlevel();
+        return;
+    }
+    if(relocate) {
+        error(message[ERROR_MISSINGENDRELOCATE],0);
         return;
     }
     closeContentInput(ci, callerci);
