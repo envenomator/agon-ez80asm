@@ -124,7 +124,7 @@ char *message[] = {
     "Illegal escape code in string",
     "String type not allowed",
     "Couldn't open file for writing global label table",
-    "Error resetting input file(s)\r\n",
+    "Error resetting input file(s)\n",
     "Error reading incbin file",
     "Error reading input file",
     "Error allocating memory; try the -m option",

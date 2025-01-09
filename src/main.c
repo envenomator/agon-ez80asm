@@ -22,24 +22,24 @@ char outputfilename[FILENAMEMAXLENGTH + 1];
 bool noaction;
 
 void printVersion(void) {
-    printf("ez80asm version %d.%d, (C)2024 - Jeroen Venema\r\n",VERSION,REVISION);
+    printf("ez80asm version %d.%d, (C)2024 - Jeroen Venema\n",VERSION,REVISION);
 }
 
 void printHelp(void) {
-    printf("Usage: ez80asm <filename> [output filename] [OPTION]\n\r\r\n");
-    printf("  -v\tList version information only\r\n");
-    printf("  -h\tList help information\r\n");
-    printf("  -o\tOrg start address in hexadecimal format, default is %06X\r\n", START_ADDRESS);
-    printf("  -b\tFillbyte in hexadecimal format, default is %02X\r\n", FILLBYTE);
-    printf("  -a\tADL mode 1/0, default is %d\r\n", ADLMODE_START);
-    printf("  -i\tIgnore value truncation warnings\r\n");
-    printf("  -l\tListing to file with .lst extension\r\n");
-    printf("  -s\tExport symbols\r\n");
-    printf("  -d\tDirect listing to console\r\n");
-    printf("  -c\tNo color codes in output\r\n");
-    printf("  -x\tDisplay assembly statistics\r\n");
-    printf("  -m\tMinimum memory configuration\r\n");
-    printf("\r\n");
+    printf("Usage: ez80asm <filename> [output filename] [OPTION]\n\n");
+    printf("  -v\tList version information only\n");
+    printf("  -h\tList help information\n");
+    printf("  -o\tOrg start address in hexadecimal format, default is %06X\n", START_ADDRESS);
+    printf("  -b\tFillbyte in hexadecimal format, default is %02X\n", FILLBYTE);
+    printf("  -a\tADL mode 1/0, default is %d\n", ADLMODE_START);
+    printf("  -i\tIgnore value truncation warnings\n");
+    printf("  -l\tListing to file with .lst extension\n");
+    printf("  -s\tExport symbols\n");
+    printf("  -d\tDirect listing to console\n");
+    printf("  -c\tNo color codes in output\n");
+    printf("  -x\tDisplay assembly statistics\n");
+    printf("  -m\tMinimum memory configuration\n");
+    printf("\n");
 }
 
 void displayStatistics(void) {
@@ -51,7 +51,7 @@ void displayStatistics(void) {
         outputsize = ioGetfilesize(fh);
         fclose(fh);
     }
-    printf("\r\nAssembly statistics\r\n=============================\r\nLabel memory         : %6d\r\nLabels               : %6d\r\n\r\nMacro memory         : %6d\r\nMacros               : %6d\r\n\r\nInput buffers        : %6d\r\n-----------------------------\r\nTotal dynamic memory : %6d\r\n\r\nSources parsed       : %6d\r\nBinfiles read        : %6d\r\n\r\nOutput size          : %6d\r\n\r\n", labelmemsize, getGlobalLabelCount(), macromemsize, macroCounter, filecontentsize, labelmemsize+macromemsize+filecontentsize, sourcefilecount, binfilecount, outputsize);
+    printf("\nAssembly statistics\n=============================\nLabel memory         : %6d\nLabels               : %6d\n\nMacro memory         : %6d\nMacros               : %6d\n\nInput buffers        : %6d\n-----------------------------\nTotal dynamic memory : %6d\n\nSources parsed       : %6d\nBinfiles read        : %6d\n\nOutput size          : %6d\n\n", labelmemsize, getGlobalLabelCount(), macromemsize, macroCounter, filecontentsize, labelmemsize+macromemsize+filecontentsize, sourcefilecount, binfilecount, outputsize);
 }
 
 void parseOptions(int argc, char *argv[]) {
@@ -67,10 +67,10 @@ void parseOptions(int argc, char *argv[]) {
                     return;
                 }
                 adlmode = (*optarg == '1')?true:false;
-                printf("Setting ADL mode to %d\r\n",adlmode);
+                printf("Setting ADL mode to %d\n",adlmode);
                 break;
             case 's':
-                printf("Exporting symbols\r\n");
+                printf("Exporting symbols\n");
                 exportsymbols = true;
                 break;
             case 'x':
@@ -83,7 +83,7 @@ void parseOptions(int argc, char *argv[]) {
                 consolelist_enabled = true;
                 break;
             case 'm':
-                printf("Setting minimum memory configuration\r\n");
+                printf("Setting minimum memory configuration\n");
                 completefilebuffering = false;
                 break;
             case 'l':
@@ -110,7 +110,7 @@ void parseOptions(int argc, char *argv[]) {
                     error("option -b: Invalid hexadecimal format",0);
                     return;
                 }
-                printf("Setting fillbyte to hex %02X\r\n", fillbyte);
+                printf("Setting fillbyte to hex %02X\n", fillbyte);
                 break;
             case 'o':
                 if(strlen(optarg) > 6) {
@@ -122,7 +122,7 @@ void parseOptions(int argc, char *argv[]) {
                     error("option -o: Invalid hexadecimal format",0);
                     return;
                 }
-                printf("Setting org address to hex %06X\r\n", start_address);
+                printf("Setting org address to hex %06X\n", start_address);
                 break;
             case '?':
                 switch(optopt) {
@@ -192,8 +192,8 @@ int main(int argc, char *argv[]) {
 
     if(!ioInit(inputfilename, outputfilename)) return EXIT_ERROR;
     
-    printf("Assembling %s\r\n", inputfilename);
-    if(list_enabled) printf("Listing to %s\r\n", filename[FILE_LISTING]);
+    printf("Assembling %s\n", inputfilename);
+    if(list_enabled) printf("Listing to %s\n", filename[FILE_LISTING]);
 
     // Initializations
     initInstructionTable();
@@ -217,7 +217,7 @@ int main(int argc, char *argv[]) {
     ioClose();
 
     if(errorcount) return EXIT_ERROR;
-    else printf("Done in %.2f seconds\r\n",((double)(end - begin) / CLOCKS_PER_SEC));
+    else printf("Done in %.2f seconds\n",((double)(end - begin) / CLOCKS_PER_SEC));
 
     if(exportsymbols) saveGlobalLabelTable();
     if(displaystatistics) displayStatistics();

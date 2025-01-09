@@ -54,8 +54,8 @@ void listPrintDSLines(int number, int value) {
             }
             i++;
         }
-        if(list_enabled) ioPuts(FILE_LISTING, "\r\n");
-        if(consolelist_enabled) printf("\r\n");
+        if(list_enabled) ioPuts(FILE_LISTING, "\n");
+        if(consolelist_enabled) printf("\n");
     }
 }
 
@@ -107,15 +107,15 @@ void listPrintLine(void) {
         if(consolelist_enabled) printf("%s",buffer);
     }
 
-    if(list_enabled) ioPuts(FILE_LISTING, "\r\n");
-    if(consolelist_enabled) printf("\r\n");
+    if(list_enabled) ioPuts(FILE_LISTING, "\n");
+    if(consolelist_enabled) printf("\n");
 
     _listLineObjectCount = 0;
     _listLineNumber++;
 }
 
 void listPrintComment(const char *src) {
-        sprintf(buffer, "                       M%d %s\r\n", macrolevel, src);
+        sprintf(buffer, "                       M%d %s\n", macrolevel, src);
         if(list_enabled) ioPuts(FILE_LISTING, buffer);
         if(consolelist_enabled) printf("%s",buffer);
 }

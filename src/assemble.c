@@ -1314,13 +1314,13 @@ void processMacro(void) {
         }
         if(errorcount || issue_warning) {
             if(processednestedmacro) {
-                colorPrintf(errorcount?DARK_RED:DARK_YELLOW, "Invoked from Macro [%s] in \"%s\" line %d as\r\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
+                colorPrintf(errorcount?DARK_RED:DARK_YELLOW, "Invoked from Macro [%s] in \"%s\" line %d as\n", localexpandedmacro->name, localexpandedmacro->originfilename, localexpandedmacro->originlinenumber+localmacrolinenumber);
                 processednestedmacro = false;
             }
             getnextMacroLine(&lastmacrolineptr, macroline);
             trimRight(macroline);
             macroExpandArg(macro_expansionbuffer, macroline, localexpandedmacro);
-            colorPrintf(DARK_YELLOW, "%s\r\n",macro_expansionbuffer);
+            colorPrintf(DARK_YELLOW, "%s\n",macro_expansionbuffer);
             if(issue_warning) {
                 macro_invocation_warning = true; // flag to upstream caller that there was at least a single warning
                 issue_warning = false; // disable further LOCAL warnings until they occur
@@ -1384,7 +1384,7 @@ void processContent(const char *filename) {
         if(errorcount || issue_warning) {
             getlastContentLine(line, ci);
             if(processedmacro) {
-                colorPrintf(errorcount?DARK_RED:DARK_YELLOW, "Invoked from \"%s\" line %d as\r\n", filename, ci->currentlinenumber);
+                colorPrintf(errorcount?DARK_RED:DARK_YELLOW, "Invoked from \"%s\" line %d as\n", filename, ci->currentlinenumber);
                 processedmacro = false;
             }
             if(issue_warning || (contentlevel == errorreportlevel)) colorPrintf(DARK_YELLOW, "%s", line);            
@@ -1435,7 +1435,7 @@ void passInitialize(uint8_t passnumber) {
 void assemble(const char *filename) {
 
     for(uint8_t p = STARTPASS; p <= ENDPASS; p++) {
-        printf("Pass %d...\r\n", p);
+        printf("Pass %d...\n", p);
         passInitialize(p);
         processContent(filename);
         if(errorcount) return;

@@ -83,7 +83,7 @@ void displayerror(const char *msg, const char *context, errorlevel_t level) {
                 vdp_set_text_colour(DARK_YELLOW);
             printf(" \'%s\'", context);
         }
-        printf("\r\n");
+        printf("\n");
     }
     vdp_set_text_colour(BRIGHT_WHITE);
 }
