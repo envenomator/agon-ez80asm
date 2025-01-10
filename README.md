@@ -22,6 +22,7 @@ These versions require at least MOS 1.03.
     -d Direct listing to console
     -c No color codes in output (version 1.3+)
     -x Display assembly statistics (version 1.1+)
+    -m Minimum memory configuration (version 2.0+)
 
 The given filename will be assembled into these files:
 - filename.bin -- output executable file
@@ -30,7 +31,7 @@ The given filename will be assembled into these files:
 
 ## Defaults
 
-The compiler defaults to ADL=1 mode. This can be overridden using the .ASSUME directive.
+The assembler defaults to ADL=1 mode, CPU type EZ80. This can be overridden using the .ASSUME / .CPU directives.
 
 The default address is 0x40000.
 
@@ -41,9 +42,12 @@ Lines in the source file should have the following format:
 
 All fields are optional.
 
-- Labels are defined as first token on a line, terminated by a colon (':')
-- Instructions are either ez80 opcodes, or assembler directives. Opcodes without a label should start with whitespace. Assembler directives can start with a dot (.)
-- Comments start with a semi-colon (;). A line with just a comment can start without whitespace
+- Labels are defined as first token on a line, terminated without whitespace by a colon (':')
+- Instructions are either z80/z180/ez80 opcodes, or assembler directives
+- Starting v2.0, labels and instructions can be preceded by whitespace
+- Assembler directives can optionally start with a dot (.)
+- Comments start with a semi-colon (;)
+
 
 Examples
 
@@ -320,8 +324,9 @@ db 5       ; invalid use of 'DB' directive, shows as 'invalid label'
 | Directive              | Description                                                                        | Usage                                                                                                                                                                                                                                                                                                                                                                     |
 |------------------------|------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ALIGN                  |  Select alignment for the program counter, pad bytes up to new boundary alignment  | ALIGN \<boundary\>  The boundary, expressed in bytes, must be a power of two (1,2,4,8 etc)  Example: ALIGN 256 ; align next instruction at boundary of 256                                                                                                                                                                                                                |
-| ASSUME ADL             | Sets default ADL status (0 or 1)                                                   | Example: ASSUME ADL=1 ; set ADL mode to 1                                                                                                                                                                                                                                                                                                                                 |
-| BLKB/BLKW/ BLKP/BLKL   | Allocate a block with a number of Bytes/ 16-bit words/24-bit Pointers/32-bit words | BLKx \<number\> [, value]  Example: BLKB 16 ; allocate 16 uninitialized bytes Example: BLKB 16, 0xFF ; allocate 16 bytes and initialize them to 0xFF                                                                                                                                                                                                                      |
+| ASSUME ADL             | Sets default ADL status (0 or 1)                                                   | Example: ASSUME ADL=1 ; set ADL mode to 1                                                                                                                                                                                                                                                                                                                                 | 
+| CPU (v2.0+)                   | Limit instruction/opcode output to the specified CPU only                | Instructs the assembler that instructions placed after this directive need to be supported for the specified CPU only, or the assembler will need to throw an error. The assembler startup default is type EZ80. Supported CPU types are Z80 / Z180 / EZ80.                                                                                                                                                                                                 |
+BLKB/BLKW/ BLKP/BLKL   | Allocate a block with a number of Bytes/ 16-bit words/24-bit Pointers/32-bit words | BLKx \<number\> [, value]  Example: BLKB 16 ; allocate 16 uninitialized bytes Example: BLKB 16, 0xFF ; allocate 16 bytes and initialize them to 0xFF                                                                                                                                                                                                                      |
 | DB / DEFB ASCII / BYTE | Define byte(s)                                                                     | DB \| DEFB \| ASCII \| BYTE \<value \| string\> [, ...]  Reserve and initialize a byte, or a list of bytes. Within a string, these escape characters are supported and converted to their respective ascii code: \ \r \t \b \\\ \\' \\"  Strings are not automatically terminated by a null byte. You can use either an additional ',0' value, or use the ASCIZ directive |
 | ASCIZ                  | Same as above, but terminated with a 0 Used for zero-terminated strings mostly     | ASCIZ \<value \| string\> [, ...]                                                                                                                                                                                                                                                                                                                                         |
 | DW / DEFW              | Define 16-bit word(s)                                                              | DW \| DEFW \<value\> [, ...]  Reserve and initialize a word/long value, or a list of values                                                                                                                                                                                                                                                                               |
@@ -334,7 +339,7 @@ db 5       ; invalid use of 'DB' directive, shows as 'invalid label'
 | INCLUDE                | Include file in source code                                                        | Allows the insertion of source code from another file into the current source file during assembly. The included file is assembled into the current source file immediately after the directive. When the EOF (End of File) of the included file is reached, the assembly resumes on the line after the INCLUDE directive  Example: INCLUDE "example.inc"                 |
 | MACRO / ENDMACRO       | Define a macro, see below for detailed explanation                                 | MACRO [arg1, arg2 ...]  [macro body] ENDMACRO                                                                                                                                                                                                                                                                                                                             |
 | ORG                    | Define location counter origin.                                        | Sets the assembler location counter to a specified value. The directive must be followed by an integer constant, which is the value of the new origin. Example: ORG $40000. Starting release 1.9, when the location counter is advanced, the intervening bytes are filled with the defined fillbyte.ORG may only increase the location counter, or leave it unchanged; you cannot use ORG to move the location counter backwards.                                                                                                                                                                                                |
-
+| RELOCATE / ENDRELOCATE (v2.0+)                   | Defines a block of code as relocatable                                         | RELOCATE \<address> [instruction lines] \<ENDRELOCATE>   The specified block of code is output at the current <em>address</em>, whilst all labels in the block are calculated with an applied offset. This allows the block of code to be copied elsewhere to the specified address, due to it's (internal) use of offset labels. The $ symbol is also translated in the specified block.                                                                                                                                                                                                |
 ## Macros
 The 'macro' directive defines a macro, optionally followed by a maximum of 8 arguments. The following lines will be stored as the macro-body, until the 'endmacro' directive is encountered. A macro has to be defined before use.
 
@@ -351,10 +356,10 @@ Example macro definition without arguments:
         endmacro    ; end of macro definition
 
 Important notes:
-- Starting v1.12 only **local** labels are allowed in macro definitions; global labels were never allowed, while defining anonymous labels in a macro could result in issues using earlier versions. Starting v1.12 local labels defined inside a macro will get an internal macro expansion 'scope', so the macro can be expanded multiple times without label collisions. This 'scope' will not be visible in the listing. Because of their locality, labels defined inside a macro cannot be referenced to outside of the macro
-- Starting v1.12, macros can be called from within a macro, with a maximum 'nesting' level of 8 to block expansion recursion.
+- Starting v2.0 only **local** labels are allowed in macro definitions; global labels were never allowed, while defining anonymous labels in a macro could result in issues using earlier versions. Starting v2.0, local labels defined inside a macro will get an internal macro expansion 'scope', so the macro can be expanded multiple times without label collisions. This 'scope' will not be visible in the listing. Because of their locality, labels defined inside a macro cannot be referenced to outside of the macro
+- Starting v2.0, macros can be called from within a macro, with a maximum 'nesting' level of 8 to block expansion recursion.
 - Macro definitions are not allowed inside a macro definition
-- Don't use instruction names (e.g. 'ld' or 'and'), nor other macro names as argument names. Starting v1.12 the assembler will throw an error.
+- Don't use instruction names (e.g. 'ld' or 'and'), nor other macro names as argument names. Starting v2.0 the assembler will throw an error.
 - While accepted by the assembler; avoid defining macros with the same name as a label. This can lead to confusion between calling a label and invoking a macro in your code.
 
 Example macro with arguments:

@@ -22,7 +22,7 @@ char outputfilename[FILENAMEMAXLENGTH + 1];
 bool noaction;
 
 void printVersion(void) {
-    printf("ez80asm version %d.%d, (C)2024 - Jeroen Venema\n",VERSION,REVISION);
+    printf("ez80asm version %d.%d, (C)2025 - Jeroen Venema\n",VERSION,REVISION);
 }
 
 void printHelp(void) {
