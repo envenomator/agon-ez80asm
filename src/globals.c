@@ -135,5 +135,6 @@ char *message[] = {
     "No ADL mode for CPU type",
     "Nested relocate not allowed",
     "Missing RELOCATE directive",
+    "Unsupported CPU type",
     "Syntax error"
 };

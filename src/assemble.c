@@ -1036,18 +1036,13 @@ void handle_asm_cpu(void) {
         adlmode = 0;
         return;
     }
-    //if(fast_strcasecmp(token.start, "Z280") == 0) {
-    //    cputype = CPU_Z280;
-    //    adlmode = 0;
-    //    return;
-    //}
     if(fast_strcasecmp(token.start, "EZ80") == 0) {
         cputype = CPU_EZ80;
         adlmode = 1;
         return;
     }
 
-    error("Unknown CPU type", "%s", token.start);
+    error(message[ERROR_UNSUPPORTED_CPU], "%s", token.start);
 }
 
 void handle_asm_if(void) {
