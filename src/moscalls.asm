@@ -1,3 +1,4 @@
+assume adl=1
 section .text
 public _removefile
 public _getfilesize
